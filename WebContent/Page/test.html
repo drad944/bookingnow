@@ -1,0 +1,35 @@
+<html> 
+<head> 
+<title> Booking </title> 
+<style> 
+<!--
+@import url('../CSS/App.css');
+-->
+</style>
+<script src="../JS/AppUtil.js" type="text/javascript">
+</script>
+<script src="../JS/ContentContainer.js" type="text/javascript">
+</script>
+
+<script type="text/javascript"> 
+
+function init(){
+	var config = new Object();
+	config.width = document.body.clientWidth - 30;
+	config.height = document.body.clientHeight - 30;
+	var views = new Array();
+	for(var i=0; i < 5; i++){
+		var view = new Object();
+		view.content = "Get the content from server";
+		views.push(view);
+	}
+	config.views = views;
+	config.parent = document.body;
+	ContentContainer.create(config);
+}
+
+</script> 
+</head>
+<body onload="init()">
+</body> 
+</html>
