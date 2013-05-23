@@ -8,8 +8,10 @@ var ContentContainer = {
 		this.contentDiv.className = "ContentDiv";
 		this.viewWidth = config.width;
 		this.viewHeight = config.height;
-		this.viewsCount = config.views.length;
-		this.createViewStack(config.views);
+		this.viewsCount = config.viewsCount;
+		this.fillContent = config.fillContentCallBack;
+		
+		this.createViewStack();
 		this.addCallBack();
 		parent.appendChild(this.contentDiv);
 	},
@@ -29,7 +31,7 @@ var ContentContainer = {
 			    if(touch.pageX > me.startX){
 			        //move right
 			        value = touch.pageX - me.startX;
-			        if(value > me.viewWidth/5){
+			        if(value > me.viewWidth/4){
 			        	me.updateView(me.currentIdx - 1);
 			        } else {
 			        	me.updateView(me.currentIdx);
@@ -37,7 +39,7 @@ var ContentContainer = {
 			    } else if(touch.pageX < me.startX){
 			        //move left
 			        value = me.startX - touch.pageX;
-			        if(value > me.viewWidth/5){
+			        if(value > me.viewWidth/4){
 			        	me.updateView(me.currentIdx + 1);
 			        } else {
 			        	me.updateView(me.currentIdx);
@@ -47,13 +49,13 @@ var ContentContainer = {
 		}, false);
 	},
 	
-	createViewStack: function(viewStack){
+	createViewStack: function(){
 		var table = document.createElement('table');
 		var tr = document.createElement('tr');
 		table.appendChild(tr);
 		
 		var td;	
-		for(var i=0 ; i < viewStack.length; i++){
+		for(var i=0 ; i < this.viewsCount; i++){
 			var viewtable = document.createElement('table');
 			//leave 30px for the horizontal scroll bar
 			AppUtil.setStyle(viewtable, {width: this.viewWidth - 2, height: this.viewHeight - 30});
@@ -62,7 +64,9 @@ var ContentContainer = {
 			var viewtd = document.createElement('td');
 			var viewdiv = document.createElement('div');
 			viewdiv.className = "ViewDiv";
-			viewdiv.innerHTML = viewStack[i].content;
+			if(this.fillContent){
+				this.fillContent(viewdiv, i, this.viewWidth - 20);
+			}
 			viewtd.appendChild(viewdiv);
 			viewtr.appendChild(viewtd);
 			viewtable.appendChild(viewtr);
@@ -72,8 +76,7 @@ var ContentContainer = {
 		}
 		this.contentDiv.appendChild(table);
 		this.viewsTable = table;
-		this.updateView(0);
-		//this.currentIdx = 0;	
+		this.currentIdx = 0;
 	},
 
 	moveViewGently: function (begin, end){
@@ -82,12 +85,12 @@ var ContentContainer = {
 	    }
 	    var step = 0;
 	    if(begin > end){
-	    	step = (begin - end) % 50;
+	    	step = (begin - end) % 100;
 	    	if(step == 0)
 	    		step = 50;
 	    	 begin -= step;
 	    } else {
-	    	step = (end - begin) % 50;
+	    	step = (end - begin) % 100;
 	        if(step == 0)
 	            step = 50;
 	    	begin += step;
@@ -104,8 +107,6 @@ var ContentContainer = {
 		if(index < 0 || index > this.viewsCount){
 			return;
 		}
-		//refine the calculation by search the view start point
-		//if(end > 0) end = end - 4;
 		this.moveViewGently(this.contentDiv.scrollLeft, this.calculateViewPosition(index));
 		this.currentIdx = index;
 	}
