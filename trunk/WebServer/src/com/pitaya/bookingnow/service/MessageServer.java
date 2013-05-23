@@ -9,6 +9,9 @@ import java.net.Socket;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,7 +44,7 @@ class ClientAgent extends Thread{
 						this.role = logininfos[1];
 						if(this.server.addClient(this)){
 							this.sendMessage("Login successfully!");
-							logger.info("Success to connect to "+ this.username);
+							logger.info("Success to connect "+ this.username);
 						} else {
 							this.sendMessage("Can't login two clients with same user!");
 						}
@@ -56,13 +59,13 @@ class ClientAgent extends Thread{
 					}
 				}
 			}
-		 }catch (Exception e){
+		 } catch (Exception e) {
 	        e.printStackTrace();
-		 }finally{
+		 } finally {
 	        try {
 				 in.close();
 				 out.close();
-				 if(client_socket != null){
+				 if(client_socket != null && !client_socket.isClosed()){
 					 client_socket.close();
 				 }
 			} catch (IOException ex) {
@@ -87,10 +90,10 @@ class ClientAgent extends Thread{
 			 this.sendMessage("bye");
 			 in.close();
 			 out.close();
-			 if(client_socket != null){
+			 if(client_socket != null && !client_socket.isClosed()){
 				 client_socket.close();
 			 }
-			 logger.info("Success to shutdown connect to " + this.username);
+			 logger.info("Success to close connection to " + this.username);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -99,8 +102,10 @@ class ClientAgent extends Thread{
 
 class MessageServerThread extends Thread{
 	private static Log logger =  LogFactory.getLog(MessageServerThread.class);
+	
     boolean flag = true;
     MessageServer server;
+    private final ExecutorService pool =  Executors.newFixedThreadPool(50);
       
     MessageServerThread(MessageServer server){
     	this.server = server;
@@ -111,18 +116,16 @@ class MessageServerThread extends Thread{
         try {
         	while(flag){
                 client_socket = server.serverSocket.accept( );  
-                ClientAgent clientAgent = new ClientAgent(this.server, client_socket);  
-                clientAgent.start( );
+                pool.execute(new ClientAgent(this.server, client_socket));
         	}
-        	logger.info("Success to shutdown message server thread");
-        } catch( Exception e ) {  
+        } catch(Exception e) {
+        	logger.error("Message server thread is crashed");
             e.printStackTrace( );
-        } finally{
-        	if(client_socket != null){
+            if(client_socket != null && !client_socket.isClosed()){
         		try {
 					client_socket.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+				} catch (IOException ex) {
+					ex.printStackTrace();
 				}
         	}
         }
@@ -130,6 +133,18 @@ class MessageServerThread extends Thread{
     
     void shutdown(){
     	this.flag = false;
+    	pool.shutdown();
+    	try { 
+    	    if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+    	    	 pool.shutdownNow();
+    	    	 if (!pool.awaitTermination(60, TimeUnit.SECONDS)){
+    	    		 logger.error("Pool did not terminate");  
+    	    	 }
+    	    }
+    	 } catch (InterruptedException ie) {
+    	    pool.shutdownNow();
+    	 }
+    	 this.interrupt();
     }
 }
 
@@ -185,21 +200,22 @@ public class MessageServer {
 	public boolean shutdown(){
 		if(hasStarted) {
 			this.serverThread.shutdown();
-        	if(serverSocket != null){
-        		try {
-					serverSocket.close();
-					this.hasStarted = false;
+			try {
+        			if(serverSocket != null && serverSocket.isClosed()){
+        				serverSocket.close();
+        			}
+        			this.hasStarted = false;
 					for(Entry<String, Map<String, ClientAgent>> entry : groups.entrySet()){
 						for(Entry<String, ClientAgent> subentry : ((Map<String, ClientAgent>)entry.getValue()).entrySet()){
 							subentry.getValue().shutdown();
 						}
 					}
+					logger.info("Success to shutdown message server thread");
 					return true;
-				} catch (IOException e) {
+			} catch (IOException e) {
 					e.printStackTrace();
 					return false;
-				}
-        	}
+			}
 		}
 		return true;
 	}
@@ -223,6 +239,7 @@ public class MessageServer {
 		Map<String, ClientAgent> group = this.groups.get(clientAgent.role);
 		if(group == null){
 			group = new ConcurrentHashMap<String, ClientAgent>();
+			this.groups.put(clientAgent.role, group);
 		}
 		if(group.get(clientAgent.username) == null){
 			group.put(clientAgent.username, clientAgent);
@@ -231,5 +248,16 @@ public class MessageServer {
 			return false;
 		}
 	}
+	
+    public static void main(String [] args){
+    	MessageServer messageServer = MessageServer.getInstance();
+		messageServer.start(19191);
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		messageServer.sendMessageToGroup(Constants.WAITER_GP, "菜品加工好了");
+    }
 	
 }

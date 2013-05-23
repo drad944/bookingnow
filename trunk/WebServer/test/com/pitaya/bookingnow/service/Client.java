@@ -85,5 +85,11 @@ public class Client extends Thread{
 	            System.out.println("Fail to send login info");
 	        }
 	    }
+	    
+	    public static void main(String [] args){
+			for(int i=0; i < 1; i++){
+				new Client().start();
+			}
+	    }
 
 }

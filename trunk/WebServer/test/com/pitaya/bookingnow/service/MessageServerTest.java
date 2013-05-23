@@ -15,7 +15,7 @@ public class MessageServerTest extends TestCase {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			for(int i=0; i < 1; i++){
+			for(int i=0; i < 10; i++){
 				new Client().start();
 			}
 			try {
@@ -27,14 +27,18 @@ public class MessageServerTest extends TestCase {
 	
 		
 		public void testSendToGroup(){
-//			messageServer.sendMessageToGroup(Constants.CASH_GP, "有新的订单需要结帐");
-//			messageServer.sendMessageToGroup(Constants.KITCHEN_GP, "新的菜品加工条目");
-			System.out.println("In test case");
+			messageServer.sendMessageToGroup(Constants.CASH_GP, "有新的订单需要结帐");
+			messageServer.sendMessageToGroup(Constants.KITCHEN_GP, "新的菜品加工条目");
 			messageServer.sendMessageToGroup(Constants.WAITER_GP, "菜品加工好了");
 		}
 		
 		@Override 
 		public void tearDown(){
+			try {
+				Thread.sleep(15000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			messageServer.shutdown();
 		}
 		
