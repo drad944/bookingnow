@@ -1,0 +1,81 @@
+<html> 
+<head> 
+<title> Booking </title> 
+<style> 
+<!--
+@import url('../CSS/App.css');
+-->
+</style>
+<script src="../JS/AppUtil.js" type="text/javascript">
+</script>
+<script src="../JS/ContentContainer.js" type="text/javascript">
+</script>
+
+<script type="text/javascript"> 
+
+var bookingContent = new Array();
+bookingContent.push({simgsrc:"../images/a-small.jpg", limgsrc:"../images/a-large.jpg", comment: "介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍"});
+bookingContent.push({simgsrc:"../images/a-small.jpg", limgsrc:"../images/a-large.jpg", comment: "介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍"});
+bookingContent.push({simgsrc:"../images/a-small.jpg", limgsrc:"../images/a-large.jpg"});
+bookingContent.push({simgsrc:"../images/a-small.jpg", limgsrc:"../images/a-large.jpg", comment: "介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍介介绍介绍介绍介绍介绍介绍介绍"});
+bookingContent.push({simgsrc:"../images/a-small.jpg", limgsrc:"../images/a-large.jpg"});
+bookingContent.push({simgsrc:"../images/a-small.jpg", limgsrc:"../images/a-large.jpg", comment: "介绍介绍介绍介绍介绍"});
+bookingContent.push({simgsrc:"../images/a-small.jpg", limgsrc:"../images/a-large.jpg"});
+bookingContent.push({simgsrc:"../images/a-small.jpg", limgsrc:"../images/a-large.jpg", comment: "介绍介绍介绍介绍介绍介绍介绍介绍介绍介绍"});
+
+function fillViewContent(viewDiv, index, viewWidth){
+	var table = document.createElement("table");
+	AppUtil.setStyle(table, {width : viewWidth})
+	table.className = "ViewTable";
+	var rowcount = 0;
+	var colcount = parseInt(viewWidth/300);
+	if(bookingContent.length > 0 && bookingContent.length % colcount == 0){
+		rowcount = parseInt(bookingContent.length/colcount);
+	}else{
+		rowcount = parseInt(bookingContent.length/colcount) + 1;
+	}
+	for(var i=0; i < rowcount; i++){
+		var tr = document.createElement("tr");
+		for(var j=0; j < colcount; j++){
+			var td = document.createElement("td");
+			var index = i*colcount+j;
+			if(index < bookingContent.length){
+				var itable = document.createElement("table");
+				var itr = document.createElement("tr");
+				var itd = document.createElement("td");
+				AppUtil.setStyle(itd, {width : "75%"});
+				var img = document.createElement("img");
+				img.src = bookingContent[index].simgsrc;
+				itd.appendChild(img);
+				itr.appendChild(itd);
+				
+				itd = document.createElement("td");
+				AppUtil.setStyle(itd, {valign : "top"});
+				itd.innerHTML = bookingContent[index].comment;
+				itr.appendChild(itd);
+				
+				itable.appendChild(itr);
+				td.appendChild(itable);
+			}
+			tr.appendChild(td);
+		}
+		table.appendChild(tr);
+	}
+	viewDiv.appendChild(table);
+}
+
+function init(){
+	var config = new Object();
+	config.width = document.body.clientWidth - 30;
+	config.height = document.body.clientHeight - 30;
+	config.viewsCount = 5;
+	config.parent = document.body;
+	config.fillContentCallBack = fillViewContent;
+	ContentContainer.create(config);
+}
+
+</script> 
+</head>
+<body onload="init()">
+</body> 
+</html>
