@@ -1,0 +1,113 @@
+package com.pitaya.bookingnow.app.net;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+
+import android.util.Log;
+
+public class Client extends Thread{
+	  	
+		private static String LOGTAG = "ClientThread";
+		private Socket socket;
+	    private String ip = "192.168.0.102";
+	    private int port = 19191;
+	    private BufferedReader in;
+	    private PrintWriter out;
+	    private MessageService service;
+
+	    public Client(String ip, int port, MessageService ms) {
+	    	this.ip = ip;
+	    	this.port = port;
+	    	this.service = ms;
+	    }
+	    
+	    public void run(){
+	        try {
+				setupConnection();
+            	String message = null;
+            	while((message = in.readLine()) != null){
+        			if(this.service != null){
+        				this.service.onMessage(message);
+        			}
+            		if(message.equals("bye")){
+            			shutdown();
+            			break;
+            		}
+            	}
+	        } catch (UnknownHostException e) {
+	            e.printStackTrace();
+	        } catch (IOException e) {
+	        	Log.e(LOGTAG, "Fail to connect to web server");
+				e.printStackTrace();
+			} finally {
+	        	try {
+	        		 if(in != null){
+					    in.close();
+					    in = null;
+	        		 }
+	        		 if(out != null){
+					    out.close();
+					    out = null;
+	        		 } 
+					 if (socket != null && !socket.isClosed()){
+						 socket.close();
+						 socket = null;
+					 }
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+	        }
+	    }
+
+	    public void shutdown(){
+				try {
+	        		 if(in != null){
+					    in.close();
+					    in = null;
+	        		 }
+	        		 if(out != null){
+					    out.close();
+					    out = null;
+	        		 } 
+					 if (socket != null && !socket.isClosed()){
+						 try {
+							socket.close();
+							socket = null;
+							Log.i(LOGTAG, "Success to shutdown the connection to server");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					 }
+					 this.interrupt();
+				} catch (IOException e) {
+					 e.printStackTrace();
+				}
+	    }
+
+	    public boolean sendMessage(String msg) {
+	        try {
+	        	out.println(msg);
+	        	out.flush();
+	        	return true;
+	        } catch (Exception e) {
+	            Log.e(LOGTAG, "Fail to send message:" + msg);
+	            return false;
+	        }
+	    }
+	    
+	    public boolean isReady(){
+	    	return this.socket != null && this.socket.isConnected();
+	    }
+  	    
+	    private void setupConnection() throws UnknownHostException, IOException {
+	        socket = new Socket(ip, port);
+        	in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        	out = new PrintWriter(socket.getOutputStream());
+	    }
+
+}
