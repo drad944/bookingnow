@@ -13,22 +13,29 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.pitaya.bookingnow.message.LoginMessage;
+import com.pitaya.bookingnow.message.LoginResultMessage;
+import com.pitaya.bookingnow.message.Message;
 
 class ClientAgent extends Thread{
 	
 	private static Log logger =  LogFactory.getLog(ClientAgent.class);
 	Socket client_socket;
-	MessageServer server;
+	MessageService service;
 	PrintWriter out;
 	BufferedReader in;
 	String username;
 	String role;
 	
-	ClientAgent(MessageServer server, Socket socket){
+	ClientAgent(MessageService service, Socket socket){
 		this.client_socket = socket;
-		this.server = server;
+		this.service = service;
 	}
 	
 	public void run(){
@@ -37,27 +44,8 @@ class ClientAgent extends Thread{
 			out = new PrintWriter(client_socket.getOutputStream());   
 			String message = null;
 			while((message = in.readLine()) != null){
-				if(message.startsWith("login:")){
-					String[] logininfos = message.substring("login:".length()).split(":");
-					if(logininfos.length == 3 && logininfos[2].equals("123456")){
-						this.username = logininfos[0];
-						this.role = logininfos[1];
-						if(this.server.addClient(this)){
-							this.sendMessage("Login successfully!");
-							logger.info("Success to connect "+ this.username);
-						} else {
-							this.sendMessage("Can't login two clients with same user!");
-						}
-					} else {
-						this.sendMessage("Fail to login!");
-					}
-				} else {
-					if(this.username == null){
-						this.sendMessage("Login first!");
-					} else {
-						logger.info("["+this.username+"]" + message);
-					}
-				}
+				this.service.onMessage(message, this);
+				logger.info("["+this.username+"]" + message);
 			}
 		 } catch (Exception e) {
 	        e.printStackTrace();
@@ -104,19 +92,19 @@ class MessageServerThread extends Thread{
 	private static Log logger =  LogFactory.getLog(MessageServerThread.class);
 	
     boolean flag = true;
-    MessageServer server;
+    MessageService service;
     private final ExecutorService pool =  Executors.newFixedThreadPool(50);
       
-    MessageServerThread(MessageServer server){
-    	this.server = server;
+    MessageServerThread(MessageService service){
+    	this.service = service;
     }  
       
     public void run(){
     	Socket client_socket = null;
         try {
         	while(flag){
-                client_socket = server.serverSocket.accept( );  
-                pool.execute(new ClientAgent(this.server, client_socket));
+                client_socket = service.serverSocket.accept( );  
+                pool.execute(new ClientAgent(this.service, client_socket));
         	}
         } catch(Exception e) {
         	logger.error("Message server thread is crashed");
@@ -148,10 +136,10 @@ class MessageServerThread extends Thread{
     }
 }
 
-public class MessageServer {
+public class MessageService {
 	
-	private static MessageServer _instance;
-	private static Log logger =  LogFactory.getLog(MessageServer.class);
+	private static MessageService _instance;
+	private static Log logger =  LogFactory.getLog(MessageService.class);
 	
 	ServerSocket serverSocket;
 	
@@ -160,22 +148,52 @@ public class MessageServer {
 	private boolean hasStarted;
 	private Map<String, Map<String, ClientAgent>> groups;
 	
-	private MessageServer(){
+	private MessageService(int port){
 		this.hasStarted = false;
-		groups = new ConcurrentHashMap <String, Map<String, ClientAgent>>();
+		this.port = port;
+		this.groups = new ConcurrentHashMap <String, Map<String, ClientAgent>>();
+		this.start();
 	}
 	
-	public static MessageServer getInstance(){
+	public static MessageService initService(int port){
 		if(_instance == null){
-			_instance = new MessageServer();
+			_instance = new MessageService(port);
 		}
 		return _instance;
 	}
-			
-	public boolean start(int port){
+	
+	public static MessageService getService(){
+		return _instance;
+	}
+	
+	public static boolean shutdownService(){
+		if(_instance.hasStarted) {
+			_instance.serverThread.shutdown();
+			try {
+        			if(_instance.serverSocket != null && _instance.serverSocket.isClosed()){
+        				_instance.serverSocket.close();
+        			}
+        			_instance.hasStarted = false;
+					for(Entry<String, Map<String, ClientAgent>> entry : _instance.groups.entrySet()){
+						for(Entry<String, ClientAgent> subentry : ((Map<String, ClientAgent>)entry.getValue()).entrySet()){
+							subentry.getValue().shutdown();
+						}
+					}
+					_instance = null;
+					logger.info("Success to shutdown message service.");
+					return true;
+			} catch (IOException e) {
+					e.printStackTrace();
+					_instance = null;
+					return false;
+			}
+		}
+		return true;
+	}
+	
+	private boolean start(){
 		if(!hasStarted){
 			try {
-				this.port = port;
 	            serverSocket = new ServerSocket(this.port);
 	            serverThread = new MessageServerThread(this);  
 	            serverThread.start();
@@ -197,42 +215,45 @@ public class MessageServer {
 		return true;
 	}
 	
-	public boolean shutdown(){
-		if(hasStarted) {
-			this.serverThread.shutdown();
-			try {
-        			if(serverSocket != null && serverSocket.isClosed()){
-        				serverSocket.close();
-        			}
-        			this.hasStarted = false;
-					for(Entry<String, Map<String, ClientAgent>> entry : groups.entrySet()){
-						for(Entry<String, ClientAgent> subentry : ((Map<String, ClientAgent>)entry.getValue()).entrySet()){
-							subentry.getValue().shutdown();
-						}
-					}
-					logger.info("Success to shutdown message server thread");
-					return true;
-			} catch (IOException e) {
-					e.printStackTrace();
-					return false;
-			}
-		}
-		return true;
-	}
-	
-	public boolean sendMessageToGroup(String groupType, String message){
+	public boolean sendMessageToGroup(String groupType, Message message){
 		Map<String, ClientAgent> group = this.groups.get(groupType);
+		String msgstring = this.parseMessage(message);
 		if(group != null){
 			boolean success = true;
 			for(Entry<String, ClientAgent> entry : group.entrySet()){
-				if(!entry.getValue().sendMessage(message)){
-					logger.error("Fail to send message to" + entry.getKey() + ":" + message);
+				if(!entry.getValue().sendMessage(msgstring)){
+					logger.error("Fail to send message to" + entry.getKey() + ":" + msgstring);
 					success = false;
 				}
 			}
 			return success;
 		}
 		return false;
+	}
+	
+	void onMessage(String msgstring, ClientAgent clientAgent){
+		Message message = this.unparseMessage(msgstring);
+		if(message instanceof LoginMessage){
+			String username = ((LoginMessage)message).getUsername();
+			String password = ((LoginMessage)message).getPassword();
+			String key = ((LoginMessage)message).getKey();
+			LoginResultMessage resultmsg = null;
+			//Get password from database service
+			if(password.equals("123456")){
+				clientAgent.username = username;
+				//Get role from database service
+				clientAgent.role = Constants.WAITER_ROLE;
+				if(this.addClient(clientAgent)){
+					resultmsg = new LoginResultMessage(key, "success", Constants.WAITER_ROLE);
+					logger.info("Success to connect "+ clientAgent.username);
+				} else {
+					resultmsg = new LoginResultMessage(key, "fail", "Can't login two clients with same user!");
+				}
+			} else {
+				resultmsg = new LoginResultMessage(key, "fail", "Wrong username or password!");
+			}
+			clientAgent.sendMessage(this.parseMessage(resultmsg));
+		}
 	}
 	
 	boolean addClient(ClientAgent clientAgent){
@@ -249,15 +270,41 @@ public class MessageServer {
 		}
 	}
 	
-    public static void main(String [] args){
-    	MessageServer messageServer = MessageServer.getInstance();
-		messageServer.start(19191);
+	private String parseMessage(Message message){
+		JSONObject jsonMsg = JSONObject.fromObject(message);
+		return jsonMsg.toString();
+	}
+	
+	private Message unparseMessage(String message){
+		Message msg = null;
+		String type = null;
 		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
+			JSONObject jsonMsg = JSONObject.fromObject(message);
+			type = jsonMsg.getString("type");
+			if(type != null){
+				Class<?> msgcls = Class.forName(type);
+				msg = (Message) JSONObject.toBean(jsonMsg, msgcls);
+			} else {
+				logger.error("Message type is null: " + message);
+			}
+		} catch (JSONException e) {
+			logger.error("Fail to parse message to json object: " + message);
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			logger.error("Unsupported message type: " + type);
 			e.printStackTrace();
 		}
-		messageServer.sendMessageToGroup(Constants.WAITER_GP, "菜品加工好了");
+		return msg;
+	}
+	
+    public static void main(String [] args){
+    	MessageService messageService = MessageService.initService(19191);
+//		try {
+//			Thread.sleep(5000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		messageServer.sendMessageToGroup(Constants.WAITER_GP, "菜品加工好了");
     }
 	
 }

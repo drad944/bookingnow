@@ -4,12 +4,11 @@ import junit.framework.TestCase;
 
 public class MessageServerTest extends TestCase {
 
-		MessageServer messageServer;
+		MessageService messageServer;
 	
 		@Override 
 		public void setUp(){
-			messageServer = MessageServer.getInstance();
-			messageServer.start(19191);
+			messageServer = MessageService.initService(19191);
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
@@ -27,9 +26,9 @@ public class MessageServerTest extends TestCase {
 	
 		
 		public void testSendToGroup(){
-			messageServer.sendMessageToGroup(Constants.CASH_GP, "有新的订单需要结帐");
-			messageServer.sendMessageToGroup(Constants.KITCHEN_GP, "新的菜品加工条目");
-			messageServer.sendMessageToGroup(Constants.WAITER_GP, "菜品加工好了");
+//			messageServer.sendMessageToGroup(Constants.CASH_GP, "有新的订单需要结帐");
+//			messageServer.sendMessageToGroup(Constants.KITCHEN_GP, "新的菜品加工条目");
+//			messageServer.sendMessageToGroup(Constants.WAITER_GP, "菜品加工好了");
 		}
 		
 		@Override 
@@ -39,7 +38,7 @@ public class MessageServerTest extends TestCase {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			messageServer.shutdown();
+			MessageService.shutdownService();
 		}
 		
 }
