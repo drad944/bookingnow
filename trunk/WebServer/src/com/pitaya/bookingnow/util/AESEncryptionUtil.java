@@ -9,28 +9,30 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * AES Encryption<br/>
+ * AES Coder<br/>
  * secret key length:	128bit, default:	128 bit<br/>
  * mode:	ECB/CBC/PCBC/CTR/CTS/CFB/CFB8 to CFB128/OFB/OBF8 to OFB128<br/>
+ * padding:	Nopadding/PKCS5Padding/ISO10126Padding/
+ * @author Aub
  * 
  */
 public class AESEncryptionUtil {
 	
 	/**
-	 * ÃÜÔ¿Ëã·¨
+	 * å¯†é’¥ç®—æ³•
 	*/
 	private static final String KEY_ALGORITHM = "AES";
 	
 	private static final String DEFAULT_CIPHER_ALGORITHM = "AES/ECB/PKCS5Padding";
 	
 	/**
-	 * ³õÊ¼»¯ÃÜÔ¿
+	 * åˆå§‹åŒ–å¯†é’¥
 	 * 
-	 * @return byte[] ÃÜÔ¿ 
+	 * @return byte[] å¯†é’¥ 
 	 * @throws Exception
 	 */
 	public static byte[] initSecretKey() {
-		//·µ»ØÉú³ÉÖ¸¶¨Ëã·¨µÄÃØÃÜÃÜÔ¿µÄ KeyGenerator ¶ÔÏó
+		//è¿”å›ç”ŸæˆæŒ‡å®šç®—æ³•çš„ç§˜å¯†å¯†é’¥çš„ KeyGenerator å¯¹è±¡
 		KeyGenerator kg = null;
 		try {
 			kg = KeyGenerator.getInstance(KEY_ALGORITHM);
@@ -38,31 +40,31 @@ public class AESEncryptionUtil {
 			e.printStackTrace();
 			return new byte[0];
 		}
-		//³õÊ¼»¯´ËÃÜÔ¿Éú³ÉÆ÷£¬Ê¹Æä¾ßÓĞÈ·¶¨µÄÃÜÔ¿´óĞ¡
-		//AES ÒªÇóÃÜÔ¿³¤¶ÈÎª 128
+		//åˆå§‹åŒ–æ­¤å¯†é’¥ç”Ÿæˆå™¨ï¼Œä½¿å…¶å…·æœ‰ç¡®å®šçš„å¯†é’¥å¤§å°
+		//AES è¦æ±‚å¯†é’¥é•¿åº¦ä¸º 128
 		kg.init(128);
-		//Éú³ÉÒ»¸öÃÜÔ¿
+		//ç”Ÿæˆä¸€ä¸ªå¯†é’¥
 		SecretKey  secretKey = kg.generateKey();
 		return secretKey.getEncoded();
 	}
 	
 	/**
-	 * ×ª»»ÃÜÔ¿
+	 * è½¬æ¢å¯†é’¥
 	 * 
-	 * @param key	¶ş½øÖÆÃÜÔ¿
-	 * @return ÃÜÔ¿
+	 * @param key	äºŒè¿›åˆ¶å¯†é’¥
+	 * @return å¯†é’¥
 	 */
-	private static Key toKey(byte[] key){
-		//Éú³ÉÃÜÔ¿
+	public static Key toKey(byte[] key){
+		//ç”Ÿæˆå¯†é’¥
 		return new SecretKeySpec(key, KEY_ALGORITHM);
 	}
 	
 	/**
-	 * ¼ÓÃÜ
+	 * åŠ å¯†
 	 * 
-	 * @param data	´ı¼ÓÃÜÊı¾İ
-	 * @param key	ÃÜÔ¿
-	 * @return byte[]	¼ÓÃÜÊı¾İ
+	 * @param data	å¾…åŠ å¯†æ•°æ®
+	 * @param key	å¯†é’¥
+	 * @return byte[]	åŠ å¯†æ•°æ®
 	 * @throws Exception
 	 */
 	public static byte[] encrypt(byte[] data,Key key) throws Exception{
@@ -70,11 +72,11 @@ public class AESEncryptionUtil {
 	}
 	
 	/**
-	 * ¼ÓÃÜ
+	 * åŠ å¯†
 	 * 
-	 * @param data	´ı¼ÓÃÜÊı¾İ
-	 * @param key	¶ş½øÖÆÃÜÔ¿
-	 * @return byte[]	¼ÓÃÜÊı¾İ
+	 * @param data	å¾…åŠ å¯†æ•°æ®
+	 * @param key	äºŒè¿›åˆ¶å¯†é’¥
+	 * @return byte[]	åŠ å¯†æ•°æ®
 	 * @throws Exception
 	 */
 	public static byte[] encrypt(byte[] data,byte[] key) throws Exception{
@@ -83,46 +85,46 @@ public class AESEncryptionUtil {
 	
 	
 	/**
-	 * ¼ÓÃÜ
+	 * åŠ å¯†
 	 * 
-	 * @param data	´ı¼ÓÃÜÊı¾İ
-	 * @param key	¶ş½øÖÆÃÜÔ¿
-	 * @param cipherAlgorithm	¼ÓÃÜËã·¨/¹¤×÷Ä£Ê½/Ìî³ä·½Ê½
-	 * @return byte[]	¼ÓÃÜÊı¾İ
+	 * @param data	å¾…åŠ å¯†æ•°æ®
+	 * @param key	äºŒè¿›åˆ¶å¯†é’¥
+	 * @param cipherAlgorithm	åŠ å¯†ç®—æ³•/å·¥ä½œæ¨¡å¼/å¡«å……æ–¹å¼
+	 * @return byte[]	åŠ å¯†æ•°æ®
 	 * @throws Exception
 	 */
 	public static byte[] encrypt(byte[] data,byte[] key,String cipherAlgorithm) throws Exception{
-		//»¹Ô­ÃÜÔ¿
+		//è¿˜åŸå¯†é’¥
 		Key k = toKey(key);
 		return encrypt(data, k, cipherAlgorithm);
 	}
 	
 	/**
-	 * ¼ÓÃÜ
+	 * åŠ å¯†
 	 * 
-	 * @param data	´ı¼ÓÃÜÊı¾İ
-	 * @param key	ÃÜÔ¿
-	 * @param cipherAlgorithm	¼ÓÃÜËã·¨/¹¤×÷Ä£Ê½/Ìî³ä·½Ê½
-	 * @return byte[]	¼ÓÃÜÊı¾İ
+	 * @param data	å¾…åŠ å¯†æ•°æ®
+	 * @param key	å¯†é’¥
+	 * @param cipherAlgorithm	åŠ å¯†ç®—æ³•/å·¥ä½œæ¨¡å¼/å¡«å……æ–¹å¼
+	 * @return byte[]	åŠ å¯†æ•°æ®
 	 * @throws Exception
 	 */
 	public static byte[] encrypt(byte[] data,Key key,String cipherAlgorithm) throws Exception{
-		//ÊµÀı»¯
+		//å®ä¾‹åŒ–
 		Cipher cipher = Cipher.getInstance(cipherAlgorithm);
-		//Ê¹ÓÃÃÜÔ¿³õÊ¼»¯£¬ÉèÖÃÎª¼ÓÃÜÄ£Ê½
+		//ä½¿ç”¨å¯†é’¥åˆå§‹åŒ–ï¼Œè®¾ç½®ä¸ºåŠ å¯†æ¨¡å¼
 		cipher.init(Cipher.ENCRYPT_MODE, key);
-		//Ö´ĞĞ²Ù×÷
+		//æ‰§è¡Œæ“ä½œ
 		return cipher.doFinal(data);
 	}
 	
 	
 	
 	/**
-	 * ½âÃÜ
+	 * è§£å¯†
 	 * 
-	 * @param data	´ı½âÃÜÊı¾İ
-	 * @param key	¶ş½øÖÆÃÜÔ¿
-	 * @return byte[]	½âÃÜÊı¾İ
+	 * @param data	å¾…è§£å¯†æ•°æ®
+	 * @param key	äºŒè¿›åˆ¶å¯†é’¥
+	 * @return byte[]	è§£å¯†æ•°æ®
 	 * @throws Exception
 	 */
 	public static byte[] decrypt(byte[] data,byte[] key) throws Exception{
@@ -130,11 +132,11 @@ public class AESEncryptionUtil {
 	}
 	
 	/**
-	 * ½âÃÜ
+	 * è§£å¯†
 	 * 
-	 * @param data	´ı½âÃÜÊı¾İ
-	 * @param key	ÃÜÔ¿
-	 * @return byte[]	½âÃÜÊı¾İ
+	 * @param data	å¾…è§£å¯†æ•°æ®
+	 * @param key	å¯†é’¥
+	 * @return byte[]	è§£å¯†æ•°æ®
 	 * @throws Exception
 	 */
 	public static byte[] decrypt(byte[] data,Key key) throws Exception{
@@ -142,39 +144,39 @@ public class AESEncryptionUtil {
 	}
 	
 	/**
-	 * ½âÃÜ
+	 * è§£å¯†
 	 * 
-	 * @param data	´ı½âÃÜÊı¾İ
-	 * @param key	¶ş½øÖÆÃÜÔ¿
-	 * @param cipherAlgorithm	¼ÓÃÜËã·¨/¹¤×÷Ä£Ê½/Ìî³ä·½Ê½
-	 * @return byte[]	½âÃÜÊı¾İ
+	 * @param data	å¾…è§£å¯†æ•°æ®
+	 * @param key	äºŒè¿›åˆ¶å¯†é’¥
+	 * @param cipherAlgorithm	åŠ å¯†ç®—æ³•/å·¥ä½œæ¨¡å¼/å¡«å……æ–¹å¼
+	 * @return byte[]	è§£å¯†æ•°æ®
 	 * @throws Exception
 	 */
 	public static byte[] decrypt(byte[] data,byte[] key,String cipherAlgorithm) throws Exception{
-		//»¹Ô­ÃÜÔ¿
+		//è¿˜åŸå¯†é’¥
 		Key k = toKey(key);
 		return decrypt(data, k, cipherAlgorithm);
 	}
 
 	/**
-	 * ½âÃÜ
+	 * è§£å¯†
 	 * 
-	 * @param data	´ı½âÃÜÊı¾İ
-	 * @param key	ÃÜÔ¿
-	 * @param cipherAlgorithm	¼ÓÃÜËã·¨/¹¤×÷Ä£Ê½/Ìî³ä·½Ê½
-	 * @return byte[]	½âÃÜÊı¾İ
+	 * @param data	å¾…è§£å¯†æ•°æ®
+	 * @param key	å¯†é’¥
+	 * @param cipherAlgorithm	åŠ å¯†ç®—æ³•/å·¥ä½œæ¨¡å¼/å¡«å……æ–¹å¼
+	 * @return byte[]	è§£å¯†æ•°æ®
 	 * @throws Exception
 	 */
 	public static byte[] decrypt(byte[] data,Key key,String cipherAlgorithm) throws Exception{
-		//ÊµÀı»¯
+		//å®ä¾‹åŒ–
 		Cipher cipher = Cipher.getInstance(cipherAlgorithm);
-		//Ê¹ÓÃÃÜÔ¿³õÊ¼»¯£¬ÉèÖÃÎª½âÃÜÄ£Ê½
+		//ä½¿ç”¨å¯†é’¥åˆå§‹åŒ–ï¼Œè®¾ç½®ä¸ºè§£å¯†æ¨¡å¼
 		cipher.init(Cipher.DECRYPT_MODE, key);
-		//Ö´ĞĞ²Ù×÷
+		//æ‰§è¡Œæ“ä½œ
 		return cipher.doFinal(data);
 	}
 	
-	private static String  showByteArray(byte[] data){
+	public static String  showByteArray(byte[] data){
 		if(null == data){
 			return null;
 		}
@@ -187,39 +189,38 @@ public class AESEncryptionUtil {
 		return sb.toString();
 	}
 	
-	/**½«¶ş½øÖÆ×ª»»³É16½øÖÆ 
-	 * @param buf 
-	 * @return 
-	 */  
 	public static String parseByte2HexStr(byte buf[]) {  
-	        StringBuffer sb = new StringBuffer();  
-	        for (int i = 0; i < buf.length; i++) {  
-	                String hex = Integer.toHexString(buf[i] & 0xFF);  
-	                if (hex.length() == 1) {  
-	                        hex = '0' + hex;  
-	                }  
-	                sb.append(hex.toUpperCase());  
-	        }  
-	        return sb.toString();  
+	    StringBuffer sb = new StringBuffer();  
+	    for (int i = 0; i < buf.length; i++) {  
+	            String hex = Integer.toHexString(buf[i] & 0xFF);  
+	            if (hex.length() == 1) {  
+	                    hex = '0' + hex;  
+	            }  
+	            sb.append(hex.toUpperCase());  
+	    }  
+	    return sb.toString();  
 	}  
 	
 	public static void main(String[] args) throws Exception {
 		byte[] key = initSecretKey();
-		System.out.println("key£º"+showByteArray(key));
+		System.out.println("keyï¼š"+showByteArray(key));
 		
 		Key k = toKey(key);
 		
-		String data ="AESÊı¾İ";
-		System.out.println("¼ÓÃÜÇ°Êı¾İ: string:"+data);
-		System.out.println("¼ÓÃÜÇ°Êı¾İ: byte[]:"+showByteArray(data.getBytes()));
+		String data ="AESæ•°æ®";
+		System.out.println("åŠ å¯†å‰æ•°æ®: string:"+data);
+		System.out.println("åŠ å¯†å‰æ•°æ®: byte[]:"+showByteArray(data.getBytes()));
 		System.out.println();
 		byte[] encryptData = encrypt(data.getBytes(), k);
-		System.out.println("¼ÓÃÜºóÊı¾İ: byte[]:"+showByteArray(encryptData));
-		System.out.println("¼ÓÃÜºóÊı¾İ: hexStr:"+parseByte2HexStr(encryptData));
+		System.out.println("åŠ å¯†åæ•°æ®: byte[]:"+showByteArray(encryptData));
+		System.out.println("åŠ å¯†åæ•°æ®: hexStr:"+parseByte2HexStr(encryptData));
 		System.out.println();
 		byte[] decryptData = decrypt(encryptData, k);
-		System.out.println("½âÃÜºóÊı¾İ: byte[]:"+showByteArray(decryptData));
-		System.out.println("½âÃÜºóÊı¾İ: string:"+new String(decryptData));
+		System.out.println("è§£å¯†åæ•°æ®: byte[]:"+showByteArray(decryptData));
+		System.out.println("è§£å¯†åæ•°æ®: string:"+new String(decryptData));
+		
 	}
 }
+
+
 

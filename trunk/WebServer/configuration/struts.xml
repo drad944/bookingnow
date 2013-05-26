@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+
+	<package name="json" namespace="/" extends="struts-default">
+
+
+
+		<!-- 全局结果 -->
+		<global-results>
+			<result name="login">/page/login/login.jsp</result>
+			<result name="error">/page/login/admin_login.jsp</result>
+		</global-results>
+
+
+		<action name="*Account" class="AccountAction" method="{1}Account">
+			<result name="findFail" type="dispatcher">
+				/page/error.jsp
+	        </result>
+
+			<result name="findSuccess" type="dispatcher">
+				/page/success.jsp
+	        </result>
+	        
+	        
+		</action>
+
+	</package>
+</struts>   
