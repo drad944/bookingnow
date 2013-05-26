@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.pitaya.bookingnow.model.AccountMapper"> 
+
+	<resultMap type="com.pitaya.bookingnow.model.Account" id="accountResultMap">
+
+		<id property="aid" column="aid" jdbcType="bigint" />
+		<result property="name" column="name" jdbcType="varchar" />
+		<result property="password" column="passwd" jdbcType="varchar" />
+		<result property="role" column="role" jdbcType="varchar" />
+		<result property="sex" column="sex" jdbcType="varchar" />
+		<result property="birthday" column="birthday" jdbcType="date" />
+
+	</resultMap>
+
+
+
+<!-- 这里namespace必须是AccountMapper接口的路径，不然要运行的时候要报错 “is not known to the MapperRegistry”--> 
+    <insert id="insertAccount" parameterType="com.pitaya.bookingnow.model.Account"> 
+		insert into pitaya_Account(aid,name,passwd,role) 
+       		values(#{aid,jdbcType=BIGINT},#{name},#{password},#{role}) 
+       		
+		<selectKey resultType="int" keyProperty="aid">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+    </insert>
+
+	<delete id="deleteAccount" parameterType="com.pitaya.bookingnow.model.Account">
+		delete from pitaya_Account where aid = #{aid}
+	</delete>
+    
+     <update id="updateAccount" parameterType="com.pitaya.bookingnow.model.Account">
+     	update pitaya_Account set name=#{name},passwd=#{password} where aid=#{aid}
+    </update>
+ 
+    <select id="selectAccountByID" resultType="com.pitaya.bookingnow.model.Account"  resultMap="accountResultMap" parameterType="int" > 
+        select * from pitaya_Account where aid=#{aid} 
+    </select>
+    
+    <select id="selectAccountByName" parameterType="java.lang.String" resultType="list" resultMap="accountResultMap">
+		select * from pitaya_Account where name like '%' #{name} '%'
+	</select>
+    
+    <select id="selectAccount" resultType="com.pitaya.bookingnow.model.Account" resultMap="accountResultMap" parameterType="java.lang.String"> 
+        select * from pitaya_Account where name=#{name} and passwd=#{password}
+    </select>
+     
+</mapper>
