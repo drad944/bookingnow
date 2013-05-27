@@ -32,13 +32,13 @@
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url"
 			value="jdbc:mysql://localhost:3306/bookingnow?useUnicode=true&amp;characterEncoding=UTF-8" />
-		<property name="accountname" value="testAccount" />
+		<property name="username" value="testAccount" />
 		<property name="password" value="123456" />
 	</bean>
 	
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="configLocation" value="src:mybatis-config.xml" />
-		<property name="mapperLocations" value="src:com/pitaya/bookingnow/model/*.xml" />
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
+		<property name="mapperLocations" value="classpath:com/pitaya/bookingnow/dao/*.xml" />
 		<property name="dataSource" ref="c3p0DataSource" />
 	</bean>
 	
