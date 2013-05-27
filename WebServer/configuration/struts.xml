@@ -3,18 +3,18 @@
 <struts>
 	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
 
-	<package name="json" namespace="/" extends="struts-default">
+	<package name="default" namespace="test" extends="struts-default">
 
 
 
 		<!-- 全局结果 -->
 		<global-results>
 			<result name="login">/page/login/login.jsp</result>
-			<result name="error">/page/login/admin_login.jsp</result>
+			<result name="error">/page/error.jsp</result>
 		</global-results>
 
 
-		<action name="*Account" class="AccountAction" method="{1}Account">
+		<action name="*Account" class="com.pitaya.bookingnow.action.AccountAction" method="{1}Account">
 			<result name="findFail" type="dispatcher">
 				/page/error.jsp
 	        </result>
