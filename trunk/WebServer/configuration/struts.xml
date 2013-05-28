@@ -3,7 +3,7 @@
 <struts>
 	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
 
-	<package name="default" namespace="test" extends="struts-default">
+	<package name="default" namespace="/test" extends="struts-default">
 
 
 
