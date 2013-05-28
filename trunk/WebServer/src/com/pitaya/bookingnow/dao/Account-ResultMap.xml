@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="accountMap"> 
+	<resultMap id="accountBaseResultMap" type="com.pitaya.bookingnow.model.Account" >
+
+		<id property="aid" column="aid" jdbcType="INTEGER" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="password" column="passwd" jdbcType="VARCHAR" />
+		<result property="role" column="role" jdbcType="VARCHAR" />
+		<result property="sex" column="sex" jdbcType="VARCHAR" />
+		<result property="birthday" column="birthday" jdbcType="DATE" />
+
+	</resultMap>
+</mapper>

@@ -1,45 +1,51 @@
 package com.pitaya.bookingnow.service.impl;
-
-import java.util.List;
+import java.util.List; 
 
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Service;
+import org.springframework.dao.DataAccessException; 
+import org.springframework.stereotype.Component; 
+ 
 
 import com.pitaya.bookingnow.dao.AccountDao;
 import com.pitaya.bookingnow.model.Account;
 import com.pitaya.bookingnow.service.IAccountService;
 
-@Service
-public class AccountService implements IAccountService {
-	
-	@Resource
-	private AccountDao accountDao;
+//@Component @Service 
+public class AccountService<T extends Account> implements IAccountService<T> {
 
-	public List<Account> find(Account account) {
-		
-		return null;
+	private AccountDao<T> dao;
+
+	public boolean addAccount(T entity) throws DataAccessException {
+		if (entity == null) {
+
+			try {
+				throw new Exception(Account.class.getName() + "对象参数信息为Empty！");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return dao.addAccount(entity);
 	}
 
-	public Account findAccount(String name, String password) {
-		return accountDao.selectAccount(name, password);
+	public T getAccount(Integer id) throws DataAccessException {
+		return dao.getAccount(id);
 	}
 
-	public boolean addAccount(Account account) {
-		return accountDao.insertAccount(account);
+	public List<T> getList() throws DataAccessException {
+		return dao.getList();
 	}
 
-	public boolean modifyAccount(Account account) {
-		return accountDao.updateAccount(account);
-	}
+	public boolean execute(T entity) throws DataAccessException {
+		if (entity == null) {
 
-	public boolean removeAccount(Account account) {
-		return accountDao.deleteAccount(account);
+			try {
+				throw new Exception(Account.class.getName() + "对象参数信息为Empty！");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return dao.addAccount(entity);
 	}
-
-	public Account findAccountByID(long aid) {
-		
-		return accountDao.selectAccountByID(aid);
-	}
-
 }

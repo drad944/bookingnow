@@ -11,8 +11,6 @@ import com.pitaya.bookingnow.model.Account;
 import com.pitaya.bookingnow.service.IAccountService;
 
 
-@Controller
-@Scope("prototype")
 public class AccountAction extends ActionSupport{
 	private static final long serialVersionUID = 1921350238570284375L;
 	
