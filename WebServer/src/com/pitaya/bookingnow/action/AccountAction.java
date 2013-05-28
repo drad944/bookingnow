@@ -1,5 +1,6 @@
 package com.pitaya.bookingnow.action;
 
+
 import javax.annotation.Resource;
 
 import org.springframework.context.annotation.Scope;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import com.opensymphony.xwork2.ActionSupport;
 import com.pitaya.bookingnow.model.Account;
 import com.pitaya.bookingnow.service.IAccountService;
+
 
 @Controller
 @Scope("prototype")
@@ -34,7 +36,7 @@ public class AccountAction extends ActionSupport{
 	public String findAccount(Account account) {
 		
 		if(accountService.findAccount(account.getName(), account.getPassword()) != null) {
-			return "findSuccess"; 
+			return "findSuccess";
 		}else {
 			return "findFail";
 		}
