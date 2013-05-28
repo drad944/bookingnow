@@ -4,39 +4,62 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
 	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 	
-	<filter>
-		<filter-name>struts-cleanup</filter-name>
-		<filter-class>org.apache.struts2.dispatcher.ActionContextCleanUp</filter-class>
-	</filter>
 	
-	<!-- 
-	<filter-mapping>
-		<filter-name>struts-cleanup</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	 -->
-	
-	<filter>
-        <filter-name>struts2</filter-name>
-        <filter-class>
-            org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter
-        </filter-class>
-    </filter>
-	<filter-mapping>
-        <filter-name>struts2</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+	<!-- Spring configuration -->    
+    <context-param>    
+        <param-name>contextConfigLocation</param-name>    
+        <param-value>  
+                classpath:applicationContext.xml  
+        </param-value>    
+    </context-param>    
+    <!-- spring加载 -->    
+    <listener>    
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>    
+    </listener>    
     
-	<listener>
-        <listener-class>
-            org.springframework.web.context.ContextLoaderListener
-        </listener-class>
-    </listener>
+     <!-- 字符集过滤 -->    
+    <filter>    
+        <filter-name>SetCharacterEncoding</filter-name>    
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>    
+        <init-param>    
+            <param-name>encoding</param-name>    
+            <param-value>UTF-8</param-value>    
+        </init-param>    
+    </filter>    
+    
+     <!-- 要过滤得类型 -->    
+    <filter-mapping>    
+        <filter-name>SetCharacterEncoding</filter-name>    
+        <url-pattern>/*</url-pattern>    
+    </filter-mapping>   
+    
+   <!-- struts2 -->    
+    <filter>    
+        <filter-name>struts2</filter-name>    
+        <filter-class>    
+            org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>    
+    </filter>    
+    <filter-mapping>    
+        <filter-name>struts2</filter-name>  
+        <url-pattern>*.action</url-pattern>  
+        <dispatcher>REQUEST</dispatcher>  
+        <dispatcher>FORWARD</dispatcher>    
+    </filter-mapping>    
+    
+    
+    <!-- 图片验证码 -->  
+    <servlet>  
+        <servlet-name>randCode</servlet-name>  
+        <servlet-class>  
+            com.yeshun.common.servlet.RandCodeServlet  
+        </servlet-class>  
+    </servlet>  
+    <servlet-mapping>  
+        <servlet-name>randCode</servlet-name>  
+        <url-pattern>/servlet/randCode</url-pattern>  
+    </servlet-mapping>  
+    
 
-	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:applicationContext.xml</param-value>
-	</context-param>
 
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>

@@ -104,5 +104,8 @@ public class Account implements Serializable{
 		return false;
 	}
 	
-	
+	@Override
+	public String toString(){
+		return this.aid + "#" + this.name + "#" + this.password + "#" + this.role; 
+	}
 }

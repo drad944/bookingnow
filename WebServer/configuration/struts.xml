@@ -2,6 +2,9 @@
 <!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
 <struts>
 	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.objectFactory" value="spring "></constant>
+	<constant name="struts.objectFactory.spring.useClassCache" value="true"></constant>
+	<constant name="struts.locale" value="zh_CN"></constant>
 
 	<package name="default" namespace="/test" extends="struts-default">
 
