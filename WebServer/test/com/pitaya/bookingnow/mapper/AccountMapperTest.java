@@ -1,7 +1,6 @@
 package com.pitaya.bookingnow.mapper;
 
 import java.util.List; 
-import javax.inject.Inject; 
 import org.springframework.test.context.ContextConfiguration; import 
 org.springframework.test.context.junit38.AbstractJUnit38SpringContextTests; 
 
@@ -11,7 +10,7 @@ import com.pitaya.bookingnow.model.Account;
  
 @ContextConfiguration("classpath:applicationContext-*.xml")
 public class AccountMapperTest extends AbstractJUnit38SpringContextTests {
-	@Inject
+
 	private AccountMapper<Account> mapper;
 
 	public void testGetAccount() {

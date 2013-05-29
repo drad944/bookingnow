@@ -5,6 +5,8 @@
 	<constant name="struts.objectFactory" value="spring "></constant>
 	<constant name="struts.objectFactory.spring.useClassCache" value="true"></constant>
 	<constant name="struts.locale" value="zh_CN"></constant>
+	<constant name="struts.configuration.xmlreload" value="true"/>
+	<constant name="struts.devMode" value="true"/>
 
 	<package name="default" namespace="/test" extends="struts-default">
 
@@ -17,7 +19,7 @@
 		</global-results>
 
 
-		<action name="*Account" class="com.pitaya.bookingnow.action.AccountAction" method="{1}Account">
+		<action name="*Account" class="AccountAction" method="{1}Account">
 			<result name="findFail" type="dispatcher">
 				/page/error.jsp
 	        </result>

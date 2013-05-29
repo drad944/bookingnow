@@ -1,7 +1,7 @@
 package com.pitaya.bookingnow.dao.impl;
 
 import java.util.List; 
-import javax.inject.Inject; 
+
 import org.apache.ibatis.session.SqlSessionFactory; 
 import org.mybatis.spring.SqlSessionTemplate; 
 import org.springframework.stereotype.Repository; 

@@ -36,7 +36,7 @@ public class TestAccountService {
 	  service.addAccount(account);
 	  logger.debug("account id: " + account.getAid());
 	  
-	  Account accountFromDb = service.findAccountByID(account.getAid());
+	  Account accountFromDb =  service.getAccount(account.getAid());
 	  assertNotNull(accountFromDb);
 	  assertEquals(account.getAid(), accountFromDb.getAid());
 	 }
