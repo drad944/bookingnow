@@ -29,7 +29,7 @@ public class AccountService<T extends Account> implements IAccountService<T> {
 		return dao.addAccount(entity);
 	}
 
-	public T getAccount(Integer id) throws DataAccessException {
+	public T getAccount(Long id) throws DataAccessException {
 		return dao.getAccount(id);
 	}
 

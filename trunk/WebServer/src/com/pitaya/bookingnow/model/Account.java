@@ -34,6 +34,12 @@ public class Account implements Serializable{
 		this.password = password;
 		this.role = role;
 	}
+	
+	public Account(String name, String password) {
+		super();
+		this.name = name;
+		this.password = password;
+	}
 
 	private static final long serialVersionUID = 1L;
 	private Long aid;

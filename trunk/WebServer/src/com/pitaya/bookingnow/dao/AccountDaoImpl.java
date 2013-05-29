@@ -54,9 +54,4 @@ public class AccountDaoImpl<T extends Account> implements AccountDao<T> {
 		return list;
 	}
 
-	@Override
-	public T getAccount(Integer id) throws DataAccessException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
