@@ -1,15 +1,14 @@
 package com.pitaya.bookingnow.app.views;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+
 import com.pitaya.bookingnow.app.R;
 
-import java.lang.reflect.Field;  
-import java.util.ArrayList;  
-  
-import android.content.Context;  
-import android.graphics.Bitmap;  
-import android.graphics.BitmapFactory;  
-import android.os.Bundle;  
-import android.util.AttributeSet;
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -18,37 +17,28 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class GalleryView extends ContentView{
+public class GoodMenuFragment extends Fragment{
 	
-	public GalleryView(Context context) {
-		super(context);
-	}
+	private GridView mGridView;
+	
+    public GoodMenuFragment(){
+        super();
+    }
 
-	public GalleryView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
-
-	public GalleryView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-	}
-	
-	@Override
-	public void setupView() {
-		if (mContainer.getChildCount() > 0) {
-			mContainer.removeAllViews();
-		}
-		View galleryview =View.inflate(context, R.layout.galleryview, null);
-		GridView gridview = (GridView)(galleryview.findViewById(R.id.gridview));
-		try {
-			gridview.setAdapter(new ImageAdapter(context));
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();  
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();  
-        }
-		mContainer.addView(galleryview);
-	}
-	
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    	 View view = inflater.inflate(R.layout.goodmenuview, container, false);
+         mGridView = (GridView)view.findViewById(R.id.gridview); 
+ 		try {
+ 			mGridView.setAdapter(new ImageAdapter(view.getContext()));
+         } catch (IllegalArgumentException e) {
+             e.printStackTrace();  
+         } catch (IllegalAccessException e) {
+             e.printStackTrace();  
+         }
+        return view;
+    }
+    
 	private class ImageAdapter extends BaseAdapter{  
         private Context mContext;  
         private ArrayList<Integer> imgList=new ArrayList<Integer>(); 
@@ -95,5 +85,5 @@ public class GalleryView extends ContentView{
         }
           
     }
- 
+	
 }

@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import com.pitaya.bookingnow.message.BaseResultMessage;
+
 
 import android.util.Log;
 
@@ -14,11 +16,12 @@ public class Client extends Thread{
 	  	
 		private static String LOGTAG = "ClientThread";
 		private Socket socket;
-	    private String ip = "192.168.0.102";
-	    private int port = 19191;
+	    private String ip;
+	    private int port;
 	    private BufferedReader in;
 	    private PrintWriter out;
 	    private MessageService service;
+	    private volatile boolean isConnecting = false;
 
 	    public Client(String ip, int port, MessageService ms) {
 	    	this.ip = ip;
@@ -28,8 +31,14 @@ public class Client extends Thread{
 	    
 	    public void run(){
 	        try {
+		    	isConnecting = true;
 				setupConnection();
+				isConnecting = false;
+				Log.i(LOGTAG, "Success to connect to web server");
             	String message = null;
+	        	if(this.service != null){
+    				this.service.onMessage(new BaseResultMessage("systemservice", "connection", "success", "连接服务器成功"));
+    			}
             	while((message = in.readLine()) != null){
         			if(this.service != null){
         				this.service.onMessage(message);
@@ -40,8 +49,15 @@ public class Client extends Thread{
             		}
             	}
 	        } catch (UnknownHostException e) {
+	        	if(this.service != null){
+    				this.service.onMessage(new BaseResultMessage("systemservice", "connection", "fail", "无法连接到服务器"));
+    			}
+	        	Log.e(LOGTAG, "Fail to connect to web server");
 	            e.printStackTrace();
 	        } catch (IOException e) {
+	        	if(this.service != null){
+    				this.service.onMessage(new BaseResultMessage("systemservice", "connection", "fail", "无法连接到服务器或连接断开"));
+    			}
 	        	Log.e(LOGTAG, "Fail to connect to web server");
 				e.printStackTrace();
 			} finally {
@@ -61,6 +77,7 @@ public class Client extends Thread{
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+		    	isConnecting = false;
 	        }
 	    }
 
@@ -89,7 +106,7 @@ public class Client extends Thread{
 				}
 	    }
 
-	    public boolean sendMessage(String msg) {
+	    public synchronized boolean sendMessage(String msg) {
 	        try {
 	        	out.println(msg);
 	        	out.flush();
@@ -102,6 +119,10 @@ public class Client extends Thread{
 	    
 	    public boolean isReady(){
 	    	return this.socket != null && this.socket.isConnected();
+	    }
+	    
+	    public boolean isConnecting(){
+	    	return this.isConnecting;
 	    }
   	    
 	    private void setupConnection() throws UnknownHostException, IOException {

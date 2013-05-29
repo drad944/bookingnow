@@ -2,16 +2,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@android:color/black"
+    android:background="@drawable/red"
     tools:context=".SlideContentLeftMenu" >
 
     <LinearLayout
         android:id="@+id/leftmenu"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/black"
+        android:background="@drawable/red"
         android:orientation="vertical"
-        android:padding="5dip">
+        android:showDividers = "middle"
+        android:padding="10dip">
 
     </LinearLayout>
 
