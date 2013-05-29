@@ -2,10 +2,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".HomeActivity" >
+    
+    <ScrollView
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:background="@drawable/red"
+	    tools:context=".LeftMenu" >
+
+	    <LinearLayout
+	        android:id="@+id/leftmenu"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/red"
+	        android:orientation="vertical"
+	        android:showDividers = "middle"
+	        android:padding="10dip">
+	
+	        <TextView
+			    android:layout_width="fill_parent"   
+			    android:layout_height="wrap_content"   
+			    android:layout_marginLeft="20dip"  
+			    android:layout_marginRight="20dip"  
+			    android:text="@string/account"  
+			    android:gravity="left"
+			    android:textAppearance="?android:attr/textAppearanceMedium">  
+    		</TextView>  
+	        
+	    </LinearLayout>
+
+	</ScrollView>
+
+    <LinearLayout
+        android:id="@+id/contentview"
+        android:orientation="horizontal"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent">
+	        
+        <fragment
+            android:id="@+id/list"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+        
+   		<fragment
+            android:id="@+id/detail"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+   		
+       </LinearLayout>
 
 </RelativeLayout>

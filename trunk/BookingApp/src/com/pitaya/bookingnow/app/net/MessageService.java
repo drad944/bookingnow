@@ -5,12 +5,12 @@ import android.os.Handler;
 import android.util.Log;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.pitaya.bookingnow.message.Message;
-
 
 public class MessageService {
 	
@@ -27,6 +27,8 @@ public class MessageService {
 	public static MessageService initService(String ip, int port){
 		if(_instance == null){
 			_instance = new MessageService(ip, port);
+		} else if(!_instance.isConnecting() && !_instance.isReady()){
+			_instance.start(ip, port);
 		}
 		return _instance;
 	}
@@ -48,9 +50,28 @@ public class MessageService {
 		}
 	}
 	
+	public void unregisterHandler(String key){
+		this.handlers.remove(key);
+	}
+	
+	public boolean isConnecting(){
+		return this.clientAgent.isConnecting();
+	}
+	
 	private void start(String ip, int port){
-		clientAgent = new Client(ip, port, this);
-		clientAgent.start();
+		if(this.clientAgent == null || !clientAgent.isReady()){
+			if(this.clientAgent != null){
+				this.clientAgent.interrupt();
+				try {
+					this.clientAgent.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				this.clientAgent = null;
+			}
+			clientAgent = new Client(ip, port, this);
+			clientAgent.start();
+		}
 	}
 	
 	public boolean sendMessage(Message message){
@@ -61,27 +82,40 @@ public class MessageService {
 		return this.clientAgent.isReady();
 	}
 	
-	void onMessage(String message){
-		Message msg = this.unparseMessage(message);
-		Handler handler = this.handlers.get(msg.getKey());
-		if(handler != null){
+	//For some service message
+	void onMessage(Message message){
+		for(Entry<String, Handler> entry : handlers.entrySet()){
 			android.os.Message amsg = new android.os.Message();  
 	        Bundle bundle = new Bundle();  
-	        bundle.putSerializable("message", msg);
+	        bundle.putSerializable("message", message);
 	        amsg.setData(bundle);
-	        this.handlers.get(msg.getKey()).sendMessage(amsg);
-		} else {
-			Log.e(LOGTAG, "The key used to register handler must same with the one used in message");
+			entry.getValue().sendMessage(amsg);
 		}
 	}
 	
-	private String parseMessage(Message message){
+	void onMessage(String message){
+		Message msg = this.unparseMessage(message);
+		if(msg != null){
+			Handler handler = this.handlers.get(msg.getKey());
+			if(handler != null){
+				android.os.Message amsg = new android.os.Message();  
+		        Bundle bundle = new Bundle();  
+		        bundle.putSerializable("message", msg);
+		        amsg.setData(bundle);
+		        this.handlers.get(msg.getKey()).sendMessage(amsg);
+			} else {
+				Log.e(LOGTAG, "The key of this message has not been registered: " + message);
+			}
+		}
+	}
+	
+	public String parseMessage(Message message){
 		JSONObject jsonObj = new JSONObject();
 		message.toJSONObject(jsonObj);
 		return jsonObj.toString();
 	}
 	
-	private Message unparseMessage(String message){
+	public Message unparseMessage(String message){
 		Message msg = null;
 		String type = null;
 		try {
@@ -101,8 +135,10 @@ public class MessageService {
 			Log.e(LOGTAG, "Unsupported message type: " + type);
 			e.printStackTrace();
 		} catch (InstantiationException e) {
+			Log.e(LOGTAG, "Fail to parse message type:" + type);
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
+			Log.e(LOGTAG, "Fail to parse message type:" + type);
 			e.printStackTrace();
 		}
 		return msg;
