@@ -85,26 +85,25 @@ public class HomeActivity extends FragmentActivity {
 	
 	private void setHomeContent(){
 		if(homecontent == null){
+			ArrayList<BaseContentView> contentViews = new ArrayList<BaseContentView>();
+			homecontent = new SlideContent(this, contentViews);
+			View leftmenu = getLayoutInflater().inflate(R.layout.leftmenu, null);
+			LinearLayout menuitems = (LinearLayout)(leftmenu.findViewById(R.id.leftmenu));
 			if(this.role == null){
-				ArrayList<BaseContentView> contentViews = new ArrayList<BaseContentView>();
-				homecontent = new SlideContent(this, contentViews);
-				View leftmenu = getLayoutInflater().inflate(R.layout.leftmenu, null);
-				LinearLayout menuitems = (LinearLayout)(leftmenu.findViewById(R.id.leftmenu));
-				
 				for(int i=0; i < 3; i++){
 					final int index = i;
 					TextView menuitem = new TextView(this);
 					menuitem.setTextColor(android.graphics.Color.WHITE);
 					menuitem.setTextSize(25);
 					menuitem.setGravity(Gravity.CENTER);
-					contentViews.add(new GoodMenuContentView(this));
+					contentViews.add(new GoodMenuContentView("menu" + index, this));
 					switch(index){
 						case 0:
 							menuitem.setText("菜单");
 							menuitem.setOnClickListener(new OnClickListener(){
 								@Override
 								public void onClick(View view) {
-									homecontent.selectItem(index);
+									homecontent.selectItem("menu" + index);
 								}
 							});
 							break;
@@ -123,7 +122,7 @@ public class HomeActivity extends FragmentActivity {
 							menuitem.setOnClickListener(new OnClickListener(){
 								@Override
 								public void onClick(View view) {
-									homecontent.selectItem(index);
+									homecontent.selectItem("menu" + index);
 								}
 								
 							});
@@ -131,76 +130,118 @@ public class HomeActivity extends FragmentActivity {
 					}
 					menuitems.addView(menuitem);
 				}
-				homecontent.setMenu(leftmenu);
-				setContentView(homecontent);
 			} else if(this.role.equals("waiter")){
-				this.updateHomeContent(null);
+				for(int i=0; i < 4; i++){
+					final int index = i;
+					TextView menuitem = new TextView(this);
+					menuitem.setTextColor(android.graphics.Color.WHITE);
+					menuitem.setTextSize(25);
+					menuitem.setGravity(Gravity.CENTER);
+					contentViews.add(new GoodMenuContentView("menu" + index, this));
+					switch(index){
+						case 0:
+							menuitem.setText("订单");
+							menuitem.setOnClickListener(new OnClickListener(){
+								@Override
+								public void onClick(View view) {
+									homecontent.selectItem("menu" + index);
+								}
+							});
+							break;
+						case 1:
+							menuitem.setText("菜单");
+							menuitem.setOnClickListener(new OnClickListener(){
+								@Override
+								public void onClick(View view) {
+									homecontent.selectItem("menu" + index);
+								}
+							});
+							break;
+						case 2:
+							menuitem.setText("设置");
+							menuitem.setOnClickListener(new OnClickListener(){
+								@Override
+								public void onClick(View view) {
+									homecontent.selectItem("menu" + index);
+								}
+								
+							});
+							break;
+						case 3:
+							menuitem.setText("退出");
+							menuitem.setOnClickListener(new OnClickListener(){
+								@Override
+								public void onClick(View view) {
+									homecontent.selectItem("menu" + index);
+								}
+								
+							});
+							break;
+					}
+					menuitems.addView(menuitem);
+				}
 			}
-		} else {
-			setContentView(homecontent);
-		}
-		
+			homecontent.setMenu(leftmenu);
+		} 
+		setContentView(homecontent);
 	}
 	
 	private void updateHomeContent(String config){
-//		ArrayList<View> contentViews = new ArrayList<View>();
-//		homecontent = new SlideContent(this, contentViews);
-//		View leftmenu = getLayoutInflater().inflate(R.layout.leftmenu, null);
-//		LinearLayout menuitems = (LinearLayout)(leftmenu.findViewById(R.id.leftmenu));
-//		for(int i=0; i < 4; i++){
-//			final int index = i;
-//			TextView menuitem = new TextView(this);
-//			menuitem.setTextColor(android.graphics.Color.WHITE);
-//			menuitem.setTextSize(25);
-//			menuitem.setGravity(Gravity.CENTER);
-//			switch(index){
-//				case 0:
-//					menuitem.setText("订单");
-//					menuitem.setOnClickListener(new OnClickListener(){
-//						@Override
-//						public void onClick(View view) {
-//							homecontent.selectItem(index);
-//						}
-//					});
-//					contentViews.add(new GalleryView(this));
-//					break;
-//				case 1:
-//					menuitem.setText("菜单");
-//					menuitem.setOnClickListener(new OnClickListener(){
-//						@Override
-//						public void onClick(View view) {
-//							homecontent.selectItem(index);
-//						}
-//					});
-//					contentViews.add(new GalleryView(this));
-//					break;
-//				case 2:
-//					menuitem.setText("设置");
-//					menuitem.setOnClickListener(new OnClickListener(){
-//						@Override
-//						public void onClick(View view) {
-//							homecontent.selectItem(index);
-//						}
-//						
-//					});
-//					contentViews.add(new GalleryView(this));
-//					break;
-//				case 3:
-//					menuitem.setText("退出");
-//					menuitem.setOnClickListener(new OnClickListener(){
-//						@Override
-//						public void onClick(View view) {
-//							homecontent.selectItem(index);
-//						}
-//						
-//					});
-//					contentViews.add(new GalleryView(this));
-//					break;
-//			}
-//			menuitems.addView(menuitem);
-//		}
-//		homecontent.setMenu(leftmenu);
-//		setContentView(homecontent);
+		ArrayList<BaseContentView> contentViews = new ArrayList<BaseContentView>();
+		homecontent.updateContentViews(contentViews);
+		View leftmenu = getLayoutInflater().inflate(R.layout.leftmenu, null);
+		LinearLayout menuitems = (LinearLayout)(leftmenu.findViewById(R.id.leftmenu));
+		for(int i=0; i < 4; i++){
+			final int index = i;
+			TextView menuitem = new TextView(this);
+			menuitem.setTextColor(android.graphics.Color.WHITE);
+			menuitem.setTextSize(25);
+			menuitem.setGravity(Gravity.CENTER);
+			contentViews.add(new GoodMenuContentView("menu" + index, this));
+			switch(index){
+				case 0:
+					menuitem.setText("订单");
+					menuitem.setOnClickListener(new OnClickListener(){
+						@Override
+						public void onClick(View view) {
+							homecontent.selectItem("menu" + index);
+						}
+					});
+					break;
+				case 1:
+					menuitem.setText("菜单");
+					menuitem.setOnClickListener(new OnClickListener(){
+						@Override
+						public void onClick(View view) {
+							homecontent.selectItem("menu" + index);
+						}
+					});
+					break;
+				case 2:
+					menuitem.setText("设置");
+					menuitem.setOnClickListener(new OnClickListener(){
+						@Override
+						public void onClick(View view) {
+							homecontent.selectItem("menu" + index);
+						}
+						
+					});
+					break;
+				case 3:
+					menuitem.setText("退出");
+					menuitem.setOnClickListener(new OnClickListener(){
+						@Override
+						public void onClick(View view) {
+							homecontent.selectItem("menu" + index);
+						}
+						
+					});
+					break;
+			}
+			menuitems.addView(menuitem);
+		}
+		homecontent.setMenu(leftmenu);
+		setContentView(homecontent);
 	}
 	
 	private void showConnectResultToast(String result){

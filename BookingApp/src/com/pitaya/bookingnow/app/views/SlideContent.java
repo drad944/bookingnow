@@ -1,13 +1,9 @@
 package com.pitaya.bookingnow.app.views;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 public class SlideContent extends RelativeLayout {
@@ -34,15 +30,29 @@ public class SlideContent extends RelativeLayout {
 		addView(mContentView, contentParams);
 	}
 	
-	public void selectItem(int index){
-		this.setContent(this.contentViews.get(index));
-		mContentView.toggle();
+	public void selectItem(String key){
+		String currentKey = this.mContentView.getCurrent();
+		if(currentKey == null || currentKey.equals(key)){
+			mContentView.toggle();
+			return;
+		}
+		for(int i=0; i < this.contentViews.size(); i++){
+			if(key.equals(this.contentViews.get(i).getKey())){
+				this.setContent(this.contentViews.get(i));
+				mContentView.toggle();
+				break;
+			}
+		}
 	}
 
 	public void setMenu(View v) {
 		mMenuView.setView(v);
 		mMenuView.invalidate();
 		this.setContent(this.contentViews.get(0));
+	}
+	
+	public void updateContentViews(ArrayList<BaseContentView> views){
+		this.contentViews = views;
 	}
 	
 	private void setContent(BaseContentView v) {
