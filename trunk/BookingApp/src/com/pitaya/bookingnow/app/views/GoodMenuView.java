@@ -18,7 +18,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+/*
+ * This is each good menu view
+ */
 public class GoodMenuView extends FrameLayout{
 	
 	private GridView mGridView;

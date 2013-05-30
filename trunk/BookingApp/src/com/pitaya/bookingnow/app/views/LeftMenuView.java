@@ -1,13 +1,10 @@
 package com.pitaya.bookingnow.app.views;
 
-import com.pitaya.bookingnow.app.R;
-
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 public class LeftMenuView extends ViewGroup {
 

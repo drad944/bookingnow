@@ -1,27 +1,18 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".SlideContentView" >
-
-    <LinearLayout
-        android:id="@+id/contentview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@android:color/darker_gray"
-        android:orientation="vertical"
-        android:padding="5dip" >
-        
-		<android.support.v4.view.ViewPager  
-	        android:id="@+id/goodmenuviewpager"
-	        android:layout_width="fill_parent"  
-	        android:layout_height="fill_parent">
-	       <android.support.v4.view.PagerTabStrip
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top" />
-        
-        </android.support.v4.view.ViewPager>
-    </LinearLayout>
-
-</RelativeLayout>
+<LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="fill_parent"
+     android:layout_height="fill_parent"
+     android:background="@android:color/darker_gray"
+     android:orientation="vertical"
+     android:padding="5dip" >
+      
+	  <android.support.v4.view.ViewPager  
+       		android:id="@+id/goodmenuviewpager"
+       		android:layout_width="fill_parent"  
+       		android:layout_height="fill_parent">
+      	 	<android.support.v4.view.PagerTabStrip
+	          	android:layout_width="wrap_content"
+	          	android:layout_height="wrap_content"
+	          	android:layout_gravity="top" />
+      </android.support.v4.view.ViewPager>
+</LinearLayout>
