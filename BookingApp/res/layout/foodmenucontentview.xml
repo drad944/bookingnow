@@ -1,0 +1,30 @@
+<RelativeLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="fill_parent"
+     android:layout_height="fill_parent"
+     android:background="@android:color/darker_gray"
+     android:orientation="vertical"
+     android:padding="5dip" >
+      
+	  <android.support.v4.view.ViewPager
+	      android:id="@+id/foodmenuviewpager"
+	      android:layout_width="fill_parent"
+	      android:layout_height="wrap_content"
+	      android:layout_above="@+id/showTicket" >
+
+      	 	<android.support.v4.view.PagerTabStrip
+	          	android:layout_width="wrap_content"
+	          	android:layout_height="wrap_content"
+	          	android:layout_gravity="top" />
+      </android.support.v4.view.ViewPager>
+
+      <TextView
+          android:id="@+id/showTicket"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/showTicket"
+          android:gravity="center"
+          android:layout_alignParentBottom="true"
+          android:textSize="25sp" />
+
+</RelativeLayout>

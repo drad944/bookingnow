@@ -1,4 +1,4 @@
-package com.pitaya.bookingnow.app.net;
+package com.pitaya.bookingnow.app.service;
 
 import android.os.Bundle;
 import android.os.Handler;

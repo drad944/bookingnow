@@ -1,5 +1,8 @@
 package com.pitaya.bookingnow.app;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +12,10 @@ import org.json.JSONArray;
 
 import com.pitaya.bookingnow.app.R;
 
-import com.pitaya.bookingnow.app.net.MessageService;
+import com.pitaya.bookingnow.app.domain.Ticket;
+import com.pitaya.bookingnow.app.service.FoodMenuContentProvider;
+import com.pitaya.bookingnow.app.service.FoodMenuTable;
+import com.pitaya.bookingnow.app.service.MessageService;
 import com.pitaya.bookingnow.app.views.*;
 import com.pitaya.bookingnow.message.*;
 import com.pitaya.bookinnow.app.util.ToastUtil;
@@ -32,7 +38,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.LayoutInflater;
+import android.content.ContentValues;
 import android.content.DialogInterface;  
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 public class HomeActivity extends FragmentActivity {
 	
@@ -53,15 +63,16 @@ public class HomeActivity extends FragmentActivity {
 		if(bundle != null){
 			this.role = bundle.getString("role");
 		}
+		this.setHomeContent();
 		messageService = MessageService.initService("192.168.0.102", 19191);
 		messageService.registerHandler(messageKey,  new MessageHandler());
+		//testInsertDB();
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
 		Log.i(TAG, "Role is " + this.role);
-		this.setHomeContent();
 		MessageService.initService("192.168.0.102", 19191);
 		if(messageService.isConnecting()){ 
 			showConnectResultToast("正在连接服务器...");
@@ -75,6 +86,12 @@ public class HomeActivity extends FragmentActivity {
 		super.onSaveInstanceState(savedInstanceState);
     }
 	   
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig){
+//    	super.onConfigurationChanged(newConfig);
+//    	setContentView(homecontent);
+//    }
+   
 	
 	@Override  
 	public void onDestroy() {
@@ -96,7 +113,8 @@ public class HomeActivity extends FragmentActivity {
 					menuitem.setTextColor(android.graphics.Color.WHITE);
 					menuitem.setTextSize(25);
 					menuitem.setGravity(Gravity.CENTER);
-					contentViews.add(new GoodMenuContentView("menu" + index, this));
+					FoodMenuContentView foodmenucontentview = new FoodMenuContentView("menu" + index, this, homecontent, new Ticket("A1", "rmzhang"));
+					contentViews.add(foodmenucontentview);
 					switch(index){
 						case 0:
 							menuitem.setText("菜单");
@@ -130,119 +148,69 @@ public class HomeActivity extends FragmentActivity {
 					}
 					menuitems.addView(menuitem);
 				}
-			} else if(this.role.equals("waiter")){
-				for(int i=0; i < 4; i++){
-					final int index = i;
-					TextView menuitem = new TextView(this);
-					menuitem.setTextColor(android.graphics.Color.WHITE);
-					menuitem.setTextSize(25);
-					menuitem.setGravity(Gravity.CENTER);
-					contentViews.add(new GoodMenuContentView("menu" + index, this));
-					switch(index){
-						case 0:
-							menuitem.setText("订单");
-							menuitem.setOnClickListener(new OnClickListener(){
-								@Override
-								public void onClick(View view) {
-									homecontent.selectItem("menu" + index);
-								}
-							});
-							break;
-						case 1:
-							menuitem.setText("菜单");
-							menuitem.setOnClickListener(new OnClickListener(){
-								@Override
-								public void onClick(View view) {
-									homecontent.selectItem("menu" + index);
-								}
-							});
-							break;
-						case 2:
-							menuitem.setText("设置");
-							menuitem.setOnClickListener(new OnClickListener(){
-								@Override
-								public void onClick(View view) {
-									homecontent.selectItem("menu" + index);
-								}
-								
-							});
-							break;
-						case 3:
-							menuitem.setText("退出");
-							menuitem.setOnClickListener(new OnClickListener(){
-								@Override
-								public void onClick(View view) {
-									homecontent.selectItem("menu" + index);
-								}
-								
-							});
-							break;
-					}
-					menuitems.addView(menuitem);
-				}
-			}
+			} 
 			homecontent.setMenu(leftmenu);
-		} 
+		}
 		setContentView(homecontent);
 	}
 	
-	private void updateHomeContent(String config){
-		ArrayList<BaseContentView> contentViews = new ArrayList<BaseContentView>();
-		homecontent.updateContentViews(contentViews);
-		View leftmenu = getLayoutInflater().inflate(R.layout.leftmenu, null);
-		LinearLayout menuitems = (LinearLayout)(leftmenu.findViewById(R.id.leftmenu));
-		for(int i=0; i < 4; i++){
-			final int index = i;
-			TextView menuitem = new TextView(this);
-			menuitem.setTextColor(android.graphics.Color.WHITE);
-			menuitem.setTextSize(25);
-			menuitem.setGravity(Gravity.CENTER);
-			contentViews.add(new GoodMenuContentView("menu" + index, this));
-			switch(index){
-				case 0:
-					menuitem.setText("订单");
-					menuitem.setOnClickListener(new OnClickListener(){
-						@Override
-						public void onClick(View view) {
-							homecontent.selectItem("menu" + index);
-						}
-					});
-					break;
-				case 1:
-					menuitem.setText("菜单");
-					menuitem.setOnClickListener(new OnClickListener(){
-						@Override
-						public void onClick(View view) {
-							homecontent.selectItem("menu" + index);
-						}
-					});
-					break;
-				case 2:
-					menuitem.setText("设置");
-					menuitem.setOnClickListener(new OnClickListener(){
-						@Override
-						public void onClick(View view) {
-							homecontent.selectItem("menu" + index);
-						}
-						
-					});
-					break;
-				case 3:
-					menuitem.setText("退出");
-					menuitem.setOnClickListener(new OnClickListener(){
-						@Override
-						public void onClick(View view) {
-							homecontent.selectItem("menu" + index);
-						}
-						
-					});
-					break;
-			}
-			menuitems.addView(menuitem);
-		}
-		homecontent.setMenu(leftmenu);
-		setContentView(homecontent);
-	}
+//	private void updateHomeContent(String config){
+//		ArrayList<BaseContentView> contentViews = new ArrayList<BaseContentView>();
+//		homecontent.updateContentViews(contentViews);
+//		View leftmenu = getLayoutInflater().inflate(R.layout.leftmenu, null);
+//		LinearLayout menuitems = (LinearLayout)(leftmenu.findViewById(R.id.leftmenu));
+//		for(int i=0; i < 4; i++){
+//			final int index = i;
+//			TextView menuitem = new TextView(this);
+//			menuitem.setTextColor(android.graphics.Color.WHITE);
+//			menuitem.setTextSize(25);
+//			menuitem.setGravity(Gravity.CENTER);
+//			contentViews.add(new FoodMenuContentView("menu" + index, this, homecontent));
+//			switch(index){
+//				case 0:
+//					menuitem.setText("订单");
+//					menuitem.setOnClickListener(new OnClickListener(){
+//						@Override
+//						public void onClick(View view) {
+//							homecontent.selectItem("menu" + index);
+//						}
+//					});
+//					break;
+//				case 1:
+//					menuitem.setText("菜单");
+//					menuitem.setOnClickListener(new OnClickListener(){
+//						@Override
+//						public void onClick(View view) {
+//							homecontent.selectItem("menu" + index);
+//						}
+//					});
+//					break;
+//				case 2:
+//					menuitem.setText("设置");
+//					menuitem.setOnClickListener(new OnClickListener(){
+//						@Override
+//						public void onClick(View view) {
+//							homecontent.selectItem("menu" + index);
+//						}
+//						
+//					});
+//					break;
+//				case 3:
+//					menuitem.setText("退出");
+//					menuitem.setOnClickListener(new OnClickListener(){
+//						@Override
+//						public void onClick(View view) {
+//							homecontent.selectItem("menu" + index);
+//						}
+//						
+//					});
+//					break;
+//			}
+//			menuitems.addView(menuitem);
+//		}
+//		homecontent.setMenu(leftmenu);
+//		setContentView(homecontent);
+//	}
 	
 	private void showConnectResultToast(String result){
 		 ToastUtil.showToast(this, result , Toast.LENGTH_SHORT);
@@ -280,7 +248,7 @@ public class HomeActivity extends FragmentActivity {
 			Log.i("HomeActivity", "Success to login");
 			this.role = message.getDetail();
 			this.loginDialog.dismiss();
-			updateHomeContent(null);
+			//updateHomeContent(null);
 		} else if(message.getResult().equals("fail")){
 			this.showLoginDialog(message.getDetail());
 		}
@@ -307,5 +275,73 @@ public class HomeActivity extends FragmentActivity {
             }
         }
     }
+	
+	//Temp function for test
+	private byte[] getIconData(Bitmap bitmap){
+	    int size = bitmap.getWidth()*bitmap.getHeight()*4;
+	    ByteArrayOutputStream out = new ByteArrayOutputStream(size);
+	    try {
+	        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+	        out.close();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	    return out.toByteArray();
+	}
+	
+	private void testInsertDB(){
+        Field[] fields = R.drawable.class.getDeclaredFields();
+        String [] categories = new String[]{"中餐","西餐","点心","酒水"};
+        for (int i=0; i < fields.length; i++){
+        	Field field = fields[i];
+        	
+            if (field.getName().endsWith("s")){
+            	String food_key = UUID.randomUUID().toString();
+            	String name = field.getName();
+            	String category = categories[i%4];
+            	String desc = "这是第"+i+"道菜的描述";
+            	float price = i*10f;
+            	String status = "ready";
+            	int orderidx = i%4+1;
+
+                int index = 0;
+				try {
+					index = field.getInt(R.drawable.class);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				
+				int index2 = 0;
+				try {
+					Field field2 = R.drawable.class.getField(field.getName().substring(0,1)+"l");
+					index2 = field2.getInt(R.drawable.class);
+				} catch (NoSuchFieldException e) {
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				
+				byte[] simage = this.getIconData(BitmapFactory.decodeResource(this.getResources(), index));
+				byte[] limage = this.getIconData(BitmapFactory.decodeResource(this.getResources(), index2));
+				String revision = String.valueOf(System.currentTimeMillis());
+				ContentValues values = new ContentValues();
+				values.put(FoodMenuTable.COLUMN_FOOD_KEY, food_key);
+				values.put(FoodMenuTable.COLUMN_NAME, name);
+				values.put(FoodMenuTable.COLUMN_CATEGORY, category);
+				values.put(FoodMenuTable.COLUMN_DESCRIPTION, desc);
+				values.put(FoodMenuTable.COLUMN_PRICE, price);
+				values.put(FoodMenuTable.COLUMN_STATUS, status);
+				values.put(FoodMenuTable.COLUMN_ORDERINDEX, orderidx);
+				values.put(FoodMenuTable.COLUMN_IMAGE_S, simage);
+				values.put(FoodMenuTable.COLUMN_IMAGE_L, limage);
+				values.put(FoodMenuTable.COLUMN_REVISION, revision);
+				getContentResolver().insert(FoodMenuContentProvider.CONTENT_URI, values);
+            }
+        }  
+	}
 	
 }

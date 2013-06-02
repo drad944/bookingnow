@@ -22,6 +22,7 @@ public class ContentView extends ViewGroup {
 
 	private final static int TOUCH_STATE_REST = 0;
 	private final static int TOUCH_STATE_SCROLLING = 1;
+	private final static String TAG = "ContentView";
 	
 	protected FrameLayout mContainer;
 	protected Context context;
@@ -82,25 +83,23 @@ public class ContentView extends ViewGroup {
 	}
 
 	public void setupView(BaseContentView v) {
-//		if (mContainer.getChildCount() > 0) {
-//			mContainer.removeAllViews();
-//		}
 		FragmentManager fragmentManager = ((FragmentActivity)this.context).getSupportFragmentManager(); 
+		FragmentManager.enableDebugLogging(true);
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		if(mCurrentContentView != null){
 			for(int i=0 ; i < mCurrentContentView.getFragments().size(); i++){
 				fragmentTransaction.remove(mCurrentContentView.getFragments().get(i));
 			}
-			if (mContainer.getChildCount() > 0) {
-				mContainer.removeAllViews();
-			}
+//			if (mContainer.getChildCount() > 0) {
+//				mContainer.removeAllViews();
+//			}
 		}
 		for(int i=0; i < v.getFragments().size(); i++){
 			fragmentTransaction.add(mContainer.getId(), v.getFragments().get(i));
 		}
+		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 		fragmentTransaction.commit();
 		this.mCurrentContentView = v;
-		//mContainer.addView(v.getView());
 	}
 
 	@Override
@@ -138,12 +137,18 @@ public class ContentView extends ViewGroup {
 						mLastMotionX = x;
 						mLastMotionY = y;
 						if(this.mCurrentContentView.canIntercept() && !this.isMenuOFF()){
+							Log.e(TAG, "Catch the down action:" + this.mCurrentContentView.canIntercept() + " " +!this.isMenuOFF());
 							return true;
 						}
 						break;
 		 		case MotionEvent.ACTION_MOVE:
 						boolean xMoved = (int) Math.abs(x - mLastMotionX) > mTouchSlop;
-						if(xMoved && this.mCurrentContentView.canIntercept() && x > mLastMotionX){
+						boolean isRight = x > mLastMotionX;
+						mLastMotionX = x;
+						mLastMotionY = y;
+						if(xMoved && this.mCurrentContentView.canIntercept() && isRight){
+							Log.e(TAG, "Catch the move action:" + this.mCurrentContentView.canIntercept() + " " +isRight);
+
 							return true;
 						}
 						break;
@@ -153,7 +158,10 @@ public class ContentView extends ViewGroup {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
-
+		//This is unexpected, because if the action can not be intercepted now, there should be no more action will be sent to here
+		if(!this.mCurrentContentView.canIntercept())
+			return false;
+		
 		if (mVelocityTracker == null) {
 			mVelocityTracker = VelocityTracker.obtain();
 		}
@@ -173,7 +181,6 @@ public class ContentView extends ViewGroup {
 				if (getScrollX() == -200 && mLastMotionX < 200) {
 					return false;
 				}
-				Log.e("ad", "onTouchEvent ACTION_DOWN");
 				break;
 			case MotionEvent.ACTION_MOVE:
 				final int xDiff = (int) Math.abs(x - mLastMotionX);
@@ -197,16 +204,14 @@ public class ContentView extends ViewGroup {
 						scrollX = rightBound;
 					}
 					scrollTo((int) scrollX, getScrollY());
-					//Log.e("ad", "onTouchEvent ACTION_MOVE");
 				}
 				break;
 			case MotionEvent.ACTION_UP:
 				//if (mTouchState == TOUCH_STATE_SCROLLING) {
 				final VelocityTracker velocityTracker = mVelocityTracker;
 				velocityTracker.computeCurrentVelocity(1000);
-				int velocityX = (int) velocityTracker.getXVelocity();
+				//int velocityX = (int) velocityTracker.getXVelocity();
 				int oldScrollX = getScrollX();
-				Log.e("ad", "oldScrollX  ==  " + oldScrollX);
 				int dx = 0;
 				if (oldScrollX < -100) {
 					dx = -menuWidth - oldScrollX;
@@ -218,12 +223,9 @@ public class ContentView extends ViewGroup {
 					mVelocityTracker.recycle();
 					mVelocityTracker = null;
 				}
-				//}
-				//Log.e("ad", "onTouchEvent ACTION_UP");
 				mTouchState = TOUCH_STATE_REST;
 				break;
 			case MotionEvent.ACTION_CANCEL:
-				//Log.e("ad", "ACTION_CANCEL");
 				mTouchState = TOUCH_STATE_REST;
 		}
 

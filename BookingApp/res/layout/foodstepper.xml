@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    	xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/food_stepper"
+   		android:layout_width="wrap_content"
+   		android:layout_height="wrap_content"
+	    android:orientation="horizontal" >
+			        		
+   		<TextView
+   		    android:id="@+id/price" 
+            android:layout_height="40dp" 
+            android:layout_width="wrap_content"
+            android:gravity="left"
+            android:singleLine="true">
+   		</TextView>
+   		
+   		<Button
+   		    android:id="@+id/minusbtn"
+   		    android:layout_width="40dp"
+   		    android:layout_height="40dp" 
+   		    android:layout_alignBottom="@+id/price"
+   		    android:layout_alignTop="@+id/price"
+   		    android:layout_toRightOf="@+id/price"
+   		    android:text="@string/minusBtn"/>
+   		
+   		<EditText
+   		    android:id="@+id/quantity"
+   		    android:layout_width="40dp"
+   		    android:layout_height="40dp" 
+   		    android:layout_alignBottom="@+id/price"
+   		    android:layout_alignTop="@+id/price"
+   		    android:layout_toRightOf="@+id/minusbtn"
+   		    android:singleLine="true"
+   		    android:ems="10" />
+
+   		<Button
+   		    android:id="@+id/addbtn"
+   		    android:layout_width="40dp"
+   		    android:layout_height="40dp"
+   		    android:layout_alignBottom="@+id/price"
+   		    android:layout_alignTop="@+id/price"
+   		    android:layout_toRightOf="@+id/quantity"
+   		    android:text="@string/addBtn" />
+</RelativeLayout>
