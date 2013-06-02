@@ -10,11 +10,13 @@ public class BaseContentView {
 	
 	protected View mView;
 	protected Context mContext;
+	protected SlideContent home;
 	private String key;
 	
-	public BaseContentView(String key, Context context){
+	public BaseContentView(String key, Context context, SlideContent home){
 		this.mContext = context;
 		this.key = key;
+		this.home = home;
 	}
 	
 	public ArrayList<Fragment> getFragments(){
