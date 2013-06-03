@@ -15,6 +15,5 @@
 	        android:horizontalSpacing="30dp"
 	        android:gravity="center">
 		</GridView>
-        
     
 </FrameLayout>

@@ -3,6 +3,7 @@ package com.pitaya.bookingnow.app;
 import java.util.ArrayList;
 import com.aphidmobile.flip.FlipViewController;
 import com.pitaya.bookingnow.app.domain.Food;
+import com.pitaya.bookingnow.app.domain.Ticket;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
 import com.pitaya.bookingnow.app.views.FoodBookAdapter;
@@ -11,17 +12,22 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Intent;
 import android.content.Loader;
 import android.util.Log;
 
 public class FoodBookActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>{
 	
 		private FlipViewController flipView;
+		private Ticket mTicket;
 
 	    @Override
 	    public void onCreate(Bundle savedInstanceState) {
 			  super.onCreate(savedInstanceState);
-		      flipView = new FlipViewController(this, FlipViewController.HORIZONTAL);
+
+			  setContentView(R.layout.foodbooklayout);
+		      //flipView = new FlipViewController(this, FlipViewController.HORIZONTAL);
+			  flipView = (FlipViewController) findViewById(R.id.flipView);
 			  this.getLoaderManager().initLoader(0, null, (LoaderCallbacks<Cursor>) this);
 	    }
 
@@ -35,6 +41,11 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 		protected void onPause() {
 			 super.onPause();
 			 flipView.onPause();
+			 Intent intent = new Intent(this, HomeActivity.class);
+			 Bundle bundle = new Bundle();
+			 bundle.putSerializable("ticket", mTicket);
+			 intent.putExtras(bundle);
+			 startActivity(intent);
 		}
 	  
 		@Override
@@ -50,6 +61,7 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 			  String title = bundle.getString("category");
 			  setTitle(title);
 			  int index = bundle.getInt("index");
+			  mTicket = (Ticket)bundle.getSerializable("ticket");
 
 			  if (cursor != null) {
 					ArrayList<Food> foods = new ArrayList<Food>();
@@ -70,8 +82,7 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 						byte[] image = cursor.getBlob(indexs[5]);
 						foods.add(new Food(key, name, price, desc, category, null, image));
 					}
-					flipView.setAdapter(new FoodBookAdapter(this, foods), index);
-					setContentView(flipView);
+					flipView.setAdapter(new FoodBookAdapter(this, foods, mTicket), index);
 			  }
 		}
 
@@ -79,4 +90,5 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 		public void onLoaderReset(Loader<Cursor> loader) {
 			 Log.e("FoodBookActivity", "In loader reset");
 		}
+		
 }

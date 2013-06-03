@@ -46,8 +46,18 @@ public class FoodMenuContentView extends BaseContentView{
 		return mFragmentList;
 	}
 	
+	public void selectPage(int index){
+		if(this.mFragmentList.size() > 0) {
+			((FoodMenuContentFragment)this.mFragmentList.get(0)).selectPage(index);
+		}
+	}
+	
 	public void setTicket(Ticket ticket){
 		mTicket = ticket;
+		if(this.mFragmentList.size() > 0) {
+			((FoodMenuContentFragment)this.mFragmentList.get(0)).refreshCurrentPage();
+		}
+		
 	}
 	
 	public Ticket getTicket(){

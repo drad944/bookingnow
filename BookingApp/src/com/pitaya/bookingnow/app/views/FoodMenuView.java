@@ -1,15 +1,5 @@
 package com.pitaya.bookingnow.app.views;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import com.pitaya.bookingnow.app.FoodBookActivity;
-import com.pitaya.bookingnow.app.PopUpViewer;
-import com.pitaya.bookingnow.app.R;
-import com.pitaya.bookingnow.app.domain.Food;
-import com.pitaya.bookingnow.app.domain.Ticket;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -18,12 +8,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -33,6 +21,15 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.pitaya.bookingnow.app.FoodBookActivity;
+import com.pitaya.bookingnow.app.R;
+import com.pitaya.bookingnow.app.domain.Food;
+import com.pitaya.bookingnow.app.domain.Ticket;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 /*
  * This is each Food menu view
  */
@@ -42,6 +39,7 @@ public class FoodMenuView extends FrameLayout{
 	private FoodMenuContentView mContentContainer;
 	private ArrayList<Food> foodList = new ArrayList<Food>();
 	private Map<Integer, TextWatcher> watchers;
+	private ImageAdapter mFoodMenuAdapter;
 	
     public FoodMenuView(Context context){
         super(context);
@@ -63,13 +61,18 @@ public class FoodMenuView extends FrameLayout{
         View view = inflater.inflate(R.layout.foodmenuview, null);
         mGridView = (GridView)view.findViewById(R.id.gridview);
 		try {
-			mGridView.setAdapter(new ImageAdapter(getContext(), mGridView));
+			mFoodMenuAdapter = new ImageAdapter(getContext(), mGridView);
+			mGridView.setAdapter(mFoodMenuAdapter);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();  
         }
         addView(view);
+    }
+    
+    public void refresh(){
+    	mFoodMenuAdapter.notifyDataSetChanged();
     }
     
     public void recycle(){}  
@@ -126,6 +129,7 @@ public class FoodMenuView extends FrameLayout{
 						Bundle bundle = new Bundle();
 						bundle.putString("category", food.getCategory());
 						bundle.putInt("index", index);
+						bundle.putSerializable("ticket", mContentContainer.getTicket());
 						Intent intent = new Intent(FoodMenuView.this.getContext(), FoodBookActivity.class);
 						intent.putExtras(bundle);
 						FoodMenuView.this.getContext().startActivity(intent);
@@ -138,7 +142,7 @@ public class FoodMenuView extends FrameLayout{
 	         		//First time add foodstepper on the view
 	         		foodstepper = View.inflate(mContext, R.layout.foodstepper, null);
 		            RelativeLayout.LayoutParams fsRL_LP = new RelativeLayout.LayoutParams(
-		            		ViewGroup.LayoutParams.WRAP_CONTENT,
+		            		 ViewGroup.LayoutParams.WRAP_CONTENT,
 		                     ViewGroup.LayoutParams.WRAP_CONTENT);
 		            fsRL_LP.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 1);
 		            fsRL_LP.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
@@ -149,9 +153,12 @@ public class FoodMenuView extends FrameLayout{
 	         		fsRL  = (RelativeLayout) foodstepper.findViewById(R.id.food_stepper);
 	         		((EditText)fsRL.findViewById(R.id.quantity)).removeTextChangedListener(watchers.get(view.hashCode()));
 	         	}
+         	
+	         	TextView priceText = (TextView) fsRL.findViewById(R.id.price);
+	         	priceText.setTextSize(25);
+	         	priceText.setText(String.valueOf(food.getPrice())+"元/份");
 	         	
 	         	final EditText quantityText = (EditText)fsRL.findViewById(R.id.quantity);
-	         	
 	            watchers.put(view.hashCode(), new TextWatcher(){
 	            	
 					@Override
@@ -179,33 +186,31 @@ public class FoodMenuView extends FrameLayout{
 	            	
 	            });
 	         	
-	         	TextView priceText = (TextView) fsRL.findViewById(R.id.price);
-	         	priceText.setTextSize(25);
-	         	priceText.setText(String.valueOf(food.getPrice())+"元/份");
-	         	
 	            quantityText.addTextChangedListener(watchers.get(view.hashCode()));
-	            quantityText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+	            quantityText.setOnFocusChangeListener(new OnFocusChangeListener(){
+
 					@Override
 					public void onFocusChange(View v, boolean hasFocus) {
 						if(hasFocus){
 							mEditText = quantityText;
-						}else{
+						} else {
 							mEditText = null;
 						}
 					}
-				});
+	            	
+	            });
 	            
 	            mView.setOnTouchListener(new View.OnTouchListener(){
 
 					@Override
 					public boolean onTouch(View v, MotionEvent arg1) {
-					    InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE); 
 	            	    if(v instanceof EditText){
 	            	    	mEditText.clearFocus();
 	            	    	return false;
 	            	    } else if(mEditText != null){
 	            	    	mEditText.clearFocus();
 	            	    }
+					    InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE); 
 	            	    if(imm.isActive()){
 	            	    	imm.hideSoftInputFromWindow(mView.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
 	            	    }
@@ -260,6 +265,15 @@ public class FoodMenuView extends FrameLayout{
 	            if(!hasFound){
 	            	quantityText.setText("0");
 	            }
+	        } else {
+        		image.setOnClickListener(new OnClickListener(){
+             	
+					@Override
+					public void onClick(View v) {
+						mContentContainer.selectPage(index + 1);
+					}
+	         	
+	         	});
 	        }
             return view;
             
