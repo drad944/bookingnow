@@ -17,6 +17,7 @@
         <activity
             android:name="com.pitaya.bookingnow.app.HomeActivity"
             android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan"
             android:configChanges="screenSize|orientation"
             >
             <!-- android:configChanges="screenSize|orientation" -->

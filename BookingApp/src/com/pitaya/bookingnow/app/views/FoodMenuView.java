@@ -1,6 +1,8 @@
 package com.pitaya.bookingnow.app.views;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import com.pitaya.bookingnow.app.FoodBookActivity;
@@ -18,6 +20,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -38,13 +41,16 @@ public class FoodMenuView extends FrameLayout{
 	private GridView mGridView;
 	private FoodMenuContentView mContentContainer;
 	private ArrayList<Food> foodList = new ArrayList<Food>();
+	private Map<Integer, TextWatcher> watchers;
 	
-    public FoodMenuView(Context context){  
+    public FoodMenuView(Context context){
         super(context);
+    	this.watchers = new HashMap<Integer, TextWatcher>();
     }
       
     public FoodMenuView(Context context, AttributeSet attrs) {  
         super(context, attrs);
+    	this.watchers = new HashMap<Integer, TextWatcher>();
     }
     
     public void setContentContainer(FoodMenuContentView v){
@@ -55,9 +61,9 @@ public class FoodMenuView extends FrameLayout{
     	this.foodList = foods;
         LayoutInflater inflater = LayoutInflater.from(getContext());  
         View view = inflater.inflate(R.layout.foodmenuview, null);
-        mGridView = (GridView)view.findViewById(R.id.gridview); 
+        mGridView = (GridView)view.findViewById(R.id.gridview);
 		try {
-			mGridView.setAdapter(new ImageAdapter(getContext()));
+			mGridView.setAdapter(new ImageAdapter(getContext(), mGridView));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -67,18 +73,21 @@ public class FoodMenuView extends FrameLayout{
     }
     
     public void recycle(){}  
-
+    
 	private class ImageAdapter extends BaseAdapter{  
         
-		private Context mContext;  
+		private Context mContext;
+		private View mView;
+		private EditText mEditText;
        
-        public ImageAdapter(Context c) throws IllegalArgumentException, IllegalAccessException{  
+        public ImageAdapter(Context c, View view) throws IllegalArgumentException, IllegalAccessException{  
             mContext = c;
+            this.mView = view;
         }
         
         @Override  
         public int getCount() {  
-            return foodList.size();  
+            return foodList.size();
         }  
   
         @Override  
@@ -135,18 +144,15 @@ public class FoodMenuView extends FrameLayout{
 		            fsRL_LP.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
 		            foodstepper.setLayoutParams(fsRL_LP);
 		            fooditemRL.addView(foodstepper);
+		         	fsRL  = (RelativeLayout) foodstepper.findViewById(R.id.food_stepper);
+	         	} else {
+	         		fsRL  = (RelativeLayout) foodstepper.findViewById(R.id.food_stepper);
+	         		((EditText)fsRL.findViewById(R.id.quantity)).removeTextChangedListener(watchers.get(view.hashCode()));
 	         	}
 	         	
-	         	fsRL  = (RelativeLayout) foodstepper.findViewById(R.id.food_stepper);
-	         	
-	         	TextView priceText = (TextView) fsRL.findViewById(R.id.price);
-	         	priceText.setTextSize(25);
-	         	priceText.setText(String.valueOf(food.getPrice())+"元/份");
-	            
 	         	final EditText quantityText = (EditText)fsRL.findViewById(R.id.quantity);
-         
 	         	
-	            quantityText.addTextChangedListener(new TextWatcher(){
+	            watchers.put(view.hashCode(), new TextWatcher(){
 	            	
 					@Override
 					public void afterTextChanged(Editable text) {
@@ -162,23 +168,55 @@ public class FoodMenuView extends FrameLayout{
 					}
 
 					@Override
-					public void beforeTextChanged(CharSequence arg0, int arg1,
+					public void beforeTextChanged(CharSequence text, int arg1,
 							int arg2, int arg3) {
-						
+						quantityText.setSelection(text.length());
 					}
 
 					@Override
 					public void onTextChanged(CharSequence text, int arg1, int arg2, int arg3) {
-
 					}
 	            	
+	            });
+	         	
+	         	TextView priceText = (TextView) fsRL.findViewById(R.id.price);
+	         	priceText.setTextSize(25);
+	         	priceText.setText(String.valueOf(food.getPrice())+"元/份");
+	         	
+	            quantityText.addTextChangedListener(watchers.get(view.hashCode()));
+	            quantityText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+					@Override
+					public void onFocusChange(View v, boolean hasFocus) {
+						if(hasFocus){
+							mEditText = quantityText;
+						}else{
+							mEditText = null;
+						}
+					}
+				});
+	            
+	            mView.setOnTouchListener(new View.OnTouchListener(){
+
+					@Override
+					public boolean onTouch(View v, MotionEvent arg1) {
+					    InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE); 
+	            	    if(v instanceof EditText){
+	            	    	mEditText.clearFocus();
+	            	    	return false;
+	            	    } else if(mEditText != null){
+	            	    	mEditText.clearFocus();
+	            	    }
+	            	    if(imm.isActive()){
+	            	    	imm.hideSoftInputFromWindow(mView.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+	            	    }
+						return false;
+					}
 	            });
 	            
 	            ((Button)fsRL.findViewById(R.id.minusbtn)).setOnClickListener(new OnClickListener(){
 	
 					@Override
 					public void onClick(View v) {
-//						Ticket ticket = mContentContainer.getTicket();
 						String current = quantityText.getText().toString();
 						int quantity = 0;
 						try{
@@ -189,9 +227,6 @@ public class FoodMenuView extends FrameLayout{
 						if(quantity < 0){
 							return;
 						}
-//						else {
-//							ticket.addFood(food.getKey(), food.getName(), food.getPrice(), quantity);
-//						}
 						quantityText.setText(String.valueOf(quantity));
 					}
 	            	
@@ -201,7 +236,6 @@ public class FoodMenuView extends FrameLayout{
 	
 					@Override
 					public void onClick(View v) {
-//						Ticket ticket = mContentContainer.getTicket();
 						String current = quantityText.getText().toString();
 						int quantity = 0;
 						try{
@@ -210,7 +244,6 @@ public class FoodMenuView extends FrameLayout{
 							Log.e("FoodMenuView", "Fail to parse food quantity");
 							quantity = 1;
 						}
-//						ticket.addFood(food.getKey(), food.getName(), food.getPrice(), quantity);
 						quantityText.setText(String.valueOf(quantity));
 					}
 	            	
