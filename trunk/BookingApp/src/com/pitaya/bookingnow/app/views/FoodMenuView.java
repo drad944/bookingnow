@@ -12,11 +12,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -119,7 +124,9 @@ public class FoodMenuView extends FrameLayout{
 	         	
 	         	});
 	         	View foodstepper = fooditemRL.findViewById(R.id.food_stepper);
+	         	RelativeLayout fsRL = null;
 	         	if(foodstepper == null){
+	         		//First time add foodstepper on the view
 	         		foodstepper = View.inflate(mContext, R.layout.foodstepper, null);
 		            RelativeLayout.LayoutParams fsRL_LP = new RelativeLayout.LayoutParams(
 		            		ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -129,25 +136,49 @@ public class FoodMenuView extends FrameLayout{
 		            foodstepper.setLayoutParams(fsRL_LP);
 		            fooditemRL.addView(foodstepper);
 	         	}
-	         	final RelativeLayout fsRL = (RelativeLayout) foodstepper.findViewById(R.id.food_stepper);
+	         	
+	         	fsRL  = (RelativeLayout) foodstepper.findViewById(R.id.food_stepper);
 	         	
 	         	TextView priceText = (TextView) fsRL.findViewById(R.id.price);
 	         	priceText.setTextSize(25);
 	         	priceText.setText(String.valueOf(food.getPrice())+"元/份");
 	            
-	            final EditText quantityText = (EditText)fsRL.findViewById(R.id.quantity);
-	            quantityText.setText("0");
-	            for(Entry<com.pitaya.bookingnow.app.domain.Ticket.Food, Integer> entry : mContentContainer.getTicket().getFoods().entrySet()){
-	            	if(entry.getKey().getKey().equals(food.getKey())){
-	            		 quantityText.setText(String.valueOf(entry.getValue()));
-	            	}
-	            }
+	         	final EditText quantityText = (EditText)fsRL.findViewById(R.id.quantity);
+         
+	         	
+	            quantityText.addTextChangedListener(new TextWatcher(){
+	            	
+					@Override
+					public void afterTextChanged(Editable text) {
+						Ticket ticket = mContentContainer.getTicket();
+						int quantity = 0;
+						try{
+							quantity = Integer.parseInt(text.toString());
+						} catch(Exception e){
+							Log.e("FoodMenuView", "Fail to parse food quantity");
+							quantity = 0;
+						}
+						ticket.addFood(food.getKey(), food.getName(), food.getPrice(), quantity);
+					}
+
+					@Override
+					public void beforeTextChanged(CharSequence arg0, int arg1,
+							int arg2, int arg3) {
+						
+					}
+
+					@Override
+					public void onTextChanged(CharSequence text, int arg1, int arg2, int arg3) {
+
+					}
+	            	
+	            });
 	            
 	            ((Button)fsRL.findViewById(R.id.minusbtn)).setOnClickListener(new OnClickListener(){
 	
 					@Override
 					public void onClick(View v) {
-						Ticket ticket = mContentContainer.getTicket();
+//						Ticket ticket = mContentContainer.getTicket();
 						String current = quantityText.getText().toString();
 						int quantity = 0;
 						try{
@@ -156,11 +187,12 @@ public class FoodMenuView extends FrameLayout{
 							Log.e("FoodMenuView", "Fail to parse food quantity");
 						}
 						if(quantity < 0){
-							quantity = 0;
-						} else {
-							ticket.addFood(food.getKey(), food.getName(), food.getPrice(), quantity);
+							return;
 						}
-						((EditText)fsRL.findViewById(R.id.quantity)).setText(String.valueOf(quantity));
+//						else {
+//							ticket.addFood(food.getKey(), food.getName(), food.getPrice(), quantity);
+//						}
+						quantityText.setText(String.valueOf(quantity));
 					}
 	            	
 	            });
@@ -169,8 +201,8 @@ public class FoodMenuView extends FrameLayout{
 	
 					@Override
 					public void onClick(View v) {
-						Ticket ticket = mContentContainer.getTicket();
-						String current = ((EditText)fsRL.findViewById(R.id.quantity)).getText().toString();
+//						Ticket ticket = mContentContainer.getTicket();
+						String current = quantityText.getText().toString();
 						int quantity = 0;
 						try{
 							quantity = Integer.parseInt(current) + 1;
@@ -178,13 +210,23 @@ public class FoodMenuView extends FrameLayout{
 							Log.e("FoodMenuView", "Fail to parse food quantity");
 							quantity = 1;
 						}
-						ticket.addFood(food.getKey(), food.getName(), food.getPrice(), quantity);
-						((EditText)fsRL.findViewById(R.id.quantity)).setText(String.valueOf(quantity));
+//						ticket.addFood(food.getKey(), food.getName(), food.getPrice(), quantity);
+						quantityText.setText(String.valueOf(quantity));
 					}
 	            	
 	            });
-	            
 
+	            boolean hasFound = false;
+	            for(Entry<com.pitaya.bookingnow.app.domain.Ticket.Food, Integer> entry : mContentContainer.getTicket().getFoods().entrySet()){
+	            	if(entry.getKey().getKey().equals(food.getKey())){
+	            		 quantityText.setText(String.valueOf(entry.getValue()));
+	            		 hasFound = true;
+	            		 break;
+	            	}
+	            }
+	            if(!hasFound){
+	            	quantityText.setText("0");
+	            }
 	        }
             return view;
             
