@@ -6,11 +6,8 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-//import android.support.v4.app.LoaderManager;
-//import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-//import android.support.v4.content.Loader;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
@@ -19,17 +16,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import com.pitaya.bookingnow.app.R;
+import com.pitaya.bookingnow.app.TicketActivity;
+import com.pitaya.bookingnow.app.domain.Food;
+import com.pitaya.bookingnow.app.service.DataService;
+import com.pitaya.bookingnow.app.service.FoodMenuTable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.pitaya.bookingnow.app.PopUpViewer;
-import com.pitaya.bookingnow.app.R;
-import com.pitaya.bookingnow.app.domain.Food;
-import com.pitaya.bookingnow.app.service.DataService;
-import com.pitaya.bookingnow.app.service.FoodMenuTable;
 
 public class FoodMenuContentFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 	
@@ -46,12 +43,27 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		public void setContainer(FoodMenuContentView v){
 			this.mContentContainer = v;
 		}
+			
+		public int getCurrentViewIndex(){
+			return this.mFoodMenuViewPager.getCurrentItem();
+		}
+		
+		public void selectPage(int index){
+			this.mFoodMenuViewPager.setCurrentItem(index, true);
+		}
+		
+		public void refreshCurrentPage(){
+			mFoodMenuAdapter.refresh(getCurrentViewIndex());
+		}
 		
 		@Override
 	    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 				Log.i(TAG, "onCreateView in FoodMenuContentFragment" + this.hashCode());
 				mFoodMenuContentView = inflater.inflate(R.layout.foodmenucontentview, container, false);
 				mFoodMenuViewPager = (ViewPager)mFoodMenuContentView.findViewById(R.id.foodmenuviewpager);
+				
+				this.getActivity().getLoaderManager().initLoader(0, null, (LoaderCallbacks<Cursor>) this);
+				
 				View showTicketBtn = mFoodMenuContentView.findViewById(R.id.showTicket);
 				showTicketBtn.setOnClickListener(new OnClickListener(){
 					
@@ -60,13 +72,22 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 						//get current good items
 						Bundle bundle = new Bundle();
 						bundle.putSerializable("ticket", mContentContainer.getTicket());
-						Intent intent = new Intent(FoodMenuContentFragment.this.getActivity(), PopUpViewer.class);
+						Intent intent = new Intent(FoodMenuContentFragment.this.getActivity(), TicketActivity.class);
 						intent.putExtras(bundle);
 						startActivity(intent);
 					}
 					
 				});
-				this.getActivity().getLoaderManager().initLoader(0, null, (LoaderCallbacks<Cursor>) this);
+				View goBackBtn = mFoodMenuContentView.findViewById(R.id.backHome);
+				goBackBtn.setOnClickListener(new OnClickListener(){
+					
+					@Override
+					public void onClick(View arg0) {
+						mContentContainer.selectPage(0);
+					}
+					
+				});
+				
 				return mFoodMenuContentView;
 	    }
 		
@@ -87,10 +108,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			super.onPause();
 			Log.i(TAG, "onPause in FoodMenuContentFragment" +this.hashCode());
 		}
-		
-		public int getCurrentViewIndex(){
-			return this.mFoodMenuViewPager.getCurrentItem();
-		}
+
 
 		@Override
 		public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -171,6 +189,10 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			        }
 				}
 
+			    public void refresh(int index){
+			    	mFoodMenus.get(index).refresh();
+			    }
+			    
 			    @Override  
 			    public void destroyItem(View container, int position, Object object) {  
 			    	FoodMenuView itemView = (FoodMenuView)object;  

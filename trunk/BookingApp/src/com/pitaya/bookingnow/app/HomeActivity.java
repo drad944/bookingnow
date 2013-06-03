@@ -40,6 +40,7 @@ import android.widget.Toast;
 import android.view.LayoutInflater;
 import android.content.ContentValues;
 import android.content.DialogInterface;  
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -67,6 +68,22 @@ public class HomeActivity extends FragmentActivity {
 		messageService = MessageService.initService("192.168.0.102", 19191);
 		messageService.registerHandler(messageKey,  new MessageHandler());
 		//testInsertDB();
+		setTicket();
+	}
+	
+	@Override
+	protected void onNewIntent(Intent intent){
+		super.onNewIntent(intent);
+		setIntent(intent);
+		setTicket();
+	}
+	
+	private void setTicket(){
+		Intent intent = this.getIntent();
+		Bundle bundle = intent.getExtras();
+		if(bundle != null && bundle.getSerializable("ticket") != null){
+			((FoodMenuContentView)this.homecontent.getContentView("menu0")).setTicket((Ticket)bundle.getSerializable("ticket"));
+		}
 	}
 	
 	@Override

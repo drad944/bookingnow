@@ -11,7 +11,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public class WebViewer extends Activity {
+public class WebActivity extends Activity {
 
 	private static Handler handler;
 	
@@ -67,7 +67,7 @@ public class WebViewer extends Activity {
             }   
         });
  
-    	pd = new ProgressDialog(WebViewer.this);
+    	pd = new ProgressDialog(WebActivity.this);
         pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         pd.setMessage("Waiting");
     }

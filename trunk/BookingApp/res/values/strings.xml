@@ -11,6 +11,7 @@
     <string name="logining">登录中...</string>
     <string name="connect_fail">无法连接到服务器</string>
     <string name="showTicket">查看订单</string>
+    <string name="backHome">全部分类</string>
     <string name="ticketTitle">您的订单</string>
     <string name="minusBtn">-</string>
     <string name="addBtn">+</string>

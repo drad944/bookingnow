@@ -4,7 +4,8 @@
      android:layout_height="fill_parent"
      android:background="@android:color/darker_gray"
      android:orientation="vertical"
-     android:padding="5dip" >
+     android:gravity="center"
+     android:padding="5dp" >
       
 	  <android.support.v4.view.ViewPager
 	      android:id="@+id/foodmenuviewpager"
@@ -20,11 +21,21 @@
 
       <TextView
           android:id="@+id/showTicket"
-          android:layout_width="fill_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/showTicket"
           android:gravity="center"
           android:layout_alignParentBottom="true"
+          android:layout_alignParentLeft="true"
+          android:textSize="25sp" />
+      <TextView
+          android:id="@+id/backHome"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/backHome"
+          android:gravity="center"
+          android:layout_alignParentBottom="true"
+          android:layout_alignParentRight="true"
           android:textSize="25sp" />
 
 </RelativeLayout>

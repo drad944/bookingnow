@@ -1,14 +1,6 @@
 package com.pitaya.bookingnow.app;
 
 import java.util.Map.Entry;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.pitaya.bookingnow.app.domain.Food;
-import com.pitaya.bookingnow.app.domain.Ticket;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -17,8 +9,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import com.pitaya.bookingnow.app.domain.Ticket;
 
-public class PopUpViewer extends Activity{
+public class TicketActivity extends Activity{
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) { 
