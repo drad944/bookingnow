@@ -6,12 +6,14 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
+//import android.support.v4.app.LoaderManager;
+//import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+//import android.support.v4.content.Loader;
+import android.app.LoaderManager;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,14 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.pitaya.bookingnow.app.PopUpViewer;
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.domain.Food;
-import com.pitaya.bookingnow.app.service.FoodMenuContentProvider;
+import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
 
 public class FoodMenuContentFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -68,7 +66,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 					}
 					
 				});
-				this.getActivity().getSupportLoaderManager().initLoader(0, null, (LoaderCallbacks<Cursor>) this);
+				this.getActivity().getLoaderManager().initLoader(0, null, (LoaderCallbacks<Cursor>) this);
 				return mFoodMenuContentView;
 	    }
 		
@@ -96,22 +94,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 
 		@Override
 		public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-			String[] projection = { 		    		
-					FoodMenuTable.COLUMN_CATEGORY, 
-		    		FoodMenuTable.COLUMN_DESCRIPTION,
-		    		FoodMenuTable.COLUMN_FOOD_KEY, 
-		    		FoodMenuTable.COLUMN_ID, 
-		    		FoodMenuTable.COLUMN_IMAGE_S,
-		    		FoodMenuTable.COLUMN_IMAGE_L,
-		    		FoodMenuTable.COLUMN_MATERIAL, 
-		    		FoodMenuTable.COLUMN_NAME,
-		    		FoodMenuTable.COLUMN_PRICE,
-		    		FoodMenuTable.COLUMN_RECOMMENDATION,
-		    		FoodMenuTable.COLUMN_ORDERINDEX,
-		    		FoodMenuTable.COLUMN_STATUS };
-			CursorLoader cursorLoader = new CursorLoader(this.getActivity(), FoodMenuContentProvider.CONTENT_URI, 
-					projection, null, null, FoodMenuTable.COLUMN_ORDERINDEX);
-			return cursorLoader;
+			return DataService.getAllFoodData(this.getActivity());
 		}
 
 		@Override
@@ -120,39 +103,39 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			if (cursor != null) {
 				Map<String, ArrayList<Food>> foods = new LinkedHashMap<String, ArrayList<Food>>();
 				foods.put("全部", new ArrayList<Food>());
-				int keyIdx = cursor.getColumnIndexOrThrow(FoodMenuTable.COLUMN_FOOD_KEY);
-				int nameIdx = cursor.getColumnIndexOrThrow(FoodMenuTable.COLUMN_NAME);
-				int priceIdx = cursor.getColumnIndexOrThrow(FoodMenuTable.COLUMN_PRICE);
-				int descIdx = cursor.getColumnIndexOrThrow(FoodMenuTable.COLUMN_DESCRIPTION);
-				int categoryIdx = cursor.getColumnIndexOrThrow(FoodMenuTable.COLUMN_CATEGORY);
-				int smallImageIdx = cursor.getColumnIndexOrThrow(FoodMenuTable.COLUMN_IMAGE_S);
-				int largeImageIdx = cursor.getColumnIndexOrThrow(FoodMenuTable.COLUMN_IMAGE_L);
+				int [] indexs = DataService.getColumnIndexs(cursor, new String[]{
+						FoodMenuTable.COLUMN_FOOD_KEY,
+						FoodMenuTable.COLUMN_NAME,
+						FoodMenuTable.COLUMN_PRICE,
+						FoodMenuTable.COLUMN_DESCRIPTION,
+						FoodMenuTable.COLUMN_CATEGORY,
+						FoodMenuTable.COLUMN_IMAGE_S
+				});
 				for(cursor.moveToFirst(); ! cursor.isAfterLast(); cursor.moveToNext()){
-					String key = cursor.getString(keyIdx);
-					String name = cursor.getString(nameIdx);
-					String desc = cursor.getString(descIdx);
-					String category = cursor.getString(categoryIdx);
-					float price = cursor.getFloat(priceIdx);
-					byte[] image = cursor.getBlob(smallImageIdx);
-					byte[] image2 = cursor.getBlob(largeImageIdx);
+					String key = cursor.getString(indexs[0]);
+					String name = cursor.getString(indexs[1]);
+					float price = cursor.getFloat(indexs[2]);
+					String desc = cursor.getString(indexs[3]);
+					String category = cursor.getString(indexs[4]);
+					byte[] image = cursor.getBlob(indexs[5]);
 					ArrayList<Food> foodsByCategory = foods.get(category);
 					if(foods.get(category) == null){
 						foodsByCategory = new ArrayList<Food>();
 						foods.put(category, foodsByCategory);
 					}
-					foodsByCategory.add(new Food(key, name, price, desc, category, image, image2));
+					foodsByCategory.add(new Food(key, name, price, desc, category, image));
 				}
 				ArrayList<Food> allCategory = null;
 				for(Entry<String, ArrayList<Food>> entry : foods.entrySet()){
 					if(entry.getKey().equals("全部")){
 						allCategory = entry.getValue();
 					} else {
+						//This is for category view
 						allCategory.add(new Food(null, entry.getKey(), 0f, "", "", entry.getValue().get(0).getSmallImage()));
 					}
 				}
 				mFoodMenuAdapter = new FoodMenuAdapter(mFoodMenuContentView.getContext(),  foods);
 				mFoodMenuViewPager.setAdapter(mFoodMenuAdapter);
-				cursor.close();
 			}
 		}
 		

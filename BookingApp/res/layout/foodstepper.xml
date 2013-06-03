@@ -31,7 +31,8 @@
    		    android:layout_alignTop="@+id/price"
    		    android:layout_toRightOf="@+id/minusbtn"
    		    android:singleLine="true"
-   		    android:ems="10" />
+   		    android:inputType="text"
+   		    android:digits="1234567890"/>
 
    		<Button
    		    android:id="@+id/addbtn"
