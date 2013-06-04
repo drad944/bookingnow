@@ -44,5 +44,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	</table>
     </form>
     
+    <h2><a href="Page/registerAccount.jsp">register account</a></h2>
   </body>
 </html>

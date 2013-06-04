@@ -19,20 +19,20 @@ import javax.crypto.spec.SecretKeySpec;
 public class AESEncryptionUtil {
 	
 	/**
-	 * 密钥算法
+	 * 瀵嗛挜绠楁硶
 	*/
 	private static final String KEY_ALGORITHM = "AES";
 	
 	private static final String DEFAULT_CIPHER_ALGORITHM = "AES/ECB/PKCS5Padding";
 	
 	/**
-	 * 初始化密钥
+	 * 鍒濆鍖栧瘑閽�
 	 * 
-	 * @return byte[] 密钥 
+	 * @return byte[] 瀵嗛挜 
 	 * @throws Exception
 	 */
 	public static byte[] initSecretKey() {
-		//返回生成指定算法的秘密密钥的 KeyGenerator 对象
+		//杩斿洖鐢熸垚鎸囧畾绠楁硶鐨勭瀵嗗瘑閽ョ殑 KeyGenerator 瀵硅薄
 		KeyGenerator kg = null;
 		try {
 			kg = KeyGenerator.getInstance(KEY_ALGORITHM);
@@ -40,31 +40,31 @@ public class AESEncryptionUtil {
 			e.printStackTrace();
 			return new byte[0];
 		}
-		//初始化此密钥生成器，使其具有确定的密钥大小
-		//AES 要求密钥长度为 128
+		//鍒濆鍖栨瀵嗛挜鐢熸垚鍣紝浣垮叾鍏锋湁纭畾鐨勫瘑閽ュぇ灏�
+		//AES 瑕佹眰瀵嗛挜闀垮害涓�128
 		kg.init(128);
-		//生成一个密钥
+		//鐢熸垚涓�釜瀵嗛挜
 		SecretKey  secretKey = kg.generateKey();
 		return secretKey.getEncoded();
 	}
 	
 	/**
-	 * 转换密钥
+	 * 杞崲瀵嗛挜
 	 * 
-	 * @param key	二进制密钥
-	 * @return 密钥
+	 * @param key	浜岃繘鍒跺瘑閽�
+	 * @return 瀵嗛挜
 	 */
 	public static Key toKey(byte[] key){
-		//生成密钥
+		//鐢熸垚瀵嗛挜
 		return new SecretKeySpec(key, KEY_ALGORITHM);
 	}
 	
 	/**
-	 * 加密
+	 * 鍔犲瘑
 	 * 
-	 * @param data	待加密数据
-	 * @param key	密钥
-	 * @return byte[]	加密数据
+	 * @param data	寰呭姞瀵嗘暟鎹�
+	 * @param key	瀵嗛挜
+	 * @return byte[]	鍔犲瘑鏁版嵁
 	 * @throws Exception
 	 */
 	public static byte[] encrypt(byte[] data,Key key) throws Exception{
@@ -72,11 +72,11 @@ public class AESEncryptionUtil {
 	}
 	
 	/**
-	 * 加密
+	 * 鍔犲瘑
 	 * 
-	 * @param data	待加密数据
-	 * @param key	二进制密钥
-	 * @return byte[]	加密数据
+	 * @param data	寰呭姞瀵嗘暟鎹�
+	 * @param key	浜岃繘鍒跺瘑閽�
+	 * @return byte[]	鍔犲瘑鏁版嵁
 	 * @throws Exception
 	 */
 	public static byte[] encrypt(byte[] data,byte[] key) throws Exception{
@@ -85,46 +85,46 @@ public class AESEncryptionUtil {
 	
 	
 	/**
-	 * 加密
+	 * 鍔犲瘑
 	 * 
-	 * @param data	待加密数据
-	 * @param key	二进制密钥
-	 * @param cipherAlgorithm	加密算法/工作模式/填充方式
-	 * @return byte[]	加密数据
+	 * @param data	寰呭姞瀵嗘暟鎹�
+	 * @param key	浜岃繘鍒跺瘑閽�
+	 * @param cipherAlgorithm	鍔犲瘑绠楁硶/宸ヤ綔妯″紡/濉厖鏂瑰紡
+	 * @return byte[]	鍔犲瘑鏁版嵁
 	 * @throws Exception
 	 */
 	public static byte[] encrypt(byte[] data,byte[] key,String cipherAlgorithm) throws Exception{
-		//还原密钥
+		//杩樺師瀵嗛挜
 		Key k = toKey(key);
 		return encrypt(data, k, cipherAlgorithm);
 	}
 	
 	/**
-	 * 加密
+	 * 鍔犲瘑
 	 * 
-	 * @param data	待加密数据
-	 * @param key	密钥
-	 * @param cipherAlgorithm	加密算法/工作模式/填充方式
-	 * @return byte[]	加密数据
+	 * @param data	寰呭姞瀵嗘暟鎹�
+	 * @param key	瀵嗛挜
+	 * @param cipherAlgorithm	鍔犲瘑绠楁硶/宸ヤ綔妯″紡/濉厖鏂瑰紡
+	 * @return byte[]	鍔犲瘑鏁版嵁
 	 * @throws Exception
 	 */
 	public static byte[] encrypt(byte[] data,Key key,String cipherAlgorithm) throws Exception{
-		//实例化
+		//瀹炰緥鍖�
 		Cipher cipher = Cipher.getInstance(cipherAlgorithm);
-		//使用密钥初始化，设置为加密模式
+		//浣跨敤瀵嗛挜鍒濆鍖栵紝璁剧疆涓哄姞瀵嗘ā寮�
 		cipher.init(Cipher.ENCRYPT_MODE, key);
-		//执行操作
+		//鎵ц鎿嶄綔
 		return cipher.doFinal(data);
 	}
 	
 	
 	
 	/**
-	 * 解密
+	 * 瑙ｅ瘑
 	 * 
-	 * @param data	待解密数据
-	 * @param key	二进制密钥
-	 * @return byte[]	解密数据
+	 * @param data	寰呰В瀵嗘暟鎹�
+	 * @param key	浜岃繘鍒跺瘑閽�
+	 * @return byte[]	瑙ｅ瘑鏁版嵁
 	 * @throws Exception
 	 */
 	public static byte[] decrypt(byte[] data,byte[] key) throws Exception{
@@ -132,11 +132,11 @@ public class AESEncryptionUtil {
 	}
 	
 	/**
-	 * 解密
+	 * 瑙ｅ瘑
 	 * 
-	 * @param data	待解密数据
-	 * @param key	密钥
-	 * @return byte[]	解密数据
+	 * @param data	寰呰В瀵嗘暟鎹�
+	 * @param key	瀵嗛挜
+	 * @return byte[]	瑙ｅ瘑鏁版嵁
 	 * @throws Exception
 	 */
 	public static byte[] decrypt(byte[] data,Key key) throws Exception{
@@ -144,35 +144,35 @@ public class AESEncryptionUtil {
 	}
 	
 	/**
-	 * 解密
+	 * 瑙ｅ瘑
 	 * 
-	 * @param data	待解密数据
-	 * @param key	二进制密钥
-	 * @param cipherAlgorithm	加密算法/工作模式/填充方式
-	 * @return byte[]	解密数据
+	 * @param data	寰呰В瀵嗘暟鎹�
+	 * @param key	浜岃繘鍒跺瘑閽�
+	 * @param cipherAlgorithm	鍔犲瘑绠楁硶/宸ヤ綔妯″紡/濉厖鏂瑰紡
+	 * @return byte[]	瑙ｅ瘑鏁版嵁
 	 * @throws Exception
 	 */
 	public static byte[] decrypt(byte[] data,byte[] key,String cipherAlgorithm) throws Exception{
-		//还原密钥
+		//杩樺師瀵嗛挜
 		Key k = toKey(key);
 		return decrypt(data, k, cipherAlgorithm);
 	}
 
 	/**
-	 * 解密
+	 * 瑙ｅ瘑
 	 * 
-	 * @param data	待解密数据
-	 * @param key	密钥
-	 * @param cipherAlgorithm	加密算法/工作模式/填充方式
-	 * @return byte[]	解密数据
+	 * @param data	寰呰В瀵嗘暟鎹�
+	 * @param key	瀵嗛挜
+	 * @param cipherAlgorithm	鍔犲瘑绠楁硶/宸ヤ綔妯″紡/濉厖鏂瑰紡
+	 * @return byte[]	瑙ｅ瘑鏁版嵁
 	 * @throws Exception
 	 */
 	public static byte[] decrypt(byte[] data,Key key,String cipherAlgorithm) throws Exception{
-		//实例化
+		//瀹炰緥鍖�
 		Cipher cipher = Cipher.getInstance(cipherAlgorithm);
-		//使用密钥初始化，设置为解密模式
+		//浣跨敤瀵嗛挜鍒濆鍖栵紝璁剧疆涓鸿В瀵嗘ā寮�
 		cipher.init(Cipher.DECRYPT_MODE, key);
-		//执行操作
+		//鎵ц鎿嶄綔
 		return cipher.doFinal(data);
 	}
 	
@@ -203,21 +203,21 @@ public class AESEncryptionUtil {
 	
 	public static void main(String[] args) throws Exception {
 		byte[] key = initSecretKey();
-		System.out.println("key："+showByteArray(key));
+		System.out.println("key"+showByteArray(key));
 		
 		Key k = toKey(key);
 		
-		String data ="AES数据";
-		System.out.println("加密前数据: string:"+data);
-		System.out.println("加密前数据: byte[]:"+showByteArray(data.getBytes()));
+		String data ="AES鏁版嵁";
+		System.out.println("鍔犲瘑鍓嶆暟鎹� string:"+data);
+		System.out.println("鍔犲瘑鍓嶆暟鎹� byte[]:"+showByteArray(data.getBytes()));
 		System.out.println();
 		byte[] encryptData = encrypt(data.getBytes(), k);
-		System.out.println("加密后数据: byte[]:"+showByteArray(encryptData));
-		System.out.println("加密后数据: hexStr:"+parseByte2HexStr(encryptData));
+		System.out.println("鍔犲瘑鍚庢暟鎹� byte[]:"+showByteArray(encryptData));
+		System.out.println("鍔犲瘑鍚庢暟鎹� hexStr:"+parseByte2HexStr(encryptData));
 		System.out.println();
 		byte[] decryptData = decrypt(encryptData, k);
-		System.out.println("解密后数据: byte[]:"+showByteArray(decryptData));
-		System.out.println("解密后数据: string:"+new String(decryptData));
+		System.out.println("瑙ｅ瘑鍚庢暟鎹� byte[]:"+showByteArray(decryptData));
+		System.out.println("瑙ｅ瘑鍚庢暟鎹� string:"+new String(decryptData));
 		
 	}
 }

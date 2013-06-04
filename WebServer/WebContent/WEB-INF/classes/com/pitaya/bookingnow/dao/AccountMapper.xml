@@ -2,35 +2,31 @@
 <!DOCTYPE mapper 
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
-<mapper namespace="com.pitaya.bookingnow.dao.AccountMapper"> 
+<mapper namespace="com.pitaya.bookingnow.dao.AccountMapper">
 
 	<resultMap id="accountBaseResultMap" type="com.pitaya.bookingnow.model.Account" >
-
 		<id property="aid" column="aid" jdbcType="INTEGER" />
 		<result property="name" column="name" jdbcType="VARCHAR" />
 		<result property="password" column="passwd" jdbcType="VARCHAR" />
 		<result property="role" column="role" jdbcType="VARCHAR" />
 		<result property="sex" column="sex" jdbcType="VARCHAR" />
 		<result property="birthday" column="birthday" jdbcType="DATE" />
-
 	</resultMap>
 
-
-
-    <insert id="insertAccount" parameterType="com.pitaya.bookingnow.model.Account"> 
+    <insert id="add" useGeneratedKeys="true" keyProperty="aid" parameterType="com.pitaya.bookingnow.model.Account"> 
 		insert into pitaya_Account(aid,name,passwd,role) 
-       		values(#{aid,jdbcType=BIGINT},#{name},#{password},#{role}) 
+       		values(#{aid},#{name},#{password},#{role}) 
        		
 		<selectKey resultType="int" keyProperty="aid">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
     </insert>
 
-	<delete id="deleteAccount" parameterType="com.pitaya.bookingnow.model.Account">
+	<delete id="remove" parameterType="com.pitaya.bookingnow.model.Account">
 		delete from pitaya_Account where aid = #{aid}
 	</delete>
     
-     <update id="updateAccount" parameterType="com.pitaya.bookingnow.model.Account">
+     <update id="edit" parameterType="com.pitaya.bookingnow.model.Account">
      	update pitaya_Account set name=#{name},passwd=#{password} where aid=#{aid}
     </update>
  
@@ -38,12 +34,16 @@
         select * from pitaya_Account where aid=#{aid} 
     </select>
     
-    <select id="selectAccountByName" parameterType="java.lang.String" resultType="list" resultMap="accountBaseResultMap">
+    <select id="getAccount" parameterType="com.pitaya.bookingnow.model.Account" resultType="com.pitaya.bookingnow.model.Account" resultMap="accountBaseResultMap">
+		select * from pitaya_Account where name = #{name}
+	</select>
+	
+	<select id="getList" parameterType="com.pitaya.bookingnow.model.Account" resultType="list" resultMap="accountBaseResultMap">
 		select * from pitaya_Account where name like '%' #{name} '%'
 	</select>
     
-    <select id="selectAccount" resultType="com.pitaya.bookingnow.model.Account" resultMap="accountBaseResultMap" parameterType="java.lang.String"> 
-        select * from pitaya_Account where name=#{name} and passwd=#{password}
-    </select>
+    <select id="getAllAccount" resultType="list" resultMap="accountBaseResultMap">
+		select * from pitaya_Account
+	</select>
      
 </mapper>

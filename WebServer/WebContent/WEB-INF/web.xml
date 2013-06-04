@@ -1,40 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<web-app version="2.5" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
 	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-	
-     <!-- 字符集过滤 -->    
-    <filter>    
-        <filter-name>SetCharacterEncoding</filter-name>    
-        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>    
-        <init-param>    
-            <param-name>encoding</param-name>    
-            <param-value>UTF-8</param-value>    
-        </init-param>    
-    </filter>    
-    
-     <!-- 要过滤得类型 -->    
-    <filter-mapping>    
-        <filter-name>SetCharacterEncoding</filter-name>    
-        <url-pattern>/*</url-pattern>    
-    </filter-mapping>   
-    
-    <!-- 图片验证码 -->  
-    <servlet>  
-        <servlet-name>randCode</servlet-name>  
-        <servlet-class>  
-            com.yeshun.common.servlet.RandCodeServlet  
-        </servlet-class>  
-    </servlet>  
-    <servlet-mapping>  
-        <servlet-name>randCode</servlet-name>  
-        <url-pattern>/servlet/randCode</url-pattern>  
-    </servlet-mapping>  
-    
-    
-    <!-- initialize log4j -->
-	<servlet>   
+  <display-name></display-name>	
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <servlet>   
     	<servlet-name>log4j servlet</servlet-name>
    	 	<servlet-class>com.pitaya.bookingnow.servlet.Log4jInitServlet</servlet-class>
     	<init-param>
@@ -44,29 +19,25 @@
        
     	<load-on-startup>1</load-on-startup>
 	</servlet>
-
-  <!-- struts2 -->    
-    <filter>    
-        <filter-name>struts2</filter-name>    
-        <filter-class>    
-            org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>    
-    </filter>    
-    <filter-mapping>    
-        <filter-name>struts2</filter-name>  
-        <url-pattern>*.action</url-pattern>  
-    </filter-mapping> 
+	
+	<filter>
+	    <filter-name>struts2</filter-name>
+	    <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	    <filter-name>struts2</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
     
-    	<!-- Spring configuration -->    
-    <context-param>    
-        <param-name>contextConfigLocation</param-name>    
-        <param-value>classpath*:applicationContext*.xml</param-value>    
-    </context-param>    
-    <!-- spring加载 -->    
+    
     <listener>    
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>    
-    </listener>  
-    	
-    <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
-    </welcome-file-list>
+    </listener>
+    <context-param>    
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/classes/applicationContext.xml,classpath*:applicationContext*.xml</param-value>
+        <!--    
+        <param-value>classpath*:applicationContext*.xml</param-value>
+         -->     
+    </context-param>
 </web-app>
