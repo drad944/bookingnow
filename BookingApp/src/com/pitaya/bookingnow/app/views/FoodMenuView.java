@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.pitaya.bookingnow.app.FoodBookActivity;
+import com.pitaya.bookingnow.app.FoodBookActivity2;
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.domain.Food;
 import com.pitaya.bookingnow.app.domain.Ticket;
@@ -38,17 +39,14 @@ public class FoodMenuView extends FrameLayout{
 	private GridView mGridView;
 	private FoodMenuContentView mContentContainer;
 	private ArrayList<Food> foodList = new ArrayList<Food>();
-	private Map<Integer, TextWatcher> watchers;
 	private ImageAdapter mFoodMenuAdapter;
 	
     public FoodMenuView(Context context){
         super(context);
-    	this.watchers = new HashMap<Integer, TextWatcher>();
     }
       
     public FoodMenuView(Context context, AttributeSet attrs) {  
         super(context, attrs);
-    	this.watchers = new HashMap<Integer, TextWatcher>();
     }
     
     public void setContentContainer(FoodMenuContentView v){
@@ -82,28 +80,30 @@ public class FoodMenuView extends FrameLayout{
 		private Context mContext;
 		private View mView;
 		private EditText mEditText;
+		private Map<Integer, TextWatcher> watchers;
        
         public ImageAdapter(Context c, View view) throws IllegalArgumentException, IllegalAccessException{  
             mContext = c;
             this.mView = view;
+            this.watchers = new HashMap<Integer, TextWatcher>();
         }
         
-        @Override  
+        @Override
         public int getCount() {  
             return foodList.size();
         }  
   
-        @Override  
+        @Override
         public Object getItem(int position) {
             return position;  
         }  
   
-        @Override  
+        @Override
         public long getItemId(int position) {  
             return position;  
-        }  
+        }
   
-        @Override  
+        @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 	         final Food food = foodList.get(position);
 	         final int index = position;
@@ -130,7 +130,7 @@ public class FoodMenuView extends FrameLayout{
 						bundle.putString("category", food.getCategory());
 						bundle.putInt("index", index);
 						bundle.putSerializable("ticket", mContentContainer.getTicket());
-						Intent intent = new Intent(FoodMenuView.this.getContext(), FoodBookActivity.class);
+						Intent intent = new Intent(FoodMenuView.this.getContext(), FoodBookActivity2.class);
 						intent.putExtras(bundle);
 						FoodMenuView.this.getContext().startActivity(intent);
 					}

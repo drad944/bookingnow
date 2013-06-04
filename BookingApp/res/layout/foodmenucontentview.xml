@@ -1,8 +1,8 @@
 <RelativeLayout
      xmlns:android="http://schemas.android.com/apk/res/android"
-     android:layout_width="fill_parent"
-     android:layout_height="fill_parent"
-     android:background="@android:color/darker_gray"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:background="@drawable/common_background"
      android:orientation="vertical"
      android:gravity="center"
      android:padding="5dp" >
@@ -24,6 +24,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/showTicket"
+          android:textColor="@android:color/white"
           android:gravity="center"
           android:layout_alignParentBottom="true"
           android:layout_alignParentLeft="true"
@@ -33,6 +34,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/backHome"
+          android:textColor="@android:color/white"
           android:gravity="center"
           android:layout_alignParentBottom="true"
           android:layout_alignParentRight="true"

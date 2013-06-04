@@ -73,9 +73,9 @@ public class FoodBookAdapter extends BaseAdapter {
 	    }
 	    final Food food = this.foodList.get(position % foodList.size());
 	    
-	    UI
-        .<ImageView>findViewById(layout, R.id.photo)
-        .setImageBitmap(BitmapFactory.decodeByteArray(food.getLargeImage(), 0, food.getLargeImage().length));
+//	    UI
+//        .<ImageView>findViewById(layout, R.id.photo)
+//        .setImageBitmap(BitmapFactory.decodeByteArray(food.getLargeImage(), 0, food.getLargeImage().length));
 
 	    UI
         .<TextView>findViewById(layout, R.id.foodname)

@@ -16,4 +16,6 @@
     <string name="minusBtn">-</string>
     <string name="addBtn">+</string>
     <drawable name="red">#ff0000</drawable>
+    <drawable name="common_background">#4e72b8</drawable>
+    <drawable name="menu_background">#494e8f</drawable>
 </resources>
