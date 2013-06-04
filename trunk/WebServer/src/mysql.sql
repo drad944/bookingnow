@@ -11,9 +11,9 @@ flush privileges;
 
 
 
-create table pitaya_user(aid integer not null auto_increment primary key,name varchar(20),passwd varchar(20),role varchar(10),sex varchar(2),birthday date);
+create table pitaya_account(aid integer not null auto_increment primary key,name varchar(20),passwd varchar(20),role varchar(10),sex varchar(2),createDateTime timestamp,birthday date);
 
-insert into pitaya_user values (1,'zhang','123456','boss','m','1971/5/8');
+insert into pitaya_account values (1,'zhang','123456','boss','m','1971-05-08 01:02:03','1971-05-08');
 
 
 

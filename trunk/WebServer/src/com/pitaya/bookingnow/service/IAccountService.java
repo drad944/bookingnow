@@ -1,13 +1,19 @@
 package com.pitaya.bookingnow.service;
 
+
+
+
 import java.util.List;
 
-import org.springframework.dao.DataAccessException;
+import com.pitaya.bookingnow.model.Account;
 
 
-public interface IAccountService<T> {
-	public boolean addAccount(T entity) throws DataAccessException;   
-	public boolean execute(T entity) throws DataAccessException;   
-	public T getAccount(Long id) throws DataAccessException;   
-	public List<T> getList() throws DataAccessException;
+public interface IAccountService extends IBaseService<Account>{
+	public boolean add(Account account);
+	public boolean delete(Account account);
+	public boolean modify(Account account);
+	public Account get(Account account);
+	public Account getByID(Account account);
+	public List<Account> getAll(Account account);
+
 }

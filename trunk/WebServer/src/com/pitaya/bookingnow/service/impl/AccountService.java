@@ -1,51 +1,51 @@
 package com.pitaya.bookingnow.service.impl;
-import java.util.List; 
+import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.springframework.dao.DataAccessException; 
-import org.springframework.stereotype.Component; 
- 
-
-import com.pitaya.bookingnow.dao.AccountDao;
+import com.pitaya.bookingnow.dao.AccountMapper;
 import com.pitaya.bookingnow.model.Account;
 import com.pitaya.bookingnow.service.IAccountService;
 
-//@Component @Service 
-public class AccountService<T extends Account> implements IAccountService<T> {
+public class AccountService implements IAccountService {
 
-	private AccountDao<T> dao;
-
-	public boolean addAccount(T entity) throws DataAccessException {
-		if (entity == null) {
-
-			try {
-				throw new Exception(Account.class.getName() + "对象参数信息为Empty！");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return dao.addAccount(entity);
+	private AccountMapper accountDao;
+	
+	public AccountMapper getAccountDao() {
+		return accountDao;
 	}
 
-	public T getAccount(Long id) throws DataAccessException {
-		return dao.getAccount(id);
+	public void setAccountDao(AccountMapper accountDao) {
+		this.accountDao = accountDao;
 	}
 
-	public List<T> getList() throws DataAccessException {
-		return dao.getList();
+	@Override
+	public boolean add(Account account) {
+		
+		return accountDao.add(account);
 	}
 
-	public boolean execute(T entity) throws DataAccessException {
-		if (entity == null) {
-
-			try {
-				throw new Exception(Account.class.getName() + "对象参数信息为Empty！");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return dao.addAccount(entity);
+	@Override
+	public boolean delete(Account account) {
+		return accountDao.delete(account);
 	}
+
+	@Override
+	public boolean modify(Account account) {
+		return accountDao.modify(account);
+	}
+
+	@Override
+	public Account get(Account account) {
+		return accountDao.get(account);
+	}
+
+	@Override
+	public Account getByID(Account account) {
+		return accountDao.getByID(account);
+	}
+
+	@Override
+	public List<Account> getAll(Account account) {
+		return accountDao.getAll(account);
+	}
+
 }

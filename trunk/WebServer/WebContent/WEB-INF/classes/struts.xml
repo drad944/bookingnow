@@ -31,30 +31,6 @@
 			<result name="findSuccess" type="dispatcher">
 				/Page/success.jsp
 	        </result>
-	        
-	        <result name="registerSuccess" type="dispatcher">
-				/Page/error.jsp
-	        </result>
-
-			<result name="registerFail" type="dispatcher">
-				/Page/success.jsp
-	        </result>
-	        
-	        <result name="updateSuccess" type="dispatcher">
-				/Page/error.jsp
-	        </result>
-
-			<result name="updateFail" type="dispatcher">
-				/Page/success.jsp
-	        </result>
-	        
-	        <result name="removeSuccess" type="dispatcher">
-				/Page/error.jsp
-	        </result>
-
-			<result name="removeFail" type="dispatcher">
-				/Page/success.jsp
-	        </result>
 		</action>
 
 	</package>
