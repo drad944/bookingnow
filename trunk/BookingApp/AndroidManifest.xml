@@ -28,15 +28,19 @@
             </intent-filter>
         </activity>
         
-        <activity android:name=".TicketActivity" android:theme="@style/TicketViewerStyle"></activity>
+        <activity android:name=".TicketActivity" 
+                android:theme="@style/TicketViewerStyle"
+                android:configChanges="screenSize|orientation"
+                android:windowSoftInputMode="adjustPan">
+        </activity>
         <activity 
-            	android:name=".FoodBookActivity"
+            	android:name=".FoodBookActivity2"
             	android:configChanges="screenSize|orientation"
-            	android:windowSoftInputMode="adjustPan"
-            ></activity>
+            	android:windowSoftInputMode="adjustPan">
+        </activity>
         <provider
-      		android:name=".service.FoodMenuContentProvider"
-      		android:authorities="com.pitaya.bookingnow.food.contentprovider" >
+      		    android:name=".service.FoodMenuContentProvider"
+      		    android:authorities="com.pitaya.bookingnow.food.contentprovider" >
    		</provider>
     </application>
 

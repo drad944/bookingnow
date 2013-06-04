@@ -1,81 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:id="@+id/fooditem"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
               android:orientation="vertical"
-              android:background="@android:color/white">
+              android:id="@+id/foodbookitem"
+              android:background="@android:color/black">
   
 	    	<com.aphidmobile.flip.FlipViewController
 				xmlns:flip="http://schemas.android.com/apk/res-auto"
 				android:id="@+id/flipView"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_centerInParent="true"
+				android:layout_height="match_parent"
+				android:layout_above="@+id/foodname"
 				flip:orientation="horizontal"
-				flip:animationBitmapFormat="RGB_565"
-			/>
+				flip:animationBitmapFormat="RGB_565"/>
     
-	  		<!--ImageView android:layout_gravity="center_horizontal"
-		             android:layout_width="match_parent"
-		             android:layout_height="wrap_content"
-		             android:scaleType="fitCenter"
-		             android:layout_margin="5dp"
-		             android:layout_centerInParent="true"
-		             android:id="@+id/photo"/  -->
-		  	<TextView android:layout_width="wrap_content" 
-		            android:layout_height="wrap_content"
-		            android:textColor="@android:color/black"
-		            android:textAppearance="@android:style/TextAppearance.Medium"
-		            android:layout_margin="5dp"
-		            android:textSize="25sp"
-		            android:layout_alignParentBottom="true"
-		            android:layout_alignParentLeft="true"
-		            android:id="@+id/foodname"/>
-		  	<RelativeLayout
-		  	   android:layout_alignParentBottom="true"
-		  	   android:layout_alignParentRight="true"
-	    android:id="@+id/food_stepper"
-   		android:layout_width="wrap_content"
-   		android:layout_height="wrap_content"
-	    android:orientation="horizontal" >
-			        		
-   		<TextView
-   		    android:id="@+id/price" 
-            android:layout_height="40dp" 
-            android:layout_width="wrap_content"
-            android:gravity="left"
-            android:singleLine="true">
-   		</TextView>
-   		
-   		<Button
-   		    android:id="@+id/minusbtn"
-   		    android:layout_width="40dp"
-   		    android:layout_height="40dp" 
-   		    android:layout_alignBottom="@+id/price"
-   		    android:layout_alignTop="@+id/price"
-   		    android:layout_toRightOf="@+id/price"
-   		    android:text="@string/minusBtn"/>
-   		
-   		<EditText
-   		    android:id="@+id/quantity"
-   		    android:layout_width="40dp"
-   		    android:layout_height="40dp" 
-   		    android:layout_alignBottom="@+id/price"
-   		    android:layout_alignTop="@+id/price"
-   		    android:layout_toRightOf="@+id/minusbtn"
-   		    android:singleLine="true"
-   		    android:inputType="text"
-   		    android:digits="1234567890"/>
-
-   		<Button
-   		    android:id="@+id/addbtn"
-   		    android:layout_width="40dp"
-   		    android:layout_height="40dp"
-   		    android:layout_alignBottom="@+id/price"
-   		    android:layout_alignTop="@+id/price"
-   		    android:layout_toRightOf="@+id/quantity"
-   		    android:text="@string/addBtn" />
-</RelativeLayout>
-
+	  	    <TextView
+                android:id="@+id/foodname"
+	  	        android:layout_width="match_parent" 
+	            android:layout_height="40dp"
+                android:background="@drawable/common_background"
+	            android:textColor="@android:color/white"
+	            android:textAppearance="@android:style/TextAppearance.Large"
+	            android:gravity="center_vertical"
+	            android:layout_alignParentBottom="true"
+	            android:layout_alignParentLeft="true"/>
 </RelativeLayout>
