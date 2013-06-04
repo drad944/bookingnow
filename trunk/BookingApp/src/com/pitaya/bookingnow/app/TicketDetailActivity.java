@@ -1,11 +1,6 @@
 package com.pitaya.bookingnow.app;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import android.app.Activity;
+
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -13,29 +8,22 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.view.ViewGroup.LayoutParams;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.SimpleAdapter;
-import android.widget.TableRow;
 import android.widget.TextView;
 import com.pitaya.bookingnow.app.domain.Ticket;
 import com.pitaya.bookingnow.app.domain.Ticket.Food;
+import java.util.Map.Entry;
 
-public class TicketActivity extends ListActivity  {
+public class TicketDetailActivity extends ListActivity  {
 
 	private Ticket mTicket;
 	private TicketListAdapter mTicketAdapter;
@@ -43,7 +31,6 @@ public class TicketActivity extends ListActivity  {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
 		this.setView();
 	}
 	
@@ -92,7 +79,6 @@ public class TicketActivity extends ListActivity  {
 		private Context mContext;
 		private View mView;
 		private EditText mEditText;
-		//private Map<Integer, TextWatcher> watchers;
         
         public TicketListAdapter(Context c, View view) throws IllegalArgumentException, IllegalAccessException{  
             this.mContext = c;
@@ -146,9 +132,9 @@ public class TicketActivity extends ListActivity  {
 				
 		        TextView nameText = (TextView) fooditemRL.findViewById(R.id.name);
 		        nameText.setText(food.getName());
-		        TextView totalPriceText = (TextView) fooditemRL.findViewById(R.id.totalprice);
-		        totalPriceText.setText(String.valueOf(food.getPrice() * quantity));
-		        //add foodstepper
+		        final TextView totalPriceText = (TextView) fooditemRL.findViewById(R.id.totalprice);
+		        totalPriceText.setText(String.valueOf(food.getPrice() * quantity) + "元");
+		        //add foodstepper to the list item
 	         	View foodstepper = View.inflate(mContext, R.layout.foodstepper, null);
 	            RelativeLayout.LayoutParams fsRL_LP = new RelativeLayout.LayoutParams(
 	            		 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -176,6 +162,7 @@ public class TicketActivity extends ListActivity  {
 							quantity = 0;
 						}
 						mTicket.addFood(food.getKey(), food.getName(), food.getPrice(), quantity);
+						TicketListAdapter.this.notifyDataSetChanged();
 					}
 
 					@Override
@@ -210,7 +197,9 @@ public class TicketActivity extends ListActivity  {
 					@Override
 					public boolean onTouch(View v, MotionEvent arg1) {
 	            	    if(v instanceof EditText){
-	            	    	mEditText.clearFocus();
+	            	    	if(mEditText != null){
+	            	    		mEditText.clearFocus();
+	            	    	}
 	            	    	return false;
 	            	    } else if(mEditText != null){
 	            	    	mEditText.clearFocus();
@@ -259,18 +248,39 @@ public class TicketActivity extends ListActivity  {
 	            	
 	            });
 			} else {
-				ListView.LayoutParams operationLL_LP = new ListView.LayoutParams(
-						ListView.LayoutParams.WRAP_CONTENT,
-						ListView.LayoutParams.WRAP_CONTENT);
-				itemView = new LinearLayout(mContext);
-				((LinearLayout)itemView).setLayoutParams(operationLL_LP);
-				//((LinearLayout)itemView).setOrientation(ListView..HORIZONTAL);
-				Button confirmBtn = new Button(mContext);
-				confirmBtn.setText("完成");
-				((LinearLayout)itemView).addView(confirmBtn);
-				Button resetBtn = new Button(mContext);
-				resetBtn.setText("清空");
-				((LinearLayout)itemView).addView(resetBtn);
+				itemView = View.inflate(mContext, R.layout.ticketbottom, null);
+				if(mTicket.getFoods().size() != 0){
+
+						Button confirmBtn = (Button)itemView.findViewById(R.id.finish);
+						confirmBtn.setText("完成");
+						Button resetBtn = (Button)itemView.findViewById(R.id.reset);
+						resetBtn.setText("清空");
+						((TextView)itemView.findViewById(R.id.summary)).setText("合计"+mTicket.getTotalPrice()+"元");
+						((TextView)itemView.findViewById(R.id.nofoodmessage)).setVisibility(View.GONE);
+						confirmBtn.setOnClickListener(new OnClickListener(){
+	
+							@Override
+							public void onClick(View v) {
+								//save to local database
+							}
+							
+						});
+						
+						resetBtn.setOnClickListener(new OnClickListener(){
+	
+							@Override
+							public void onClick(View v) {
+								mTicket.removeAllFood();
+								TicketDetailActivity.this.finish();
+							}
+							
+						});
+				} else {
+						((Button)itemView.findViewById(R.id.finish)).setVisibility(View.GONE);
+						((Button)itemView.findViewById(R.id.reset)).setVisibility(View.GONE);
+						((TextView)itemView.findViewById(R.id.summary)).setVisibility(View.GONE);
+						((TextView)itemView.findViewById(R.id.nofoodmessage)).setText("赶紧选择您心爱的美食吧");
+				}
 			}
 			return itemView;
 		}

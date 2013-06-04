@@ -9,7 +9,6 @@
         android:id="@+id/leftmenu"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/red"
         android:orientation="vertical"
         android:showDividers = "middle"
         android:padding="10dip">

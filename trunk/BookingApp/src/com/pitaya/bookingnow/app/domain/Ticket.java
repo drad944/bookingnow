@@ -3,6 +3,7 @@ package com.pitaya.bookingnow.app.domain;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 public class Ticket implements Serializable{
@@ -42,15 +43,29 @@ public class Ticket implements Serializable{
 		return this.ticketkey;
 	}
 	
-	public synchronized void addFood(String key, String name, float price, int quantity){
+	public float getTotalPrice(){
+		float summary = 0f;
+		for(Entry<Food, Integer> entry : this.foods.entrySet()){
+			summary += entry.getKey().getPrice()*entry.getValue();
+		}
+		return summary;
+	}
+	
+	public void removeAllFood(){
+		this.foods = new HashMap<Ticket.Food, Integer>();
+	}
+	
+	public synchronized boolean addFood(String key, String name, float price, int quantity){
 		Ticket.Food food = this.new Food(key, name, price); 
 		if(quantity <= 0){
 			if(this.foods.get(food) != null){
 				this.foods.remove(food);
+				return true;
 			}
 		} else {
 			this.foods.put(food, quantity);
 		}
+		return false;
 	}
 	
 	public class Food implements Serializable{

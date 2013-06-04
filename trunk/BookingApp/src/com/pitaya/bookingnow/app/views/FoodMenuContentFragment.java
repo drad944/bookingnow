@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import com.pitaya.bookingnow.app.R;
-import com.pitaya.bookingnow.app.TicketActivity;
+import com.pitaya.bookingnow.app.TicketDetailActivity;
 import com.pitaya.bookingnow.app.domain.Food;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
@@ -45,7 +45,11 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		}
 			
 		public int getCurrentViewIndex(){
-			return this.mFoodMenuViewPager.getCurrentItem();
+			if(this.mFoodMenuViewPager != null){
+				return this.mFoodMenuViewPager.getCurrentItem();
+			} else {
+				return -1;
+			}
 		}
 		
 		public void selectPage(int index){
@@ -53,7 +57,8 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		}
 		
 		public void refreshCurrentPage(){
-			mFoodMenuAdapter.refresh(getCurrentViewIndex());
+			if(getCurrentViewIndex() > -1)
+				mFoodMenuAdapter.refresh(getCurrentViewIndex());
 		}
 		
 		@Override
@@ -72,7 +77,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 						//get current good items
 						Bundle bundle = new Bundle();
 						bundle.putSerializable("ticket", mContentContainer.getTicket());
-						Intent intent = new Intent(FoodMenuContentFragment.this.getActivity(), TicketActivity.class);
+						Intent intent = new Intent(FoodMenuContentFragment.this.getActivity(), TicketDetailActivity.class);
 						intent.putExtras(bundle);
 						startActivity(intent);
 					}

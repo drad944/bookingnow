@@ -15,9 +15,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,12 +63,25 @@ public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderC
 		    	  }
 		      }
 		    });
+		  flipView.setOnTouchListener(new View.OnTouchListener(){
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+			    InputMethodManager imm = (InputMethodManager)FoodBookActivity2.this.getSystemService(Context.INPUT_METHOD_SERVICE); 
+        	    if(imm.isActive()){
+        	    	imm.hideSoftInputFromWindow(flipView.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+        	    }
+				return false;
+			}
+			  
+		  });
 		  this.getLoaderManager().initLoader(0, null, (LoaderCallbacks<Cursor>) this);
     }
     
     private void updateCurrentFoodInfo(){
     	if(mCurrentFood == null)
     		return;
+    	mQuantityText.clearFocus();
     	mFoodNameText.setText(mCurrentFood.getName());
     	mPriceText.setText(String.valueOf(mCurrentFood.getPrice())+"元/份");
     	if(mTextWatcher != null){
@@ -132,6 +147,7 @@ public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderC
 	    mPriceText = (TextView) fsRL.findViewById(R.id.price);
 	    
 	    mQuantityText = (EditText)fsRL.findViewById(R.id.quantity);
+	    mQuantityText.clearFocus();
 	    
         ((Button)fsRL.findViewById(R.id.minusbtn)).setOnClickListener(new OnClickListener(){
         	

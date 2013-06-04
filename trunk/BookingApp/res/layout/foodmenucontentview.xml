@@ -4,14 +4,14 @@
      android:layout_height="match_parent"
      android:background="@drawable/common_background"
      android:orientation="vertical"
-     android:gravity="center"
-     android:padding="5dp" >
+     android:gravity="center">
       
 	  <android.support.v4.view.ViewPager
 	      android:id="@+id/foodmenuviewpager"
 	      android:layout_width="fill_parent"
 	      android:layout_height="wrap_content"
-	      android:layout_above="@+id/showTicket" >
+	      android:layout_above="@+id/showTicket"
+	      android:background="@android:color/white">
 
       	 	<android.support.v4.view.PagerTabStrip
 	          	android:layout_width="wrap_content"
