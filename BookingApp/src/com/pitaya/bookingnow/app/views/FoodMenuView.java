@@ -155,7 +155,6 @@ public class FoodMenuView extends FrameLayout{
 	         	}
          	
 	         	TextView priceText = (TextView) fsRL.findViewById(R.id.price);
-	         	priceText.setTextSize(25);
 	         	priceText.setText(String.valueOf(food.getPrice())+"元/份");
 	         	
 	         	final EditText quantityText = (EditText)fsRL.findViewById(R.id.quantity);
