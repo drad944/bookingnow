@@ -17,6 +17,7 @@ public class TicketContentView extends BaseContentView implements Ticket.OnDirty
 	
 	private Map<String, Ticket> dirtyTickets;
 	private String mTicketKey;
+	private View mView;
 
 	public TicketContentView(int type, String key, Context context, SlideContent home, String ticket_key) {
 		super(type ,key, context, home);
@@ -26,9 +27,10 @@ public class TicketContentView extends BaseContentView implements Ticket.OnDirty
 	
 	@Override
 	public View getView(){
-		View ticketContentView = View.inflate(this.mContext, R.layout.ticketcontentview, null);
-		//ActionBar actionBar = ((FragmentActivity)this.mContext).getActionBar();
-		return ticketContentView;
+		if(mView == null){
+			mView = View.inflate(this.mContext, R.layout.ticketcontentview, null);
+		}
+		return mView;
 	}
 	
 	public void setDisplayTicketKey(String ticket_key){

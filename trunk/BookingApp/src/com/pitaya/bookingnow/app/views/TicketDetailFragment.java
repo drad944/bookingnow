@@ -11,31 +11,22 @@ import android.widget.TextView;
 
 public class TicketDetailFragment extends Fragment {
 	
-	public static TicketDetailFragment newInstance(int index) {
+	private String ticket_key;
+	
+	public static TicketDetailFragment newInstance(String ticketKey) {
 		TicketDetailFragment f = new TicketDetailFragment();
-
-        // Supply index input as an argument.
-        Bundle args = new Bundle();
-        args.putInt("index", index);
-        f.setArguments(args);
+		f.ticket_key = ticketKey;
         return f;
     }
 
-    public int getShownIndex() {
-        return getArguments().getInt("index", 0);
+    public String getShownIndex() {
+        return ticket_key;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         if (container == null) {
-            // We have different layouts, and in one of them this
-            // fragment's containing frame doesn't exist.  The fragment
-            // may still be created from its saved state, but there is
-            // no reason to try to create its view hierarchy because it
-            // won't be displayed.  Note this is not needed -- we could
-            // just run the code below, where we would create and return
-            // the view hierarchy; it would just never be used.
             return null;
         }
 
