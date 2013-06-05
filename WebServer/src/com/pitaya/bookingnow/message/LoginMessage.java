@@ -13,7 +13,6 @@ public class LoginMessage extends Message{
 		super(key);
 		this.username = username;
 		this.password = password;
-		this.type = LoginMessage.class.getName();
 	}
 
 	public void setUsername(String username){
