@@ -1,8 +1,8 @@
-package com.pitaya.bookingnow.service;
+package com.pitaya.bookingnow.service.impl;
 
 import junit.framework.TestCase;
 
-public class MessageServerTest extends TestCase {
+public class MessageServiceTest extends TestCase {
 
 		MessageService messageServer;
 	

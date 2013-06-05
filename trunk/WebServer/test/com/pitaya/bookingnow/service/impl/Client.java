@@ -1,4 +1,4 @@
-package com.pitaya.bookingnow.service;
+package com.pitaya.bookingnow.service.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
