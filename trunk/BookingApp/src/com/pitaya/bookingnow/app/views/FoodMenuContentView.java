@@ -22,42 +22,43 @@ import android.support.v4.app.Fragment;
  */
 public class FoodMenuContentView extends BaseContentView{
 
-	private ArrayList<Fragment> mFragmentList;
+	private FoodMenuContentFragment mFragment;
 	private Ticket mTicket;
 	
-	public FoodMenuContentView(String key, Context context, SlideContent home, Ticket ticket) {
-		super(key, context, home);
-		mFragmentList = new ArrayList<Fragment>();
+	public FoodMenuContentView(int type, String key, Context context, SlideContent home, Ticket ticket) {
+		super(type, key, context, home);
 		this.mTicket = ticket;
 	}
 
 	@Override
 	public boolean canIntercept(){
-		return ((FoodMenuContentFragment)mFragmentList.get(0)).getCurrentViewIndex() == 0;
+		if(mFragment != null){
+			return mFragment.getCurrentViewIndex() == 0;
+		} else {
+			return super.canIntercept();
+		}
 	}
 	
 	@Override
-	public ArrayList<Fragment> getFragments(){
-		if(mFragmentList.size() == 0){
-			FoodMenuContentFragment fragment = new FoodMenuContentFragment();
-			fragment.setContainer(this);
-			mFragmentList.add(fragment);
+	public Fragment getFragment(){
+		if(mFragment == null){
+			mFragment = new FoodMenuContentFragment();
+			mFragment.setContainer(this);
 		}
-		return mFragmentList;
+		return mFragment;
 	}
 	
 	public void selectPage(int index){
-		if(this.mFragmentList.size() > 0) {
-			((FoodMenuContentFragment)this.mFragmentList.get(0)).selectPage(index);
+		if(this.mFragment != null) {
+			mFragment.selectPage(index);
 		}
 	}
 	
 	public void setTicket(Ticket ticket){
 		mTicket = ticket;
-		if(this.mFragmentList.size() > 0) {
-			((FoodMenuContentFragment)this.mFragmentList.get(0)).refreshCurrentPage();
+		if(mFragment != null) {
+			mFragment.refreshCurrentPage();
 		}
-		
 	}
 	
 	public Ticket getTicket(){

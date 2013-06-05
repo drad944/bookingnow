@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import com.pitaya.bookingnow.app.R;
-import com.pitaya.bookingnow.app.TicketDetailActivity;
+import com.pitaya.bookingnow.app.TicketDetailPopUpActivity;
 import com.pitaya.bookingnow.app.domain.Food;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
@@ -57,43 +57,44 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		}
 		
 		public void refreshCurrentPage(){
-			if(getCurrentViewIndex() > -1)
+			if(getCurrentViewIndex() > -1){
 				mFoodMenuAdapter.refresh(getCurrentViewIndex());
+			}
 		}
 		
 		@Override
 	    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-				Log.i(TAG, "onCreateView in FoodMenuContentFragment" + this.hashCode());
-				mFoodMenuContentView = inflater.inflate(R.layout.foodmenucontentview, container, false);
-				mFoodMenuViewPager = (ViewPager)mFoodMenuContentView.findViewById(R.id.foodmenuviewpager);
+			Log.i(TAG, "onCreateView in FoodMenuContentFragment" + this.hashCode());
+			mFoodMenuContentView = inflater.inflate(R.layout.foodmenucontentview, container, false);
+			mFoodMenuViewPager = (ViewPager)mFoodMenuContentView.findViewById(R.id.foodmenuviewpager);
+			
+			this.getActivity().getLoaderManager().initLoader(0, null, (LoaderCallbacks<Cursor>) this);
+			
+			View showTicketBtn = mFoodMenuContentView.findViewById(R.id.showTicket);
+			showTicketBtn.setOnClickListener(new OnClickListener(){
 				
-				this.getActivity().getLoaderManager().initLoader(0, null, (LoaderCallbacks<Cursor>) this);
+				@Override
+				public void onClick(View arg0) {
+					//get current good items
+					Bundle bundle = new Bundle();
+					bundle.putSerializable("ticket", mContentContainer.getTicket());
+					Intent intent = new Intent(FoodMenuContentFragment.this.getActivity(), TicketDetailPopUpActivity.class);
+					intent.putExtras(bundle);
+					startActivity(intent);
+				}
 				
-				View showTicketBtn = mFoodMenuContentView.findViewById(R.id.showTicket);
-				showTicketBtn.setOnClickListener(new OnClickListener(){
-					
-					@Override
-					public void onClick(View arg0) {
-						//get current good items
-						Bundle bundle = new Bundle();
-						bundle.putSerializable("ticket", mContentContainer.getTicket());
-						Intent intent = new Intent(FoodMenuContentFragment.this.getActivity(), TicketDetailActivity.class);
-						intent.putExtras(bundle);
-						startActivity(intent);
-					}
-					
-				});
-				View goBackBtn = mFoodMenuContentView.findViewById(R.id.backHome);
-				goBackBtn.setOnClickListener(new OnClickListener(){
-					
-					@Override
-					public void onClick(View arg0) {
-						mContentContainer.selectPage(0);
-					}
-					
-				});
+			});
+			View goBackBtn = mFoodMenuContentView.findViewById(R.id.backHome);
+			goBackBtn.setOnClickListener(new OnClickListener(){
 				
-				return mFoodMenuContentView;
+				@Override
+				public void onClick(View arg0) {
+					mContentContainer.selectPage(0);
+				}
+				
+			});
+			
+			return mFoodMenuContentView;
 	    }
 		
 		@Override

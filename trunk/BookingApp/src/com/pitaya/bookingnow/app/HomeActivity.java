@@ -82,7 +82,7 @@ public class HomeActivity extends FragmentActivity {
 		Intent intent = this.getIntent();
 		Bundle bundle = intent.getExtras();
 		if(bundle != null && bundle.getSerializable("ticket") != null){
-			((FoodMenuContentView)this.homecontent.getContentView("menu0")).setTicket((Ticket)bundle.getSerializable("ticket"));
+			((FoodMenuContentView)this.homecontent.getContentView("menu")).setTicket((Ticket)bundle.getSerializable("ticket"));
 		}
 	}
 	
@@ -130,15 +130,14 @@ public class HomeActivity extends FragmentActivity {
 					menuitem.setTextColor(android.graphics.Color.WHITE);
 					menuitem.setTextSize(25);
 					menuitem.setGravity(Gravity.CENTER);
-					FoodMenuContentView foodmenucontentview = new FoodMenuContentView("menu" + index, this, homecontent, new Ticket("A1", "rmzhang"));
-					contentViews.add(foodmenucontentview);
+					
 					switch(index){
 						case 0:
 							menuitem.setText("菜单");
 							menuitem.setOnClickListener(new OnClickListener(){
 								@Override
 								public void onClick(View view) {
-									homecontent.selectItem("menu" + index);
+									homecontent.selectItem("menu");
 								}
 							});
 							break;
@@ -153,19 +152,27 @@ public class HomeActivity extends FragmentActivity {
 							});
 							break;
 						case 2:
-							menuitem.setText("设置");
+							menuitem.setText("订单");
 							menuitem.setOnClickListener(new OnClickListener(){
 								@Override
 								public void onClick(View view) {
-									homecontent.selectItem("menu" + index);
+									homecontent.selectItem("ticket");
 								}
 								
 							});
 							break;
 					}
+					
 					menuitems.addView(menuitem);
-				}
-			} 
+				}//end for
+				TicketContentView ticketview = new TicketContentView(BaseContentView.VIEW, "ticket", this, homecontent, null);
+				contentViews.add(ticketview);
+				Ticket newTicket = new Ticket("A1", "rmzhang");
+				newTicket.setOnDirtyChangedListener(ticketview);
+				FoodMenuContentView menucontentview = new FoodMenuContentView(BaseContentView.FRAGMENT, "menu", this, homecontent, newTicket);
+				contentViews.add(menucontentview);
+
+			}
 			homecontent.setMenu(leftmenu);
 		}
 		setContentView(homecontent);

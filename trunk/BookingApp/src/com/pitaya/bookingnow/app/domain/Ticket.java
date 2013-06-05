@@ -1,30 +1,43 @@
 package com.pitaya.bookingnow.app.domain;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
 public class Ticket implements Serializable{
 	
-	/**
-	 * 
-	 */
+	public static final int NEW = 0;
+	public static final int BOOKING = NEW + 1;
+	public static final int COMMITED = BOOKING + 1;
+	public static final int PAYING = COMMITED + 1;
+	public static final int FINISHED = PAYING + 1;
+	public static final int SAVED = FINISHED + 1;
+	
 	private static final long serialVersionUID = -7178941729755818383L;
 	
 	private Map<Ticket.Food, Integer> foods;
 	private String tableNum;
 	private String submitter;
 	private String ticketkey;
+	private Long modification_ts;
+	private Long commit_ts;
+	private int status;
+	private boolean isDirty;
+	private transient OnDirtyChangedListener mOnDirtyChangedListener;
 	
 	public Ticket(){}
 	
 	public Ticket(String tn, String submitter){
-		this.foods = new HashMap<Ticket.Food, Integer>();
+		this.foods = new LinkedHashMap<Ticket.Food, Integer>();
 		this.tableNum = tn;
 		this.submitter = submitter;
 		this.ticketkey = UUID.randomUUID().toString();
+		this.modification_ts = System.currentTimeMillis();
+		this.status = Ticket.NEW;
+		//once new a ticket, it should be saved in database
+		this.isDirty = false;
 	}
 	
 	public Map<Food, Integer> getFoods(){
@@ -43,6 +56,18 @@ public class Ticket implements Serializable{
 		return this.ticketkey;
 	}
 	
+	public Long getModificationTime(){
+		return this.modification_ts;
+	}
+	
+	public Long getCommitTime(){
+		return this.commit_ts;
+	}
+	
+	public int getStatus(){
+		return this.status;
+	}
+
 	public float getTotalPrice(){
 		float summary = 0f;
 		for(Entry<Food, Integer> entry : this.foods.entrySet()){
@@ -51,21 +76,63 @@ public class Ticket implements Serializable{
 		return summary;
 	}
 	
-	public void removeAllFood(){
-		this.foods = new HashMap<Ticket.Food, Integer>();
+	public boolean isDirty(){
+		return this.isDirty;
 	}
 	
+	public void markDirty(boolean flag){
+		this.isDirty = flag;
+		if(this.mOnDirtyChangedListener != null){
+			this.mOnDirtyChangedListener.onDirtyChanged(this, this.isDirty);
+		}
+	}
+	
+	public void setCommitTime(Long ts){
+		this.commit_ts = ts;
+	}
+	
+	public void setStatus(int status){
+		this.status = status;
+	}
+	
+	public void setOnDirtyChangedListener(OnDirtyChangedListener listener){
+		this.mOnDirtyChangedListener = listener;
+	}
+	
+	public void removeAllFood(){
+		this.foods = new LinkedHashMap<Ticket.Food, Integer>();
+		this.isDirty = true;
+	}
+	/*
+	 * return true if the food is removed
+	 */
 	public synchronized boolean addFood(String key, String name, float price, int quantity){
 		Ticket.Food food = this.new Food(key, name, price); 
 		if(quantity <= 0){
 			if(this.foods.get(food) != null){
 				this.foods.remove(food);
+				markDirty(true);
+				this.modification_ts = System.currentTimeMillis();
 				return true;
+			} else {
+				return false;
 			}
 		} else {
-			this.foods.put(food, quantity);
+			Integer current_q = this.foods.get(food);
+			if(current_q != null){
+				if(quantity != current_q){
+					this.foods.put(food, quantity);
+					this.modification_ts = System.currentTimeMillis();
+					markDirty(true);
+				}
+			} else {
+				this.foods.put(food, quantity);
+				this.modification_ts = System.currentTimeMillis();
+				markDirty(true);
+			}
+
+			return false;
 		}
-		return false;
 	}
 	
 	public class Food implements Serializable{
@@ -111,5 +178,11 @@ public class Ticket implements Serializable{
 		public int hashCode(){
 			return this.key.hashCode();
 		}
+	}
+	
+	public interface OnDirtyChangedListener{
+		
+		public void onDirtyChanged(Ticket ticket, boolean flag);
+		
 	}
 }
