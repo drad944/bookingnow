@@ -28,7 +28,7 @@ public class AccountAction extends ActionSupport{
 		if(account != null) {
         	System.out.println("userName:"+account.getName()+"\n"+"password:"+account.getPassword());
         }
-        Account realAccount = accountService.get(account);
+        Account realAccount = accountService.selectByPrimaryKey(1);
         if(realAccount.getAid() > 0){  
             return "findSuccess";  
         }else{  
@@ -40,7 +40,7 @@ public class AccountAction extends ActionSupport{
 		if(account != null) {
         	System.out.println("userName:"+account.getName()+"\n"+"password:"+account.getPassword() +"\n"+"role:"+account.getRole());
         }
-        if(accountService.add(account)){  
+        if(accountService.insert(account) == 1){  
             return "registerSuccess";  
         }else{  
             return "registerFail";  
@@ -51,7 +51,7 @@ public class AccountAction extends ActionSupport{
 		if(account != null) {
         	System.out.println("userName:"+account.getName()+"\n"+"password:"+account.getPassword() +"\n"+"role:"+account.getRole());
         }
-        if(accountService.modify(account)){  
+        if(accountService.updateByPrimaryKeySelective(account) == 1){  
             return "updateSuccess";  
         }else{  
             return "updateFail";  
@@ -62,7 +62,7 @@ public class AccountAction extends ActionSupport{
 		if(account != null) {
         	System.out.println("userName:"+account.getName()+"\n"+"password:"+account.getPassword() +"\n"+"role:"+account.getRole());
         }
-        if(accountService.delete(account)){  
+        if(accountService.deleteByPrimaryKey(1) == 1){  
             return "removeSuccess";  
         }else{  
             return "removeFail";  

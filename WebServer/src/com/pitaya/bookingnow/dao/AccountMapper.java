@@ -1,17 +1,30 @@
 package com.pitaya.bookingnow.dao;
-import java.util.List;
-
-import org.springframework.dao.DataAccessException;
 
 import com.pitaya.bookingnow.model.Account;
+import com.pitaya.bookingnow.model.AccountExample;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
-public interface AccountMapper extends BaseMapper<Account>{
-	
-	public boolean add(Account account) throws DataAccessException;
-	public boolean delete(Account account) throws DataAccessException;
-	public boolean modify(Account account) throws DataAccessException;
-	public Account getByID(Account account) throws DataAccessException;
-	public Account get(Account account) throws DataAccessException;
-	public List<Account> getAll(Account account) throws DataAccessException;
-	
+public interface AccountMapper {
+    int countByExample(AccountExample example);
+
+    int deleteByExample(AccountExample example);
+
+    int deleteByPrimaryKey(Integer aid);
+
+    int insert(Account record);
+
+    int insertSelective(Account record);
+
+    List<Account> selectByExample(AccountExample example);
+
+    Account selectByPrimaryKey(Integer aid);
+
+    int updateByExampleSelective(@Param("record") Account record, @Param("example") AccountExample example);
+
+    int updateByExample(@Param("record") Account record, @Param("example") AccountExample example);
+
+    int updateByPrimaryKeySelective(Account record);
+
+    int updateByPrimaryKey(Account record);
 }

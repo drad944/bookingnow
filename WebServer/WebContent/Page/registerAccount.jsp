@@ -8,7 +8,7 @@
 </head>
 <body>
 	<h1>please register account:</h1>
-	 <form action="test/registerAccount.action" method="post">
+	 <form action="registerAccount.action" method="post">
     	<table>
     		<tr>
     			<td>username:</td>
