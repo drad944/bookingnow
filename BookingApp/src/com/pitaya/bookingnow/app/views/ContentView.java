@@ -85,20 +85,33 @@ public class ContentView extends ViewGroup {
 	public void setupView(BaseContentView v) {
 		FragmentManager fragmentManager = ((FragmentActivity)this.context).getSupportFragmentManager(); 
 		FragmentManager.enableDebugLogging(true);
-		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		if(mCurrentContentView != null){
-			for(int i=0 ; i < mCurrentContentView.getFragments().size(); i++){
-				fragmentTransaction.remove(mCurrentContentView.getFragments().get(i));
+		if(v.getRendererType() == BaseContentView.VIEW){
+			if(mCurrentContentView != null){
+				if(mCurrentContentView.getRendererType() == BaseContentView.FRAGMENT){
+					FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+					fragmentTransaction.remove(mCurrentContentView.getFragment());
+					fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+					fragmentTransaction.commit();
+				} else {
+					mContainer.removeAllViews();
+				}
 			}
-//			if (mContainer.getChildCount() > 0) {
-//				mContainer.removeAllViews();
-//			}
+			mContainer.addView(v.getView());
+		} else if(v.getRendererType() == BaseContentView.FRAGMENT){
+			FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+			if(mCurrentContentView != null){
+				if(mCurrentContentView.getRendererType() == BaseContentView.FRAGMENT){
+					fragmentTransaction.remove(mCurrentContentView.getFragment());
+				}else{
+					mContainer.removeAllViews();
+				}
+			}
+			fragmentTransaction.add(mContainer.getId(), v.getFragment());
+			fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			fragmentTransaction.commit();
+		} else if(mContainer.getChildCount() > 0){
+			mContainer.removeAllViews();
 		}
-		for(int i=0; i < v.getFragments().size(); i++){
-			fragmentTransaction.add(mContainer.getId(), v.getFragments().get(i));
-		}
-		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-		fragmentTransaction.commit();
 		this.mCurrentContentView = v;
 	}
 

@@ -50,7 +50,7 @@ public class SlideContent extends RelativeLayout {
 	public void setMenu(View v) {
 		mMenuView.setView(v);
 		mMenuView.invalidate();
-		this.setContent(this.contentViews.get(0));
+		this.setContent(getContentView("menu"));
 	}
 	
 	public void updateContentViews(ArrayList<BaseContentView> views){

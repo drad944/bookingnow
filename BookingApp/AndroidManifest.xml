@@ -26,8 +26,12 @@
             </intent-filter>
         </activity>
         
-        <activity android:name=".TicketDetailActivity" 
+        <activity android:name=".TicketDetailPopUpActivity" 
                 android:theme="@style/TicketViewerStyle"
+                android:configChanges="screenSize|orientation"
+                android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity android:name=".TicketDetailActivity"
                 android:configChanges="screenSize|orientation"
                 android:windowSoftInputMode="adjustPan">
         </activity>
@@ -40,6 +44,14 @@
       		    android:name=".service.FoodMenuContentProvider"
       		    android:authorities="com.pitaya.bookingnow.food.contentprovider" >
    		</provider>
+   		<provider
+                android:name=".service.TicketContentProvider"
+                android:authorities="com.pitaya.bookingnow.ticket.contentprovider" >
+        </provider>
+        <provider
+                android:name=".service.TicketDetailContentProvider"
+                android:authorities="com.pitaya.bookingnow.ticketdetail.contentprovider" >
+        </provider>
     </application>
 
 </manifest>

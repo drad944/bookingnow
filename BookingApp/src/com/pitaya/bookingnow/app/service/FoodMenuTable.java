@@ -20,7 +20,7 @@ public class FoodMenuTable {
 	  public static final String COLUMN_IMAGE_L = "smallimage";
 	  public static final String COLUMN_REVISION = "revision";
 	  
-	  private static final String DATABASE_CREATE = "create table " 
+	  private static final String TABLE_CREATE = "create table " 
 		      + TABLE_FOOD
 		      + "(" 
 		      + COLUMN_ID + " integer primary key autoincrement, "
@@ -39,7 +39,7 @@ public class FoodMenuTable {
 		      + ");";
 
 	 public static void onCreate(SQLiteDatabase database) {
-		 	database.execSQL(DATABASE_CREATE);
+		 	database.execSQL(TABLE_CREATE);
 	 }
 	 
 	 public static void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
