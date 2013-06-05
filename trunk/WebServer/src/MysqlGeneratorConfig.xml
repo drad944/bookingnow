@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+	<classPathEntry location="D:\workspace\WebServer\WebContent\WEB-INF\lib\mysql-connector-java-5.0.8-bin.jar" />
+
+	<context id="mysqlTables" targetRuntime="MyBatis3">
+		<commentGenerator>
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+		
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/bookingnow?characterEncoding=utf8" userId="testUser" password="123456">
+		</jdbcConnection>
+
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<javaModelGenerator targetPackage="com.pitaya.bookingnow.model" targetProject="D:\workspace\WebServer\src">
+			<property name="enableSubPackages" value="false" />
+			<property name="trimString" value="true" />
+		</javaModelGenerator>
+
+		<sqlMapGenerator targetPackage="com.pitaya.bookingnow.mapper" targetProject="D:\workspace\WebServer\src">
+			<property name="enableSubPackages" value="false" />
+		</sqlMapGenerator>
+
+		<javaClientGenerator type="XMLMAPPER" targetPackage="com.pitaya.bookingnow.dao" targetProject="D:\workspace\WebServer\src">
+			<property name="enableSubPackages" value="false" />
+		</javaClientGenerator>
+
+		<table catalog="" schema="" tableName="pitaya_Account" domainObjectName="Account"
+			enableSelectByExample="true" 
+			enableDeleteByExample="true" 
+			enableCountByExample="true" 
+			enableUpdateByExample="true" 
+			selectByExampleQueryId="false" 
+			>
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="aid" sqlStatement="MySql" identity="true" />
+		</table>
+
+	</context>
+</generatorConfiguration>

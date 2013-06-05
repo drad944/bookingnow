@@ -5,15 +5,26 @@ package com.pitaya.bookingnow.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.pitaya.bookingnow.model.Account;
+import com.pitaya.bookingnow.model.AccountExample;
 
 
-public interface IAccountService extends IBaseService<Account>{
-	public boolean add(Account account);
-	public boolean delete(Account account);
-	public boolean modify(Account account);
-	public Account get(Account account);
-	public Account getByID(Account account);
-	public List<Account> getAll(Account account);
+public interface IAccountService{
+
+    int deleteByPrimaryKey(Integer aid);
+
+    int insert(Account record);
+
+    int insertSelective(Account record);
+
+    List<Account> selectByExample(AccountExample example);
+
+    Account selectByPrimaryKey(Integer aid);
+    
+    int updateByPrimaryKeySelective(Account record);
+
+    int updateByPrimaryKey(Account record);
 
 }

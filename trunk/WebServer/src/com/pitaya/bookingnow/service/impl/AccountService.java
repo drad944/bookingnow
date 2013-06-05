@@ -1,8 +1,11 @@
 package com.pitaya.bookingnow.service.impl;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.pitaya.bookingnow.dao.AccountMapper;
 import com.pitaya.bookingnow.model.Account;
+import com.pitaya.bookingnow.model.AccountExample;
 import com.pitaya.bookingnow.service.IAccountService;
 
 public class AccountService implements IAccountService {
@@ -18,34 +21,48 @@ public class AccountService implements IAccountService {
 	}
 
 	@Override
-	public boolean add(Account account) {
+	public int deleteByPrimaryKey(Integer aid) {
 		
-		return accountDao.add(account);
+		return accountDao.deleteByPrimaryKey(aid);
 	}
 
 	@Override
-	public boolean delete(Account account) {
-		return accountDao.delete(account);
+	public int insert(Account record) {
+		// TODO Auto-generated method stub
+		return accountDao.insert(record);
 	}
 
 	@Override
-	public boolean modify(Account account) {
-		return accountDao.modify(account);
+	public int insertSelective(Account record) {
+		// TODO Auto-generated method stub
+		return accountDao.insertSelective(record);
 	}
 
 	@Override
-	public Account get(Account account) {
-		return accountDao.get(account);
+	public List<Account> selectByExample(AccountExample example) {
+		
+
+		return null;
 	}
 
 	@Override
-	public Account getByID(Account account) {
-		return accountDao.getByID(account);
+	public Account selectByPrimaryKey(Integer aid) {
+		// TODO Auto-generated method stub
+		return accountDao.selectByPrimaryKey(aid);
 	}
 
 	@Override
-	public List<Account> getAll(Account account) {
-		return accountDao.getAll(account);
+	public int updateByPrimaryKeySelective(Account record) {
+		// TODO Auto-generated method stub
+		return accountDao.updateByPrimaryKeySelective(record);
 	}
 
+	@Override
+	public int updateByPrimaryKey(Account record) {
+		// TODO Auto-generated method stub
+		return accountDao.updateByPrimaryKey(record);
+	}
+
+	
+	
 }

@@ -17,7 +17,7 @@
 	</environments>
     
 	<mappers>
-		<mapper resource="com/pitaya/bookingnow/dao/AccountMapper.xml"/>
+		<mapper resource="com/pitaya/bookingnow/mapper/AccountMapper.xml"/>
 	</mappers>
 </configuration>
 
