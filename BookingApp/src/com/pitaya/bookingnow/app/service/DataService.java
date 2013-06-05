@@ -31,7 +31,7 @@ public class DataService {
 	}
 	
 	public static CursorLoader getFoodDataByCategory(Context context, String category){
-		  String[] projection = { 		    		
+		  String[] projection = {
 				FoodMenuTable.COLUMN_CATEGORY, 
 	    		FoodMenuTable.COLUMN_DESCRIPTION,
 	    		FoodMenuTable.COLUMN_FOOD_KEY,
@@ -40,10 +40,29 @@ public class DataService {
 	    		FoodMenuTable.COLUMN_PRICE,
 	    		FoodMenuTable.COLUMN_ORDERINDEX,
 	    		FoodMenuTable.COLUMN_STATUS };
-		  android.content.CursorLoader cursorLoader = new CursorLoader(context, FoodMenuContentProvider.CONTENT_URI, 
+		  CursorLoader cursorLoader = new CursorLoader(context, FoodMenuContentProvider.CONTENT_URI, 
 				projection, FoodMenuTable.COLUMN_CATEGORY + "=?", 
 				new String[]{category}, FoodMenuTable.COLUMN_ORDERINDEX);
 		  return cursorLoader;
+	}
+	
+	public static CursorLoader getTicketListByStatus(Context context, int status){
+		String[] projection = {
+				TicketTable.COLUMN_TICKET_KEY,
+				TicketTable.COLUMN_TABLE_NUMBER,
+				TicketTable.COLUMN_SUBMITTER,
+				TicketTable.COLUMN_LAST_MODIFACTION_DATE,
+				TicketTable.COLUMN_COMMIT_DATE,
+				TicketTable.COLUMN_STATUS
+		};
+		if(status == Ticket.ALL){
+			return new CursorLoader(context, TicketContentProvider.CONTENT_URI, 
+					projection, null, null, TicketTable.COLUMN_LAST_MODIFACTION_DATE);
+		} else {
+			return new CursorLoader(context, TicketContentProvider.CONTENT_URI, 
+					projection, TicketTable.COLUMN_STATUS + "=?", 
+					new String[]{String.valueOf(status)},TicketTable.COLUMN_LAST_MODIFACTION_DATE);
+		}
 	}
 	
 	public static void saveNewTicket(Context context, Ticket ticket){

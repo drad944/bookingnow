@@ -8,7 +8,7 @@ public class TicketTable {
 	 public static final String TABLE_TICKET = "ticket";
 	 public static final String COLUMN_ID = "_id";
 	 public static final String COLUMN_TICKET_KEY = "key";
-	 public static final String COLUMN_TABLE_NUMBER = "table_num";
+	 public static final String COLUMN_TABLE_NUMBER = "table_number";
 	 public static final String COLUMN_SUBMITTER = "submitter";
 	 public static final String COLUMN_LAST_MODIFACTION_DATE = "modification_date";
 	 public static final String COLUMN_COMMIT_DATE = "commit_date";
@@ -31,7 +31,7 @@ public class TicketTable {
 	 }
 	 
 	 public static void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-		  Log.w(FoodMenuTable.class.getName(), "Upgrading ticket database from version "
+		  Log.w(TicketTable.class.getName(), "Upgrading ticket database from version "
 		    + oldVersion + " to " + newVersion
 		    + ", which will destroy all old data");
 		  database.execSQL("DROP TABLE IF EXISTS " + TABLE_TICKET);

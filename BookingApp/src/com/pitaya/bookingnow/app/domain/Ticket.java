@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public class Ticket implements Serializable{
 	
+	public static final int ALL = -1;
 	public static final int NEW = 0;
 	public static final int BOOKING = NEW + 1;
 	public static final int COMMITED = BOOKING + 1;
@@ -27,7 +28,9 @@ public class Ticket implements Serializable{
 	private boolean isDirty;
 	private transient OnDirtyChangedListener mOnDirtyChangedListener;
 	
-	public Ticket(){}
+	public Ticket(){
+		this.isDirty = false;
+	}
 	
 	public Ticket(String tn, String submitter){
 		this.foods = new LinkedHashMap<Ticket.Food, Integer>();
@@ -36,7 +39,6 @@ public class Ticket implements Serializable{
 		this.ticketkey = UUID.randomUUID().toString();
 		this.modification_ts = System.currentTimeMillis();
 		this.status = Ticket.NEW;
-		//once new a ticket, it should be saved in database
 		this.isDirty = false;
 	}
 	
@@ -87,8 +89,24 @@ public class Ticket implements Serializable{
 		}
 	}
 	
+	public void setKey(String key){
+		this.ticketkey = key;
+	}
+	
+	public void setSubmitter(String submitter){
+		this.submitter = submitter;
+	}
+	
+	public void setTableNumber(String number){
+		this.tableNum = number;
+	}
+	
 	public void setCommitTime(Long ts){
 		this.commit_ts = ts;
+	}
+	
+	public void setLastModifyTime(Long ts){
+		this.modification_ts = ts;
 	}
 	
 	public void setStatus(int status){
@@ -107,6 +125,9 @@ public class Ticket implements Serializable{
 	 * return true if the food is removed
 	 */
 	public synchronized boolean addFood(String key, String name, float price, int quantity){
+		if(this.foods == null){
+			this.foods = new LinkedHashMap<Ticket.Food, Integer>();
+		}
 		Ticket.Food food = this.new Food(key, name, price); 
 		if(quantity <= 0){
 			if(this.foods.get(food) != null){

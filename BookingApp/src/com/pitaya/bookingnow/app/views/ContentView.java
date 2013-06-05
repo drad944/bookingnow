@@ -92,7 +92,7 @@ public class ContentView extends ViewGroup {
 					fragmentTransaction.remove(mCurrentContentView.getFragment());
 					fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 					fragmentTransaction.commit();
-				} else {
+				} else if(mContainer.getChildCount() > 0){
 					mContainer.removeAllViews();
 				}
 			}
@@ -102,7 +102,7 @@ public class ContentView extends ViewGroup {
 			if(mCurrentContentView != null){
 				if(mCurrentContentView.getRendererType() == BaseContentView.FRAGMENT){
 					fragmentTransaction.remove(mCurrentContentView.getFragment());
-				}else{
+				}else if(mContainer.getChildCount() > 0){
 					mContainer.removeAllViews();
 				}
 			}
