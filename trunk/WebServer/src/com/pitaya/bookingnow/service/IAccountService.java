@@ -27,4 +27,7 @@ public interface IAccountService{
 
     int updateByPrimaryKey(Account record);
 
+	List<Account> selectByExample(Account record);
+	
+	Account selectForLogin(Account record);
 }
