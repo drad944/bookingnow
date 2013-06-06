@@ -28,8 +28,8 @@ public class AccountAction extends ActionSupport{
 		if(account != null) {
         	System.out.println("userName:"+account.getName()+"\n"+"password:"+account.getPassword());
         }
-        Account realAccount = accountService.selectByPrimaryKey(1);
-        if(realAccount.getAid() > 0){  
+        Account realAccount = accountService.selectForLogin(account);
+        if(realAccount != null){  
             return "findSuccess";  
         }else{  
             return "findFail";  
