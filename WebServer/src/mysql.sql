@@ -26,7 +26,7 @@ insert into pitaya_order values (1,5,'1971-05-08 01:02:03',100);
 create table pitaya_food(fid integer not null auto_increment primary key,name varchar(20),material varchar(50),image blob,version varchar(10),period timestamp,Chef_id integer,price DECIMAL(8,2));
 insert into pitaya_food values (1,'ºìÉÕÖíÌã','ÖíÌã,ÓÍ£¬ÑÎ£¬´×','\cc\dd\0\cc\dd','1.1','2011-05-08 01:02:03',1,25.50);
 
-create table pitaya_food_process(pid not null auto_increment primary key,food_id,order_id,processStatus integer, favourite integer,remark varchar(10));
+create table pitaya_food_process(pid integer not null auto_increment primary key,food_id integer,order_id integer,processStatus integer, favourite integer,remark varchar(10));
 insert into pitaya_food_process values(1,1,1,2,3,'ºÃ³ÔµÃºÜ');
 
 
