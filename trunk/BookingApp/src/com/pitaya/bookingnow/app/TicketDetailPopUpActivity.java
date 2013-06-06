@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.pitaya.bookingnow.app.domain.Ticket;
@@ -72,7 +73,7 @@ public class TicketDetailPopUpActivity extends ListActivity  {
 		 intent.putExtras(bundle);
 		 startActivity(intent);
 	}
-	
+		
 	private class TicketListAdapter extends BaseAdapter {
 		
         public static final int FOOD_ITEM = 0;  
@@ -156,6 +157,8 @@ public class TicketDetailPopUpActivity extends ListActivity  {
 	            	
 					@Override
 					public void afterTextChanged(Editable text) {
+						if(text.toString().trim().equals(""))
+							return;
 						int quantity = 0;
 						try{
 							quantity = Integer.parseInt(text.toString());
@@ -163,8 +166,17 @@ public class TicketDetailPopUpActivity extends ListActivity  {
 							Log.e("FoodMenuView", "Fail to parse food quantity");
 							quantity = 0;
 						}
-						mTicket.addFood(food.getKey(), food.getName(), food.getPrice(), quantity);
-						TicketListAdapter.this.notifyDataSetChanged();
+						if(mTicket.addFood(food.getKey(), food.getName(), food.getPrice(), quantity)){
+							//remove this item from list view
+							TicketListAdapter.this.notifyDataSetChanged();
+						} else {
+							//change the item total price
+							totalPriceText.setText(String.valueOf(food.getPrice() * quantity) + "元");
+						}
+						//change summary price
+						if(mView.findViewById(R.id.ticketbottom) != null){
+							((TextView)mView.findViewById(R.id.ticketbottom).findViewById(R.id.summary)).setText("合计"+mTicket.getTotalPrice()+"元");
+						}
 					}
 
 					@Override
@@ -300,6 +312,6 @@ public class TicketDetailPopUpActivity extends ListActivity  {
 				this.quantity = quantity;
 			}
 		}
-		
+	
 	}
 }
