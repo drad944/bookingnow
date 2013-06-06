@@ -11,11 +11,15 @@ public class Account {
 
     private String role;
 
+    private Integer level;
+
     private String sex;
 
     private Date createDateTime;
 
     private Date birthday;
+
+    private byte[] image;
 
     public Integer getAid() {
         return aid;
@@ -49,6 +53,14 @@ public class Account {
         this.role = role;
     }
 
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
     public String getSex() {
         return sex;
     }
@@ -71,5 +83,13 @@ public class Account {
 
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }
