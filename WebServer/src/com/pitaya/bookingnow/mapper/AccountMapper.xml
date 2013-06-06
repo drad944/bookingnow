@@ -6,9 +6,13 @@
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="role" property="role" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="INTEGER" />
     <result column="sex" property="sex" jdbcType="VARCHAR" />
     <result column="createDateTime" property="createDateTime" jdbcType="TIMESTAMP" />
     <result column="birthday" property="birthday" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.pitaya.bookingnow.model.Account" extends="BaseResultMap" >
+    <result column="image" property="image" jdbcType="LONGVARBINARY" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -69,8 +73,28 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    aid, name, password, role, sex, createDateTime, birthday
+    aid, name, password, role, level, sex, createDateTime, birthday
   </sql>
+  <sql id="Blob_Column_List" >
+    image
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.pitaya.bookingnow.model.AccountExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pitaya_account
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.model.AccountExample" >
     select
     <if test="distinct" >
@@ -86,9 +110,11 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
     from pitaya_account
     where aid = #{aid,jdbcType=INTEGER}
   </select>
@@ -107,11 +133,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into pitaya_account (name, password, role, 
-      sex, createDateTime, birthday
-      )
+      level, sex, createDateTime, 
+      birthday, image)
     values (#{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR}, 
-      #{sex,jdbcType=VARCHAR}, #{createDateTime,jdbcType=TIMESTAMP}, #{birthday,jdbcType=TIMESTAMP}
-      )
+      #{level,jdbcType=INTEGER}, #{sex,jdbcType=VARCHAR}, #{createDateTime,jdbcType=TIMESTAMP}, 
+      #{birthday,jdbcType=TIMESTAMP}, #{image,jdbcType=LONGVARBINARY})
   </insert>
   <insert id="insertSelective" parameterType="com.pitaya.bookingnow.model.Account" >
     <selectKey resultType="java.lang.Integer" keyProperty="aid" order="AFTER" >
@@ -128,6 +154,9 @@
       <if test="role != null" >
         role,
       </if>
+      <if test="level != null" >
+        level,
+      </if>
       <if test="sex != null" >
         sex,
       </if>
@@ -136,6 +165,9 @@
       </if>
       <if test="birthday != null" >
         birthday,
+      </if>
+      <if test="image != null" >
+        image,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -148,6 +180,9 @@
       <if test="role != null" >
         #{role,jdbcType=VARCHAR},
       </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
       <if test="sex != null" >
         #{sex,jdbcType=VARCHAR},
       </if>
@@ -156,6 +191,9 @@
       </if>
       <if test="birthday != null" >
         #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="image != null" >
+        #{image,jdbcType=LONGVARBINARY},
       </if>
     </trim>
   </insert>
@@ -180,6 +218,9 @@
       <if test="record.role != null" >
         role = #{record.role,jdbcType=VARCHAR},
       </if>
+      <if test="record.level != null" >
+        level = #{record.level,jdbcType=INTEGER},
+      </if>
       <if test="record.sex != null" >
         sex = #{record.sex,jdbcType=VARCHAR},
       </if>
@@ -189,7 +230,25 @@
       <if test="record.birthday != null" >
         birthday = #{record.birthday,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.image != null" >
+        image = #{record.image,jdbcType=LONGVARBINARY},
+      </if>
     </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update pitaya_account
+    set aid = #{record.aid,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      password = #{record.password,jdbcType=VARCHAR},
+      role = #{record.role,jdbcType=VARCHAR},
+      level = #{record.level,jdbcType=INTEGER},
+      sex = #{record.sex,jdbcType=VARCHAR},
+      createDateTime = #{record.createDateTime,jdbcType=TIMESTAMP},
+      birthday = #{record.birthday,jdbcType=TIMESTAMP},
+      image = #{record.image,jdbcType=LONGVARBINARY}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -200,6 +259,7 @@
       name = #{record.name,jdbcType=VARCHAR},
       password = #{record.password,jdbcType=VARCHAR},
       role = #{record.role,jdbcType=VARCHAR},
+      level = #{record.level,jdbcType=INTEGER},
       sex = #{record.sex,jdbcType=VARCHAR},
       createDateTime = #{record.createDateTime,jdbcType=TIMESTAMP},
       birthday = #{record.birthday,jdbcType=TIMESTAMP}
@@ -219,6 +279,9 @@
       <if test="role != null" >
         role = #{role,jdbcType=VARCHAR},
       </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
       <if test="sex != null" >
         sex = #{sex,jdbcType=VARCHAR},
       </if>
@@ -228,7 +291,22 @@
       <if test="birthday != null" >
         birthday = #{birthday,jdbcType=TIMESTAMP},
       </if>
+      <if test="image != null" >
+        image = #{image,jdbcType=LONGVARBINARY},
+      </if>
     </set>
+    where aid = #{aid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.pitaya.bookingnow.model.Account" >
+    update pitaya_account
+    set name = #{name,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      role = #{role,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER},
+      sex = #{sex,jdbcType=VARCHAR},
+      createDateTime = #{createDateTime,jdbcType=TIMESTAMP},
+      birthday = #{birthday,jdbcType=TIMESTAMP},
+      image = #{image,jdbcType=LONGVARBINARY}
     where aid = #{aid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.model.Account" >
@@ -236,6 +314,7 @@
     set name = #{name,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
       role = #{role,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER},
       sex = #{sex,jdbcType=VARCHAR},
       createDateTime = #{createDateTime,jdbcType=TIMESTAMP},
       birthday = #{birthday,jdbcType=TIMESTAMP}
