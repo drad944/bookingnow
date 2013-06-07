@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class FoodMenuDataBaseHelper extends SQLiteOpenHelper {
 	
 	private static final String DATABASE_NAME = "foodmenu.db";
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 4;
 	
 	public FoodMenuDataBaseHelper(Context context) {
 	    super(context, DATABASE_NAME, null, DATABASE_VERSION);

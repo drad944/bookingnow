@@ -50,7 +50,7 @@ public class TicketListFragment extends ListFragment implements LoaderManager.Lo
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        
+        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 	
 	@Override
@@ -78,18 +78,10 @@ public class TicketListFragment extends ListFragment implements LoaderManager.Lo
             // Check what fragment is currently shown, replace if needed.
             String key = mTicketList.get(index).getTicketKey();
             TicketDetailFragment details = (TicketDetailFragment)getFragmentManager().findFragmentById(R.id.ticketdetail);
-            if (details == null || !details.getShownIndex().equals(key)) {
-                // Make new fragment to show this selection.
-                details = TicketDetailFragment.newInstance(key);
-
-                // Execute a transaction, replacing any existing fragment
-                // with this one inside the frame.
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.ticketdetail, details);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                ft.commit();
+            if (details != null 
+            		&& (details.getShownTicket() == null || !details.getShownTicket().getTicketKey().equals(key))) {
+            	details.setTicket(this.mTicketList.get(index));
             }
-
         } else {
             // Otherwise we need to launch a new activity to display
             // the dialog fragment with selected text.
@@ -173,7 +165,6 @@ public class TicketListFragment extends ListFragment implements LoaderManager.Lo
 			Ticket ticket = ticketlist.get(position);
 			if(view == null){
 				view = View.inflate(parent.getContext(), R.layout.ticketinfo, null);
-				
 			}
 
 			((TextView)view.findViewById(R.id.table_number)).setText(ticket.getTableNum());

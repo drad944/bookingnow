@@ -165,13 +165,13 @@ public class HomeActivity extends FragmentActivity {
 					
 					menuitems.addView(menuitem);
 				}//end for
-				TicketContentView ticketview = new TicketContentView(BaseContentView.VIEW, "ticket", this, homecontent, null);
+				TicketContentView ticketview = new TicketContentView("ticket", this, homecontent);
 				contentViews.add(ticketview);
 				Ticket newTicket = new Ticket("A1", "rmzhang");
 				newTicket.setOnDirtyChangedListener(ticketview);
-				FoodMenuContentView menucontentview = new FoodMenuContentView(BaseContentView.FRAGMENT, "menu", this, homecontent, newTicket);
+				FoodMenuContentView menucontentview = new FoodMenuContentView("menu", this, homecontent);
+				menucontentview.setTicket(newTicket);
 				contentViews.add(menucontentview);
-
 			}
 			homecontent.setMenu(leftmenu);
 		}

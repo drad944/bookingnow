@@ -17,6 +17,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 /*
  * Use a view pager which contains all of the menu view, and put the view pager in a fragment
  */
@@ -25,9 +28,8 @@ public class FoodMenuContentView extends BaseContentView{
 	private FoodMenuContentFragment mFragment;
 	private Ticket mTicket;
 	
-	public FoodMenuContentView(int type, String key, Context context, SlideContent home, Ticket ticket) {
-		super(type, key, context, home);
-		this.mTicket = ticket;
+	public FoodMenuContentView(String key, Context context, SlideContent home) {
+		super(key, context, home);
 	}
 
 	@Override
@@ -40,12 +42,28 @@ public class FoodMenuContentView extends BaseContentView{
 	}
 	
 	@Override
-	public Fragment getFragment(){
+	public void setupView(ViewGroup container){
+		FragmentManager fragmentManager = ((FragmentActivity)this.mContext).getSupportFragmentManager(); 
+		//FragmentManager.enableDebugLogging(false);
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		if(mFragment == null){
 			mFragment = new FoodMenuContentFragment();
 			mFragment.setContainer(this);
 		}
-		return mFragment;
+		fragmentTransaction.add(container.getId(), mFragment);
+		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+		fragmentTransaction.commit();
+	}
+	
+	@Override
+	public boolean destroyView(ViewGroup container){
+		FragmentManager fragmentManager = ((FragmentActivity)this.mContext).getSupportFragmentManager(); 
+		//FragmentManager.enableDebugLogging(false);
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		fragmentTransaction.remove(mFragment);
+		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+		fragmentTransaction.commit();
+		return true;
 	}
 	
 	public void selectPage(int index){
