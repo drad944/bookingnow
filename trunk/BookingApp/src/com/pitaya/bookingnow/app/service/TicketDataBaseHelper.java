@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class TicketDataBaseHelper extends SQLiteOpenHelper {
 	
 	private static final String DATABASE_NAME = "ticket.db";
-	private static final int DATABASE_VERSION = 4;
+	private static final int DATABASE_VERSION = 5;
 	
 	public TicketDataBaseHelper(Context context) {
 	    super(context, DATABASE_NAME, null, DATABASE_VERSION);

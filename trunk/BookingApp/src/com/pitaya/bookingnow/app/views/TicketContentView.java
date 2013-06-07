@@ -31,21 +31,21 @@ public class TicketContentView extends BaseContentView implements Ticket.OnDirty
 	
 	@Override
 	public void setupView(ViewGroup container){
-		if(mView == null){
-			mView = View.inflate(this.mContext, R.layout.ticketcontentview, null);
-			FragmentManager fragmentManager = ((FragmentActivity)this.mContext).getSupportFragmentManager();
-			FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-			if(mTicketListFragment == null){
-				mTicketListFragment = new TicketListFragment();
-			}
-			if(mTicketDetailFragment == null){
-				mTicketDetailFragment = new TicketDetailFragment();
-			}
-			fragmentTransaction.replace(R.id.ticketlist, mTicketListFragment);
-			fragmentTransaction.replace(R.id.ticketdetail, mTicketDetailFragment);
-			fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-			fragmentTransaction.commit();
+		mView = View.inflate(this.mContext, R.layout.ticketcontentview, null);
+		FragmentManager fragmentManager = ((FragmentActivity)this.mContext).getSupportFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		if(mTicketListFragment == null){
+			mTicketListFragment = new TicketListFragment();
+			mTicketListFragment.setContainer(this);
 		}
+		if(mTicketDetailFragment == null){
+			mTicketDetailFragment = new TicketDetailFragment();
+			mTicketDetailFragment.setContainer(this);
+		}
+		fragmentTransaction.replace(R.id.ticketlist, mTicketListFragment);
+		fragmentTransaction.replace(R.id.ticketdetail, mTicketDetailFragment);
+		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+		fragmentTransaction.commit();
 		container.addView(mView);
 	}
 	
@@ -83,5 +83,10 @@ public class TicketContentView extends BaseContentView implements Ticket.OnDirty
 				dirtyTickets.remove(ticket.getTicketKey());
 			}
 		}
+	}
+	
+	public void openMenu(Ticket ticket){
+		((FoodMenuContentView)this.home.getContentView("menu")).setTicket(ticket);
+		this.home.selectItem("menu");
 	}
 }

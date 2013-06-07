@@ -11,11 +11,23 @@
     <string name="logining">登录中...</string>
     <string name="connect_fail">无法连接到服务器</string>
     <string name="showTicket">查看订单</string>
-    <string name="backHome">全部分类</string>
+    <string name="backHome">返回分类</string>
     <string name="ticketTitle">您的订单</string>
     <string name="minusBtn">-</string>
     <string name="addBtn">+</string>
+    <string name="hintinmenu">赶紧选择您心爱的美食吧</string>
+    <string name="hintinticket">开始点菜</string>
+    <string name="newcreate">新建</string>
+    <string name="commit">提交</string>
+    <string name="modification">修改</string>
+    <string name="cancelticket">取消订单</string>
+    <string name="commitupdate">提交更改</string>
+    <string name="cancelupdate">撤销更改</string>
+    <string name="pay">买单</string>
+    <string name="finish">交易完成</string>
+    <string name="paying">已申请结帐</string>
     <drawable name="red">#ff0000</drawable>
     <drawable name="common_background">#4e72b8</drawable>
     <drawable name="menu_background">#494e8f</drawable>
+    
 </resources>
