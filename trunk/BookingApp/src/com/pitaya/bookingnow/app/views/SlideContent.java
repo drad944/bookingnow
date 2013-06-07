@@ -34,14 +34,14 @@ public class SlideContent extends RelativeLayout {
 		String currentKey = this.mContentView.getCurrent();
 		if(currentKey == null || currentKey.equals(key)){
 			mContentView.toggle();
-			mContentView.invalidate();
+			//mContentView.invalidate();
 			return;
 		}
 		for(int i=0; i < this.contentViews.size(); i++){
 			if(key.equals(this.contentViews.get(i).getKey())){
 				this.setContent(this.contentViews.get(i));
 				mContentView.toggle();
-				mContentView.invalidate();
+				//mContentView.invalidate();
 				break;
 			}
 		}

@@ -8,7 +8,10 @@ import android.app.ActionBar;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.domain.*;
@@ -18,19 +21,43 @@ public class TicketContentView extends BaseContentView implements Ticket.OnDirty
 	private Map<String, Ticket> dirtyTickets;
 	private String mTicketKey;
 	private View mView;
-
-	public TicketContentView(int type, String key, Context context, SlideContent home, String ticket_key) {
-		super(type ,key, context, home);
+	private TicketListFragment mTicketListFragment;
+	private TicketDetailFragment mTicketDetailFragment;
+	
+	public TicketContentView(String key, Context context, SlideContent home) {
+		super(key, context, home);
 		dirtyTickets = new HashMap<String, Ticket>();
-		this.mTicketKey = ticket_key;
 	}
 	
 	@Override
-	public View getView(){
+	public void setupView(ViewGroup container){
 		if(mView == null){
 			mView = View.inflate(this.mContext, R.layout.ticketcontentview, null);
+			FragmentManager fragmentManager = ((FragmentActivity)this.mContext).getSupportFragmentManager();
+			FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+			if(mTicketListFragment == null){
+				mTicketListFragment = new TicketListFragment();
+			}
+			if(mTicketDetailFragment == null){
+				mTicketDetailFragment = new TicketDetailFragment();
+			}
+			fragmentTransaction.replace(R.id.ticketlist, mTicketListFragment);
+			fragmentTransaction.replace(R.id.ticketdetail, mTicketDetailFragment);
+			fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			fragmentTransaction.commit();
 		}
-		return mView;
+		container.addView(mView);
+	}
+	
+	@Override
+	public boolean destroyView(ViewGroup container){
+		FragmentManager fragmentManager = ((FragmentActivity)this.mContext).getSupportFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		fragmentTransaction.remove(mTicketListFragment);
+		fragmentTransaction.remove(mTicketDetailFragment);
+		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+		fragmentTransaction.commit();
+		return true;
 	}
 	
 	public void setDisplayTicketKey(String ticket_key){
