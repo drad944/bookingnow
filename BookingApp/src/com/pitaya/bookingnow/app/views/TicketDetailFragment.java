@@ -8,19 +8,36 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class TicketDetailFragment extends Fragment {
 	
+	private static TicketDetailFragmentAdapter sTicketAdapter;
 	private Ticket mTicket;
-	private ScrollView mView;
+	private ListView mView;
+	private TicketContentView mContentContainer;
 
+	public static TicketDetailFragment newInstance(Ticket ticket, TicketContentView container){
+		TicketDetailFragment instance = new TicketDetailFragment();
+		instance.setContainer(container);
+		instance.setTicket(ticket);
+		return instance;
+	}
+	
+	public TicketDetailFragment(){
+		super();
+	}
+	
     public void setTicket(Ticket ticket){
     	this.mTicket = ticket;
-    	updateView();
     }
     
+	public void setContainer(TicketContentView v){
+		this.mContentContainer = v;
+	}
+	
     public Ticket getShownTicket(){
     	return this.mTicket;
     }
@@ -31,23 +48,24 @@ public class TicketDetailFragment extends Fragment {
         if (container == null || this.mTicket == null) {
             return null;
         }
-        mView = new ScrollView(getActivity());
-        TextView text = new TextView(getActivity());
-        text.setId(1);
-        int padding = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                4, getActivity().getResources().getDisplayMetrics());
-        text.setPadding(padding, padding, padding, padding);
-        mView.addView(text);
-        if(this.mTicket != null){
-        	text.setText("TextTextTextTextTextText" + this.mTicket.getTicketKey());
-        }
+        mView = new ListView(getActivity());
+    	try {
+    		if(sTicketAdapter == null){
+    			sTicketAdapter = new TicketDetailFragmentAdapter(this.getActivity(), mView, this.mTicket);
+    		} else {
+    			sTicketAdapter.setTicket(mTicket);
+    		}
+    		mView.setAdapter(sTicketAdapter);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
         return mView;
     }
     
-    private void updateView(){
-    	if(this.mTicket != null){
-    		((TextView)mView.findViewById(1))
-    			.setText("TextTextTextTextTextText" + this.mTicket.getTicketKey());
-    	}
+    
+    public void modifyTicket(){
+    	mContentContainer.openMenu(this.mTicket);
     }
 }

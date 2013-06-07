@@ -1,5 +1,6 @@
 package com.pitaya.bookingnow.app.service;
 
+import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import com.pitaya.bookingnow.app.domain.Ticket;
@@ -62,6 +63,38 @@ public class DataService {
 			return new CursorLoader(context, TicketContentProvider.CONTENT_URI, 
 					projection, TicketTable.COLUMN_STATUS + "=?", 
 					new String[]{String.valueOf(status)},TicketTable.COLUMN_LAST_MODIFACTION_DATE);
+		}
+	}
+	
+	public static void getFoodsOfTicket(Context context, Ticket ticket){
+		String[] projection = {
+				TicketDetailTable.COLUMN_FOOD_KEY,
+				TicketDetailTable.COLUMN_QUANTITY,
+		};
+		Cursor cursor = context.getContentResolver().query(TicketDetailContentProvider.CONTENT_URI, projection, 
+				TicketDetailTable.COLUMN_TICKET_KEY +"=?", new String[]{ticket.getTicketKey()}, null);
+		if(cursor != null){
+			int indexes[] = getColumnIndexs(cursor, projection);
+			String[] foodprojection = {
+					FoodMenuTable.COLUMN_NAME,
+					FoodMenuTable.COLUMN_PRICE
+			};
+			for(cursor.moveToFirst(); ! cursor.isAfterLast(); cursor.moveToNext()){
+				String food_key = cursor.getString(indexes[0]);
+				int quantity = cursor.getInt(indexes[1]);
+				String food_name = null;
+				float price = 0f;
+				Cursor subcursor = context.getContentResolver().query(FoodMenuContentProvider.CONTENT_URI, foodprojection,
+						FoodMenuTable.COLUMN_FOOD_KEY + "=?", new String[]{food_key},null);
+				if(subcursor != null && subcursor.moveToFirst()){
+					int [] subindexes = getColumnIndexs(subcursor, foodprojection);
+					food_name = subcursor.getString(subindexes[0]);
+					price = subcursor.getFloat(subindexes[1]);
+					subcursor.close();
+				}
+				ticket.addFood(food_key, food_name, price, quantity);
+			}
+			cursor.close();
 		}
 	}
 	

@@ -21,6 +21,8 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -55,7 +57,7 @@ public class TicketListFragment extends ListFragment implements LoaderManager.Lo
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		Log.i(TAG, "onCreateView in TicketContentFragment" + this.hashCode());
+		Log.i(TAG, "onCreateView in TicketListFragment" + this.hashCode());
 		
 		View view = super.onCreateView(inflater, container, savedInstanceState);
 //        View detailsFrame = this.mContentContainer.getView().findViewById(R.id.ticketdetail);
@@ -76,11 +78,17 @@ public class TicketListFragment extends ListFragment implements LoaderManager.Lo
             getListView().setItemChecked(index, true);
 
             // Check what fragment is currently shown, replace if needed.
-            String key = mTicketList.get(index).getTicketKey();
+            Ticket selectedTicket = mTicketList.get(index);
+            String key = selectedTicket.getTicketKey();
             TicketDetailFragment details = (TicketDetailFragment)getFragmentManager().findFragmentById(R.id.ticketdetail);
             if (details != null 
             		&& (details.getShownTicket() == null || !details.getShownTicket().getTicketKey().equals(key))) {
-            	details.setTicket(this.mTicketList.get(index));
+            	DataService.getFoodsOfTicket(this.getActivity(), selectedTicket);
+            	FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+        		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        		fragmentTransaction.replace(R.id.ticketdetail, TicketDetailFragment.newInstance(selectedTicket, mContentContainer));
+        		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        		fragmentTransaction.commit();
             }
         } else {
             // Otherwise we need to launch a new activity to display
