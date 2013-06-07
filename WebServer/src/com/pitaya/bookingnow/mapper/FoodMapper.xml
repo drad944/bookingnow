@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pitaya.bookingnow.dao.FoodMapper" >
+  <resultMap id="BaseResultMap" type="com.pitaya.bookingnow.model.Food" >
+    <id column="fid" property="fid" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="material" property="material" jdbcType="VARCHAR" />
+    <result column="version" property="version" jdbcType="VARCHAR" />
+    <result column="period" property="period" jdbcType="TIMESTAMP" />
+    <result column="Chef_id" property="chef_id" jdbcType="INTEGER" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.pitaya.bookingnow.model.Food" extends="BaseResultMap" >
+    <result column="image" property="image" jdbcType="LONGVARBINARY" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    fid, name, material, version, period, Chef_id, price
+  </sql>
+  <sql id="Blob_Column_List" >
+    image
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pitaya_food
+    where fid = #{fid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from pitaya_food
+    where fid = #{fid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.pitaya.bookingnow.model.Food" >
+    <selectKey resultType="java.lang.Integer" keyProperty="fid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pitaya_food (name, material, version, 
+      period, Chef_id, price, 
+      image)
+    values (#{name,jdbcType=VARCHAR}, #{material,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, 
+      #{period,jdbcType=TIMESTAMP}, #{chef_id,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, 
+      #{image,jdbcType=LONGVARBINARY})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pitaya.bookingnow.model.Food" >
+    <selectKey resultType="java.lang.Integer" keyProperty="fid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pitaya_food
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="material != null" >
+        material,
+      </if>
+      <if test="version != null" >
+        version,
+      </if>
+      <if test="period != null" >
+        period,
+      </if>
+      <if test="chef_id != null" >
+        Chef_id,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="image != null" >
+        image,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="material != null" >
+        #{material,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="period != null" >
+        #{period,jdbcType=TIMESTAMP},
+      </if>
+      <if test="chef_id != null" >
+        #{chef_id,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="image != null" >
+        #{image,jdbcType=LONGVARBINARY},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.model.Food" >
+    update pitaya_food
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="material != null" >
+        material = #{material,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="period != null" >
+        period = #{period,jdbcType=TIMESTAMP},
+      </if>
+      <if test="chef_id != null" >
+        Chef_id = #{chef_id,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="image != null" >
+        image = #{image,jdbcType=LONGVARBINARY},
+      </if>
+    </set>
+    where fid = #{fid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.pitaya.bookingnow.model.Food" >
+    update pitaya_food
+    set name = #{name,jdbcType=VARCHAR},
+      material = #{material,jdbcType=VARCHAR},
+      version = #{version,jdbcType=VARCHAR},
+      period = #{period,jdbcType=TIMESTAMP},
+      Chef_id = #{chef_id,jdbcType=INTEGER},
+      price = #{price,jdbcType=DECIMAL},
+      image = #{image,jdbcType=LONGVARBINARY}
+    where fid = #{fid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.model.Food" >
+    update pitaya_food
+    set name = #{name,jdbcType=VARCHAR},
+      material = #{material,jdbcType=VARCHAR},
+      version = #{version,jdbcType=VARCHAR},
+      period = #{period,jdbcType=TIMESTAMP},
+      Chef_id = #{chef_id,jdbcType=INTEGER},
+      price = #{price,jdbcType=DECIMAL}
+    where fid = #{fid,jdbcType=INTEGER}
+  </update>
+</mapper>

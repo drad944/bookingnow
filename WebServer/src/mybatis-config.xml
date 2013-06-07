@@ -9,7 +9,7 @@
 			<transactionManager type="JDBC" />
 			<dataSource type="POOLED">
 				<property name="driver" value="com.mysql.jdbc.Driver" />
-				<property name="url" value="jdbc:mysql://localhost:3306/bookingnow" />
+				<property name="url" value="jdbc:mysql://10.111.3.147:3306/bookingnow" />
 				<property name="username" value="testUser" />
 				<property name="password" value="123456" />
 			</dataSource>
@@ -18,6 +18,10 @@
     
 	<mappers>
 		<mapper resource="com/pitaya/bookingnow/mapper/AccountMapper.xml"/>
+		<mapper resource="com/pitaya/bookingnow/mapper/DiningTableMapper.xml"/>
+		<mapper resource="com/pitaya/bookingnow/mapper/FoodMapper.xml"/>
+		<mapper resource="com/pitaya/bookingnow/mapper/FoodProcessMapper.xml"/>
+		<mapper resource="com/pitaya/bookingnow/mapper/OrderMapper.xml"/>
 	</mappers>
 </configuration>
 

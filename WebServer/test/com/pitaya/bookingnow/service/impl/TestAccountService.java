@@ -33,10 +33,10 @@ public class TestAccountService {
 	  account.setName("li");
 	  account.setPassword("123456");
 	  
-	  service.add(account);
+	  service.insert(account);
 	  logger.debug("account id: " + account.getAid());
 	  
-	  Account accountFromDb =  service.get(account);
+	  Account accountFromDb =  service.selectByPrimaryKey(account.getAid());
 	  assertNotNull(accountFromDb);
 	  assertEquals(account.getAid(), accountFromDb.getAid());
 	 }
