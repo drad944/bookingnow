@@ -1,8 +1,9 @@
 package com.pitaya.bookingnow.action;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 
+import java.util.Date;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -10,31 +11,68 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.pitaya.bookingnow.model.Account;
 
 public class TestAccountAction {
+	ApplicationContext ctx = null;
+	
+	@Before
+	public void init() {
+		ctx = new ClassPathXmlApplicationContext("classpath*:/applicationContext.xml");
+	}
 	
 	@Test
 	public void testRegisterAccount() {
-		ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath*:/applicationContext.xml");
 		AccountAction accountAction = (AccountAction) ctx.getBean("accountAction");
-		accountAction.setAccount(new Account(2,"zhang","123456","boss","man",new Timestamp(System.currentTimeMillis()),new Date(System.currentTimeMillis())));
-		accountAction.registerAccount();
+		Account newAccount = new Account();
+		newAccount.setAid(2);
+		newAccount.setBirthday(new Date());
+		newAccount.setCreateDateTime(new Date());
+		newAccount.setImage(new byte[]{});
+		newAccount.setLevel(3);
+		newAccount.setName("li");
+		newAccount.setPassword("123456");
+		newAccount.setRole("boss");
+		newAccount.setSex("m");
+		
+		accountAction.setAccount(newAccount);
+		
+		
+		String result  = accountAction.registerAccount();
+		System.out.println("result:" + result);
+	}
+	
+	@Test
+	public void testFindAccount() {
+		AccountAction accountAction = (AccountAction) ctx.getBean("accountAction");
+		Account newAccount = new Account();
+		newAccount.setAid(1);
+		accountAction.setAccount(newAccount);
+		
+		
+		String result  = accountAction.findAccount();
+		System.out.println("result:" + result);
 	}
 
 	@Test
 	public void testUpdateAccount() {
-		ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath*:/applicationContext.xml");
 		AccountAction accountAction = (AccountAction) ctx.getBean("accountAction");
-		Account newAccount = new Account(1);
+		Account newAccount = new Account();
+		newAccount.setAid(1);
 		newAccount.setPassword("xxx");
 		accountAction.setAccount(newAccount);
-		accountAction.updateAccount();
+		
+		
+		String result  = accountAction.updateAccount();
+		System.out.println("result:" + result);
 	}
 	
 	@Test
 	public void testRemoveAccount() {
-		ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath*:/applicationContext.xml");
 		AccountAction accountAction = (AccountAction) ctx.getBean("accountAction");
-		Account newAccount = new Account(1);
+		Account newAccount = new Account();
+		newAccount.setAid(1);
 		accountAction.setAccount(newAccount);
-		accountAction.removeAccount();
+		
+		
+		String result  = accountAction.removeAccount();
+		System.out.println("result:" + result);
 	}
 }

@@ -49,4 +49,61 @@
 		<property name="accountService" ref="accountService" />
 	</bean>
 	
+	
+	<bean id="diningTableDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.DiningTableMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+    
+	<bean id="diningTableService" class="com.pitaya.bookingnow.service.impl.DiningTableService">
+		<property name="diningTableDao" ref="diningTableDao" />
+	</bean>
+
+	<bean id="diningTableAction" class="com.pitaya.bookingnow.action.DiningTableAction" scope="prototype">
+		<property name="diningTableService" ref="accountService" />
+	</bean>
+	
+	
+	<bean id="foodDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.FoodMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+    
+	<bean id="foodService" class="com.pitaya.bookingnow.service.impl.FoodService">
+		<property name="foodDao" ref="foodDao" />
+	</bean>
+
+	<bean id="foodAction" class="com.pitaya.bookingnow.action.FoodAction" scope="prototype">
+		<property name="foodService" ref="foodService" />
+	</bean>
+	
+	
+	<bean id="foodProcessDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.FoodProcessMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+    
+	<bean id="foodProcessService" class="com.pitaya.bookingnow.service.impl.FoodProcessService">
+		<property name="foodProcessDao" ref="foodProcessDao" />
+	</bean>
+
+	<bean id="foodProcessAction" class="com.pitaya.bookingnow.action.FoodProcessAction" scope="prototype">
+		<property name="foodProcessService" ref="foodProcessService" />
+	</bean>
+	
+	
+	<bean id="orderDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.OrderMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+    
+	<bean id="orderService" class="com.pitaya.bookingnow.service.impl.OrderService">
+		<property name="orderDao" ref="orderDao" />
+	</bean>
+
+	<bean id="orderAction" class="com.pitaya.bookingnow.action.OrderAction" scope="prototype">
+		<property name="orderService" ref="orderService" />
+	</bean>
+	
+	
 </beans>

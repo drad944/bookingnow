@@ -20,7 +20,11 @@ public class Account {
     private Date birthday;
 
     private byte[] image;
-
+    
+    public Account() {
+    	
+    }
+    
     public Integer getAid() {
         return aid;
     }

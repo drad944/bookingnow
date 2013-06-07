@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pitaya.bookingnow.dao.FoodProcessMapper" >
+  <resultMap id="BaseResultMap" type="com.pitaya.bookingnow.model.FoodProcess" >
+    <id column="pid" property="pid" jdbcType="INTEGER" />
+    <result column="food_id" property="food_id" jdbcType="INTEGER" />
+    <result column="order_id" property="order_id" jdbcType="INTEGER" />
+    <result column="processStatus" property="processStatus" jdbcType="INTEGER" />
+    <result column="favourite" property="favourite" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    pid, food_id, order_id, processStatus, favourite, remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from pitaya_food_process
+    where pid = #{pid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from pitaya_food_process
+    where pid = #{pid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.pitaya.bookingnow.model.FoodProcess" >
+    <selectKey resultType="java.lang.Integer" keyProperty="pid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pitaya_food_process (food_id, order_id, processStatus, 
+      favourite, remark)
+    values (#{food_id,jdbcType=INTEGER}, #{order_id,jdbcType=INTEGER}, #{processStatus,jdbcType=INTEGER}, 
+      #{favourite,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pitaya.bookingnow.model.FoodProcess" >
+    <selectKey resultType="java.lang.Integer" keyProperty="pid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pitaya_food_process
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="food_id != null" >
+        food_id,
+      </if>
+      <if test="order_id != null" >
+        order_id,
+      </if>
+      <if test="processStatus != null" >
+        processStatus,
+      </if>
+      <if test="favourite != null" >
+        favourite,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="food_id != null" >
+        #{food_id,jdbcType=INTEGER},
+      </if>
+      <if test="order_id != null" >
+        #{order_id,jdbcType=INTEGER},
+      </if>
+      <if test="processStatus != null" >
+        #{processStatus,jdbcType=INTEGER},
+      </if>
+      <if test="favourite != null" >
+        #{favourite,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.model.FoodProcess" >
+    update pitaya_food_process
+    <set >
+      <if test="food_id != null" >
+        food_id = #{food_id,jdbcType=INTEGER},
+      </if>
+      <if test="order_id != null" >
+        order_id = #{order_id,jdbcType=INTEGER},
+      </if>
+      <if test="processStatus != null" >
+        processStatus = #{processStatus,jdbcType=INTEGER},
+      </if>
+      <if test="favourite != null" >
+        favourite = #{favourite,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pid = #{pid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.model.FoodProcess" >
+    update pitaya_food_process
+    set food_id = #{food_id,jdbcType=INTEGER},
+      order_id = #{order_id,jdbcType=INTEGER},
+      processStatus = #{processStatus,jdbcType=INTEGER},
+      favourite = #{favourite,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR}
+    where pid = #{pid,jdbcType=INTEGER}
+  </update>
+</mapper>
