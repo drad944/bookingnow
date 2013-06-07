@@ -1,9 +1,20 @@
 package com.pitaya.bookingnow.service.impl;
 
+import com.pitaya.bookingnow.dao.FoodMapper;
 import com.pitaya.bookingnow.model.Food;
 import com.pitaya.bookingnow.service.IFoodService;
 
 public class FoodService implements IFoodService{
+
+	private FoodMapper foodDao;
+	
+	public FoodMapper getFoodDao() {
+		return foodDao;
+	}
+
+	public void setFoodDao(FoodMapper foodDao) {
+		this.foodDao = foodDao;
+	}
 
 	@Override
 	public int deleteByPrimaryKey(Integer fid) {

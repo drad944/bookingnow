@@ -1,9 +1,20 @@
 package com.pitaya.bookingnow.service.impl;
 
+import com.pitaya.bookingnow.dao.DiningTableMapper;
 import com.pitaya.bookingnow.model.DiningTable;
 import com.pitaya.bookingnow.service.IDiningTableService;
 
 public class DiningTableService implements IDiningTableService{
+
+	private DiningTableMapper diningTableDao;
+	
+	public DiningTableMapper getDiningTableDao() {
+		return diningTableDao;
+	}
+
+	public void setDiningTableDao(DiningTableMapper diningTableDao) {
+		this.diningTableDao = diningTableDao;
+	}
 
 	@Override
 	public int deleteByPrimaryKey(Integer tid) {

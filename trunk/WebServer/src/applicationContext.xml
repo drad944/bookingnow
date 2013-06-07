@@ -60,7 +60,7 @@
 	</bean>
 
 	<bean id="diningTableAction" class="com.pitaya.bookingnow.action.DiningTableAction" scope="prototype">
-		<property name="diningTableService" ref="accountService" />
+		<property name="diningTableService" ref="diningTableService" />
 	</bean>
 	
 	
