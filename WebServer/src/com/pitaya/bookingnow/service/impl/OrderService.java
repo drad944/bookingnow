@@ -1,9 +1,20 @@
 package com.pitaya.bookingnow.service.impl;
 
+import com.pitaya.bookingnow.dao.OrderMapper;
 import com.pitaya.bookingnow.model.Order;
 import com.pitaya.bookingnow.service.IOrderService;
 
 public class OrderService implements IOrderService{
+
+	private OrderMapper orderDao;
+	
+	public OrderMapper getOrderDao() {
+		return orderDao;
+	}
+
+	public void setOrderDao(OrderMapper orderDao) {
+		this.orderDao = orderDao;
+	}
 
 	@Override
 	public int deleteByPrimaryKey(Integer oid) {
