@@ -18,7 +18,7 @@ public class TestDiningTableAction {
 	
 	@Test
 	public void testBookTable() {
-		DiningTableAction tableAction = (DiningTableAction) ctx.getBean("DiningTableAction");
+		DiningTableAction tableAction = (DiningTableAction) ctx.getBean("diningTableAction");
 		DiningTable table = new DiningTable();
 		table.setTid(1);
 		table.setMaxCustomerCount(3);
@@ -35,7 +35,7 @@ public class TestDiningTableAction {
 	
 	@Test
 	public void testFindTable() {
-		DiningTableAction tableAction = (DiningTableAction) ctx.getBean("DiningTableAction");
+		DiningTableAction tableAction = (DiningTableAction) ctx.getBean("diningTableAction");
 		DiningTable table = new DiningTable();
 		table.setTid(1);
 		
@@ -48,7 +48,7 @@ public class TestDiningTableAction {
 	
 	@Test
 	public void testUsingTable() {
-		DiningTableAction tableAction = (DiningTableAction) ctx.getBean("DiningTableAction");
+		DiningTableAction tableAction = (DiningTableAction) ctx.getBean("diningTableAction");
 		DiningTable table = new DiningTable();
 		table.setTid(1);
 		table.setRealCustomerCount(100);
@@ -62,7 +62,7 @@ public class TestDiningTableAction {
 	
 	@Test
 	public void testCancelTable() {
-		DiningTableAction tableAction = (DiningTableAction) ctx.getBean("DiningTableAction");
+		DiningTableAction tableAction = (DiningTableAction) ctx.getBean("diningTableAction");
 		DiningTable table = new DiningTable();
 		table.setTid(1);
 		
