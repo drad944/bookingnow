@@ -55,12 +55,12 @@
         <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
     </bean>
     
-	<bean id="diningTableService" class="com.pitaya.bookingnow.service.impl.DiningTableService">
+	<bean id="tableService" class="com.pitaya.bookingnow.service.impl.DiningTableService">
 		<property name="diningTableDao" ref="diningTableDao" />
 	</bean>
 
 	<bean id="diningTableAction" class="com.pitaya.bookingnow.action.DiningTableAction" scope="prototype">
-		<property name="diningTableService" ref="diningTableService" />
+		<property name="tableService" ref="tableService" />
 	</bean>
 	
 	
