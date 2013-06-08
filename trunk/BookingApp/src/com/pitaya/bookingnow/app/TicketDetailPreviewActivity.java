@@ -22,13 +22,13 @@ import android.widget.TextView;
 import com.pitaya.bookingnow.app.domain.Ticket;
 import com.pitaya.bookingnow.app.domain.Ticket.Food;
 import com.pitaya.bookingnow.app.service.DataService;
-import com.pitaya.bookingnow.app.views.TicketDetailsPreviewAdapter;
+import com.pitaya.bookingnow.app.views.TicketDetailPreviewAdapter;
 import java.util.Map.Entry;
 
-public class TicketDetailPopUpActivity extends ListActivity  {
+public class TicketDetailPreviewActivity extends ListActivity  {
 
 	private Ticket mTicket;
-	private TicketDetailsPreviewAdapter mTicketAdapter;
+	private TicketDetailPreviewAdapter mTicketAdapter;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class TicketDetailPopUpActivity extends ListActivity  {
 			mTicket = (Ticket)bundle.getSerializable("ticket");
 	          
 	        try {
-				mTicketAdapter = new TicketDetailsPreviewAdapter(this, this.getListView(), mTicket);
+				mTicketAdapter = new TicketDetailPreviewAdapter(this, this.getListView(), mTicket);
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {

@@ -40,7 +40,9 @@ public class SlideContent extends RelativeLayout {
 		for(int i=0; i < this.contentViews.size(); i++){
 			if(key.equals(this.contentViews.get(i).getKey())){
 				this.setContent(this.contentViews.get(i));
-				mContentView.toggle();
+				if(!mContentView.isMenuOFF()){
+					mContentView.closeMenu();
+				}
 				//mContentView.invalidate();
 				break;
 			}

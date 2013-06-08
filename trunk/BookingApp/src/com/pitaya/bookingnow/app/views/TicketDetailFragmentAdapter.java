@@ -8,10 +8,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.pitaya.bookingnow.app.*;
-import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.domain.Ticket;
+import com.pitaya.bookingnow.app.domain.Ticket.OnDirtyChangedListener;
+import com.pitaya.bookingnow.app.service.DataService;
 
-public class TicketDetailFragmentAdapter extends TicketDetailsAdapter{
+public class TicketDetailFragmentAdapter extends TicketDetailAdapter{
 	
 	public TicketDetailFragmentAdapter(Context c, View view, Ticket ticket)
 			throws IllegalArgumentException, IllegalAccessException {
@@ -23,10 +24,13 @@ public class TicketDetailFragmentAdapter extends TicketDetailsAdapter{
 	}
 	
 	private void setViewByTicketStatus(View view){
+		if(view == null || this.mTicket == null){
+			return;
+		}
 		final View itemView = view;
-		Button actBtn1 = (Button)itemView.findViewById(R.id.action1);
-		Button actBtn2 = (Button)itemView.findViewById(R.id.action2);
-		Button actBtn3 = (Button)itemView.findViewById(R.id.action3);
+		final Button actBtn1 = (Button)itemView.findViewById(R.id.action1);
+		final Button actBtn2 = (Button)itemView.findViewById(R.id.action2);
+		final Button actBtn3 = (Button)itemView.findViewById(R.id.action3);
 		TextView hinttext = ((TextView)itemView.findViewById(R.id.hint));
 		switch(this.mTicket.getStatus()){
 			case Ticket.NEW:
@@ -38,8 +42,10 @@ public class TicketDetailFragmentAdapter extends TicketDetailsAdapter{
 
 					@Override
 					public void onClick(View v) {
-						//commit the ticket and remove it from local database
+						//TODO commit the ticket and remove it from local database
+						DataService.removeTicket(mContext, mTicket.getTicketKey());
 						mTicket.setStatus(Ticket.COMMITED);
+						mTicket.markDirty(false);
 						setViewByTicketStatus(itemView);
 					}
 					
@@ -57,23 +63,32 @@ public class TicketDetailFragmentAdapter extends TicketDetailsAdapter{
 
 					@Override
 					public void onClick(View v) {
-						//send request to cancel a ticket and remove it from local database
+						//TODO send request to cancel a ticket and remove it from local database
 						
 					}
 					
 				});
 				break;
 			case Ticket.COMMITED:
+				hinttext.setVisibility(View.GONE);
+				mTicket.setOnDirtyChangedListener(new OnDirtyChangedListener(){
+
+					@Override
+					public void onDirtyChanged(Ticket ticket, boolean flag) {
+						setViewByTicketStatus(itemView);
+					}
+					
+				});
 				if(this.mTicket.isDirty()){
     				actBtn1.setText(R.string.commitupdate);
     				actBtn2.setText(R.string.cancelupdate);
     				actBtn3.setVisibility(View.GONE);
-    				hinttext.setVisibility(View.GONE);
     				actBtn1.setOnClickListener(new OnClickListener(){
 
 						@Override
 						public void onClick(View v) {
-							//update the ticket
+							//TODO update the ticket to server
+							mTicket.markDirty(false);
 						}
     					
     				});
@@ -81,7 +96,7 @@ public class TicketDetailFragmentAdapter extends TicketDetailsAdapter{
 
 						@Override
 						public void onClick(View v) {
-							//send request to get the ticket info again and restore mTicket
+							//TODO send request to get the ticket info again and restore mTicket
 							TicketDetailFragmentAdapter.this.notifyDataSetChanged();
 						}
     					
@@ -90,12 +105,12 @@ public class TicketDetailFragmentAdapter extends TicketDetailsAdapter{
     				actBtn1.setText(R.string.pay);
     				actBtn2.setText(R.string.modification);
     				actBtn3.setText(R.string.cancelticket);
-    				hinttext.setVisibility(View.GONE);
+    				actBtn3.setVisibility(View.VISIBLE);
     				actBtn1.setOnClickListener(new OnClickListener(){
 
 						@Override
 						public void onClick(View v) {
-							//request to pay for the ticket
+							//TODO request to pay for the ticket
 							mTicket.setStatus(Ticket.PAYING);
 							setViewByTicketStatus(itemView);
 						}
@@ -105,7 +120,6 @@ public class TicketDetailFragmentAdapter extends TicketDetailsAdapter{
     					
 						@Override
 						public void onClick(View v) {
-							//send request to cancel a ticket, if any food is in cooking, this will fail
 							((TicketDetailFragment)((HomeActivity)mContext).getSupportFragmentManager()
 									.findFragmentById(R.id.ticketdetail)).modifyTicket();
 						}
@@ -115,7 +129,7 @@ public class TicketDetailFragmentAdapter extends TicketDetailsAdapter{
 
 						@Override
 						public void onClick(View v) {
-							//send request to cancel a ticket, if any food is in cooking, this will fail
+							//TODO send request to cancel a ticket, if any food is in cooking, this will fail
 						}
     					
     				});
@@ -125,13 +139,16 @@ public class TicketDetailFragmentAdapter extends TicketDetailsAdapter{
 				actBtn1.setVisibility(View.GONE);
 				actBtn2.setVisibility(View.GONE);
 				actBtn3.setVisibility(View.GONE);
+				((TextView)itemView.findViewById(R.id.hint)).setVisibility(View.VISIBLE);
 				((TextView)itemView.findViewById(R.id.hint)).setText(R.string.paying);
 				break;
 			case Ticket.FINISHED:
 				actBtn1.setVisibility(View.GONE);
 				actBtn2.setVisibility(View.GONE);
 				actBtn3.setVisibility(View.GONE);
+				((TextView)itemView.findViewById(R.id.hint)).setVisibility(View.VISIBLE);
 				((TextView)itemView.findViewById(R.id.hint)).setText(R.string.finish);
+				break;
 		};
 	}
 	

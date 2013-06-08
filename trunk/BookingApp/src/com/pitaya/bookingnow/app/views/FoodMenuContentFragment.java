@@ -16,8 +16,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
 import com.pitaya.bookingnow.app.R;
-import com.pitaya.bookingnow.app.TicketDetailPopUpActivity;
+import com.pitaya.bookingnow.app.TicketDetailPreviewActivity;
 import com.pitaya.bookingnow.app.domain.Food;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
@@ -70,21 +73,25 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			
 			this.getActivity().getLoaderManager().initLoader(0, null, (LoaderCallbacks<Cursor>) this);
 			
-			View showTicketBtn = mFoodMenuContentView.findViewById(R.id.showTicket);
-			showTicketBtn.setOnClickListener(new OnClickListener(){
-				
-				@Override
-				public void onClick(View arg0) {
-					//get current good items
-					Bundle bundle = new Bundle();
-					bundle.putSerializable("ticket", mContentContainer.getTicket());
-					Intent intent = new Intent(FoodMenuContentFragment.this.getActivity(), TicketDetailPopUpActivity.class);
-					intent.putExtras(bundle);
-					startActivity(intent);
-				}
-				
-			});
-			View goBackBtn = mFoodMenuContentView.findViewById(R.id.backHome);
+			TextView showTicketBtn = (TextView)mFoodMenuContentView.findViewById(R.id.showTicket);
+			if(this.mContentContainer.getTicket() != null){
+				showTicketBtn.setOnClickListener(new OnClickListener(){
+					
+					@Override
+					public void onClick(View arg0) {
+						//get current good items
+						Bundle bundle = new Bundle();
+						bundle.putSerializable("ticket", mContentContainer.getTicket());
+						Intent intent = new Intent(FoodMenuContentFragment.this.getActivity(), TicketDetailPreviewActivity.class);
+						intent.putExtras(bundle);
+						startActivity(intent);
+					}
+					
+				});
+			} else {
+				showTicketBtn.setVisibility(View.GONE);
+			}
+			TextView goBackBtn = (TextView)mFoodMenuContentView.findViewById(R.id.backHome);
 			goBackBtn.setOnClickListener(new OnClickListener(){
 				
 				@Override
@@ -240,11 +247,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 				public boolean isViewFromObject(View arg0, Object arg1) {
 					return arg0 == arg1;
 				}
-				
-				@Override  
-				public int getItemPosition(Object object) {  
-				    return POSITION_NONE;  
-				} 
+
 		}
 
 
