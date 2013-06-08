@@ -141,7 +141,7 @@ public class TicketDetailContentProvider  extends ContentProvider {
 	    }
 	    getContext().getContentResolver().notifyChange(uri, null);
 	    return rowsUpdated;
-	}	
+	}
 
 	private void checkColumns(String[] projection) {
 	    String[] available = {

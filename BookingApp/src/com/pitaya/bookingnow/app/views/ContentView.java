@@ -223,20 +223,28 @@ public class ContentView extends ViewGroup {
 		return true;
 	}
 
-	private boolean isMenuOFF(){
+	public boolean isMenuOFF(){
 		int oldScrollX = getScrollX();
 		return oldScrollX == 0;
 	}
 	
-	private boolean isMenuON(){
+	public boolean isMenuON(){
 		int oldScrollX = getScrollX();
 		return oldScrollX == -menuWidth;
+	}
+	
+	public void closeMenu(){
+		smoothScrollTo(menuWidth);
+	}
+	
+	public void openMenu(){
+		smoothScrollTo(-menuWidth);
 	}
 	
 	public void toggle() {
 		if (isMenuOFF()) {
 			smoothScrollTo(-menuWidth);
-		} else if (isMenuON()) {
+		}  else if (isMenuON()) {
 			smoothScrollTo(menuWidth);
 		}
 	}

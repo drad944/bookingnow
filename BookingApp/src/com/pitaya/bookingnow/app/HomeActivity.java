@@ -167,10 +167,7 @@ public class HomeActivity extends FragmentActivity {
 				}//end for
 				TicketContentView ticketview = new TicketContentView("ticket", this, homecontent);
 				contentViews.add(ticketview);
-				Ticket newTicket = new Ticket("A1", "rmzhang");
-				newTicket.setOnDirtyChangedListener(ticketview);
 				FoodMenuContentView menucontentview = new FoodMenuContentView("menu", this, homecontent);
-				menucontentview.setTicket(newTicket);
 				contentViews.add(menucontentview);
 			}
 			homecontent.setMenu(leftmenu);
@@ -178,63 +175,6 @@ public class HomeActivity extends FragmentActivity {
 		setContentView(homecontent);
 	}
 	
-//	private void updateHomeContent(String config){
-//		ArrayList<BaseContentView> contentViews = new ArrayList<BaseContentView>();
-//		homecontent.updateContentViews(contentViews);
-//		View leftmenu = getLayoutInflater().inflate(R.layout.leftmenu, null);
-//		LinearLayout menuitems = (LinearLayout)(leftmenu.findViewById(R.id.leftmenu));
-//		for(int i=0; i < 4; i++){
-//			final int index = i;
-//			TextView menuitem = new TextView(this);
-//			menuitem.setTextColor(android.graphics.Color.WHITE);
-//			menuitem.setTextSize(25);
-//			menuitem.setGravity(Gravity.CENTER);
-//			contentViews.add(new FoodMenuContentView("menu" + index, this, homecontent));
-//			switch(index){
-//				case 0:
-//					menuitem.setText("订单");
-//					menuitem.setOnClickListener(new OnClickListener(){
-//						@Override
-//						public void onClick(View view) {
-//							homecontent.selectItem("menu" + index);
-//						}
-//					});
-//					break;
-//				case 1:
-//					menuitem.setText("菜单");
-//					menuitem.setOnClickListener(new OnClickListener(){
-//						@Override
-//						public void onClick(View view) {
-//							homecontent.selectItem("menu" + index);
-//						}
-//					});
-//					break;
-//				case 2:
-//					menuitem.setText("设置");
-//					menuitem.setOnClickListener(new OnClickListener(){
-//						@Override
-//						public void onClick(View view) {
-//							homecontent.selectItem("menu" + index);
-//						}
-//						
-//					});
-//					break;
-//				case 3:
-//					menuitem.setText("退出");
-//					menuitem.setOnClickListener(new OnClickListener(){
-//						@Override
-//						public void onClick(View view) {
-//							homecontent.selectItem("menu" + index);
-//						}
-//						
-//					});
-//					break;
-//			}
-//			menuitems.addView(menuitem);
-//		}
-//		homecontent.setMenu(leftmenu);
-//		setContentView(homecontent);
-//	}
 	
 	private void showConnectResultToast(String result){
 		 ToastUtil.showToast(this, result , Toast.LENGTH_SHORT);

@@ -127,6 +127,21 @@ public class DataService {
 		}
 	}
 	
+	public static void removeTicket(Context context, String ticket_key){
+		context.getContentResolver().delete(TicketDetailContentProvider.CONTENT_URI,
+				TicketDetailTable.COLUMN_TICKET_KEY +"=?",
+				new String[]{ticket_key});
+		context.getContentResolver().delete(TicketContentProvider.CONTENT_URI,
+				TicketTable.COLUMN_TICKET_KEY +"=?",
+				new String[]{ticket_key});
+	}
+	
+	public static void removeFoodsOfTicket(Context context, String ticket_key){
+		context.getContentResolver().delete(TicketDetailContentProvider.CONTENT_URI,
+				TicketDetailTable.COLUMN_TICKET_KEY +"=?",
+				new String[]{ticket_key});
+	}
+	
 	public static int[] getColumnIndexs(Cursor cursor, String[] columns){
 		int [] indexs = new int[columns.length];
 		for(int i=0; i < columns.length; i++){

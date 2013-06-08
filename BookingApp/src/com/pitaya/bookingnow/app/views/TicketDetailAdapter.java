@@ -20,7 +20,7 @@ import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.domain.Ticket;
 import com.pitaya.bookingnow.app.domain.Ticket.Food;
 
-public class TicketDetailsAdapter extends BaseAdapter {
+public class TicketDetailAdapter extends BaseAdapter {
     
     public static final int FOOD_ITEM = 0;  
     public static final int OPERATIONS = 1;
@@ -29,7 +29,7 @@ public class TicketDetailsAdapter extends BaseAdapter {
 	protected EditText mEditText;
 	protected Ticket mTicket;
     
-    public TicketDetailsAdapter(Context c, View view, Ticket ticket) throws IllegalArgumentException, IllegalAccessException{  
+    public TicketDetailAdapter(Context c, View view, Ticket ticket) throws IllegalArgumentException, IllegalAccessException{  
         this.mContext = c;
         this.mView = view;
         this.mTicket = ticket;
@@ -114,7 +114,7 @@ public class TicketDetailsAdapter extends BaseAdapter {
 				}
 				if(mTicket.addFood(food.getKey(), food.getName(), food.getPrice(), quantity)){
 					//remove this item from list view
-					TicketDetailsAdapter.this.notifyDataSetChanged();
+					TicketDetailAdapter.this.notifyDataSetChanged();
 				} else {
 					//change the item total price
 					totalPriceText.setText(String.valueOf(food.getPrice() * quantity) + "元");

@@ -15,7 +15,7 @@
         <TextView android:id="@+id/submitter"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:gravity="center|right"
+            android:gravity="center"
             android:layout_height="40dp"
             android:textAppearance="@android:style/TextAppearance.Medium"
             android:singleLine="true"
@@ -36,6 +36,5 @@
             android:textAppearance="@android:style/TextAppearance.Medium"
             android:singleLine="true"
             android:textColor="@android:color/black"/>
-    
 
 </LinearLayout>

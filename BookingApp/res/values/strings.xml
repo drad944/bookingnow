@@ -26,6 +26,15 @@
     <string name="pay">买单</string>
     <string name="finish">交易完成</string>
     <string name="paying">已申请结帐</string>
+    <string name="reset">清空</string>
+    <string name="commitsuccess">提交成功</string>
+    
+    <string name="ticket_list_title1">桌号</string>
+    <string name="ticket_list_title2">提交者</string>
+    <string name="ticket_list_title3">状态</string>
+    <string name="ticket_list_title4">提交/更新时间</string>
+    <string name="newticketbtn">新建订单</string>
+    
     <drawable name="red">#ff0000</drawable>
     <drawable name="common_background">#4e72b8</drawable>
     <drawable name="menu_background">#494e8f</drawable>

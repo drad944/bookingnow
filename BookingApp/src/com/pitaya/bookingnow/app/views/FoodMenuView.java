@@ -146,124 +146,132 @@ public class FoodMenuView extends FrameLayout{
 		                     ViewGroup.LayoutParams.WRAP_CONTENT);
 		            fsRL_LP.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 1);
 		            fsRL_LP.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
-		            foodstepper.setLayoutParams(fsRL_LP);
-		            fooditemRL.addView(foodstepper);
+		            fooditemRL.addView(foodstepper,fsRL_LP);
 		         	fsRL  = (RelativeLayout) foodstepper.findViewById(R.id.food_stepper);
 	         	} else {
 	         		fsRL  = (RelativeLayout) foodstepper.findViewById(R.id.food_stepper);
-	         		((EditText)fsRL.findViewById(R.id.quantity)).removeTextChangedListener(watchers.get(view.hashCode()));
+	         		if(watchers.get(view.hashCode()) != null){
+	         			((EditText)fsRL.findViewById(R.id.quantity)).removeTextChangedListener(watchers.get(view.hashCode()));
+	         		}
 	         	}
          	
 	         	TextView priceText = (TextView) fsRL.findViewById(R.id.price);
 	         	priceText.setText(String.valueOf(food.getPrice())+"元/份");
 	         	
 	         	final EditText quantityText = (EditText)fsRL.findViewById(R.id.quantity);
-	            watchers.put(view.hashCode(), new TextWatcher(){
-	            	
-					@Override
-					public void afterTextChanged(Editable text) {
-						Ticket ticket = mContentContainer.getTicket();
-						int quantity = 0;
-						try{
-							quantity = Integer.parseInt(text.toString());
-						} catch(Exception e){
-							Log.e("FoodMenuView", "Fail to parse food quantity");
-							quantity = 0;
-						}
-						ticket.addFood(food.getKey(), food.getName(), food.getPrice(), quantity);
-					}
-
-					@Override
-					public void beforeTextChanged(CharSequence text, int arg1,
-							int arg2, int arg3) {
-						quantityText.setSelection(text.length());
-					}
-
-					@Override
-					public void onTextChanged(CharSequence text, int arg1, int arg2, int arg3) {
-					}
-	            	
-	            });
 	         	
-	            quantityText.addTextChangedListener(watchers.get(view.hashCode()));
-	            quantityText.setOnFocusChangeListener(new OnFocusChangeListener(){
-
-					@Override
-					public void onFocusChange(View v, boolean hasFocus) {
-						if(hasFocus){
-							mEditText = quantityText;
-						} else {
-							mEditText = null;
+	         	if(mContentContainer.getTicket() == null){
+	         		quantityText.setVisibility(View.GONE);
+	         		((Button)fsRL.findViewById(R.id.addbtn)).setVisibility(View.GONE);
+	         		((Button)fsRL.findViewById(R.id.minusbtn)).setVisibility(View.GONE);
+	         	} else {
+		            watchers.put(view.hashCode(), new TextWatcher(){
+		            	
+						@Override
+						public void afterTextChanged(Editable text) {
+							Ticket ticket = mContentContainer.getTicket();
+							int quantity = 0;
+							try{
+								quantity = Integer.parseInt(text.toString());
+							} catch(Exception e){
+								Log.e("FoodMenuView", "Fail to parse food quantity");
+								quantity = 0;
+							}
+							ticket.addFood(food.getKey(), food.getName(), food.getPrice(), quantity);
 						}
-					}
-	            	
-	            });
-	            
-	            mView.setOnTouchListener(new View.OnTouchListener(){
-
-					@Override
-					public boolean onTouch(View v, MotionEvent arg1) {
-	            	    if(v instanceof EditText){
-	            	    	mEditText.clearFocus();
-	            	    	return false;
-	            	    } else if(mEditText != null){
-	            	    	mEditText.clearFocus();
-	            	    }
-					    InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE); 
-	            	    if(imm.isActive()){
-	            	    	imm.hideSoftInputFromWindow(mView.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
-	            	    }
-						return false;
-					}
-	            });
-	            
-	            ((Button)fsRL.findViewById(R.id.minusbtn)).setOnClickListener(new OnClickListener(){
 	
-					@Override
-					public void onClick(View v) {
-						String current = quantityText.getText().toString();
-						int quantity = 0;
-						try{
-							quantity = Integer.parseInt(current) - 1;
-						} catch(Exception e){
-							Log.e("FoodMenuView", "Fail to parse food quantity");
+						@Override
+						public void beforeTextChanged(CharSequence text, int arg1,
+								int arg2, int arg3) {
+							quantityText.setSelection(text.length());
 						}
-						if(quantity < 0){
-							return;
-						}
-						quantityText.setText(String.valueOf(quantity));
-					}
-	            	
-	            });
-	            
-	            ((Button)fsRL.findViewById(R.id.addbtn)).setOnClickListener(new OnClickListener(){
 	
-					@Override
-					public void onClick(View v) {
-						String current = quantityText.getText().toString();
-						int quantity = 0;
-						try{
-							quantity = Integer.parseInt(current) + 1;
-						} catch(Exception e){
-							Log.e("FoodMenuView", "Fail to parse food quantity");
-							quantity = 1;
+						@Override
+						public void onTextChanged(CharSequence text, int arg1, int arg2, int arg3) {
 						}
-						quantityText.setText(String.valueOf(quantity));
-					}
-	            	
-	            });
-
-	            boolean hasFound = false;
-	            for(Entry<com.pitaya.bookingnow.app.domain.Ticket.Food, Integer> entry : mContentContainer.getTicket().getFoods().entrySet()){
-	            	if(entry.getKey().getKey().equals(food.getKey())){
-	            		 quantityText.setText(String.valueOf(entry.getValue()));
-	            		 hasFound = true;
-	            		 break;
-	            	}
-	            }
-	            if(!hasFound){
-	            	quantityText.setText("0");
-	            }
+		            	
+		            });
+		         	
+		            quantityText.addTextChangedListener(watchers.get(view.hashCode()));
+		            quantityText.setOnFocusChangeListener(new OnFocusChangeListener(){
+	
+						@Override
+						public void onFocusChange(View v, boolean hasFocus) {
+							if(hasFocus){
+								mEditText = quantityText;
+							} else {
+								mEditText = null;
+							}
+						}
+		            	
+		            });
+		            
+		            mView.setOnTouchListener(new View.OnTouchListener(){
+	
+						@Override
+						public boolean onTouch(View v, MotionEvent arg1) {
+		            	    if(v instanceof EditText){
+		            	    	mEditText.clearFocus();
+		            	    	return false;
+		            	    } else if(mEditText != null){
+		            	    	mEditText.clearFocus();
+		            	    }
+						    InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE); 
+		            	    if(imm.isActive()){
+		            	    	imm.hideSoftInputFromWindow(mView.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+		            	    }
+							return false;
+						}
+		            });
+	            
+		            ((Button)fsRL.findViewById(R.id.minusbtn)).setOnClickListener(new OnClickListener(){
+		
+						@Override
+						public void onClick(View v) {
+							String current = quantityText.getText().toString();
+							int quantity = 0;
+							try{
+								quantity = Integer.parseInt(current) - 1;
+							} catch(Exception e){
+								Log.e("FoodMenuView", "Fail to parse food quantity");
+							}
+							if(quantity < 0){
+								return;
+							}
+							quantityText.setText(String.valueOf(quantity));
+						}
+		            	
+		            });
+		            
+		            ((Button)fsRL.findViewById(R.id.addbtn)).setOnClickListener(new OnClickListener(){
+		
+						@Override
+						public void onClick(View v) {
+							String current = quantityText.getText().toString();
+							int quantity = 0;
+							try{
+								quantity = Integer.parseInt(current) + 1;
+							} catch(Exception e){
+								Log.e("FoodMenuView", "Fail to parse food quantity");
+								quantity = 1;
+							}
+							quantityText.setText(String.valueOf(quantity));
+						}
+		            	
+		            });
+	
+		            boolean hasFound = false;
+		            for(Entry<com.pitaya.bookingnow.app.domain.Ticket.Food, Integer> entry : mContentContainer.getTicket().getFoods().entrySet()){
+		            	if(entry.getKey().getKey().equals(food.getKey())){
+		            		 quantityText.setText(String.valueOf(entry.getValue()));
+		            		 hasFound = true;
+		            		 break;
+		            	}
+		            }
+		            if(!hasFound){
+		            	quantityText.setText("0");
+		            }
+	         	}
 	        } else {
         		image.setOnClickListener(new OnClickListener(){
              	

@@ -25,11 +25,12 @@ public class Ticket implements Serializable{
 	private Long modification_ts;
 	private Long commit_ts;
 	private int status;
-	private boolean isDirty;
+	private volatile boolean isDirty;
 	private transient OnDirtyChangedListener mOnDirtyChangedListener;
 	
 	public Ticket(){
-		this.isDirty = false;
+		this.foods = new LinkedHashMap<Ticket.Food, Integer>();
+		this.markDirty(false);
 	}
 	
 	public Ticket(String tn, String submitter){
@@ -39,7 +40,7 @@ public class Ticket implements Serializable{
 		this.ticketkey = UUID.randomUUID().toString();
 		this.modification_ts = System.currentTimeMillis();
 		this.status = Ticket.NEW;
-		this.isDirty = false;
+		this.markDirty(false);
 	}
 	
 	public Map<Food, Integer> getFoods(){
@@ -125,15 +126,11 @@ public class Ticket implements Serializable{
 	 * return true if the food is removed
 	 */
 	public synchronized boolean addFood(String key, String name, float price, int quantity){
-		if(this.foods == null){
-			this.foods = new LinkedHashMap<Ticket.Food, Integer>();
-		}
 		Ticket.Food food = this.new Food(key, name, price); 
 		if(quantity <= 0){
 			if(this.foods.get(food) != null){
 				this.foods.remove(food);
 				markDirty(true);
-				this.modification_ts = System.currentTimeMillis();
 				return true;
 			} else {
 				return false;
@@ -143,12 +140,10 @@ public class Ticket implements Serializable{
 			if(current_q != null){
 				if(quantity != current_q){
 					this.foods.put(food, quantity);
-					this.modification_ts = System.currentTimeMillis();
 					markDirty(true);
 				}
 			} else {
 				this.foods.put(food, quantity);
-				this.modification_ts = System.currentTimeMillis();
 				markDirty(true);
 			}
 

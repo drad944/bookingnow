@@ -28,13 +28,17 @@ import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class TicketListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
+	private static int HEADER = 0;
+	private static int ITEM = HEADER +1 ;
 	private static String TAG = "TicketContentFragment";
 	private TicketContentView mContentContainer;
 	private boolean mDualPane;
@@ -53,6 +57,7 @@ public class TicketListFragment extends ListFragment implements LoaderManager.Lo
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		this.getActivity().getLoaderManager().initLoader(1, null, (LoaderCallbacks<Cursor>) this);
     }
 	
 	@Override
@@ -65,8 +70,8 @@ public class TicketListFragment extends ListFragment implements LoaderManager.Lo
 //        if (mDualPane) {
 //            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 //        }
+		
         mDualPane = true;
-		this.getActivity().getLoaderManager().initLoader(1, null, (LoaderCallbacks<Cursor>) this);
 		return view;
 	}
 	
@@ -107,6 +112,7 @@ public class TicketListFragment extends ListFragment implements LoaderManager.Lo
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
 		if(cursor != null){
 			mTicketList = new ArrayList<Ticket>();
 			int [] indexs = DataService.getColumnIndexs(cursor, new String[]{
@@ -138,7 +144,9 @@ public class TicketListFragment extends ListFragment implements LoaderManager.Lo
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		this.showDetails(position);
+		if(position > 0){
+			this.showDetails(position - 1);
+		}
 	}
 	
 	@Override
@@ -152,43 +160,74 @@ public class TicketListFragment extends ListFragment implements LoaderManager.Lo
 		
 		@Override
 		public int getCount() {
-			return ticketlist.size();
+			return ticketlist.size() + 1;
 		}
 
 		@Override
 		public Object getItem(int position) {
-			// TODO Auto-generated method stub
 			return position;
 		}
 
 		@Override
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
 			return position;
 		}
+		
+	    @Override  
+	    public int getViewTypeCount() {
+	        return 2;
+	    }
+	    
+	    
+	    @Override  
+	    public int getItemViewType(int position) {
+	        if(position > 0) {
+	            return ITEM;  
+	        } else {
+	            return HEADER;  
+	        }
+	    }
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view = convertView;
-			Ticket ticket = ticketlist.get(position);
-			if(view == null){
-				view = View.inflate(parent.getContext(), R.layout.ticketinfo, null);
+			if(getItemViewType(position) == HEADER){
+				if(view == null){
+					view = View.inflate(parent.getContext(), R.layout.ticketlistheader, null);
+				}
+				Button newTicketBtn = (Button)view.findViewById(R.id.newticket);
+				newTicketBtn.setOnClickListener(new OnClickListener(){
+		
+					@Override
+					public void onClick(View v) {
+						//TODO send ticket to service
+						Ticket ticket = new Ticket("A1", "rmzhang");
+						DataService.saveNewTicket(TicketListFragment.this.getActivity(), ticket);
+					}
+					
+				});
+				return view;
+			} else {
+				Ticket ticket = ticketlist.get(position-1);
+				if(view == null){
+					view = View.inflate(parent.getContext(), R.layout.ticketinfo, null);
+				}
+	
+				((TextView)view.findViewById(R.id.table_number)).setText(ticket.getTableNum());
+				((TextView)view.findViewById(R.id.submitter)).setText(ticket.getSubmitter());
+				((TextView)view.findViewById(R.id.status)).setText(String.valueOf(ticket.getStatus()));
+				Log.i(TAG, position+"' ticket key is" + ticket.getTicketKey());
+				SimpleDateFormat dateFm = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss"); 
+				Date date = new Date();
+				if( ticket.getStatus() == Ticket.NEW){
+					date.setTime(ticket.getModificationTime());
+					((TextView)view.findViewById(R.id.committime)).setText(dateFm.format(date));
+				} else if(ticket.getCommitTime() != null){
+					date.setTime(ticket.getCommitTime());
+					((TextView)view.findViewById(R.id.committime)).setText(dateFm.format(date));
+				}
+				return view;
 			}
-
-			((TextView)view.findViewById(R.id.table_number)).setText(ticket.getTableNum());
-			((TextView)view.findViewById(R.id.submitter)).setText(ticket.getSubmitter());
-			((TextView)view.findViewById(R.id.status)).setText(String.valueOf(ticket.getStatus()));
-			Log.i(TAG, position+"' ticket key is" + ticket.getTicketKey());
-			SimpleDateFormat dateFm = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss"); 
-			Date date = new Date();
-			if( ticket.getStatus() == Ticket.NEW){
-				date.setTime(ticket.getModificationTime());
-				((TextView)view.findViewById(R.id.committime)).setText(dateFm.format(date));
-			} else if(ticket.getCommitTime() != null){
-				date.setTime(ticket.getCommitTime());
-				((TextView)view.findViewById(R.id.committime)).setText(dateFm.format(date));
-			}
-			return view;
 		}  
 		
 	}

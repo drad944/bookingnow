@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         
-        <activity android:name=".TicketDetailPopUpActivity" 
+        <activity android:name=".TicketDetailPreviewActivity" 
                 android:theme="@style/TicketViewerStyle"
                 android:configChanges="screenSize|orientation"
                 android:windowSoftInputMode="adjustPan">
