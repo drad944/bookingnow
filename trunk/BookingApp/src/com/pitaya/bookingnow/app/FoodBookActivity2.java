@@ -30,8 +30,9 @@ import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout.LayoutParams;
 
 import com.aphidmobile.flip.FlipViewController;
-import com.pitaya.bookingnow.app.domain.Food;
-import com.pitaya.bookingnow.app.domain.Ticket;
+import com.pitaya.bookingnow.app.model.Food;
+import com.pitaya.bookingnow.app.model.Ticket;
+import com.pitaya.bookingnow.app.model.TicketDetailAdapter;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
 
@@ -43,6 +44,7 @@ public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderC
 	private TextView mPriceText;
 	private TextView mFoodNameText;
 	private EditText mQuantityText;
+	private View mFoodStepper;
 	private Food mCurrentFood;
 	private ArrayList<Food> mFoodsList;
 
@@ -81,6 +83,10 @@ public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderC
     private void updateCurrentFoodInfo(){
     	if(mCurrentFood == null)
     		return;
+    	if(mTicket == null){
+    		setOperationsViewGone();
+    		return;
+    	}
     	mQuantityText.clearFocus();
     	mFoodNameText.setText(mCurrentFood.getName());
     	mPriceText.setText(String.valueOf(mCurrentFood.getPrice())+"元/份");
@@ -99,7 +105,10 @@ public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderC
 						quantity = 0;
 					}
 					if(mCurrentFood != null){
-						mTicket.addFood(mCurrentFood.getKey(), mCurrentFood.getName(), mCurrentFood.getPrice(), quantity);
+						Ticket.Food bookingfood = mTicket.new Food(mCurrentFood.getKey(), mCurrentFood.getName(), mCurrentFood.getPrice());
+						if(mTicket.getStatus() == Ticket.NEW){
+							DataService.updateTicketDetails(FoodBookActivity2.this, mTicket, bookingfood, quantity);
+						}
 					}
 				}
 
@@ -118,9 +127,9 @@ public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderC
     	mQuantityText.addTextChangedListener(mTextWatcher);
     	
         boolean hasFound = false;
-        for(Entry<com.pitaya.bookingnow.app.domain.Ticket.Food, Integer> entry : mTicket.getFoods().entrySet()){
+        for(Entry<com.pitaya.bookingnow.app.model.Ticket.Food, Integer> entry : mTicket.getFoods().entrySet()){
         	if(entry.getKey().getKey().equals(mCurrentFood.getKey())){
-        		mQuantityText.setText(String.valueOf(entry.getValue()));
+        		 mQuantityText.setText(String.valueOf(entry.getValue()));
         		 hasFound = true;
         		 break;
         	}
@@ -130,20 +139,25 @@ public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderC
         }
     }
 
+    private void setOperationsViewGone(){
+    	mFoodStepper.setVisibility(View.GONE);
+    	mPriceText.setVisibility(View.VISIBLE);
+    }
+    
     private void setHomeContent(){
     	setContentView(R.layout.foodbooklayout);
     	RelativeLayout fooditemRL = (RelativeLayout)findViewById(R.id.foodbookitem);
         mFoodNameText = (TextView) fooditemRL.findViewById(R.id.foodname);
-	    View foodstepper = View.inflate(this, R.layout.foodstepper, null);
+        mFoodStepper = View.inflate(this, R.layout.foodstepper, null);
 	    RelativeLayout.LayoutParams fsRL_LP = new RelativeLayout.LayoutParams(
        		 	ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         fsRL_LP.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 1);
         fsRL_LP.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
-        foodstepper.setLayoutParams(fsRL_LP);
-        fooditemRL.addView(foodstepper);
+        mFoodStepper.setLayoutParams(fsRL_LP);
+        fooditemRL.addView(mFoodStepper);
         
-        RelativeLayout fsRL  = (RelativeLayout) foodstepper.findViewById(R.id.food_stepper);
+        RelativeLayout fsRL  = (RelativeLayout) mFoodStepper.findViewById(R.id.food_stepper);
 	    mPriceText = (TextView) fsRL.findViewById(R.id.price);
 	    
 	    mQuantityText = (EditText)fsRL.findViewById(R.id.quantity);
@@ -158,7 +172,7 @@ public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderC
 				try{
 					quantity = Integer.parseInt(current) - 1;
 				} catch(Exception e){
-					Log.e("FoodMenuView", "Fail to parse food quantity");
+					Log.e("FoodBookActivity", "Fail to parse food quantity");
 				}
 				if(quantity < 0){
 					return;

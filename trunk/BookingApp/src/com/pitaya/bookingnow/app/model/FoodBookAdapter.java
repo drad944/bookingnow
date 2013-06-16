@@ -1,4 +1,4 @@
-package com.pitaya.bookingnow.app.views;
+package com.pitaya.bookingnow.app.model;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,8 +24,6 @@ import android.widget.TextView;
 
 import com.aphidmobile.utils.UI;
 import com.pitaya.bookingnow.app.R;
-import com.pitaya.bookingnow.app.domain.Food;
-import com.pitaya.bookingnow.app.domain.Ticket;
 
 public class FoodBookAdapter extends BaseAdapter {
 	
@@ -156,7 +154,7 @@ public class FoodBookAdapter extends BaseAdapter {
         });
 
         boolean hasFound = false;
-        for(Entry<com.pitaya.bookingnow.app.domain.Ticket.Food, Integer> entry : mTicket.getFoods().entrySet()){
+        for(Entry<com.pitaya.bookingnow.app.model.Ticket.Food, Integer> entry : mTicket.getFoods().entrySet()){
         	if(entry.getKey().getKey().equals(food.getKey())){
         		 quantityText.setText(String.valueOf(entry.getValue()));
         		 hasFound = true;

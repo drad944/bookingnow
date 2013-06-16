@@ -2,11 +2,11 @@ package com.pitaya.bookingnow.app;
 
 import java.util.ArrayList;
 import com.aphidmobile.flip.FlipViewController;
-import com.pitaya.bookingnow.app.domain.Food;
-import com.pitaya.bookingnow.app.domain.Ticket;
+import com.pitaya.bookingnow.app.model.Food;
+import com.pitaya.bookingnow.app.model.FoodBookAdapter;
+import com.pitaya.bookingnow.app.model.Ticket;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
-import com.pitaya.bookingnow.app.views.FoodBookAdapter;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;

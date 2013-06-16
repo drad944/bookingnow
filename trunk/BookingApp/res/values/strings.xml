@@ -5,7 +5,9 @@
     <string name="account">帐号：</string>  
     <string name="password">密码：</string>  
     <string name="login_title">请先登录</string>
+    <string name="confirm">尚未提交的订单更改将丢失</string>
     <string name="ok">确定</string>
+    <string name="cancel">取消</string>
     <string name="exit">退出</string>
     <string name="waiting">请稍等</string>
     <string name="logining">登录中...</string>
@@ -35,7 +37,17 @@
     <string name="ticket_list_title4">提交/更新时间</string>
     <string name="newticketbtn">新建订单</string>
     
-    <drawable name="red">#ff0000</drawable>
+    <string name="foodunavailablebtn">缺料</string>
+    <string name="freebtn">赠送</string>
+    <string name="seatssearchbtn">座位查询</string>
+    <string name="ticketssearchbtn">订单查询</string>
+    <string name="peoplecount">就餐人数</string>
+    <string name="phonenumber">手机号码</string>
+    <string name="customername">客户名称</string>
+    <string name="searchbtn">查询</string>
+    <string name="bookingbtn">预订</string>
+    <string name="cancelfreebtn">取消赠送</string>
+    <string name="seatavailable">找到符合条件的座位</string>
     <drawable name="common_background">#4e72b8</drawable>
     <drawable name="menu_background">#494e8f</drawable>
     

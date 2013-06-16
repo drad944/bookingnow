@@ -12,7 +12,7 @@ import org.json.JSONArray;
 
 import com.pitaya.bookingnow.app.R;
 
-import com.pitaya.bookingnow.app.domain.Ticket;
+import com.pitaya.bookingnow.app.model.Ticket;
 import com.pitaya.bookingnow.app.service.FoodMenuContentProvider;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
 import com.pitaya.bookingnow.app.service.MessageService;
@@ -82,7 +82,7 @@ public class HomeActivity extends FragmentActivity {
 		Intent intent = this.getIntent();
 		Bundle bundle = intent.getExtras();
 		if(bundle != null && bundle.getSerializable("ticket") != null){
-			((FoodMenuContentView)this.homecontent.getContentView("menu")).setTicket((Ticket)bundle.getSerializable("ticket"));
+			((FoodMenuContentView)this.homecontent.getContentView("menu")).setTicketAndRefresh((Ticket)bundle.getSerializable("ticket"));
 		}
 	}
 	
@@ -137,6 +137,7 @@ public class HomeActivity extends FragmentActivity {
 							menuitem.setOnClickListener(new OnClickListener(){
 								@Override
 								public void onClick(View view) {
+									((FoodMenuContentView)homecontent.getContentView("menu")).setTicket(null);
 									homecontent.selectItem("menu");
 								}
 							});
@@ -156,7 +157,16 @@ public class HomeActivity extends FragmentActivity {
 							menuitem.setOnClickListener(new OnClickListener(){
 								@Override
 								public void onClick(View view) {
-									homecontent.selectItem("ticket");
+									if(homecontent.getCurrentContentViewKey().equals("menu")){
+										Ticket currentTicket =  ((FoodMenuContentView)homecontent.getContentView("menu")).getTicket();
+										if(currentTicket != null && currentTicket.isDirty() && currentTicket.getStatus() != Ticket.NEW){
+											showConfirmDialog("ticket");
+										} else {
+											homecontent.selectItem("ticket");
+										}
+									} else {
+										homecontent.selectItem("ticket");
+									}
 								}
 								
 							});
@@ -175,6 +185,31 @@ public class HomeActivity extends FragmentActivity {
 		setContentView(homecontent);
 	}
 	
+	private void showConfirmDialog(final String key){
+		 AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		 builder.setTitle(R.string.confirm);
+		 builder.setIcon(android.R.drawable.ic_dialog_info);
+		 builder.setPositiveButton(R.string.ok,
+		       new DialogInterface.OnClickListener()
+		       {
+		           @Override
+		           public void onClick(DialogInterface dialog, int which)
+		           {
+		        	   homecontent.selectItem(key);
+		           }
+		       });
+		 builder.setNegativeButton(R.string.cancel,
+		       new DialogInterface.OnClickListener()
+		       {
+		 
+		           @Override
+		           public void onClick(DialogInterface dialog, int which)
+		           {
+		        	   return;
+		           }
+		       });
+		 builder.create().show();
+	}
 	
 	private void showConnectResultToast(String result){
 		 ToastUtil.showToast(this, result , Toast.LENGTH_SHORT);

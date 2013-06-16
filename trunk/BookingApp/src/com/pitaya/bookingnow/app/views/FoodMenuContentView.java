@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 
 import com.pitaya.bookingnow.app.R;
-import com.pitaya.bookingnow.app.domain.Ticket;
+import com.pitaya.bookingnow.app.model.Ticket;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -74,10 +74,15 @@ public class FoodMenuContentView extends BaseContentView{
 	
 	public void setTicket(Ticket ticket){
 		mTicket = ticket;
+	}
+	
+	public void setTicketAndRefresh(Ticket ticket){
+		mTicket = ticket;
 		if(mFragment != null) {
-			mFragment.refreshCurrentPage();
+			mFragment.refreshAllPages();
 		}
 	}
+	
 	
 	public Ticket getTicket(){
 		return this.mTicket;

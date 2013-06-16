@@ -13,16 +13,18 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.pitaya.bookingnow.app.domain.Ticket;
-import com.pitaya.bookingnow.app.domain.Ticket.Food;
+
+import com.pitaya.bookingnow.app.model.Ticket;
+import com.pitaya.bookingnow.app.model.TicketDetailPreviewAdapter;
+import com.pitaya.bookingnow.app.model.Ticket.Food;
 import com.pitaya.bookingnow.app.service.DataService;
-import com.pitaya.bookingnow.app.views.TicketDetailPreviewAdapter;
 import java.util.Map.Entry;
 
 public class TicketDetailPreviewActivity extends ListActivity  {
@@ -33,6 +35,9 @@ public class TicketDetailPreviewActivity extends ListActivity  {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		ViewGroup.LayoutParams lp =  this.getListView().getLayoutParams();
+		lp.width = 700;
+		this.getListView().setLayoutParams(lp);
 		this.setView();
 	}
 	
@@ -63,7 +68,19 @@ public class TicketDetailPreviewActivity extends ListActivity  {
 		 bundle.putSerializable("ticket", mTicket);
 		 intent.putExtras(bundle);
 		 startActivity(intent);
+		 this.finish();
 	}
-		
-
+	
+	@Override
+	protected void onDestroy(){
+		Log.i("TicketDetailPreviewActivity", "in TicketDetailPreviewActivity destroy" + this);
+		super.onDestroy();
+		if(this.mTicket != null){
+			this.mTicket.setOnDirtyChangedListener(null);
+			this.mTicket.setOnStatusChangedListener(null);
+			for(Entry<Food, Integer> entry : mTicket.getFoods().entrySet()){
+				entry.getKey().setOnFoodStatusChangedListener(null);
+			}
+		}
+	}
 }

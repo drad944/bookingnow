@@ -1,10 +1,5 @@
 package com.pitaya.bookingnow.app.views;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import android.app.ActionBar;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,19 +9,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.pitaya.bookingnow.app.R;
-import com.pitaya.bookingnow.app.domain.*;
+import com.pitaya.bookingnow.app.model.*;
+import com.pitaya.bookingnow.app.service.RoleManager;
 
-public class TicketContentView extends BaseContentView implements Ticket.OnDirtyChangedListener{
+public class TicketContentView extends BaseContentView{
 	
-	private Map<String, Ticket> dirtyTickets;
-	private String mTicketKey;
 	private View mView;
-	private TicketListFragment mTicketListFragment;
-	private TicketDetailFragment mTicketDetailFragment;
+	private TicketLeftView mLeftView;
 	
 	public TicketContentView(String key, Context context, SlideContent home) {
 		super(key, context, home);
-		dirtyTickets = new HashMap<String, Ticket>();
+	}
+	
+	@Override
+	public boolean canIntercept(){
+		return mLeftView.canInterrupt();
 	}
 	
 	@Override
@@ -34,16 +31,17 @@ public class TicketContentView extends BaseContentView implements Ticket.OnDirty
 		mView = View.inflate(this.mContext, R.layout.ticketcontentview, null);
 		FragmentManager fragmentManager = ((FragmentActivity)this.mContext).getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		if(mTicketListFragment == null){
-			mTicketListFragment = new TicketListFragment();
-			mTicketListFragment.setContainer(this);
+		if(mLeftView == null){
+			switch(RoleManager.getRole()){
+				case RoleManager.WAITER:
+					mLeftView = new WaiterTicketLeftView();
+					break;
+				case RoleManager.WELCOMER:
+					mLeftView = new WelcomerTicketLeftView();
+			}
+			mLeftView.setContainer(this);
 		}
-		if(mTicketDetailFragment == null){
-			mTicketDetailFragment = new TicketDetailFragment();
-			mTicketDetailFragment.setContainer(this);
-		}
-		fragmentTransaction.replace(R.id.ticketlist, mTicketListFragment);
-		fragmentTransaction.replace(R.id.ticketdetail, mTicketDetailFragment);
+		fragmentTransaction.replace(R.id.ticketlist, mLeftView);
 		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		fragmentTransaction.commit();
 		container.addView(mView);
@@ -53,38 +51,15 @@ public class TicketContentView extends BaseContentView implements Ticket.OnDirty
 	public boolean destroyView(ViewGroup container){
 		FragmentManager fragmentManager = ((FragmentActivity)this.mContext).getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		fragmentTransaction.remove(mTicketListFragment);
-		fragmentTransaction.remove(mTicketDetailFragment);
+		fragmentTransaction.remove(mLeftView);
+		if(((FragmentActivity)this.mContext).getSupportFragmentManager().findFragmentById(R.id.ticketdetail) != null){
+			fragmentTransaction.remove(((FragmentActivity)this.mContext).getSupportFragmentManager().findFragmentById(R.id.ticketdetail));
+		}
 		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		fragmentTransaction.commit();
 		return true;
 	}
-	
-	public void setDisplayTicketKey(String ticket_key){
-		this.mTicketKey = ticket_key;
-	}
-	
-	public String getDisplayTicketKey(){
-		return this.mTicketKey;
-	}
-	
-	public Ticket getDirtyTicketIfExists(String ticket_key){
-		return this.dirtyTickets.get(ticket_key);
-	}
-	
-	@Override
-	public void onDirtyChanged(Ticket ticket, boolean flag) {
-		if(flag){
-			if(dirtyTickets.get(ticket.getTicketKey()) == null){
-				dirtyTickets.put(ticket.getTicketKey(), ticket);
-			}
-		} else {
-			if(dirtyTickets.get(ticket.getTicketKey()) != null){
-				dirtyTickets.remove(ticket.getTicketKey());
-			}
-		}
-	}
-	
+		
 	public void openMenu(Ticket ticket){
 		((FoodMenuContentView)this.home.getContentView("menu")).setTicket(ticket);
 		this.home.selectItem("menu");

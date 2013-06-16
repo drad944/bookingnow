@@ -1,4 +1,4 @@
-package com.pitaya.bookingnow.app.views;
+package com.pitaya.bookingnow.app.model;
 
 import android.content.Context;
 import android.view.View;
@@ -10,8 +10,6 @@ import android.widget.Toast;
 
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.TicketDetailPreviewActivity;
-import com.pitaya.bookingnow.app.domain.Ticket;
-import com.pitaya.bookingnow.app.domain.Ticket.OnDirtyChangedListener;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookinnow.app.util.ToastUtil;
 
@@ -34,8 +32,8 @@ public class TicketDetailPreviewAdapter extends TicketDetailAdapter {
 			((TextView)itemView.findViewById(R.id.hint)).setText(R.string.hintinmenu);
 			return;
 		}
-		((TextView)itemView.findViewById(R.id.summary)).setText("合计"+mTicket.getTotalPrice()+"元");
 		((TextView)itemView.findViewById(R.id.hint)).setVisibility(View.GONE);
+		((TextView)itemView.findViewById(R.id.summary)).setText("合计"+mTicket.getTotalPrice()+"元");
 		final Button confirmBtn = (Button)itemView.findViewById(R.id.action1);
 		final Button resetBtn = (Button)itemView.findViewById(R.id.action2);
 		switch(mTicket.getStatus()){
@@ -49,7 +47,7 @@ public class TicketDetailPreviewAdapter extends TicketDetailAdapter {
 					public void onClick(View v) {
 						//TODO commit to server
 						//remove from local database
-						DataService.removeTicket(mContext, mTicket.getTicketKey());
+						//DataService.removeTicket(mContext, mTicket.getTicketKey());
 						mTicket.setStatus(Ticket.COMMITED);
 						mTicket.markDirty(false);
 						ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
@@ -62,9 +60,9 @@ public class TicketDetailPreviewAdapter extends TicketDetailAdapter {
 	
 					@Override
 					public void onClick(View v) {
-						mTicket.removeAllFood();
 						DataService.removeFoodsOfTicket(mContext, mTicket.getTicketKey());
-						((TicketDetailPreviewActivity)mContext).finish();
+						mTicket.removeAllFood();
+						TicketDetailPreviewAdapter.this.notifyDataSetChanged();
 					}
 					
 				});
@@ -72,7 +70,7 @@ public class TicketDetailPreviewAdapter extends TicketDetailAdapter {
 			case Ticket.COMMITED:
 				confirmBtn.setText(R.string.commitupdate);
 				resetBtn.setText(R.string.cancelupdate);
-				mTicket.setOnDirtyChangedListener(new OnDirtyChangedListener(){
+				mTicket.setOnDirtyChangedListener(new Ticket.OnDirtyChangedListener(){
 
 					@Override
 					public void onDirtyChanged(Ticket ticket, boolean flag) {
@@ -82,8 +80,8 @@ public class TicketDetailPreviewAdapter extends TicketDetailAdapter {
 				});
 				if(mTicket.isDirty()){
 					confirmBtn.setAlpha(1f);
-					confirmBtn.setClickable(true);
 					resetBtn.setAlpha(1f);
+					confirmBtn.setClickable(true);
 					resetBtn.setClickable(true);
 					confirmBtn.setOnClickListener(new OnClickListener(){
 						
@@ -102,15 +100,15 @@ public class TicketDetailPreviewAdapter extends TicketDetailAdapter {
 						@Override
 						public void onClick(View v) {
 							//TODO restore ticket content from server
-							((TicketDetailPreviewActivity)mContext).finish();
+							TicketDetailPreviewAdapter.this.notifyDataSetChanged();
 						}
 						
 					});
 				} else {
-					confirmBtn.setClickable(false);
 					confirmBtn.setAlpha(0.5f);
-					resetBtn.setClickable(false);
 					resetBtn.setAlpha(0.5f);
+					confirmBtn.setClickable(false);
+					resetBtn.setClickable(false);
 				}
 				break;
 		}

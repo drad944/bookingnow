@@ -148,7 +148,8 @@ public class TicketDetailContentProvider  extends ContentProvider {
 	    		TicketDetailTable.COLUMN_ID, 
 	    		TicketDetailTable.COLUMN_TICKET_KEY,
 	    		TicketDetailTable.COLUMN_FOOD_KEY,
-	    		TicketDetailTable.COLUMN_QUANTITY};
+	    		TicketDetailTable.COLUMN_QUANTITY,
+	    		TicketDetailTable.COLUMN_FREE};
 	    if (projection != null) {
 		      HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
 		      HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(available));

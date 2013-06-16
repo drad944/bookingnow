@@ -1,4 +1,4 @@
-package com.pitaya.bookingnow.app.views;
+package com.pitaya.bookingnow.app.model;
 
 import android.content.Context;
 import android.view.View;
@@ -6,11 +6,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pitaya.bookingnow.app.*;
-import com.pitaya.bookingnow.app.domain.Ticket;
-import com.pitaya.bookingnow.app.domain.Ticket.OnDirtyChangedListener;
+import com.pitaya.bookingnow.app.model.Ticket.OnTicketStatusChangedListener;
 import com.pitaya.bookingnow.app.service.DataService;
+import com.pitaya.bookingnow.app.views.TicketDetailFragment;
+import com.pitaya.bookinnow.app.util.ToastUtil;
 
 public class TicketDetailFragmentAdapter extends TicketDetailAdapter{
 	
@@ -34,6 +36,7 @@ public class TicketDetailFragmentAdapter extends TicketDetailAdapter{
 		TextView hinttext = ((TextView)itemView.findViewById(R.id.hint));
 		switch(this.mTicket.getStatus()){
 			case Ticket.NEW:
+				this.mTicket.setOnDirtyChangedListener(null);
 				actBtn1.setText(R.string.commit);
 				actBtn2.setText(R.string.modification);
 				actBtn3.setText(R.string.cancelticket);
@@ -43,10 +46,10 @@ public class TicketDetailFragmentAdapter extends TicketDetailAdapter{
 					@Override
 					public void onClick(View v) {
 						//TODO commit the ticket and remove it from local database
-						DataService.removeTicket(mContext, mTicket.getTicketKey());
-						mTicket.setStatus(Ticket.COMMITED);
+						//DataService.removeTicket(mContext, mTicket.getTicketKey());
+						ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
 						mTicket.markDirty(false);
-						setViewByTicketStatus(itemView);
+						mTicket.setStatus(Ticket.COMMITED);
 					}
 					
 				});
@@ -64,14 +67,14 @@ public class TicketDetailFragmentAdapter extends TicketDetailAdapter{
 					@Override
 					public void onClick(View v) {
 						//TODO send request to cancel a ticket and remove it from local database
-						
+						DataService.removeTicket(mContext, mTicket.getTicketKey());
 					}
 					
 				});
 				break;
 			case Ticket.COMMITED:
 				hinttext.setVisibility(View.GONE);
-				mTicket.setOnDirtyChangedListener(new OnDirtyChangedListener(){
+				mTicket.setOnDirtyChangedListener(new Ticket.OnDirtyChangedListener(){
 
 					@Override
 					public void onDirtyChanged(Ticket ticket, boolean flag) {
@@ -88,6 +91,7 @@ public class TicketDetailFragmentAdapter extends TicketDetailAdapter{
 						@Override
 						public void onClick(View v) {
 							//TODO update the ticket to server
+							ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
 							mTicket.markDirty(false);
 						}
     					
@@ -112,7 +116,6 @@ public class TicketDetailFragmentAdapter extends TicketDetailAdapter{
 						public void onClick(View v) {
 							//TODO request to pay for the ticket
 							mTicket.setStatus(Ticket.PAYING);
-							setViewByTicketStatus(itemView);
 						}
     					
     				});
@@ -157,10 +160,18 @@ public class TicketDetailFragmentAdapter extends TicketDetailAdapter{
 		if(getItemViewType(position) == FOOD_ITEM){
     		return super.getView(position, convertView, parent);
     	} else if(getItemViewType(position) == OPERATIONS){
-    		View itemView = View.inflate(mContext, R.layout.ticketbottom, null);
+    		final View itemView = View.inflate(mContext, R.layout.ticketbottom, null);
     		if(mTicket.getFoods().size() != 0){
     			((TextView)itemView.findViewById(R.id.summary)).setText("合计"+mTicket.getTotalPrice()+"元");
     			this.setViewByTicketStatus(itemView);
+    			mTicket.setOnStatusChangedListener(new OnTicketStatusChangedListener(){
+
+					@Override
+					public void onTicketStatusChanged(Ticket tikcet, int status) {
+						setViewByTicketStatus(itemView);
+					}
+    				
+    			});
     		} else {
     			Button act1Btn = ((Button)itemView.findViewById(R.id.action1));
     			act1Btn.setText(R.string.hintinticket);
