@@ -30,6 +30,10 @@ public class SlideContent extends RelativeLayout {
 		addView(mContentView, contentParams);
 	}
 	
+	public String getCurrentContentViewKey(){
+		return this.mContentView.getCurrent();
+	}
+	
 	public void selectItem(String key){
 		String currentKey = this.mContentView.getCurrent();
 		if(currentKey == null || currentKey.equals(key)){

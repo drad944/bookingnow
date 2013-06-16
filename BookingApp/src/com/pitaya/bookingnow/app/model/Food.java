@@ -1,4 +1,4 @@
-package com.pitaya.bookingnow.app.domain;
+package com.pitaya.bookingnow.app.model;
 
 import java.io.Serializable;
 

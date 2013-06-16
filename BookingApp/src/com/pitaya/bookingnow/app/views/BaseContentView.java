@@ -11,6 +11,7 @@ public class BaseContentView {
 	protected Context mContext;
 	protected SlideContent home;
 	private String key;
+	private Object _saveStatus;
 	
 	public BaseContentView(String key, Context context, SlideContent home){
 		this.mContext = context;
@@ -29,6 +30,14 @@ public class BaseContentView {
 	public boolean destroyView(ViewGroup container){
 		//need to override in sub class
 		return true;
+	}
+	
+	public void saveStatus(Object obj){
+		this._saveStatus = obj;
+	}
+	
+	public Object getStatus(){
+		return this._saveStatus;
 	}
 	
 	public String getKey(){

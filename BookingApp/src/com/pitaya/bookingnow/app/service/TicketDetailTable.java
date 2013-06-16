@@ -10,6 +10,7 @@ public class TicketDetailTable {
 	 public static final String COLUMN_TICKET_KEY = "ticket";
 	 public static final String COLUMN_FOOD_KEY = "food";
 	 public static final String COLUMN_QUANTITY = "quantity";
+	 public static final String COLUMN_FREE = "free";
 	
 	 private static final String TABLE_CREATE = "create table " 
 	      + TABLE_TICKET_DETIALS
@@ -17,7 +18,8 @@ public class TicketDetailTable {
 	      + COLUMN_ID + " integer primary key autoincrement, "
 	      + COLUMN_TICKET_KEY + " text not null,"
 	      + COLUMN_FOOD_KEY +  " text not null," 
-	      + COLUMN_QUANTITY + " integer not null"
+	      + COLUMN_QUANTITY + " integer not null,"
+	      + COLUMN_FREE + " text not null"
 	      + ");";
 	 
 	 public static void onCreate(SQLiteDatabase database) {

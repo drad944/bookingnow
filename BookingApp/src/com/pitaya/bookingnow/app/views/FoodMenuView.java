@@ -24,8 +24,10 @@ import android.widget.TextView;
 import com.pitaya.bookingnow.app.FoodBookActivity;
 import com.pitaya.bookingnow.app.FoodBookActivity2;
 import com.pitaya.bookingnow.app.R;
-import com.pitaya.bookingnow.app.domain.Food;
-import com.pitaya.bookingnow.app.domain.Ticket;
+import com.pitaya.bookingnow.app.model.Food;
+import com.pitaya.bookingnow.app.model.Ticket;
+import com.pitaya.bookingnow.app.service.DataService;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -176,8 +178,12 @@ public class FoodMenuView extends FrameLayout{
 							} catch(Exception e){
 								Log.e("FoodMenuView", "Fail to parse food quantity");
 								quantity = 0;
+								return;
 							}
-							ticket.addFood(food.getKey(), food.getName(), food.getPrice(), quantity);
+							Ticket.Food bookingfood = ticket.new Food(food.getKey(), food.getName(), food.getPrice());
+							if(ticket.getStatus() == Ticket.NEW){
+								DataService.updateTicketDetails(mContext, ticket, bookingfood, quantity);
+							}
 						}
 	
 						@Override
@@ -261,7 +267,7 @@ public class FoodMenuView extends FrameLayout{
 		            });
 	
 		            boolean hasFound = false;
-		            for(Entry<com.pitaya.bookingnow.app.domain.Ticket.Food, Integer> entry : mContentContainer.getTicket().getFoods().entrySet()){
+		            for(Entry<com.pitaya.bookingnow.app.model.Ticket.Food, Integer> entry : mContentContainer.getTicket().getFoods().entrySet()){
 		            	if(entry.getKey().getKey().equals(food.getKey())){
 		            		 quantityText.setText(String.valueOf(entry.getValue()));
 		            		 hasFound = true;

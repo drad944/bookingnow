@@ -150,6 +150,9 @@ public class TicketContentProvider extends ContentProvider {
 	    		TicketTable.COLUMN_TICKET_KEY,
 	    		TicketTable.COLUMN_TABLE_NUMBER,
 	    		TicketTable.COLUMN_SUBMITTER,
+	    		TicketTable.COLUMN_CUSTOMER,
+	    		TicketTable.COLUMN_PHONE,
+	    		TicketTable.COLUMN_PEOPLE_COUNT,
 	    		TicketTable.COLUMN_LAST_MODIFACTION_DATE,
 	    		TicketTable.COLUMN_COMMIT_DATE,
 	    		TicketTable.COLUMN_STATUS};

@@ -1,6 +1,10 @@
 package com.pitaya.bookingnow.app.views;
 
-import com.pitaya.bookingnow.app.domain.Ticket;
+import java.util.Map.Entry;
+
+import com.pitaya.bookingnow.app.model.Ticket;
+import com.pitaya.bookingnow.app.model.TicketDetailFragmentAdapter;
+import com.pitaya.bookingnow.app.model.Ticket.Food;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,7 +18,6 @@ import android.widget.TextView;
 
 public class TicketDetailFragment extends Fragment {
 	
-	private static TicketDetailFragmentAdapter sTicketAdapter;
 	private Ticket mTicket;
 	private ListView mView;
 	private TicketContentView mContentContainer;
@@ -50,12 +53,8 @@ public class TicketDetailFragment extends Fragment {
         }
         mView = new ListView(getActivity());
     	try {
-    		if(sTicketAdapter == null){
-    			sTicketAdapter = new TicketDetailFragmentAdapter(this.getActivity(), mView, this.mTicket);
-    		} else {
-    			sTicketAdapter.setTicket(mTicket);
-    		}
-    		mView.setAdapter(sTicketAdapter);
+    		TicketDetailFragmentAdapter ticketAdapter = new TicketDetailFragmentAdapter(this.getActivity(), mView, this.mTicket);
+    		mView.setAdapter(ticketAdapter);
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -64,6 +63,17 @@ public class TicketDetailFragment extends Fragment {
         return mView;
     }
     
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+		if(this.mTicket != null){
+			this.mTicket.setOnDirtyChangedListener(null);
+			this.mTicket.setOnStatusChangedListener(null);
+			for(Entry<Food, Integer> entry : mTicket.getFoods().entrySet()){
+				entry.getKey().setOnFoodStatusChangedListener(null);
+			}
+		}
+	}
     
     public void modifyTicket(){
     	mContentContainer.openMenu(this.mTicket);

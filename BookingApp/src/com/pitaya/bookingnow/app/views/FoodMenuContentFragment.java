@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.TicketDetailPreviewActivity;
-import com.pitaya.bookingnow.app.domain.Food;
+import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		}
 			
 		public int getCurrentViewIndex(){
-			if(this.mFoodMenuViewPager != null){
+			if(this.mFoodMenuViewPager != null && this.mFoodMenuAdapter != null){
 				return this.mFoodMenuViewPager.getCurrentItem();
 			} else {
 				return -1;
@@ -56,12 +56,23 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		}
 		
 		public void selectPage(int index){
-			this.mFoodMenuViewPager.setCurrentItem(index, true);
+			int currentIdx = getCurrentViewIndex();
+			if( currentIdx != -1 && currentIdx != index){
+				this.mFoodMenuViewPager.setCurrentItem(index, true);
+			}
 		}
 		
 		public void refreshCurrentPage(){
-			if(getCurrentViewIndex() > -1){
+			if(getCurrentViewIndex() != -1){
 				mFoodMenuAdapter.refresh(getCurrentViewIndex());
+			}
+		}
+		
+		public void refreshAllPages(){
+			if(getCurrentViewIndex() != -1){
+				for(int i = 0; i < mFoodMenuAdapter.getCount(); i++){
+					mFoodMenuAdapter.refresh(i);
+				}
 			}
 		}
 		
@@ -87,6 +98,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 						startActivity(intent);
 					}
 					
+					
 				});
 			} else {
 				showTicketBtn.setVisibility(View.GONE);
@@ -107,13 +119,11 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		@Override
 		public void onDetach(){
 			super.onDetach();
-			Log.i(TAG, "onDetach in FoodMenuContentFragment" + this.hashCode());
 		}
 		
 		@Override
 		public void onResume(){
 			super.onResume();
-			Log.i(TAG, "onResume in FoodMenuContentFragment" + this.hashCode());
 		}
 		
 		@Override
@@ -203,7 +213,9 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 				}
 
 			    public void refresh(int index){
-			    	mFoodMenus.get(index).refresh();
+			    	if(index < mFoodMenus.size()){
+			    		mFoodMenus.get(index).refresh();
+			    	}
 			    }
 			    
 			    @Override  
