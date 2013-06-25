@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pitaya.bookingnow.dao.Customer_PictureMapper" >
+  <resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.Customer_Picture" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="enabled" property="enabled" jdbcType="BIT" />
+    <result column="customer_id" property="customer_id" jdbcType="BIGINT" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.pitaya.bookingnow.entity.Customer_Picture" extends="BaseResultMap" >
+    <result column="image" property="image" jdbcType="LONGVARBINARY" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, enabled, customer_id
+  </sql>
+  <sql id="Blob_Column_List" >
+    image
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pitaya_customer_picture
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pitaya_customer_picture
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.pitaya.bookingnow.entity.Customer_Picture" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pitaya_customer_picture (enabled, customer_id, image
+      )
+    values (#{enabled,jdbcType=BIT}, #{customer_id,jdbcType=BIGINT}, #{image,jdbcType=LONGVARBINARY}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Customer_Picture" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pitaya_customer_picture
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="enabled != null" >
+        enabled,
+      </if>
+      <if test="customer_id != null" >
+        customer_id,
+      </if>
+      <if test="image != null" >
+        image,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="enabled != null" >
+        #{enabled,jdbcType=BIT},
+      </if>
+      <if test="customer_id != null" >
+        #{customer_id,jdbcType=BIGINT},
+      </if>
+      <if test="image != null" >
+        #{image,jdbcType=LONGVARBINARY},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Customer_Picture" >
+    update pitaya_customer_picture
+    <set >
+      <if test="enabled != null" >
+        enabled = #{enabled,jdbcType=BIT},
+      </if>
+      <if test="customer_id != null" >
+        customer_id = #{customer_id,jdbcType=BIGINT},
+      </if>
+      <if test="image != null" >
+        image = #{image,jdbcType=LONGVARBINARY},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.pitaya.bookingnow.entity.Customer_Picture" >
+    update pitaya_customer_picture
+    set enabled = #{enabled,jdbcType=BIT},
+      customer_id = #{customer_id,jdbcType=BIGINT},
+      image = #{image,jdbcType=LONGVARBINARY}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Customer_Picture" >
+    update pitaya_customer_picture
+    set enabled = #{enabled,jdbcType=BIT},
+      customer_id = #{customer_id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

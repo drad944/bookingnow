@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE configuration 
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url" value="jdbc:mysql://localhost:3306/bookingnow" />
+				<property name="username" value="testUser" />
+				<property name="password" value="123456" />
+			</dataSource>
+		</environment>
+	</environments>
+    
+	<mappers>
+		<mapper resource="com/pitaya/bookingnow/resource/security/AuthorityMapper.xml"/>
+		<mapper resource="com/pitaya/bookingnow/resource/security/ResourceMapper.xml"/>
+		<mapper resource="com/pitaya/bookingnow/resource/security/RoleMapper.xml"/>
+		<mapper resource="com/pitaya/bookingnow/resource/security/UserMapper.xml"/>
+		<mapper resource="com/pitaya/bookingnow/resource/security/Authority_Resource_DetailMapper.xml"/>
+		<mapper resource="com/pitaya/bookingnow/resource/security/Role_Authority_DetailMapper.xml"/>
+		<mapper resource="com/pitaya/bookingnow/resource/security/User_Role_DetailMapper.xml"/>
+		<mapper resource="com/pitaya/bookingnow/resource/security/User_PictureMapper.xml"/>
+		
+		<mapper resource="com/pitaya/bookingnow/resource/CustomerMapper.xml" />
+		<mapper resource="com/pitaya/bookingnow/resource/Food_Material_DetailMapper.xml" />
+		<mapper resource="com/pitaya/bookingnow/resource/FoodMapper.xml" />
+		<mapper resource="com/pitaya/bookingnow/resource/MaterialMapper.xml" />
+		<mapper resource="com/pitaya/bookingnow/resource/Order_Customer_DetailMapper.xml" />
+		<mapper resource="com/pitaya/bookingnow/resource/Order_Food_DetailMapper.xml" />
+		<mapper resource="com/pitaya/bookingnow/resource/Order_Table_DetailMapper.xml" />
+		<mapper resource="com/pitaya/bookingnow/resource/Order_User_DetailMapper.xml" />
+		<mapper resource="com/pitaya/bookingnow/resource/OrderMapper.xml" />
+		<mapper resource="com/pitaya/bookingnow/resource/TableMapper.xml" />
+		<mapper resource="com/pitaya/bookingnow/resource/Food_PictureMapper.xml" />
+		<mapper resource="com/pitaya/bookingnow/resource/Customer_PictureMapper.xml" />
+	
+	</mappers>
+</configuration>
+

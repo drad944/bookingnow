@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pitaya.bookingnow.dao.security.AuthorityMapper" >
+  <resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.security.Authority" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="issys" property="issys" jdbcType="BIT" />
+    <result column="module" property="module" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, description, issys, module
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pitaya_authority
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pitaya_authority
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.pitaya.bookingnow.entity.security.Authority" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pitaya_authority (name, description, issys, 
+      module)
+    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{issys,jdbcType=BIT}, 
+      #{module,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.security.Authority" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pitaya_authority
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="issys != null" >
+        issys,
+      </if>
+      <if test="module != null" >
+        module,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="issys != null" >
+        #{issys,jdbcType=BIT},
+      </if>
+      <if test="module != null" >
+        #{module,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.security.Authority" >
+    update pitaya_authority
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="issys != null" >
+        issys = #{issys,jdbcType=BIT},
+      </if>
+      <if test="module != null" >
+        module = #{module,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.security.Authority" >
+    update pitaya_authority
+    set name = #{name,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      issys = #{issys,jdbcType=BIT},
+      module = #{module,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

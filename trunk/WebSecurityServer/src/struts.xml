@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	
+	<constant name="struts.objectFactory.spring.useClassCache" value="true"></constant>
+	<constant name="struts.locale" value="zh_CN"></constant>
+	<constant name="struts.configuration.xmlreload" value="true"/>
+	<constant name="struts.devMode" value="true"/>
+	
+	<!-- 
+	<constant name="struts.objectFactory" value="spring "></constant>
+	 -->
+
+	<package name="default" namespace="/" extends="json-default">
+
+
+
+		<!-- 全局结果 -->
+		<global-results>
+			<result name="login">/login.jsp</result>
+			<result name="error">/page/error.jsp</result>
+		</global-results>
+
+		<action name="*User" class="com.pitaya.bookingnow.security.action.UserAction" method="{1}User">
+			<result name="loginFail" type="dispatcher">
+				/Page/Common/error.jsp
+	        </result>
+
+			<result name="loginSuccess" type="dispatcher">
+				/Page/Security/showUserInfo.jsp
+	        </result>
+	        
+			<result name="findFail" type="dispatcher">
+				/Page/error.jsp
+	        </result>
+
+			<result name="findSuccess" type="dispatcher">
+				/Page/success.jsp
+	        </result>
+	        
+	        <result name="registerSuccess" type="dispatcher">
+				/Page/error.jsp
+	        </result>
+
+			<result name="registerFail" type="dispatcher">
+				/Page/success.jsp
+	        </result>
+	        
+	        <result name="updateSuccess" type="dispatcher">
+				/Page/error.jsp
+	        </result>
+
+			<result name="updateFail" type="dispatcher">
+				/Page/success.jsp
+	        </result>
+	        
+	        <result name="removeSuccess" type="dispatcher">
+				/Page/error.jsp
+	        </result>
+
+			<result name="removeFail" type="dispatcher">
+				/Page/success.jsp
+	        </result>
+		</action>
+		
+
+		<action name="*Order" class="com.pitaya.bookingnow.action.OrderAction" method="{1}Order">
+
+			<result name="searchSuccess" type="json">
+				<param name="root">matchedOrders</param>
+	        </result>
+	        
+		</action>
+
+	</package>
+</struts>   
