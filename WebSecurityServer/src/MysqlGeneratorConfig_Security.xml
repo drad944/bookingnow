@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+	<classPathEntry location="..\WebContent\WEB-INF\lib\mysql-connector-java-5.0.8-bin.jar" />
+
+	<context id="mysqlTables" targetRuntime="MyBatis3">
+		<commentGenerator>
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+		
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/bookingnow?characterEncoding=utf8" userId="testUser" password="123456">
+		</jdbcConnection>
+
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<javaModelGenerator targetPackage="com.pitaya.bookingnow.entity.security" targetProject="..\src">
+			<property name="enableSubPackages" value="false" />
+			<property name="trimString" value="true" />
+		</javaModelGenerator>
+
+		<sqlMapGenerator targetPackage="com.pitaya.bookingnow.resource.security" targetProject="..\src">
+			<property name="enableSubPackages" value="false" />
+		</sqlMapGenerator>
+
+		<javaClientGenerator type="XMLMAPPER" targetPackage="com.pitaya.bookingnow.dao.security" targetProject="..\src">
+			<property name="enableSubPackages" value="false" />
+		</javaClientGenerator>
+
+
+		<table catalog="" schema="" tableName="pitaya_user" domainObjectName="User"
+			enableSelectByExample="false" 
+			enableDeleteByExample="false" 
+			enableCountByExample="false" 
+			enableUpdateByExample="false" 
+			selectByExampleQueryId="false" 
+			>
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+
+		<table catalog="" schema="" tableName="pitaya_user_picture" domainObjectName="User_Picture"
+			enableSelectByExample="false" 
+			enableDeleteByExample="false" 
+			enableCountByExample="false" 
+			enableUpdateByExample="false" 
+			selectByExampleQueryId="false" 
+			>
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+ 
+		<table catalog="" schema="" tableName="pitaya_role" domainObjectName="Role"
+			enableSelectByExample="false" 
+			enableDeleteByExample="false" 
+			enableCountByExample="false" 
+			enableUpdateByExample="false" 
+			selectByExampleQueryId="false" 
+			>
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+		
+		<table catalog="" schema="" tableName="pitaya_user_role_detail" domainObjectName="User_Role_Detail"
+			enableSelectByExample="false"
+			enableDeleteByExample="false" 
+			enableCountByExample="false" 
+			enableUpdateByExample="false" 
+			selectByExampleQueryId="false" 
+			>
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+		
+		<table catalog="" schema="" tableName="pitaya_authority" domainObjectName="Authority"
+			enableSelectByExample="false" 
+			enableDeleteByExample="false" 
+			enableCountByExample="false" 
+			enableUpdateByExample="false" 
+			selectByExampleQueryId="false" 
+			>
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+		
+		<table catalog="" schema="" tableName="pitaya_role_authority_detail" domainObjectName="Role_Authority_Detail"
+			enableSelectByExample="false" 
+			enableDeleteByExample="false" 
+			enableCountByExample="false" 
+			enableUpdateByExample="false" 
+			selectByExampleQueryId="false" 
+			>
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+		
+		<table catalog="" schema="" tableName="pitaya_resource" domainObjectName="Resource"
+			enableSelectByExample="false" 
+			enableDeleteByExample="false" 
+			enableCountByExample="false" 
+			enableUpdateByExample="false" 
+			selectByExampleQueryId="false" 
+			>
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+
+		<table catalog="" schema="" tableName="pitaya_authority_resource_detail" domainObjectName="Authority_Resource_Detail"
+			enableSelectByExample="false" 
+			enableDeleteByExample="false" 
+			enableCountByExample="false" 
+			enableUpdateByExample="false" 
+			selectByExampleQueryId="false" 
+			>
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+		
+
+	</context>
+</generatorConfiguration>

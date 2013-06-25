@@ -1,0 +1,21 @@
+@CHARSET "UTF-8";
+
+.ViewTable {
+    table-layout: fixed;
+}
+
+.ViewDiv {
+    overflow-y: auto;
+    WIDTH: 100%;   
+    HEIGHT: 100%
+}
+
+.InlineDiv {
+	display: inline
+}
+
+.ContentDiv {
+    overflow-x:auto; 
+    overflow-y:auto; 
+    position:absolute
+}
