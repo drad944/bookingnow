@@ -24,7 +24,7 @@
 			<result name="error">/page/error.jsp</result>
 		</global-results>
 
-		<action name="*User" class="com.pitaya.bookingnow.security.action.UserAction" method="{1}User">
+		<action name="*User" class="com.pitaya.bookingnow.action.UserAction" method="{1}User">
 			<result name="loginFail" type="dispatcher">
 				/Page/Common/error.jsp
 	        </result>
