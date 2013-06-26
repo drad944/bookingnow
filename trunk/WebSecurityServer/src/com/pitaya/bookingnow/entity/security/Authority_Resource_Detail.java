@@ -8,8 +8,29 @@ public class Authority_Resource_Detail {
     private Long resource_id;
 
     private Long authority_id;
+    
+    private Authority authority;
+    
+    private Resource resource;
+    
 
-    public Long getId() {
+    public Authority getAuthority() {
+		return authority;
+	}
+
+	public void setAuthority(Authority authority) {
+		this.authority = authority;
+	}
+
+	public Resource getResource() {
+		return resource;
+	}
+
+	public void setResource(Resource resource) {
+		this.resource = resource;
+	}
+
+	public Long getId() {
         return id;
     }
 

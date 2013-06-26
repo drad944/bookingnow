@@ -1,6 +1,7 @@
 package com.pitaya.bookingnow.entity;
 
 import java.util.Date;
+import java.util.List;
 
 public class Order {
     private Long id;
@@ -14,8 +15,45 @@ public class Order {
     private Date submit_time;
 
     private Boolean enabled;
+    
+    private List<Order_Table_Detail> table_details;
+    private Order_User_Detail user_detail;
+    private Order_Customer_Detail customer_detail;
+    private List<Order_Food_Detail> food_details;
+    
+    public List<Order_Table_Detail> getTable_details() {
+		return table_details;
+	}
 
-    public Long getId() {
+	public void setTable_details(List<Order_Table_Detail> table_details) {
+		this.table_details = table_details;
+	}
+
+	public Order_User_Detail getUser_detail() {
+		return user_detail;
+	}
+
+	public void setUser_detail(Order_User_Detail user_detail) {
+		this.user_detail = user_detail;
+	}
+
+	public Order_Customer_Detail getCustomer_detail() {
+		return customer_detail;
+	}
+
+	public void setCustomer_detail(Order_Customer_Detail customer_detail) {
+		this.customer_detail = customer_detail;
+	}
+
+	public List<Order_Food_Detail> getFood_details() {
+		return food_details;
+	}
+
+	public void setFood_details(List<Order_Food_Detail> food_details) {
+		this.food_details = food_details;
+	}
+
+	public Long getId() {
         return id;
     }
 

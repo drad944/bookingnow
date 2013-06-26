@@ -1,5 +1,7 @@
 package com.pitaya.bookingnow.entity;
 
+import com.pitaya.bookingnow.entity.security.User;
+
 public class Order_User_Detail {
     private Long id;
 
@@ -8,8 +10,29 @@ public class Order_User_Detail {
     private Long user_id;
 
     private Long order_id;
+    
+    private Order order;
+    
+    private User user;
+    
 
-    public Long getId() {
+    public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Long getId() {
         return id;
     }
 
