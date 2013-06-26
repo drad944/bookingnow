@@ -10,8 +10,29 @@ public class Order_Customer_Detail {
     private Long customer_id;
 
     private Long order_id;
+    
+    private Customer customer;
+    
+    private Order order;
+    
 
-    public Long getId() {
+    public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
+	}
+
+	public Long getId() {
         return id;
     }
 

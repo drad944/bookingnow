@@ -12,8 +12,28 @@ public class Order_Table_Detail {
     private Long table_id;
 
     private Long order_id;
+    
+    private Order order;
+    
+    private Table table;
+    
+    public Order getOrder() {
+		return order;
+	}
 
-    public Long getId() {
+	public void setOrder(Order order) {
+		this.order = order;
+	}
+
+	public Table getTable() {
+		return table;
+	}
+
+	public void setTable(Table table) {
+		this.table = table;
+	}
+
+	public Long getId() {
         return id;
     }
 
