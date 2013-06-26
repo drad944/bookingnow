@@ -16,7 +16,14 @@
 
 	<package name="default" namespace="/" extends="json-default">
 
-
+		<interceptors>
+		    <interceptor-stack name="jsonDefaultStack">
+		       <interceptor-ref name="json"/>
+		       <interceptor-ref name="defaultStack"/>
+		 	</interceptor-stack>
+		</interceptors>
+    
+		<default-interceptor-ref name="jsonDefaultStack"/>
 
 		<!-- 全局结果 -->
 		<global-results>
