@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.pitaya.bookingnow.app"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk 
+        android:minSdkVersion="11"
+        android:targetSdkVersion="15"/>
+	<uses-permission android:name="android.permission.INTERNET" />
+	
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name="com.pitaya.bookingnow.app.HomeActivity"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="singleTask"
+            android:configChanges="screenSize|orientation">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity android:name=".OrderDetailPreviewActivity" 
+                android:theme="@style/OrderViewerStyle"
+                android:configChanges="screenSize|orientation"
+                android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity android:name=".OrderDetailActivity"
+                android:configChanges="screenSize|orientation"
+                android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity 
+            	android:name=".FoodBookActivity2"
+            	android:configChanges="screenSize|orientation"
+            	android:windowSoftInputMode="adjustPan">
+        </activity>
+        <provider
+      		    android:name=".service.FoodMenuContentProvider"
+      		    android:authorities="com.pitaya.bookingnow.food.contentprovider" >
+   		</provider>
+   		<provider
+                android:name=".service.OrderContentProvider"
+                android:authorities="com.pitaya.bookingnow.order.contentprovider" >
+        </provider>
+        <provider
+                android:name=".service.OrderDetailContentProvider"
+                android:authorities="com.pitaya.bookingnow.orderdetail.contentprovider" >
+        </provider>
+    </application>
+
+</manifest>
