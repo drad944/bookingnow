@@ -2,6 +2,7 @@ package com.pitaya.bookingnow.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class Food {
     private Long id;
@@ -17,8 +18,32 @@ public class Food {
     private Integer category;
 
     private String description;
+    
+    private Food_Picture picture;
+    
+    private List<Food_Material_Detail> material_details;
+    
+    public Food() {
+    	
+    }
 
-    public Long getId() {
+    public Food_Picture getPicture() {
+		return picture;
+	}
+
+	public void setPicture(Food_Picture picture) {
+		this.picture = picture;
+	}
+
+	public List<Food_Material_Detail> getMaterial_details() {
+		return material_details;
+	}
+
+	public void setMaterial_details(List<Food_Material_Detail> material_details) {
+		this.material_details = material_details;
+	}
+
+	public Long getId() {
         return id;
     }
 

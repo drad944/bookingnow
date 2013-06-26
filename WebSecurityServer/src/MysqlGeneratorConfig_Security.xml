@@ -4,7 +4,7 @@
   "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
-	<classPathEntry location="..\WebContent\WEB-INF\lib\mysql-connector-java-5.0.8-bin.jar" />
+	<classPathEntry location="..\WebContent\WEB-INF\lib\mysql-connector-java-5.1.18-bin.jar" />
 
 	<context id="mysqlTables" targetRuntime="MyBatis3">
 		<commentGenerator>
@@ -32,6 +32,18 @@
 			<property name="enableSubPackages" value="false" />
 		</javaClientGenerator>
 
+<!-- 
+		<table catalog="" schema="" tableName="pitaya_user_picture" domainObjectName="User_Picture"
+			enableSelectByExample="false" 
+			enableDeleteByExample="false" 
+			enableCountByExample="false" 
+			enableUpdateByExample="false" 
+			selectByExampleQueryId="false" 
+			>
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+
 
 		<table catalog="" schema="" tableName="pitaya_user" domainObjectName="User"
 			enableSelectByExample="false" 
@@ -44,16 +56,7 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true" />
 		</table>
 
-		<table catalog="" schema="" tableName="pitaya_user_picture" domainObjectName="User_Picture"
-			enableSelectByExample="false" 
-			enableDeleteByExample="false" 
-			enableCountByExample="false" 
-			enableUpdateByExample="false" 
-			selectByExampleQueryId="false" 
-			>
-			<property name="useActualColumnNames" value="true" />
-			<generatedKey column="id" sqlStatement="MySql" identity="true" />
-		</table>
+		
  
 		<table catalog="" schema="" tableName="pitaya_role" domainObjectName="Role"
 			enableSelectByExample="false" 
@@ -120,7 +123,7 @@
 			<property name="useActualColumnNames" value="true" />
 			<generatedKey column="id" sqlStatement="MySql" identity="true" />
 		</table>
-		
+	 -->	
 
 	</context>
 </generatorConfiguration>

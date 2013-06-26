@@ -1,4 +1,4 @@
-package com.pitaya.bookingnow.service.impl;
+package com.pitaya.bookingnow.service.impl.security;
 
 import static org.junit.Assert.assertNotNull;
 

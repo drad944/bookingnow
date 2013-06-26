@@ -3,18 +3,72 @@ package com.pitaya.bookingnow.entity;
 public class Food_Material_Detail {
     private Long id;
 
+    private Integer count;
+
+    private Double price;
+
+    private Double weight;
+
     private Boolean enabled;
 
     private Long food_id;
 
     private Long material_id;
+    
+    private Material material;
+    
+    private Food food;
+    
+    public Food_Material_Detail() {
+    	
+    }
 
-    public Long getId() {
+    public Material getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(Material material) {
+		this.material = material;
+	}
+
+	public Food getFood() {
+		return food;
+	}
+
+	public void setFood(Food food) {
+		this.food = food;
+	}
+
+	public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
     }
 
     public Boolean getEnabled() {
