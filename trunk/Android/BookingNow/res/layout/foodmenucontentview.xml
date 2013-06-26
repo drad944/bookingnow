@@ -1,0 +1,45 @@
+<RelativeLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:background="@color/common_background"
+     android:orientation="vertical"
+     android:gravity="center">
+      
+	  <android.support.v4.view.ViewPager
+	      android:id="@+id/foodmenuviewpager"
+	      android:layout_width="fill_parent"
+	      android:layout_height="wrap_content"
+	      android:layout_above="@+id/backHome"
+	      android:background="@android:color/white">
+
+      	 	<android.support.v4.view.PagerTabStrip
+	          	android:layout_width="wrap_content"
+	          	android:layout_height="wrap_content"
+	          	android:layout_gravity="top" />
+      </android.support.v4.view.ViewPager>
+
+      <TextView
+          android:id="@+id/showOrder"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/showOrder"
+          android:textColor="@android:color/white"
+          android:gravity="center"
+          android:layout_alignParentBottom="true"
+          android:layout_alignParentLeft="true"
+          android:paddingLeft="5dp"
+          android:textSize="25sp" />
+      <TextView
+          android:id="@+id/backHome"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/backHome"
+          android:textColor="@android:color/white"
+          android:gravity="center"
+          android:layout_alignParentBottom="true"
+          android:layout_alignParentRight="true"
+          android:paddingRight="5dp"
+          android:textSize="25sp" />
+
+</RelativeLayout>

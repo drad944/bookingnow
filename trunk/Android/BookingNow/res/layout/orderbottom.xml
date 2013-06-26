@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/orderbottom"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/common_background">
+  
+    	<LinearLayout
+    	    android:layout_centerInParent="true"
+    	    android:orientation="horizontal"
+    	    android:gravity="center_horizontal"
+    	    android:layout_width="match_parent"
+    	    android:layout_height="wrap_content">
+    	    <Button android:id="@+id/action1"
+	            android:layout_width="100dp"
+	            android:layout_height="40dp"
+	            android:textAppearance="@android:style/TextAppearance.Medium"/>
+        	<Button android:id="@+id/action2"
+	            android:layout_width="100dp"
+	            android:layout_height="40dp"
+	            android:textAppearance="@android:style/TextAppearance.Medium"/>
+        	<Button android:id="@+id/action3"
+	            android:layout_width="100dp"
+	            android:layout_height="40dp"
+	            android:textAppearance="@android:style/TextAppearance.Medium"/>
+        	<TextView android:id="@+id/hint"
+	            android:layout_width="wrap_content"
+	            android:layout_height="40dp"
+	            android:gravity="center|right"
+	            android:textSize="25sp"
+	            android:textAppearance="@android:style/TextAppearance.Medium"
+	            android:singleLine="true"
+	            android:textColor="@android:color/white"/>
+    	</LinearLayout>
+
+        <TextView android:id="@+id/summary"
+            android:layout_width="120dp"
+            android:gravity="center|right"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:singleLine="true"
+            android:textColor="@android:color/white"/>
+        
+
+</RelativeLayout>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:id="@+id/foodbookitem"
+              android:background="@android:color/black">
+  
+	    	<com.aphidmobile.flip.FlipViewController
+				xmlns:flip="http://schemas.android.com/apk/res-auto"
+				android:id="@+id/flipView"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_above="@+id/foodname"
+				flip:orientation="horizontal"
+				flip:animationBitmapFormat="RGB_565"/>
+    
+	  	    <TextView
+                android:id="@+id/foodname"
+	  	        android:layout_width="match_parent" 
+	            android:layout_height="40dp"
+                android:background="@drawable/common_background"
+	            android:textColor="@android:color/white"
+	            android:textAppearance="@android:style/TextAppearance.Large"
+	            android:gravity="center"
+	            android:focusable="true"
+ 				android:focusableInTouchMode="true"
+	            android:layout_alignParentBottom="true"
+	            android:layout_alignParentLeft="true">
+	        </TextView>
+</RelativeLayout>
