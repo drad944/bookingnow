@@ -1,104 +1,133 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.pitaya.bookingnow.dao.OrderMapper" >
-  <resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.Order" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="modifyTime" property="modifyTime" jdbcType="TIMESTAMP" />
-    <result column="allowance" property="allowance" jdbcType="INTEGER" />
-    <result column="submit_time" property="submit_time" jdbcType="TIMESTAMP" />
-    <result column="enabled" property="enabled" jdbcType="BIT" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, status, modifyTime, allowance, submit_time, enabled
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from pitaya_order
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from pitaya_order
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.pitaya.bookingnow.entity.Order" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into pitaya_order (status, modifyTime, allowance, 
-      submit_time, enabled)
-    values (#{status,jdbcType=INTEGER}, #{modifyTime,jdbcType=TIMESTAMP}, #{allowance,jdbcType=INTEGER}, 
-      #{submit_time,jdbcType=TIMESTAMP}, #{enabled,jdbcType=BIT})
-  </insert>
-  <insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Order" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into pitaya_order
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="status != null" >
-        status,
-      </if>
-      <if test="modifyTime != null" >
-        modifyTime,
-      </if>
-      <if test="allowance != null" >
-        allowance,
-      </if>
-      <if test="submit_time != null" >
-        submit_time,
-      </if>
-      <if test="enabled != null" >
-        enabled,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="status != null" >
-        #{status,jdbcType=INTEGER},
-      </if>
-      <if test="modifyTime != null" >
-        #{modifyTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="allowance != null" >
-        #{allowance,jdbcType=INTEGER},
-      </if>
-      <if test="submit_time != null" >
-        #{submit_time,jdbcType=TIMESTAMP},
-      </if>
-      <if test="enabled != null" >
-        #{enabled,jdbcType=BIT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Order" >
-    update pitaya_order
-    <set >
-      <if test="status != null" >
-        status = #{status,jdbcType=INTEGER},
-      </if>
-      <if test="modifyTime != null" >
-        modifyTime = #{modifyTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="allowance != null" >
-        allowance = #{allowance,jdbcType=INTEGER},
-      </if>
-      <if test="submit_time != null" >
-        submit_time = #{submit_time,jdbcType=TIMESTAMP},
-      </if>
-      <if test="enabled != null" >
-        enabled = #{enabled,jdbcType=BIT},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Order" >
-    update pitaya_order
-    set status = #{status,jdbcType=INTEGER},
-      modifyTime = #{modifyTime,jdbcType=TIMESTAMP},
-      allowance = #{allowance,jdbcType=INTEGER},
-      submit_time = #{submit_time,jdbcType=TIMESTAMP},
-      enabled = #{enabled,jdbcType=BIT}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+<mapper namespace="com.pitaya.bookingnow.dao.OrderMapper">
+	<resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.Order">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="modifyTime" property="modifyTime" jdbcType="TIMESTAMP" />
+		<result column="allowance" property="allowance" jdbcType="INTEGER" />
+		<result column="submit_time" property="submit_time" jdbcType="TIMESTAMP" />
+		<result column="enabled" property="enabled" jdbcType="BIT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, status, modifyTime, allowance, submit_time, enabled
+	</sql>
+	
+	
+	<select id="searchSelective" resultMap="BaseResultMap"	parameterType="com.pitaya.bookingnow.entity.Order">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_order
+		<where>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="modifyTime != null">
+				and modifyTime = #{modifyTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="allowance != null">
+				and allowance = #{allowance,jdbcType=INTEGER}
+			</if>
+			<if test="submit_time != null">
+				and submit_time = #{submit_time,jdbcType=TIMESTAMP}
+			</if>
+			<if test="enabled != null">
+				and enabled = #{enabled,jdbcType=BIT}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_order
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from pitaya_order
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Order">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_order (status, modifyTime, allowance,
+		submit_time, enabled)
+		values (#{status,jdbcType=INTEGER}, #{modifyTime,jdbcType=TIMESTAMP},
+		#{allowance,jdbcType=INTEGER},
+		#{submit_time,jdbcType=TIMESTAMP}, #{enabled,jdbcType=BIT})
+	</insert>
+	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Order">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="status != null">
+				status,
+			</if>
+			<if test="modifyTime != null">
+				modifyTime,
+			</if>
+			<if test="allowance != null">
+				allowance,
+			</if>
+			<if test="submit_time != null">
+				submit_time,
+			</if>
+			<if test="enabled != null">
+				enabled,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="modifyTime != null">
+				#{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="allowance != null">
+				#{allowance,jdbcType=INTEGER},
+			</if>
+			<if test="submit_time != null">
+				#{submit_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="enabled != null">
+				#{enabled,jdbcType=BIT},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Order">
+		update pitaya_order
+		<set>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="modifyTime != null">
+				modifyTime = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="allowance != null">
+				allowance = #{allowance,jdbcType=INTEGER},
+			</if>
+			<if test="submit_time != null">
+				submit_time = #{submit_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="enabled != null">
+				enabled = #{enabled,jdbcType=BIT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Order">
+		update pitaya_order
+		set status = #{status,jdbcType=INTEGER},
+		modifyTime = #{modifyTime,jdbcType=TIMESTAMP},
+		allowance = #{allowance,jdbcType=INTEGER},
+		submit_time = #{submit_time,jdbcType=TIMESTAMP},
+		enabled = #{enabled,jdbcType=BIT}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
 </mapper>

@@ -37,15 +37,15 @@
 
 
 	<bean id="userDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface"  value="com.pitaya.bookingnow.security.dao.UserMapper" />   
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.security.UserMapper" />   
         <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
     </bean>
     
-	<bean id="userService" class="com.pitaya.bookingnow.security.service.impl.UserService">
+	<bean id="userService" class="com.pitaya.bookingnow.service.impl.security.UserService">
 		<property name="userDao" ref="userDao" />
 	</bean>
 
-	<bean id="userAction" class="com.pitaya.bookingnow.security.action.UserAction" scope="prototype">
+	<bean id="userAction" class="com.pitaya.bookingnow.action.UserAction" scope="prototype">
 		<property name="userService" ref="userService" />
 	</bean>
 	

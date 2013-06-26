@@ -41,12 +41,12 @@ create table pitaya_order(
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 	
 insert into pitaya_order values (1,1,'2013-05-08 01:12:03',95,'2013-05-08 01:02:03',true);
-insert into pitaya_order values (2,2,'2013-05-08 01:12:03',95,'2013-05-08 01:02:03',false);
+insert into pitaya_order values (2,2,'2013-05-08 01:12:03',90,'2013-05-08 01:02:03',false);
 insert into pitaya_order values (3,3,'2013-05-08 01:12:03',95,'2013-05-08 01:02:03',1);
-insert into pitaya_order values (4,4,'2013-05-08 01:12:03',95,'2013-05-08 01:02:03',0);
-insert into pitaya_order values (5,5,'2013-05-08 01:12:03',95,'2013-05-08 01:02:03',true);
+insert into pitaya_order values (4,4,'2013-05-08 01:12:03',100,'2013-05-08 01:02:03',0);
+insert into pitaya_order values (5,5,'2013-05-08 01:12:03',90,'2013-05-08 01:02:03',true);
 insert into pitaya_order values (6,6,'2013-05-08 01:12:03',95,'2013-05-08 01:02:03',false);
-insert into pitaya_order values (7,3,'2013-05-08 01:12:03',95,'2013-05-08 01:02:03',true);
+insert into pitaya_order values (7,3,'2013-05-08 01:12:03',90,'2013-05-08 01:02:03',true);
 
 create table pitaya_order_table_detail(
 	id bigint not null auto_increment primary key,
