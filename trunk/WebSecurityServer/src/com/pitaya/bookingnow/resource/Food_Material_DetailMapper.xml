@@ -4,12 +4,15 @@
 	<resultMap id="BaseResultMap"
 		type="com.pitaya.bookingnow.entity.Food_Material_Detail">
 		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="count" property="count" jdbcType="INTEGER" />
+		<result column="price" property="price" jdbcType="DOUBLE" />
+		<result column="weight" property="weight" jdbcType="DOUBLE" />
 		<result column="enabled" property="enabled" jdbcType="BIT" />
 		<result column="food_id" property="food_id" jdbcType="BIGINT" />
 		<result column="material_id" property="material_id" jdbcType="BIGINT" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, enabled, food_id, material_id
+		id, count, price, weight, enabled, food_id, material_id
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Long">
@@ -27,10 +30,12 @@
 			order="AFTER">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
-		insert into pitaya_food_material_detail (enabled, food_id, material_id
+		insert into pitaya_food_material_detail (count, price, weight,
+		enabled, food_id, material_id
 		)
-		values (#{enabled,jdbcType=BIT}, #{food_id,jdbcType=BIGINT},
-		#{material_id,jdbcType=BIGINT}
+		values (#{count,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE},
+		#{weight,jdbcType=DOUBLE},
+		#{enabled,jdbcType=BIT}, #{food_id,jdbcType=BIGINT}, #{material_id,jdbcType=BIGINT}
 		)
 	</insert>
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Food_Material_Detail">
@@ -40,6 +45,15 @@
 		</selectKey>
 		insert into pitaya_food_material_detail
 		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="count != null">
+				count,
+			</if>
+			<if test="price != null">
+				price,
+			</if>
+			<if test="weight != null">
+				weight,
+			</if>
 			<if test="enabled != null">
 				enabled,
 			</if>
@@ -51,6 +65,15 @@
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="count != null">
+				#{count,jdbcType=INTEGER},
+			</if>
+			<if test="price != null">
+				#{price,jdbcType=DOUBLE},
+			</if>
+			<if test="weight != null">
+				#{weight,jdbcType=DOUBLE},
+			</if>
 			<if test="enabled != null">
 				#{enabled,jdbcType=BIT},
 			</if>
@@ -65,6 +88,15 @@
 	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Food_Material_Detail">
 		update pitaya_food_material_detail
 		<set>
+			<if test="count != null">
+				count = #{count,jdbcType=INTEGER},
+			</if>
+			<if test="price != null">
+				price = #{price,jdbcType=DOUBLE},
+			</if>
+			<if test="weight != null">
+				weight = #{weight,jdbcType=DOUBLE},
+			</if>
 			<if test="enabled != null">
 				enabled = #{enabled,jdbcType=BIT},
 			</if>
@@ -79,7 +111,10 @@
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Food_Material_Detail">
 		update pitaya_food_material_detail
-		set enabled = #{enabled,jdbcType=BIT},
+		set count = #{count,jdbcType=INTEGER},
+		price = #{price,jdbcType=DOUBLE},
+		weight = #{weight,jdbcType=DOUBLE},
+		enabled = #{enabled,jdbcType=BIT},
 		food_id = #{food_id,jdbcType=BIGINT},
 		material_id = #{material_id,jdbcType=BIGINT}
 		where id = #{id,jdbcType=BIGINT}

@@ -4,7 +4,7 @@
   "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
-	<classPathEntry location="..\WebContent\WEB-INF\lib\mysql-connector-java-5.0.8-bin.jar" />
+	<classPathEntry location="..\WebContent\WEB-INF\lib\mysql-connector-java-5.1.18-bin.jar" />
 
 	<context id="mysqlTables" targetRuntime="MyBatis3">
 		<commentGenerator>
@@ -31,32 +31,10 @@
 		<javaClientGenerator type="XMLMAPPER" targetPackage="com.pitaya.bookingnow.dao" targetProject="..\src">
 			<property name="enableSubPackages" value="false" />
 		</javaClientGenerator>
-
-
-		<table catalog="" schema="" tableName="pitaya_customer" domainObjectName="Customer"
-			enableSelectByExample="false" 
-			enableDeleteByExample="false" 
-			enableCountByExample="false" 
-			enableUpdateByExample="false" 
-			selectByExampleQueryId="false" 
-			>
-			<property name="useActualColumnNames" value="true" />
-			<generatedKey column="id" sqlStatement="MySql" identity="true" />
-		</table>
+		
+<!-- 		
 		
 		<table catalog="" schema="" tableName="pitaya_customer_picture" domainObjectName="Customer_Picture"
-			enableSelectByExample="false" 
-			enableDeleteByExample="false" 
-			enableCountByExample="false" 
-			enableUpdateByExample="false" 
-			selectByExampleQueryId="false" 
-			>
-			<property name="useActualColumnNames" value="true" />
-			<generatedKey column="id" sqlStatement="MySql" identity="true" />
-		</table>
-
-
-		<table catalog="" schema="" tableName="pitaya_food" domainObjectName="Food"
 			enableSelectByExample="false" 
 			enableDeleteByExample="false" 
 			enableCountByExample="false" 
@@ -77,7 +55,36 @@
 			<property name="useActualColumnNames" value="true" />
 			<generatedKey column="id" sqlStatement="MySql" identity="true" />
 		</table>
+		
 
+		<table catalog="" schema="" tableName="pitaya_customer" domainObjectName="Customer"
+			enableSelectByExample="false" 
+			enableDeleteByExample="false" 
+			enableCountByExample="false" 
+			enableUpdateByExample="false" 
+			selectByExampleQueryId="false" 
+			>
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+		
+		
+
+
+		<table catalog="" schema="" tableName="pitaya_food" domainObjectName="Food"
+			enableSelectByExample="false" 
+			enableDeleteByExample="false" 
+			enableCountByExample="false" 
+			enableUpdateByExample="false" 
+			selectByExampleQueryId="false" 
+			>
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+		
+		
+ -->
+ <!-- 
 		<table catalog="" schema="" tableName="pitaya_food_material_detail" domainObjectName="Food_Material_Detail"
 			enableSelectByExample="false" 
 			enableDeleteByExample="false" 
@@ -88,7 +95,8 @@
 			<property name="useActualColumnNames" value="true" />
 			<generatedKey column="id" sqlStatement="MySql" identity="true" />
 		</table>
-
+		 -->
+<!-- 
 		<table catalog="" schema="" tableName="pitaya_material" domainObjectName="Material"
 			enableSelectByExample="false" 
 			enableDeleteByExample="false" 
@@ -165,7 +173,7 @@
 			<property name="useActualColumnNames" value="true" />
 			<generatedKey column="id" sqlStatement="MySql" identity="true" />
 		</table>
-		
+		 -->
 		
 	</context>
 </generatorConfiguration>

@@ -4,6 +4,9 @@
 	<resultMap id="BaseResultMap"
 		type="com.pitaya.bookingnow.entity.security.User_Picture">
 		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="last_modify_time" property="last_modify_time"
+			jdbcType="TIMESTAMP" />
 		<result column="enabled" property="enabled" jdbcType="BIT" />
 		<result column="user_id" property="user_id" jdbcType="BIGINT" />
 	</resultMap>
@@ -12,7 +15,7 @@
 		<result column="image" property="image" jdbcType="LONGVARBINARY" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, enabled, user_id
+		id, name, last_modify_time, enabled, user_id
 	</sql>
 	<sql id="Blob_Column_List">
 		image
@@ -35,11 +38,11 @@
 			order="AFTER">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
-		insert into pitaya_user_picture (enabled, user_id, image
-		)
-		values (#{enabled,jdbcType=BIT}, #{user_id,jdbcType=BIGINT},
-		#{image,jdbcType=LONGVARBINARY}
-		)
+		insert into pitaya_user_picture (name, last_modify_time, enabled,
+		user_id, image)
+		values (#{name,jdbcType=VARCHAR}, #{last_modify_time,jdbcType=TIMESTAMP},
+		#{enabled,jdbcType=BIT},
+		#{user_id,jdbcType=BIGINT}, #{image,jdbcType=LONGVARBINARY})
 	</insert>
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.security.User_Picture">
 		<selectKey resultType="java.lang.Long" keyProperty="id"
@@ -48,6 +51,12 @@
 		</selectKey>
 		insert into pitaya_user_picture
 		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="name != null">
+				name,
+			</if>
+			<if test="last_modify_time != null">
+				last_modify_time,
+			</if>
 			<if test="enabled != null">
 				enabled,
 			</if>
@@ -59,6 +68,12 @@
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="last_modify_time != null">
+				#{last_modify_time,jdbcType=TIMESTAMP},
+			</if>
 			<if test="enabled != null">
 				#{enabled,jdbcType=BIT},
 			</if>
@@ -73,6 +88,12 @@
 	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.security.User_Picture">
 		update pitaya_user_picture
 		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="last_modify_time != null">
+				last_modify_time = #{last_modify_time,jdbcType=TIMESTAMP},
+			</if>
 			<if test="enabled != null">
 				enabled = #{enabled,jdbcType=BIT},
 			</if>
@@ -87,14 +108,18 @@
 	</update>
 	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.pitaya.bookingnow.entity.security.User_Picture">
 		update pitaya_user_picture
-		set enabled = #{enabled,jdbcType=BIT},
+		set name = #{name,jdbcType=VARCHAR},
+		last_modify_time = #{last_modify_time,jdbcType=TIMESTAMP},
+		enabled = #{enabled,jdbcType=BIT},
 		user_id = #{user_id,jdbcType=BIGINT},
 		image = #{image,jdbcType=LONGVARBINARY}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.security.User_Picture">
 		update pitaya_user_picture
-		set enabled = #{enabled,jdbcType=BIT},
+		set name = #{name,jdbcType=VARCHAR},
+		last_modify_time = #{last_modify_time,jdbcType=TIMESTAMP},
+		enabled = #{enabled,jdbcType=BIT},
 		user_id = #{user_id,jdbcType=BIGINT}
 		where id = #{id,jdbcType=BIGINT}
 	</update>

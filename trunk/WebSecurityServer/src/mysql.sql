@@ -142,6 +142,8 @@ insert into pitaya_order_food_detail values (18,302,1,403,'2013-05-01 01:02:03',
 
 create table pitaya_food_picture(
 	id bigint not null auto_increment primary key,
+	name varchar(50),
+	last_modify_time timestamp,
 	big_image mediumblob,
 	small_image mediumblob,
 	enabled boolean,
@@ -150,26 +152,26 @@ create table pitaya_food_picture(
 	CONSTRAINT fk_food_picture_food FOREIGN KEY (food_id) REFERENCES pitaya_food (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_food_picture values (1,'\cc\dd\cc\dd','\cc\dd',true,1);
-insert into pitaya_food_picture values (2,'\cc\dd\cc\dd','\cc\dd',true,2);
-insert into pitaya_food_picture values (3,'\cc\dd\cc\dd','\cc\dd',true,3);
-insert into pitaya_food_picture values (4,'\cc\dd\cc\dd','\cc\dd',true,4);
-insert into pitaya_food_picture values (5,'\cc\dd\cc\dd','\cc\dd',true,5);
-insert into pitaya_food_picture values (6,'\cc\dd\cc\dd','\cc\dd',true,6);
-insert into pitaya_food_picture values (7,'\cc\dd\cc\dd','\cc\dd',true,7);
-insert into pitaya_food_picture values (8,'\cc\dd\cc\dd','\cc\dd',true,8);
-insert into pitaya_food_picture values (9,'\cc\dd\cc\dd','\cc\dd',true,9);
-insert into pitaya_food_picture values (10,'\cc\dd\cc\dd','\cc\dd',true,10);
-insert into pitaya_food_picture values (11,'\cc\dd\cc\dd','\cc\dd',true,11);
-insert into pitaya_food_picture values (12,'\cc\dd\cc\dd','\cc\dd',true,12);
-insert into pitaya_food_picture values (13,'\cc\dd\cc\dd','\cc\dd',true,13);
-insert into pitaya_food_picture values (14,'\cc\dd\cc\dd','\cc\dd',true,14);
-insert into pitaya_food_picture values (15,'\cc\dd\cc\dd','\cc\dd',true,15);
-insert into pitaya_food_picture values (16,'\cc\dd\cc\dd','\cc\dd',true,16);
-insert into pitaya_food_picture values (17,'\cc\dd\cc\dd','\cc\dd',true,17);
-insert into pitaya_food_picture values (18,'\cc\dd\cc\dd','\cc\dd',true,18);
-insert into pitaya_food_picture values (19,'\cc\dd\cc\dd','\cc\dd',true,19);
-insert into pitaya_food_picture values (20,'\cc\dd\cc\dd','\cc\dd',true,20);
+insert into pitaya_food_picture values (1,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,1);
+insert into pitaya_food_picture values (2,'b','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,2);
+insert into pitaya_food_picture values (3,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,3);
+insert into pitaya_food_picture values (4,'c','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,4);
+insert into pitaya_food_picture values (5,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,5);
+insert into pitaya_food_picture values (6,'b','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,6);
+insert into pitaya_food_picture values (7,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,7);
+insert into pitaya_food_picture values (8,'b','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,8);
+insert into pitaya_food_picture values (9,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,9);
+insert into pitaya_food_picture values (10,'c','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,10);
+insert into pitaya_food_picture values (11,'c','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,11);
+insert into pitaya_food_picture values (12,'c','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,12);
+insert into pitaya_food_picture values (13,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,13);
+insert into pitaya_food_picture values (14,'b','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,14);
+insert into pitaya_food_picture values (15,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,15);
+insert into pitaya_food_picture values (16,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,16);
+insert into pitaya_food_picture values (17,'b','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,17);
+insert into pitaya_food_picture values (18,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,18);
+insert into pitaya_food_picture values (19,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,19);
+insert into pitaya_food_picture values (20,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true,20);
 
 
 create table pitaya_customer(
@@ -193,6 +195,8 @@ insert into pitaya_customer values (6,'周丽','周丽','123456','13579024832',6
 
 create table pitaya_customer_picture(
 	id bigint not null auto_increment primary key,
+	name varchar(50),
+	last_modify_time timestamp,
 	image mediumblob,
 	enabled boolean,
 	customer_id bigint not null,
@@ -200,12 +204,12 @@ create table pitaya_customer_picture(
 	CONSTRAINT fk_customer_picture_customer FOREIGN KEY (customer_id) REFERENCES pitaya_customer (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_customer_picture values (1,'\cc\dd\cc\dd',true,1);
-insert into pitaya_customer_picture values (2,'\cc\dd\cc\dd',true,2);
-insert into pitaya_customer_picture values (3,'\cc\dd\cc\dd',true,3);
-insert into pitaya_customer_picture values (4,'\cc\dd\cc\dd',true,4);
-insert into pitaya_customer_picture values (5,'\cc\dd\cc\dd',true,5);
-insert into pitaya_customer_picture values (6,'\cc\dd\cc\dd',true,6);
+insert into pitaya_customer_picture values (1,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true,1);
+insert into pitaya_customer_picture values (2,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true,2);
+insert into pitaya_customer_picture values (3,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true,3);
+insert into pitaya_customer_picture values (4,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true,4);
+insert into pitaya_customer_picture values (5,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true,5);
+insert into pitaya_customer_picture values (6,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true,6);
 
 create table pitaya_order_customer_detail(
 	id bigint not null auto_increment primary key,
@@ -252,6 +256,8 @@ insert into pitaya_user values (6,'周帅','周帅','123456','13579024832',702,'
 
 create table pitaya_user_picture(
 	id bigint not null auto_increment primary key,
+	name varchar(50),
+	last_modify_time timestamp,
 	image mediumblob,
 	enabled boolean,
 	user_id bigint not null,
@@ -259,12 +265,12 @@ create table pitaya_user_picture(
 	CONSTRAINT fk_user_picture_user FOREIGN KEY (user_id) REFERENCES pitaya_user (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_user_picture values (1,'\cc\dd\cc\dd',true,1);
-insert into pitaya_user_picture values (2,'\cc\dd\cc\dd',true,2);
-insert into pitaya_user_picture values (3,'\cc\dd\cc\dd',true,3);
-insert into pitaya_user_picture values (4,'\cc\dd\cc\dd',true,4);
-insert into pitaya_user_picture values (5,'\cc\dd\cc\dd',true,5);
-insert into pitaya_user_picture values (6,'\cc\dd\cc\dd',true,6);	
+insert into pitaya_user_picture values (1,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true,1);
+insert into pitaya_user_picture values (2,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true,2);
+insert into pitaya_user_picture values (3,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true,3);
+insert into pitaya_user_picture values (4,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true,4);
+insert into pitaya_user_picture values (5,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true,5);
+insert into pitaya_user_picture values (6,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true,6);	
 
 create table pitaya_order_user_detail(
 	id bigint not null auto_increment primary key,
@@ -298,6 +304,9 @@ insert into pitaya_material values (5,'花椒','big garlic,haha',901);
 
 create table pitaya_food_material_detail(
 	id bigint not null auto_increment primary key,
+	count integer,
+	price double,
+	weight double,
 	enabled boolean,
 	food_id bigint not null,
 	material_id bigint not null,
@@ -307,16 +316,16 @@ create table pitaya_food_material_detail(
 	CONSTRAINT fk_food_material_detail_material FOREIGN KEY (material_id) REFERENCES pitaya_material (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_food_material_detail values (1,true,1,1);
-insert into pitaya_food_material_detail values (2,true,1,2);
-insert into pitaya_food_material_detail values (3,true,1,3);
-insert into pitaya_food_material_detail values (4,true,2,1);
-insert into pitaya_food_material_detail values (5,true,2,4);
-insert into pitaya_food_material_detail values (6,true,3,5);
-insert into pitaya_food_material_detail values (7,true,3,4);
-insert into pitaya_food_material_detail values (8,true,6,2);
-insert into pitaya_food_material_detail values (9,true,9,3);
-insert into pitaya_food_material_detail values (10,true,10,1);
+insert into pitaya_food_material_detail values (1,1,10,0,true,1,1);
+insert into pitaya_food_material_detail values (2,1,20,2,true,1,2);
+insert into pitaya_food_material_detail values (3,1,10,0,true,1,3);
+insert into pitaya_food_material_detail values (4,0,10,3,true,2,1);
+insert into pitaya_food_material_detail values (5,1,10,0,true,2,4);
+insert into pitaya_food_material_detail values (6,0,10,12,true,3,5);
+insert into pitaya_food_material_detail values (7,1,10,0,true,3,4);
+insert into pitaya_food_material_detail values (8,0,10,2,true,6,2);
+insert into pitaya_food_material_detail values (9,1,10,0,true,9,3);
+insert into pitaya_food_material_detail values (10,1,10,0,true,10,1);
 
 
 
