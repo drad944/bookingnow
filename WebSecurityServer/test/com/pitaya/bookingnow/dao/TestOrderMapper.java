@@ -45,9 +45,13 @@ public class TestOrderMapper {
            Order newOrder = null;
 	   		
            newOrder = orderMapper.selectByPrimaryKey((long)1);
+           System.out.println("id: "+newOrder.getId()); 
            System.out.println("status: "+newOrder.getStatus());
            System.out.println("allowance: "+newOrder.getAllowance()); 
-           System.out.println("id: "+newOrder.getId()); 
+           System.out.println("PrePay: "+newOrder.getPrePay()); 
+           System.out.println("Total_price: "+newOrder.getTotal_price()); 
+           System.out.println("Submit_time: "+newOrder.getSubmit_time()); 
+           System.out.println("Enabled: "+newOrder.getEnabled()); 
            
            
        } finally { 

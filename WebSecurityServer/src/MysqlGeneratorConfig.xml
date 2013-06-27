@@ -12,7 +12,7 @@
 		</commentGenerator>
 		
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://localhost:3306/bookingnow?characterEncoding=utf8" userId="testUser" password="123456">
+			connectionURL="jdbc:mysql://10.111.3.147:3306/bookingnow?characterEncoding=utf8" userId="testUser" password="123456">
 		</jdbcConnection>
 
 		<javaTypeResolver>
@@ -31,6 +31,17 @@
 		<javaClientGenerator type="XMLMAPPER" targetPackage="com.pitaya.bookingnow.dao" targetProject="..\src">
 			<property name="enableSubPackages" value="false" />
 		</javaClientGenerator>
+		
+		<table catalog="" schema="" tableName="pitaya_order" domainObjectName="Order"
+			enableSelectByExample="false" 
+			enableDeleteByExample="false" 
+			enableCountByExample="false" 
+			enableUpdateByExample="false" 
+			selectByExampleQueryId="false" 
+			>
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
 		
 <!-- 		
 		

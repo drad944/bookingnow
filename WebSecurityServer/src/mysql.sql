@@ -27,8 +27,8 @@ insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (5,8,8,'i
 insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (6,8,8,'in the second floor');
 insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (7,10,6,'in the first floor');
 insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (8,10,6,'in the second floor');
-insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (9,4,6,'第一层');
-insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (10,4,6,'第二层');
+insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (9,4,6,'in the second floor');
+insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (10,4,6,'in the first floor');
 
 
 create table pitaya_order(
@@ -36,17 +36,19 @@ create table pitaya_order(
 	status integer,
 	modifyTime timestamp,
 	allowance integer,
+	total_price double,
+	prePay double,
 	submit_time timestamp,
 	enabled boolean
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 	
-insert into pitaya_order values (1,1,'2013-05-08 01:12:03',95,'2013-05-08 01:02:03',true);
-insert into pitaya_order values (2,2,'2013-05-08 01:12:03',90,'2013-05-08 01:02:03',false);
-insert into pitaya_order values (3,3,'2013-05-08 01:12:03',95,'2013-05-08 01:02:03',1);
-insert into pitaya_order values (4,4,'2013-05-08 01:12:03',100,'2013-05-08 01:02:03',0);
-insert into pitaya_order values (5,5,'2013-05-08 01:12:03',90,'2013-05-08 01:02:03',true);
-insert into pitaya_order values (6,6,'2013-05-08 01:12:03',95,'2013-05-08 01:02:03',false);
-insert into pitaya_order values (7,3,'2013-05-08 01:12:03',90,'2013-05-08 01:02:03',true);
+insert into pitaya_order values (1,1,'2013-05-08 01:12:03',95,0,0,'2013-05-08 01:02:03',true);
+insert into pitaya_order values (2,2,'2013-05-08 01:12:03',90,0,0,'2013-05-08 01:02:03',false);
+insert into pitaya_order values (3,3,'2013-05-08 01:12:03',95,0,0,'2013-05-08 01:02:03',1);
+insert into pitaya_order values (4,4,'2013-05-08 01:12:03',100,0,0,'2013-05-08 01:02:03',0);
+insert into pitaya_order values (5,5,'2013-05-08 01:12:03',90,0,0,'2013-05-08 01:02:03',true);
+insert into pitaya_order values (6,6,'2013-05-08 01:12:03',95,0,0,'2013-05-08 01:02:03',false);
+insert into pitaya_order values (7,3,'2013-05-08 01:12:03',90,0,0,'2013-05-08 01:02:03',true);
 
 create table pitaya_order_table_detail(
 	id bigint not null auto_increment primary key,
@@ -102,7 +104,7 @@ insert into pitaya_food values (16,'Saliva chicken',1,'2013-05-01 01:02:03',13.5
 insert into pitaya_food values (17,'Saliva chicken',1,'2013-05-01 01:02:03',24.50,501,'good food');
 insert into pitaya_food values (18,'Saliva chicken',1,'2013-05-01 01:02:03',25.50,501,'good food');
 insert into pitaya_food values (19,'Saliva chicken',1,'2013-05-01 01:02:03',26.50,501,'good food');
-insert into pitaya_food values (20,'鱼香茄子',1,'2013-05-01 01:02:03',27.50,501,'good food');
+insert into pitaya_food values (20,'fish',1,'2013-05-01 01:02:03',27.50,501,'good food');
 
 
 create table pitaya_order_food_detail(
@@ -191,7 +193,7 @@ insert into pitaya_customer values (2,'li','li','123456','13579024832',602,'li@q
 insert into pitaya_customer values (3,'wang di','wang di','123456','13579024832',601,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03');
 insert into pitaya_customer values (4,'cheng','cheng','123456','13579024832',602,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03');
 insert into pitaya_customer values (5,'yang','yang','123456','13579024832',601,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03');
-insert into pitaya_customer values (6,'周丽','周丽','123456','13579024832',602,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03');
+insert into pitaya_customer values (6,'zhouli','zhouli','123456','13579024832',602,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03');
 
 create table pitaya_customer_picture(
 	id bigint not null auto_increment primary key,
@@ -252,7 +254,7 @@ insert into pitaya_user values (2,'lili','lili','123456','13579024832',702,'li@q
 insert into pitaya_user values (3,'ang di','ang di','123456','13579024832',701,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03','I am a boss',801,1000);
 insert into pitaya_user values (4,'che','che','123456','13579024832',702,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03','I am a casher',801,1000);
 insert into pitaya_user values (5,'yan','yan','123456','13579024832',701,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03','I am a service man',801,1000);
-insert into pitaya_user values (6,'周帅','周帅','123456','13579024832',702,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03','I am a cooker',801,1000);
+insert into pitaya_user values (6,'zhoushuai','zhoushuai','123456','13579024832',702,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03','I am a cooker',801,1000);
 
 create table pitaya_user_picture(
 	id bigint not null auto_increment primary key,
@@ -299,7 +301,7 @@ insert into pitaya_material values (1,'Garlic','big garlic,haha',901);
 insert into pitaya_material values (2,'Onions','big garlic,haha',901);
 insert into pitaya_material values (3,'salt','big garlic,haha',901);
 insert into pitaya_material values (4,'Soy sauce','big garlic,haha',901);
-insert into pitaya_material values (5,'花椒','big garlic,haha',901);
+insert into pitaya_material values (5,'huajiao','big garlic,haha',901);
 
 
 create table pitaya_food_material_detail(
@@ -343,7 +345,7 @@ insert into pitaya_role values (3,'ROLE_CHEF','chef',false,1101);
 insert into pitaya_role values (4,'ROLE_WAITER','waiter',false,1101);
 insert into pitaya_role values (5,'ROLE_CASHIER','cashier',false,1101);
 insert into pitaya_role values (6,'ROLE_MANAGER','manager',false,1101);
-insert into pitaya_role values (7,'ROLE_ADMIN','超级用户',false,1101);
+insert into pitaya_role values (7,'ROLE_ADMIN','admin',false,1101);
 
 
 
@@ -362,7 +364,7 @@ insert into pitaya_authority values (3,'ROLE_CHEF','authority chef',false,1101);
 insert into pitaya_authority values (4,'ROLE_WAITER','authority waiter',false,1101);
 insert into pitaya_authority values (5,'ROLE_CASHIER','authority cashier',false,1101);
 insert into pitaya_authority values (6,'ROLE_MANAGER','authority manager',false,1101);
-insert into pitaya_authority values (7,'ROLE_ADMIN','授权超级用户',1,1101);
+insert into pitaya_authority values (7,'ROLE_ADMIN','authority administrator',1,1101);
 
 
 create table pitaya_resource(
