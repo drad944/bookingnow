@@ -7,21 +7,19 @@
 		<result column="last_modify_time" property="last_modify_time"
 			jdbcType="TIMESTAMP" />
 		<result column="enabled" property="enabled" jdbcType="BIT" />
-		<result column="food_id" property="food_id" jdbcType="BIGINT" />
-	</resultMap>
-	<resultMap id="ResultMapWithBLOBs"
-		type="com.pitaya.bookingnow.entity.Food_Picture" extends="BaseResultMap">
 		<result column="big_image" property="big_image" jdbcType="LONGVARBINARY" />
 		<result column="small_image" property="small_image" jdbcType="LONGVARBINARY" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, name, last_modify_time, enabled, food_id
+		id, name, last_modify_time, enabled
 	</sql>
 	<sql id="Blob_Column_List">
 		big_image, small_image
 	</sql>
 	
-	<select id="searchFood_Pictures" resultMap="ResultMapWithBLOBs"	parameterType="com.pitaya.bookingnow.entity.Food_Picture">
+	
+	<select id="searchFood_Pictures" resultMap="BaseResultMap"
+		parameterType="Food_Picture">
 		select
 		<include refid="Base_Column_List" />
 		,
@@ -37,9 +35,6 @@
 			<if test="enabled != null">
 				and enabled = #{enabled,jdbcType=BIT}
 			</if>
-			<if test="food_id != null">
-				and food_id = #{food_id,jdbcType=BIGINT}
-			</if>
 			<if test="big_image != null">
 				and big_image = #{big_image,jdbcType=LONGVARBINARY}
 			</if>
@@ -49,9 +44,7 @@
 		</where>
 	</select>
 	
-	
-	
-	<select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs"
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Long">
 		select
 		<include refid="Base_Column_List" />
@@ -70,13 +63,10 @@
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 		insert into pitaya_food_picture (name, last_modify_time, enabled,
-		food_id, big_image, small_image
-		)
+		big_image, small_image)
 		values (#{name,jdbcType=VARCHAR}, #{last_modify_time,jdbcType=TIMESTAMP},
 		#{enabled,jdbcType=BIT},
-		#{food_id,jdbcType=BIGINT}, #{big_image,jdbcType=LONGVARBINARY},
-		#{small_image,jdbcType=LONGVARBINARY}
-		)
+		#{big_image,jdbcType=LONGVARBINARY}, #{small_image,jdbcType=LONGVARBINARY})
 	</insert>
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Food_Picture">
 		<selectKey resultType="java.lang.Long" keyProperty="id"
@@ -94,9 +84,6 @@
 			<if test="enabled != null">
 				enabled,
 			</if>
-			<if test="food_id != null">
-				food_id,
-			</if>
 			<if test="big_image != null">
 				big_image,
 			</if>
@@ -113,9 +100,6 @@
 			</if>
 			<if test="enabled != null">
 				#{enabled,jdbcType=BIT},
-			</if>
-			<if test="food_id != null">
-				#{food_id,jdbcType=BIGINT},
 			</if>
 			<if test="big_image != null">
 				#{big_image,jdbcType=LONGVARBINARY},
@@ -137,9 +121,6 @@
 			<if test="enabled != null">
 				enabled = #{enabled,jdbcType=BIT},
 			</if>
-			<if test="food_id != null">
-				food_id = #{food_id,jdbcType=BIGINT},
-			</if>
 			<if test="big_image != null">
 				big_image = #{big_image,jdbcType=LONGVARBINARY},
 			</if>
@@ -149,22 +130,11 @@
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
-	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.pitaya.bookingnow.entity.Food_Picture">
-		update pitaya_food_picture
-		set name = #{name,jdbcType=VARCHAR},
-		last_modify_time = #{last_modify_time,jdbcType=TIMESTAMP},
-		enabled = #{enabled,jdbcType=BIT},
-		food_id = #{food_id,jdbcType=BIGINT},
-		big_image = #{big_image,jdbcType=LONGVARBINARY},
-		small_image = #{small_image,jdbcType=LONGVARBINARY}
-		where id = #{id,jdbcType=BIGINT}
-	</update>
 	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Food_Picture">
 		update pitaya_food_picture
 		set name = #{name,jdbcType=VARCHAR},
 		last_modify_time = #{last_modify_time,jdbcType=TIMESTAMP},
-		enabled = #{enabled,jdbcType=BIT},
-		food_id = #{food_id,jdbcType=BIGINT}
+		enabled = #{enabled,jdbcType=BIT}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 </mapper>

@@ -41,7 +41,6 @@ public class TestFoodAction {
 		 
 		 Food_Picture picture = new Food_Picture();
 		 picture.setEnabled(true);
-		 picture.setFood_id(newFood.getId());
 		 picture.setName("new pi");
 		 
 		 newFood.setPicture(picture);

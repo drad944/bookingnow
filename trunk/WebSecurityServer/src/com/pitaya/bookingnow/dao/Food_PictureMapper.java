@@ -7,17 +7,15 @@ import com.pitaya.bookingnow.entity.Food_Picture;
 public interface Food_PictureMapper {
     int deleteByPrimaryKey(Long id);
 
-    int insert(Food_Picture food_picture);
+    int insert(Food_Picture picture);
 
-    int insertSelective(Food_Picture food_picture);
+    int insertSelective(Food_Picture picture);
 
     Food_Picture selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(Food_Picture food_picture);
+    int updateByPrimaryKeySelective(Food_Picture picture);
 
-    int updateByPrimaryKeyWithBLOBs(Food_Picture food_picture);
-
-    int updateByPrimaryKey(Food_Picture food_picture);
+    int updateByPrimaryKey(Food_Picture picture);
     
-    List<Food_Picture> searchFood_Pictures(Food_Picture food_picture);
+    List<Food_Picture> searchFood_Pictures(Food_Picture picture);
 }
