@@ -9,10 +9,44 @@
 		<result column="price" property="price" jdbcType="DECIMAL" />
 		<result column="category" property="category" jdbcType="INTEGER" />
 		<result column="description" property="description" jdbcType="VARCHAR" />
+		
+		<association property="picture" select="selectFood_Picture" column="picture" javaType="Food_Picture"/>
 	</resultMap>
+	
+	<resultMap id="Food_PictureResultMap" type="com.pitaya.bookingnow.entity.Food_Picture">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="last_modify_time" property="last_modify_time" jdbcType="TIMESTAMP" />
+		<result column="enabled" property="enabled" jdbcType="BIT" />
+		<result column="food_id" property="food_id" jdbcType="BIGINT" />
+		<result column="big_image" property="big_image" jdbcType="LONGVARBINARY" />
+		<result column="small_image" property="small_image" jdbcType="LONGVARBINARY" />
+	</resultMap>
+	
+	
 	<sql id="Base_Column_List">
 		id, name, version, period, price, category, description
 	</sql>
+	
+	<sql id="Food_Picture_Base_Column_List">
+		id, name, last_modify_time, enabled, food_id, big_image, small_image
+	</sql>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_food
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="selectFood_Picture" resultMap="Food_PictureResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Food_Picture_Base_Column_List" />
+		from pitaya_food_picture
+		where food_id = #{id,jdbcType=BIGINT}
+	</select>
 
 	<select id="searchFoods" resultMap="BaseResultMap"
 		parameterType="com.pitaya.bookingnow.entity.Food">
@@ -44,13 +78,9 @@
 
 
 
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
-		parameterType="java.lang.Long">
-		select
-		<include refid="Base_Column_List" />
-		from pitaya_food
-		where id = #{id,jdbcType=BIGINT}
-	</select>
+
+	
+	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		delete from pitaya_food
 		where id = #{id,jdbcType=BIGINT}

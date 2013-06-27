@@ -12,15 +12,24 @@ public class Order {
 
     private Integer allowance;
 
+    private Double total_price;
+
+    private Double prePay;
+
     private Date submit_time;
 
     private Boolean enabled;
     
-    private List<Order_Table_Detail> table_details;
-    private Order_User_Detail user_detail;
+    private List<Order_Table_Detail> table_details; 
+    
+    private Order_User_Detail user_detail; 
+    
     private Order_Customer_Detail customer_detail;
+    
     private List<Order_Food_Detail> food_details;
     
+    
+
     public List<Order_Table_Detail> getTable_details() {
 		return table_details;
 	}
@@ -83,6 +92,22 @@ public class Order {
 
     public void setAllowance(Integer allowance) {
         this.allowance = allowance;
+    }
+
+    public Double getTotal_price() {
+        return total_price;
+    }
+
+    public void setTotal_price(Double total_price) {
+        this.total_price = total_price;
+    }
+
+    public Double getPrePay() {
+        return prePay;
+    }
+
+    public void setPrePay(Double prePay) {
+        this.prePay = prePay;
     }
 
     public Date getSubmit_time() {
