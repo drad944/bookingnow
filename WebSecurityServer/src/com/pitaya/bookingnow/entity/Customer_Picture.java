@@ -11,8 +11,6 @@ public class Customer_Picture {
 
     private Boolean enabled;
 
-    private Long customer_id;
-
     private byte[] image;
 
     public Long getId() {
@@ -45,14 +43,6 @@ public class Customer_Picture {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public Long getCustomer_id() {
-        return customer_id;
-    }
-
-    public void setCustomer_id(Long customer_id) {
-        this.customer_id = customer_id;
     }
 
     public byte[] getImage() {

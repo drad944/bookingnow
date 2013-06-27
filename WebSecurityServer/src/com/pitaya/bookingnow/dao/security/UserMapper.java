@@ -17,7 +17,7 @@ public interface UserMapper {
 
     int updateByPrimaryKey(User user);
     
-    User login(User user);
-    
     List<User> searchUsers(User user);
+    
+    User login(User user);
 }

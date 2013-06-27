@@ -7,6 +7,8 @@ import java.util.List;
 public class Food {
     private Long id;
 
+    private Long picture_id;
+
     private String name;
 
     private Integer version;
@@ -21,11 +23,7 @@ public class Food {
     
     private Food_Picture picture;
     
-    private List<Food_Material_Detail> material_details;
-    
-    public Food() {
-    	
-    }
+    private List<Food_Material_Detail> material_details; 
 
     public Food_Picture getPicture() {
 		return picture;
@@ -49,6 +47,14 @@ public class Food {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getPicture_id() {
+        return picture_id;
+    }
+
+    public void setPicture_id(Long picture_id) {
+        this.picture_id = picture_id;
     }
 
     public String getName() {

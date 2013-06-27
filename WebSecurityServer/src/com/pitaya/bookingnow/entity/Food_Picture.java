@@ -10,8 +10,6 @@ public class Food_Picture {
     private Date last_modify_time;
 
     private Boolean enabled;
-
-    private Long food_id;
     
     private byte[] big_image;
 
@@ -32,7 +30,6 @@ public class Food_Picture {
     public void setSmall_image(byte[] small_image) {
         this.small_image = small_image;
     }
-
     public Long getId() {
         return id;
     }
@@ -63,13 +60,5 @@ public class Food_Picture {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public Long getFood_id() {
-        return food_id;
-    }
-
-    public void setFood_id(Long food_id) {
-        this.food_id = food_id;
     }
 }

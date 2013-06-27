@@ -12,7 +12,7 @@
 		</commentGenerator>
 		
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://10.111.3.147:3306/bookingnow?characterEncoding=utf8" userId="testUser" password="123456">
+			connectionURL="jdbc:mysql://localhost:3306/bookingnow?characterEncoding=utf8" userId="testUser" password="123456">
 		</jdbcConnection>
 
 		<javaTypeResolver>
@@ -32,7 +32,7 @@
 			<property name="enableSubPackages" value="false" />
 		</javaClientGenerator>
 
-<!-- 
+
 		<table catalog="" schema="" tableName="pitaya_user_picture" domainObjectName="User_Picture"
 			enableSelectByExample="false" 
 			enableDeleteByExample="false" 
@@ -43,8 +43,7 @@
 			<property name="useActualColumnNames" value="true" />
 			<generatedKey column="id" sqlStatement="MySql" identity="true" />
 		</table>
-
-
+		
 		<table catalog="" schema="" tableName="pitaya_user" domainObjectName="User"
 			enableSelectByExample="false" 
 			enableDeleteByExample="false" 
@@ -55,6 +54,8 @@
 			<property name="useActualColumnNames" value="true" />
 			<generatedKey column="id" sqlStatement="MySql" identity="true" />
 		</table>
+<!-- 
+		
 
 		
  

@@ -6,6 +6,8 @@ import java.util.List;
 public class User {
     private Long id;
 
+    private Long picture_id;
+
     private String account;
 
     private String name;
@@ -27,11 +29,10 @@ public class User {
     private Integer department;
 
     private Integer sub_system;
-
-    private List<User_Role_Detail> role_details;
     
     private User_Picture picture;
     
+    private List<User_Role_Detail> role_details; 
 
     public User_Picture getPicture() {
 		return picture;
@@ -55,6 +56,14 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getPicture_id() {
+        return picture_id;
+    }
+
+    public void setPicture_id(Long picture_id) {
+        this.picture_id = picture_id;
     }
 
     public String getAccount() {

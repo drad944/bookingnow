@@ -5,6 +5,8 @@ import java.util.Date;
 public class Customer {
     private Long id;
 
+    private Long picture_id;
+
     private String name;
 
     private String account;
@@ -37,6 +39,14 @@ public class Customer {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getPicture_id() {
+        return picture_id;
+    }
+
+    public void setPicture_id(Long picture_id) {
+        this.picture_id = picture_id;
     }
 
     public String getName() {
