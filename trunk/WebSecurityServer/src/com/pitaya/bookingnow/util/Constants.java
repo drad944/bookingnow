@@ -1,15 +1,16 @@
 package com.pitaya.bookingnow.util;
 
 public class Constants {
-	//order status
-	public static final int ORDER_STATUS = 0;
-	public static final int ORDER_NEW = ORDER_STATUS + 1;
-	public static final int ORDER_WAITING = ORDER_NEW + 1;
-	public static final int ORDER_COMMITTED = ORDER_WAITING + 1;
-	public static final int ORDER_AVAILABLE = ORDER_COMMITTED + 1;
-	public static final int ORDER_UNAVAILABLE = ORDER_AVAILABLE + 1;
-	public static final int ORDER_PAYING = ORDER_UNAVAILABLE + 1;
-	public static final int ORDER_FINISHED = ORDER_PAYING + 1;
+
+	//order and food status	
+	public static final int NEW = 0;
+	public static final int COMMITED = NEW + 1;
+	public static final int PAYING = COMMITED + 1;
+	public static final int FINISHED = PAYING + 1;
+	public static final int WAITING = FINISHED + 1;
+	public static final int COOKING = WAITING + 1;
+	public static final int UNAVAILABLE = COOKING + 1;
+	public static final int AVAILABLE = UNAVAILABLE + 1;
 	
 	//table status
 	public static final int TABLE_STATUS = 100;
@@ -20,14 +21,6 @@ public class Constants {
 	//food version
 	public static final int FOOD_VERSION = 200;
 	public static final int FOOD_VERSION_1_0 = FOOD_VERSION + 1;
-	
-	//food status
-	public static final int FOOD_STATUS = 300;
-	public static final int FOOD_NEW = FOOD_STATUS + 1;
-	public static final int FOOD_COOKING = FOOD_NEW + 1;
-	public static final int FOOD_READY = FOOD_COOKING + 1;
-	public static final int FOOD_FINISH = FOOD_READY + 1;
-	public static final int FOOD_UNAVAILABLE = FOOD_FINISH + 1;
 	
 	//food preference
 	public static final int FOOD_PREFERENCE = 400;
