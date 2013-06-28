@@ -173,6 +173,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
   <update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Food" >
     update pitaya_food
     set picture_id = #{picture_id,jdbcType=BIGINT},

@@ -18,17 +18,6 @@ public class TestFoodMapper {
        sqlSessionFactory = MyBatisUtil.getSqlSessionFactory(); 
     } 
  
-    @Test 
-    public void testAdd() { 
-    	SqlSession sqlSession = sqlSessionFactory.openSession(); 
-    	try { 
-    		FoodMapper foodMapper = sqlSession.getMapper(FoodMapper.class);
-    		Food newFood = new Food();
-    		
-    	}finally { 
-            sqlSession.close(); 
-        } 
-    }
     
     @Test 
     public void testSelectByPrimaryKey() { 
@@ -58,7 +47,7 @@ public class TestFoodMapper {
     	try { 
     		FoodMapper foodMapper = sqlSession.getMapper(FoodMapper.class);
     		Food tempFood = new Food();
-    		tempFood.setCategory(502);
+    		tempFood.setCategory(501);
     		
     		List<Food> newFoods = foodMapper.selectFoods(tempFood);
     		if(newFoods != null) {
@@ -120,6 +109,78 @@ public class TestFoodMapper {
     		}
     		
     		
+    	}finally { 
+            sqlSession.close(); 
+        } 
+    }
+    
+    @Test 
+    public void testUpdateByPrimaryKeySelective() { 
+    	SqlSession sqlSession = sqlSessionFactory.openSession(); 
+    	try { 
+    		FoodMapper foodMapper = sqlSession.getMapper(FoodMapper.class);
+    		Food tempFood = new Food();
+    		tempFood.setId((long)22);
+    		tempFood.setPicture_id((long)22);
+    		tempFood.setName("回锅肉2");
+    		tempFood.setDescription("回锅肉更新了哈");
+    		tempFood.setPrice(new BigDecimal(98.12));
+    		
+    		Food_Picture picture = new Food_Picture();
+    		picture.setEnabled(true);
+    		picture.setLast_modify_time(new Date());
+    		picture.setName("回锅炒肉 图片2");
+    		picture.setSmall_image(new byte[]{1,2,3,4,5,6});
+    		picture.setBig_image(new byte[]{7,8,9});
+    		
+    		tempFood.setPicture(picture);
+    		
+    		
+    		if(tempFood != null && tempFood.getId() != null) {
+    			
+				Food_PictureMapper food_PictureMapper = sqlSession.getMapper(Food_PictureMapper.class);
+				
+	    		if(tempFood.getPicture_id() != null && tempFood.getPicture() != null) {
+	    			Food_Picture tempPicture = tempFood.getPicture();
+	    			tempPicture.setId(tempFood.getPicture_id());
+	    			food_PictureMapper.updateByPrimaryKeySelective(tempPicture);
+	    		}else if(tempFood.getPicture() != null && tempFood.getPicture().getId() != null) {
+	    			food_PictureMapper.updateByPrimaryKeySelective(tempFood.getPicture());
+	    			
+				}
+	    		
+	    		foodMapper.updateByPrimaryKeySelective(tempFood);
+    		}
+    		sqlSession.commit();
+    	}finally { 
+            sqlSession.close(); 
+        } 
+    }
+    
+    @Test 
+    public void testDeleteByPrimaryKey() { 
+    	SqlSession sqlSession = sqlSessionFactory.openSession(); 
+    	try { 
+    		FoodMapper foodMapper = sqlSession.getMapper(FoodMapper.class);
+    		Food tempFood = new Food();
+    		tempFood.setName("回锅肉");
+    		
+    		List<Food> newFoods = foodMapper.selectFoods(tempFood);
+    		if(newFoods != null && newFoods.size() > 0) {
+    			
+    			for (int i = 0; i < newFoods.size(); i++) {
+    				Food newFood = newFoods.get(i);
+    				
+    				
+    				Food_PictureMapper food_PictureMapper = sqlSession.getMapper(Food_PictureMapper.class);
+    	    		if(newFood.getPicture_id() != null && newFood.getPicture_id() != 0) {
+    	    			food_PictureMapper.deleteByPrimaryKey(newFood.getPicture_id());
+    	    		}
+    	    		
+    	    		foodMapper.deleteByPrimaryKey(newFood.getId());
+    			}
+    		}
+    		sqlSession.commit();
     	}finally { 
             sqlSession.close(); 
         } 
