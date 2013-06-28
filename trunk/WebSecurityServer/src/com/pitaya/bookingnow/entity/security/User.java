@@ -1,7 +1,6 @@
 package com.pitaya.bookingnow.entity.security;
 
 import java.util.Date;
-import java.util.List;
 
 public class User {
     private Long id;
@@ -29,28 +28,8 @@ public class User {
     private Integer department;
 
     private Integer sub_system;
-    
-    private User_Picture picture;
-    
-    private List<User_Role_Detail> role_details; 
 
-    public User_Picture getPicture() {
-		return picture;
-	}
-
-	public void setPicture(User_Picture picture) {
-		this.picture = picture;
-	}
-
-	public List<User_Role_Detail> getRole_details() {
-		return role_details;
-	}
-
-	public void setRole_details(List<User_Role_Detail> role_details) {
-		this.role_details = role_details;
-	}
-
-	public Long getId() {
+    public Long getId() {
         return id;
     }
 

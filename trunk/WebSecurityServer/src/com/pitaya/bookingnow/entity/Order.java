@@ -1,68 +1,32 @@
 package com.pitaya.bookingnow.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 public class Order {
     private Long id;
 
     private Integer status;
 
+    private Long user_id;
+
+    private Long customer_id;
+
+    private Integer customer_count;
+
     private Date modifyTime;
 
     private Integer allowance;
 
-    private Double total_price;
+    private BigDecimal total_price;
 
-    private Double prePay;
+    private BigDecimal prePay;
 
     private Date submit_time;
 
     private Boolean enabled;
-    
-    private List<Order_Table_Detail> table_details; 
-    
-    private Order_User_Detail user_detail; 
-    
-    private Order_Customer_Detail customer_detail;
-    
-    private List<Order_Food_Detail> food_details;
-    
-    
 
-    public List<Order_Table_Detail> getTable_details() {
-		return table_details;
-	}
-
-	public void setTable_details(List<Order_Table_Detail> table_details) {
-		this.table_details = table_details;
-	}
-
-	public Order_User_Detail getUser_detail() {
-		return user_detail;
-	}
-
-	public void setUser_detail(Order_User_Detail user_detail) {
-		this.user_detail = user_detail;
-	}
-
-	public Order_Customer_Detail getCustomer_detail() {
-		return customer_detail;
-	}
-
-	public void setCustomer_detail(Order_Customer_Detail customer_detail) {
-		this.customer_detail = customer_detail;
-	}
-
-	public List<Order_Food_Detail> getFood_details() {
-		return food_details;
-	}
-
-	public void setFood_details(List<Order_Food_Detail> food_details) {
-		this.food_details = food_details;
-	}
-
-	public Long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -70,12 +34,52 @@ public class Order {
         this.id = id;
     }
 
-    public Integer getStatus() {
+    public BigDecimal getTotal_price() {
+		return total_price;
+	}
+
+	public void setTotal_price(BigDecimal total_price) {
+		this.total_price = total_price;
+	}
+
+	public BigDecimal getPrePay() {
+		return prePay;
+	}
+
+	public void setPrePay(BigDecimal prePay) {
+		this.prePay = prePay;
+	}
+
+	public Integer getStatus() {
         return status;
     }
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Long getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
+    }
+
+    public Long getCustomer_id() {
+        return customer_id;
+    }
+
+    public void setCustomer_id(Long customer_id) {
+        this.customer_id = customer_id;
+    }
+
+    public Integer getCustomer_count() {
+        return customer_count;
+    }
+
+    public void setCustomer_count(Integer customer_count) {
+        this.customer_count = customer_count;
     }
 
     public Date getModifyTime() {
@@ -94,21 +98,6 @@ public class Order {
         this.allowance = allowance;
     }
 
-    public Double getTotal_price() {
-        return total_price;
-    }
-
-    public void setTotal_price(Double total_price) {
-        this.total_price = total_price;
-    }
-
-    public Double getPrePay() {
-        return prePay;
-    }
-
-    public void setPrePay(Double prePay) {
-        this.prePay = prePay;
-    }
 
     public Date getSubmit_time() {
         return submit_time;

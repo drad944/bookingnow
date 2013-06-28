@@ -16,12 +16,6 @@ public class Food_Material_Detail {
     private Long material_id;
     
     private Material material;
-    
-    private Food food;
-    
-    public Food_Material_Detail() {
-    	
-    }
 
     public Material getMaterial() {
 		return material;
@@ -29,14 +23,6 @@ public class Food_Material_Detail {
 
 	public void setMaterial(Material material) {
 		this.material = material;
-	}
-
-	public Food getFood() {
-		return food;
-	}
-
-	public void setFood(Food food) {
-		this.food = food;
 	}
 
 	public Long getId() {

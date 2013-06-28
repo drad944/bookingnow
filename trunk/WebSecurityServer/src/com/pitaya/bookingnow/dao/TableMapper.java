@@ -5,13 +5,13 @@ import com.pitaya.bookingnow.entity.Table;
 public interface TableMapper {
     int deleteByPrimaryKey(Long id);
 
-    int insert(Table record);
+    int insert(Table table);
 
-    int insertSelective(Table record);
+    int insertSelective(Table table);
 
     Table selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(Table record);
+    int updateByPrimaryKeySelective(Table table);
 
-    int updateByPrimaryKey(Table record);
+    int updateByPrimaryKey(Table table);
 }

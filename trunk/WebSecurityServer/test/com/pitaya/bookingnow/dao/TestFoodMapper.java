@@ -32,7 +32,7 @@ public class TestFoodMapper {
     		if(picture != null) {
     			System.out.println("id : " + picture.getId());
         		System.out.println("name : " + picture.getName());
-        		System.out.println("Last_modify_time : " + picture.getLast_modify_time());
+        		System.out.println("version : " + picture.getVersion());
     		}
     		
     		
@@ -62,7 +62,7 @@ public class TestFoodMapper {
     	    		if(picture != null) {
     	    			System.out.println("id : " + picture.getId());
     	        		System.out.println("name : " + picture.getName());
-    	        		System.out.println("Last_modify_time : " + picture.getLast_modify_time());
+    	        		System.out.println("version : " + picture.getVersion());
     	    		}
     			}
     		}
@@ -88,13 +88,15 @@ public class TestFoodMapper {
     		Food_PictureMapper food_PictureMapper = sqlSession.getMapper(Food_PictureMapper.class);
     		Food_Picture picture = new Food_Picture();
     		picture.setEnabled(true);
-    		picture.setLast_modify_time(new Date());
+    		picture.setVersion(new Date());
     		picture.setName("回锅炒肉");
     		picture.setSmall_image(new byte[]{1,2,3});
+    		
     		food_PictureMapper.insertSelective(picture);
     		
     		newFood.setPicture_id(picture.getId());
     		foodMapper.insertSelective(newFood);
+    		
     		sqlSession.commit();
     		
     		Food tempFood = foodMapper.selectByPrimaryKey(newFood.getId());
@@ -105,7 +107,7 @@ public class TestFoodMapper {
     		if(picture != null) {
     			System.out.println("id : " + tempPicture.getId());
         		System.out.println("name : " + tempPicture.getName());
-        		System.out.println("Last_modify_time : " + tempPicture.getLast_modify_time());
+        		System.out.println("version : " + tempPicture.getVersion());
     		}
     		
     		
@@ -128,7 +130,7 @@ public class TestFoodMapper {
     		
     		Food_Picture picture = new Food_Picture();
     		picture.setEnabled(true);
-    		picture.setLast_modify_time(new Date());
+    		picture.setVersion(new Date());
     		picture.setName("回锅炒肉 图片2");
     		picture.setSmall_image(new byte[]{1,2,3,4,5,6});
     		picture.setBig_image(new byte[]{7,8,9});

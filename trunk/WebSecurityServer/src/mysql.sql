@@ -14,45 +14,48 @@ flush privileges;
 
 create table pitaya_table(
 	id bigint not null auto_increment primary key,
+	status integer,
 	seatCount integer,
 	maxCustomerCount integer,
 	address varchar(50)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (1,4,6,'in the first floor');	
-insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (2,4,6,'in the second floor');
-insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (3,6,8,'in the first floor');
-insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (4,6,8,'in the second floor');
-insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (5,8,8,'in the first floor');
-insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (6,8,8,'in the second floor');
-insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (7,10,6,'in the first floor');
-insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (8,10,6,'in the second floor');
-insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (9,4,6,'in the second floor');
-insert into pitaya_table(id,seatCount,maxCustomerCount,address) values (10,4,6,'in the first floor');
+insert into pitaya_table values (1,1,4,6,'in the first floor');	
+insert into pitaya_table values (2,2,4,6,'in the second floor');
+insert into pitaya_table values (3,3,6,8,'in the first floor');
+insert into pitaya_table values (4,1,6,8,'in the second floor');
+insert into pitaya_table values (5,2,8,8,'in the first floor');
+insert into pitaya_table values (6,1,8,8,'in the second floor');
+insert into pitaya_table values (7,2,10,6,'in the first floor');
+insert into pitaya_table values (8,1,10,6,'in the second floor');
+insert into pitaya_table values (9,4,4,6,'in the second floor');
+insert into pitaya_table values (10,3,4,6,'in the first floor');
 
 
 create table pitaya_order(
 	id bigint not null auto_increment primary key,
 	status integer,
+	user_id bigint,
+	customer_id bigint,
+	customer_count integer,
 	modifyTime timestamp,
 	allowance integer,
-	total_price double,
-	prePay double,
+	total_price decimal(8,2),
+	prePay decimal(8,2),
 	submit_time timestamp,
 	enabled boolean
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 	
-insert into pitaya_order values (1,1,'2013-05-08 01:12:03',95,0,0,'2013-05-08 01:02:03',true);
-insert into pitaya_order values (2,2,'2013-05-08 01:12:03',90,0,0,'2013-05-08 01:02:03',false);
-insert into pitaya_order values (3,3,'2013-05-08 01:12:03',95,0,0,'2013-05-08 01:02:03',1);
-insert into pitaya_order values (4,4,'2013-05-08 01:12:03',100,0,0,'2013-05-08 01:02:03',0);
-insert into pitaya_order values (5,5,'2013-05-08 01:12:03',90,0,0,'2013-05-08 01:02:03',true);
-insert into pitaya_order values (6,6,'2013-05-08 01:12:03',95,0,0,'2013-05-08 01:02:03',false);
-insert into pitaya_order values (7,3,'2013-05-08 01:12:03',90,0,0,'2013-05-08 01:02:03',true);
+insert into pitaya_order values (1,1,0,1,4,'2013-05-08 01:12:03',95,0,0,'2013-05-08 01:02:03',true);
+insert into pitaya_order values (2,2,1,0,5,'2013-05-08 01:12:03',90,0,0,'2013-05-08 01:02:03',false);
+insert into pitaya_order values (3,3,0,2,6,'2013-05-08 01:12:03',95,0,0,'2013-05-08 01:02:03',1);
+insert into pitaya_order values (4,4,0,3,7,'2013-05-08 01:12:03',100,0,0,'2013-05-08 01:02:03',0);
+insert into pitaya_order values (5,5,2,0,4,'2013-05-08 01:12:03',90,0,0,'2013-05-08 01:02:03',true);
+insert into pitaya_order values (6,6,3,0,5,'2013-05-08 01:12:03',95,0,0,'2013-05-08 01:02:03',false);
+insert into pitaya_order values (7,3,1,0,4,'2013-05-08 01:12:03',90,0,0,'2013-05-08 01:02:03',true);
 
 create table pitaya_order_table_detail(
 	id bigint not null auto_increment primary key,
-	status integer,
 	realCustomerCount integer,
 	enabled boolean,
 	table_id bigint not null,
@@ -63,16 +66,16 @@ create table pitaya_order_table_detail(
 	CONSTRAINT fk_order_table_detail_order FOREIGN KEY (order_id) REFERENCES pitaya_order (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_order_table_detail values (1,101,0,false,1,1);
-insert into pitaya_order_table_detail values (2,102,4,true,2,2);
-insert into pitaya_order_table_detail values (3,102,3,true,3,2);
-insert into pitaya_order_table_detail values (4,103,7,true,4,3);
-insert into pitaya_order_table_detail values (5,102,0,true,5,4);
-insert into pitaya_order_table_detail values (6,102,8,true,6,5);
-insert into pitaya_order_table_detail values (7,103,7,true,7,5);
-insert into pitaya_order_table_detail values (8,102,0,true,8,6);
-insert into pitaya_order_table_detail values (9,101,0,true,9,6);
-insert into pitaya_order_table_detail values (10,103,3,true,10,7);
+insert into pitaya_order_table_detail values (1,0,false,1,1);
+insert into pitaya_order_table_detail values (2,4,true,2,2);
+insert into pitaya_order_table_detail values (3,3,true,3,2);
+insert into pitaya_order_table_detail values (4,7,true,4,3);
+insert into pitaya_order_table_detail values (5,0,true,5,4);
+insert into pitaya_order_table_detail values (6,8,true,6,5);
+insert into pitaya_order_table_detail values (7,7,true,7,5);
+insert into pitaya_order_table_detail values (8,0,true,8,6);
+insert into pitaya_order_table_detail values (9,0,true,9,6);
+insert into pitaya_order_table_detail values (10,3,true,10,7);
 
 
 create table pitaya_food(
@@ -146,7 +149,7 @@ insert into pitaya_order_food_detail values (18,302,1,403,'2013-05-01 01:02:03',
 create table pitaya_food_picture(
 	id bigint not null auto_increment primary key,
 	name varchar(50),
-	last_modify_time timestamp,
+	version timestamp,
 	big_image mediumblob,
 	small_image mediumblob,
 	enabled boolean
@@ -209,25 +212,6 @@ insert into pitaya_customer_picture values (4,'a','2006-01-01 00:00:00','\cc\dd\
 insert into pitaya_customer_picture values (5,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);
 insert into pitaya_customer_picture values (6,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);
 
-create table pitaya_order_customer_detail(
-	id bigint not null auto_increment primary key,
-	count integer,
-	enabled boolean,
-	customer_id bigint not null,
-	order_id bigint not null,
-	KEY fk_order_customer_detail_customer (customer_id),
-	KEY fk_order_customer_detail_order (order_id),
-	CONSTRAINT fk_order_customer_detail_customer FOREIGN KEY (customer_id) REFERENCES pitaya_customer (id),
-	CONSTRAINT fk_order_customer_detail_order FOREIGN KEY (order_id) REFERENCES pitaya_order (id)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-	
-insert into pitaya_order_customer_detail values (1,4,true,1,1);	
-insert into pitaya_order_customer_detail values (2,3,true,1,2);	
-insert into pitaya_order_customer_detail values (3,2,true,1,4);	
-insert into pitaya_order_customer_detail values (4,6,true,1,6);	
-insert into pitaya_order_customer_detail values (5,8,true,1,7);	
-	
-	
 
 
 create table pitaya_user(
@@ -268,20 +252,6 @@ insert into pitaya_user_picture values (4,'a','2006-01-01 00:00:00','\cc\dd\cc\d
 insert into pitaya_user_picture values (5,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);
 insert into pitaya_user_picture values (6,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);	
 
-create table pitaya_order_user_detail(
-	id bigint not null auto_increment primary key,
-	enabled boolean,
-	user_id bigint not null,
-	order_id bigint not null,
-	KEY fk_order_user_detail_user (user_id),
-	KEY fk_order_user_detail_order (order_id),
-	CONSTRAINT fk_order_user_detail_user FOREIGN KEY (user_id) REFERENCES pitaya_user (id),
-	CONSTRAINT fk_order_user_detail_order FOREIGN KEY (order_id) REFERENCES pitaya_order (id)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-insert into pitaya_order_user_detail values (1,true,1,3);
-insert into pitaya_order_user_detail values (2,true,1,5);
-
 
 
 create table pitaya_material(
@@ -301,7 +271,7 @@ insert into pitaya_material values (5,'huajiao','big garlic,haha',901);
 create table pitaya_food_material_detail(
 	id bigint not null auto_increment primary key,
 	count integer,
-	price double,
+	price decimal(8,2),
 	weight double,
 	enabled boolean,
 	food_id bigint not null,

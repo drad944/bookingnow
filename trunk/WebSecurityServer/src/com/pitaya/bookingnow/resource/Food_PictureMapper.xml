@@ -4,14 +4,14 @@
 	<resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.Food_Picture">
 		<id column="id" property="id" jdbcType="BIGINT" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
-		<result column="last_modify_time" property="last_modify_time"
+		<result column="version" property="version"
 			jdbcType="TIMESTAMP" />
 		<result column="enabled" property="enabled" jdbcType="BIT" />
 		<result column="big_image" property="big_image" jdbcType="LONGVARBINARY" />
 		<result column="small_image" property="small_image" jdbcType="LONGVARBINARY" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, name, last_modify_time, enabled
+		id, name, version, enabled
 	</sql>
 	<sql id="Blob_Column_List">
 		big_image, small_image
@@ -29,8 +29,8 @@
 			<if test="name != null">
 				name = #{name,jdbcType=VARCHAR}
 			</if>
-			<if test="last_modify_time != null">
-				and last_modify_time = #{last_modify_time,jdbcType=TIMESTAMP}
+			<if test="version != null">
+				and version = #{version,jdbcType=TIMESTAMP}
 			</if>
 			<if test="enabled != null">
 				and enabled = #{enabled,jdbcType=BIT}
@@ -63,9 +63,9 @@
 			order="AFTER">
 			SELECT LAST_INSERT_ID() as id
 		</selectKey>
-		insert into pitaya_food_picture (name, last_modify_time, enabled,
+		insert into pitaya_food_picture (name, version, enabled,
 		big_image, small_image)
-		values (#{name,jdbcType=VARCHAR}, #{last_modify_time,jdbcType=TIMESTAMP},
+		values (#{name,jdbcType=VARCHAR}, #{version,jdbcType=TIMESTAMP},
 		#{enabled,jdbcType=BIT},
 		#{big_image,jdbcType=LONGVARBINARY}, #{small_image,jdbcType=LONGVARBINARY})
 	</insert>
@@ -79,8 +79,8 @@
 			<if test="name != null">
 				name,
 			</if>
-			<if test="last_modify_time != null">
-				last_modify_time,
+			<if test="version != null">
+				version,
 			</if>
 			<if test="enabled != null">
 				enabled,
@@ -96,8 +96,8 @@
 			<if test="name != null">
 				#{name,jdbcType=VARCHAR},
 			</if>
-			<if test="last_modify_time != null">
-				#{last_modify_time,jdbcType=TIMESTAMP},
+			<if test="version != null">
+				#{version,jdbcType=TIMESTAMP},
 			</if>
 			<if test="enabled != null">
 				#{enabled,jdbcType=BIT},
@@ -116,8 +116,8 @@
 			<if test="name != null">
 				name = #{name,jdbcType=VARCHAR},
 			</if>
-			<if test="last_modify_time != null">
-				last_modify_time = #{last_modify_time,jdbcType=TIMESTAMP},
+			<if test="version != null">
+				version = #{version,jdbcType=TIMESTAMP},
 			</if>
 			<if test="enabled != null">
 				enabled = #{enabled,jdbcType=BIT},
@@ -134,7 +134,7 @@
 	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Food_Picture">
 		update pitaya_food_picture
 		set name = #{name,jdbcType=VARCHAR},
-		last_modify_time = #{last_modify_time,jdbcType=TIMESTAMP},
+		version = #{version,jdbcType=TIMESTAMP},
 		enabled = #{enabled,jdbcType=BIT}
 		where id = #{id,jdbcType=BIGINT}
 	</update>

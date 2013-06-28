@@ -24,7 +24,7 @@ public class TestFood_PictureMapper {
     		Food_Picture newFood_Picture = food_pictureMapper.selectByPrimaryKey((long)2);
     		System.out.println("id : " + newFood_Picture.getId());
     		System.out.println("name : " + newFood_Picture.getName());
-    		System.out.println("Last_modify_time : " + newFood_Picture.getLast_modify_time());
+    		System.out.println("Last_modify_time : " + newFood_Picture.getVersion());
     		System.out.println("Small_image : " + newFood_Picture.getSmall_image());
     		
     		
@@ -41,7 +41,7 @@ public class TestFood_PictureMapper {
     		Food_PictureMapper food_PictureMapper = sqlSession.getMapper(Food_PictureMapper.class);
     		Food_Picture picture = new Food_Picture();
     		picture.setEnabled(true);
-    		picture.setLast_modify_time(new Date());
+    		picture.setVersion(new Date());
     		picture.setName("回锅炒肉");
     		picture.setSmall_image(new byte[]{1,2,3});
     		food_PictureMapper.insertSelective(picture);
@@ -52,7 +52,7 @@ public class TestFood_PictureMapper {
     		if(picture != null) {
     			System.out.println("id : " + tempPicture.getId());
         		System.out.println("name : " + tempPicture.getName());
-        		System.out.println("Last_modify_time : " + tempPicture.getLast_modify_time());
+        		System.out.println("Last_modify_time : " + tempPicture.getVersion());
     		}
     		
     		

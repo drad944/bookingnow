@@ -1,7 +1,5 @@
 package com.pitaya.bookingnow.service.impl;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.Date;
 
 import org.junit.Before;
@@ -35,7 +33,7 @@ public class TestFood_PictureService {
 		
 		Food_Picture picture = new Food_Picture();
 		picture.setEnabled(true);
-		picture.setLast_modify_time(new Date());
+		picture.setVersion(new Date());
 		picture.setName("回锅炒肉");
 		picture.setSmall_image(new byte[]{1,2,3});
 		
