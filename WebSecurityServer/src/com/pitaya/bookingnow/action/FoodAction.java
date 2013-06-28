@@ -1,10 +1,9 @@
 package com.pitaya.bookingnow.action;
 
-import com.opensymphony.xwork2.ActionSupport;
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.service.IFoodService;
 
-public class FoodAction extends ActionSupport{
+public class FoodAction extends BaseAction{
 	private static final long serialVersionUID = -675955597630577906L;
 	private IFoodService foodService;
 	private Food food;
