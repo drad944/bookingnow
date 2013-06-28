@@ -3,8 +3,6 @@ package com.pitaya.bookingnow.entity;
 public class Order_Table_Detail {
     private Long id;
 
-    private Integer status;
-
     private Integer realCustomerCount;
 
     private Boolean enabled;
@@ -12,41 +10,13 @@ public class Order_Table_Detail {
     private Long table_id;
 
     private Long order_id;
-    
-    private Order order;
-    
-    private Table table;
-    
-    public Order getOrder() {
-		return order;
-	}
 
-	public void setOrder(Order order) {
-		this.order = order;
-	}
-
-	public Table getTable() {
-		return table;
-	}
-
-	public void setTable(Table table) {
-		this.table = table;
-	}
-
-	public Long getId() {
+    public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     public Integer getRealCustomerCount() {

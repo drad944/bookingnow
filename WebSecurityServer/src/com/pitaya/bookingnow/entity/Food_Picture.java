@@ -7,7 +7,7 @@ public class Food_Picture {
 
     private String name;
 
-    private Date last_modify_time;
+    private Date version;
 
     private Boolean enabled;
     
@@ -15,7 +15,15 @@ public class Food_Picture {
 
     private byte[] small_image;
 
-    public byte[] getBig_image() {
+    public Date getVersion() {
+		return version;
+	}
+
+	public void setVersion(Date version) {
+		this.version = version;
+	}
+
+	public byte[] getBig_image() {
         return big_image;
     }
 
@@ -30,6 +38,7 @@ public class Food_Picture {
     public void setSmall_image(byte[] small_image) {
         this.small_image = small_image;
     }
+
     public Long getId() {
         return id;
     }
@@ -46,13 +55,6 @@ public class Food_Picture {
         this.name = name;
     }
 
-    public Date getLast_modify_time() {
-        return last_modify_time;
-    }
-
-    public void setLast_modify_time(Date last_modify_time) {
-        this.last_modify_time = last_modify_time;
-    }
 
     public Boolean getEnabled() {
         return enabled;

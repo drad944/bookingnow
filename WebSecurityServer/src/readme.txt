@@ -12,4 +12,8 @@ to run this project successfully,you need to do below steps:
 	some question:
 	how to select data from tables join - write sql in *mapper.xml, define interface for *mapper.java
 	
+	update food.version to timestamp
+	add picture.version(timestamp)
+	
+	
 	

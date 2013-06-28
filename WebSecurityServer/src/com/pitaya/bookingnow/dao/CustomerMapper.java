@@ -5,13 +5,13 @@ import com.pitaya.bookingnow.entity.Customer;
 public interface CustomerMapper {
     int deleteByPrimaryKey(Long id);
 
-    int insert(Customer record);
+    int insert(Customer customer);
 
-    int insertSelective(Customer record);
+    int insertSelective(Customer customer);
 
     Customer selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(Customer record);
+    int updateByPrimaryKeySelective(Customer customer);
 
-    int updateByPrimaryKey(Customer record);
+    int updateByPrimaryKey(Customer customer);
 }

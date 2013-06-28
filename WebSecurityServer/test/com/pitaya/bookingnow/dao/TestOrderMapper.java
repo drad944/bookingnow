@@ -69,7 +69,7 @@ public class TestOrderMapper {
 			Order templateOrder = new Order();
 			templateOrder.setAllowance(95);
 
-			resultOrders = orderMapper.searchSelective(templateOrder);
+			resultOrders = orderMapper.searchOrders(templateOrder);
 
 			if (resultOrders != null) {
 				for (int i = 0; i < resultOrders.size(); i++) {

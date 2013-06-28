@@ -55,7 +55,7 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true" />
 		</table>
 <!-- 
-		
+		 -->	
 
 		
  
@@ -124,7 +124,7 @@
 			<property name="useActualColumnNames" value="true" />
 			<generatedKey column="id" sqlStatement="MySql" identity="true" />
 		</table>
-	 -->	
+	
 
 	</context>
 </generatorConfiguration>

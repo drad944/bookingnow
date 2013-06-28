@@ -15,6 +15,8 @@ public interface Food_PictureMapper {
 
     int updateByPrimaryKeySelective(Food_Picture picture);
 
+    int updateByPrimaryKeyWithBLOBs(Food_Picture picture);
+
     int updateByPrimaryKey(Food_Picture picture);
     
     List<Food_Picture> searchFood_Pictures(Food_Picture picture);

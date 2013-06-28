@@ -8,10 +8,6 @@ public class Material {
     private String description;
 
     private Integer category;
-    
-    public Material() {
-    	
-    }
 
     public Long getId() {
         return id;

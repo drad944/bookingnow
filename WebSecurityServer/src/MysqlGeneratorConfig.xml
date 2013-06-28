@@ -83,7 +83,7 @@
 		
 
 
-	<!--	
+	<!--	 -->
 		<table catalog="" schema="" tableName="pitaya_order" domainObjectName="Order"
 			enableSelectByExample="false" 
 			enableDeleteByExample="false" 
@@ -94,8 +94,8 @@
 			<property name="useActualColumnNames" value="true" />
 			<generatedKey column="id" sqlStatement="MySql" identity="true" />
 		</table>
- -->
- <!-- 
+
+ <!--  -->
 		<table catalog="" schema="" tableName="pitaya_food_material_detail" domainObjectName="Food_Material_Detail"
 			enableSelectByExample="false" 
 			enableDeleteByExample="false" 
@@ -106,8 +106,8 @@
 			<property name="useActualColumnNames" value="true" />
 			<generatedKey column="id" sqlStatement="MySql" identity="true" />
 		</table>
-		 -->
-<!-- 
+		
+<!--  -->
 		<table catalog="" schema="" tableName="pitaya_material" domainObjectName="Material"
 			enableSelectByExample="false" 
 			enableDeleteByExample="false" 
@@ -130,16 +130,6 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true" />
 		</table>
 		
-		<table catalog="" schema="" tableName="pitaya_order_customer_detail" domainObjectName="Order_Customer_Detail"
-			enableSelectByExample="false" 
-			enableDeleteByExample="false" 
-			enableCountByExample="false" 
-			enableUpdateByExample="false" 
-			selectByExampleQueryId="false" 
-			>
-			<property name="useActualColumnNames" value="true" />
-			<generatedKey column="id" sqlStatement="MySql" identity="true" />
-		</table>
 		
 		<table catalog="" schema="" tableName="pitaya_order_food_detail" domainObjectName="Order_Food_Detail"
 			enableSelectByExample="false" 
@@ -163,16 +153,6 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true" />
 		</table>
 		
-		<table catalog="" schema="" tableName="pitaya_order_user_detail" domainObjectName="Order_User_Detail"
-			enableSelectByExample="false" 
-			enableDeleteByExample="false" 
-			enableCountByExample="false" 
-			enableUpdateByExample="false" 
-			selectByExampleQueryId="false" 
-			>
-			<property name="useActualColumnNames" value="true" />
-			<generatedKey column="id" sqlStatement="MySql" identity="true" />
-		</table>
 		
 		<table catalog="" schema="" tableName="pitaya_table" domainObjectName="Table"
 			enableSelectByExample="false" 
@@ -184,7 +164,7 @@
 			<property name="useActualColumnNames" value="true" />
 			<generatedKey column="id" sqlStatement="MySql" identity="true" />
 		</table>
-		 -->
+		
 		
 	</context>
 </generatorConfiguration>

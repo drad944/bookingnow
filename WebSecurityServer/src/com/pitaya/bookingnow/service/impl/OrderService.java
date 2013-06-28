@@ -45,7 +45,7 @@ public class OrderService implements IOrderService{
 	@Override
 	public List<Order> searchOrders(Order order) {
 		
-		return orderDao.searchSelective(order);
+		return orderDao.searchOrders(order);
 	}
 
 }

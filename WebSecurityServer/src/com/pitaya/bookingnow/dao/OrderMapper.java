@@ -17,5 +17,5 @@ public interface OrderMapper {
 
     int updateByPrimaryKey(Order order);
     
-    List<Order> searchSelective(Order order);
+    List<Order> searchOrders(Order order);
 }

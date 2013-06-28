@@ -1,7 +1,5 @@
 package com.pitaya.bookingnow.entity.security;
 
-import java.util.List;
-
 public class Authority {
     private Long id;
 
@@ -12,20 +10,8 @@ public class Authority {
     private Boolean issys;
 
     private Integer module;
-    
-    private List<Authority_Resource_Detail> resource_details;
-    
-    
 
-    public List<Authority_Resource_Detail> getResource_details() {
-		return resource_details;
-	}
-
-	public void setResource_details(List<Authority_Resource_Detail> resource_details) {
-		this.resource_details = resource_details;
-	}
-
-	public Long getId() {
+    public Long getId() {
         return id;
     }
 

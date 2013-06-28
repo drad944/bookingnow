@@ -1,114 +1,107 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.pitaya.bookingnow.dao.security.User_PictureMapper">
-	<resultMap id="BaseResultMap"
-		type="com.pitaya.bookingnow.entity.security.User_Picture">
-		<id column="id" property="id" jdbcType="BIGINT" />
-		<result column="name" property="name" jdbcType="VARCHAR" />
-		<result column="last_modify_time" property="last_modify_time"
-			jdbcType="TIMESTAMP" />
-		<result column="enabled" property="enabled" jdbcType="BIT" />
-	</resultMap>
-	<resultMap id="ResultMapWithBLOBs"
-		type="com.pitaya.bookingnow.entity.security.User_Picture" extends="BaseResultMap">
-		<result column="image" property="image" jdbcType="LONGVARBINARY" />
-	</resultMap>
-	<sql id="Base_Column_List">
-		id, name, last_modify_time, enabled
-	</sql>
-	<sql id="Blob_Column_List">
-		image
-	</sql>
-	<select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs"
-		parameterType="java.lang.Long">
-		select
-		<include refid="Base_Column_List" />
-		,
-		<include refid="Blob_Column_List" />
-		from pitaya_user_picture
-		where id = #{id,jdbcType=BIGINT}
-	</select>
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from pitaya_user_picture
-		where id = #{id,jdbcType=BIGINT}
-	</delete>
-	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.security.User_Picture">
-		<selectKey resultType="java.lang.Long" keyProperty="id"
-			order="AFTER">
-			SELECT LAST_INSERT_ID()
-		</selectKey>
-		insert into pitaya_user_picture (name, last_modify_time, enabled,
-		image)
-		values (#{name,jdbcType=VARCHAR}, #{last_modify_time,jdbcType=TIMESTAMP},
-		#{enabled,jdbcType=BIT},
-		#{image,jdbcType=LONGVARBINARY})
-	</insert>
-	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.security.User_Picture">
-		<selectKey resultType="java.lang.Long" keyProperty="id"
-			order="AFTER">
-			SELECT LAST_INSERT_ID()
-		</selectKey>
-		insert into pitaya_user_picture
-		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="name != null">
-				name,
-			</if>
-			<if test="last_modify_time != null">
-				last_modify_time,
-			</if>
-			<if test="enabled != null">
-				enabled,
-			</if>
-			<if test="image != null">
-				image,
-			</if>
-		</trim>
-		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="name != null">
-				#{name,jdbcType=VARCHAR},
-			</if>
-			<if test="last_modify_time != null">
-				#{last_modify_time,jdbcType=TIMESTAMP},
-			</if>
-			<if test="enabled != null">
-				#{enabled,jdbcType=BIT},
-			</if>
-			<if test="image != null">
-				#{image,jdbcType=LONGVARBINARY},
-			</if>
-		</trim>
-	</insert>
-	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.security.User_Picture">
-		update pitaya_user_picture
-		<set>
-			<if test="name != null">
-				name = #{name,jdbcType=VARCHAR},
-			</if>
-			<if test="last_modify_time != null">
-				last_modify_time = #{last_modify_time,jdbcType=TIMESTAMP},
-			</if>
-			<if test="enabled != null">
-				enabled = #{enabled,jdbcType=BIT},
-			</if>
-			<if test="image != null">
-				image = #{image,jdbcType=LONGVARBINARY},
-			</if>
-		</set>
-		where id = #{id,jdbcType=BIGINT}
-	</update>
-	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.pitaya.bookingnow.entity.security.User_Picture">
-		update pitaya_user_picture
-		set name = #{name,jdbcType=VARCHAR},
-		last_modify_time = #{last_modify_time,jdbcType=TIMESTAMP},
-		enabled = #{enabled,jdbcType=BIT},
-		image = #{image,jdbcType=LONGVARBINARY}
-		where id = #{id,jdbcType=BIGINT}
-	</update>
-	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.security.User_Picture">
-		update pitaya_user_picture
-		set name = #{name,jdbcType=VARCHAR},
-		last_modify_time = #{last_modify_time,jdbcType=TIMESTAMP},
-		enabled = #{enabled,jdbcType=BIT}
-		where id = #{id,jdbcType=BIGINT}
-	</update>
+<mapper namespace="com.pitaya.bookingnow.dao.security.User_PictureMapper" >
+  <resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.security.User_Picture" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="last_modify_time" property="last_modify_time" jdbcType="TIMESTAMP" />
+    <result column="enabled" property="enabled" jdbcType="BIT" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.pitaya.bookingnow.entity.security.User_Picture" extends="BaseResultMap" >
+    <result column="image" property="image" jdbcType="LONGVARBINARY" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, last_modify_time, enabled
+  </sql>
+  <sql id="Blob_Column_List" >
+    image
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pitaya_user_picture
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pitaya_user_picture
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.pitaya.bookingnow.entity.security.User_Picture" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pitaya_user_picture (name, last_modify_time, enabled, 
+      image)
+    values (#{name,jdbcType=VARCHAR}, #{last_modify_time,jdbcType=TIMESTAMP}, #{enabled,jdbcType=BIT}, 
+      #{image,jdbcType=LONGVARBINARY})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.security.User_Picture" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pitaya_user_picture
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="last_modify_time != null" >
+        last_modify_time,
+      </if>
+      <if test="enabled != null" >
+        enabled,
+      </if>
+      <if test="image != null" >
+        image,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="last_modify_time != null" >
+        #{last_modify_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enabled != null" >
+        #{enabled,jdbcType=BIT},
+      </if>
+      <if test="image != null" >
+        #{image,jdbcType=LONGVARBINARY},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.security.User_Picture" >
+    update pitaya_user_picture
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="last_modify_time != null" >
+        last_modify_time = #{last_modify_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enabled != null" >
+        enabled = #{enabled,jdbcType=BIT},
+      </if>
+      <if test="image != null" >
+        image = #{image,jdbcType=LONGVARBINARY},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.pitaya.bookingnow.entity.security.User_Picture" >
+    update pitaya_user_picture
+    set name = #{name,jdbcType=VARCHAR},
+      last_modify_time = #{last_modify_time,jdbcType=TIMESTAMP},
+      enabled = #{enabled,jdbcType=BIT},
+      image = #{image,jdbcType=LONGVARBINARY}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.security.User_Picture" >
+    update pitaya_user_picture
+    set name = #{name,jdbcType=VARCHAR},
+      last_modify_time = #{last_modify_time,jdbcType=TIMESTAMP},
+      enabled = #{enabled,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
 </mapper>

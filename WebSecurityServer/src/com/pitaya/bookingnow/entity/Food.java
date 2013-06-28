@@ -23,7 +23,7 @@ public class Food {
     
     private Food_Picture picture;
     
-    private List<Food_Material_Detail> material_details; 
+    private List<Food_Material_Detail> material_details;
 
     public Food_Picture getPicture() {
 		return picture;
