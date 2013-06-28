@@ -2,11 +2,11 @@ package com.pitaya.bookingnow.action;
 
 import java.util.List;
 
-import com.opensymphony.xwork2.ActionSupport;
 import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.service.IOrderService;
+import com.pitaya.bookingnow.util.Constants;
 
-public class OrderAction extends ActionSupport{
+public class OrderAction extends BaseAction{
 	
 	private static final long serialVersionUID = 6767573103054031438L;
 	private IOrderService orderService;
@@ -86,5 +86,30 @@ public class OrderAction extends ActionSupport{
 		return "removeFail";
 	}
 	
+	/*		
+	 * 		Commit a new created order which contains user id and table id
+	 */
+	public String commitWaitingOrder(){
+		if (order != null) {
+			this.setResult(Constants.SUCCESS);
+			return "commitSuccess";
+		}
+		this.setResult(Constants.FAIL);
+		this.setDetail("Some reason cause the operation fail");
+		return "Fail";
+	}
+	
+	/*		
+	 * 		Commit a new created order which contains food list
+	 */
+	public String commitNewOrder(){
+		if (order != null) {
+			this.setResult(Constants.SUCCESS);
+			return "commitSuccess";
+		}
+		this.setResult(Constants.FAIL);
+		this.setDetail("Some reason cause the operation fail");
+		return "Fail";
+	}
 	
 }

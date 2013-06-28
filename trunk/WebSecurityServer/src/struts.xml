@@ -80,6 +80,15 @@
 				<param name="root">matchedOrders</param>
 	        </result>
 	        
+	        <result name="commitSuccess" type="json">
+	        	<param name="excludeNullProperties">true</param>  
+				<param name="includeProperties">result</param>
+	        </result>
+	        
+	        <result name="Fail" type="json">
+				<param name="includeProperties">result, detail</param>  
+	        </result>
+	        
 		</action>
 
 	</package>

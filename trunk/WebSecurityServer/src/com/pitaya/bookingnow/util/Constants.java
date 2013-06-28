@@ -1,7 +1,7 @@
 package com.pitaya.bookingnow.util;
 
 public class Constants {
-
+	
 	//order and food status
 	public static final int ALL = -1;
 	public static final int NEW = 0;
@@ -12,6 +12,9 @@ public class Constants {
 	public static final int COOKING = WAITING + 1;
 	public static final int UNAVAILABLE = COOKING + 1;
 	public static final int AVAILABLE = UNAVAILABLE + 1;
+	
+	public static final int SUCCESS = 50;
+	public static final int FAIL = SUCCESS + 1;
 	
 	//table status
 	public static final int TABLE_STATUS = 100;

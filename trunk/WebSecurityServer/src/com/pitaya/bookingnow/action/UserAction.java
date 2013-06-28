@@ -10,7 +10,7 @@ import com.pitaya.bookingnow.entity.security.User;
 import com.pitaya.bookingnow.service.security.IUserService;
 
 
-public class UserAction extends ActionSupport{
+public class UserAction extends BaseAction{
 	private static final long serialVersionUID = 1921350238570284375L;
 	
 	private IUserService userService;
