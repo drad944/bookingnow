@@ -2,7 +2,8 @@ package com.pitaya.bookingnow.util;
 
 public class Constants {
 
-	//order and food status	
+	//order and food status
+	public static final int ALL = -1;
 	public static final int NEW = 0;
 	public static final int COMMITED = NEW + 1;
 	public static final int PAYING = COMMITED + 1;
