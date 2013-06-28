@@ -11,22 +11,24 @@
     <result column="category" property="category" jdbcType="INTEGER" />
     <result column="description" property="description" jdbcType="VARCHAR" />
     
-    <association property="picture" javaType="Food_Picture">
-	    <id column="id" property="id" jdbcType="BIGINT" />
-		<result column="name" property="name" jdbcType="VARCHAR" />
-		<result column="last_modify_time" property="last_modify_time" jdbcType="TIMESTAMP" />
-		<result column="enabled" property="enabled" jdbcType="BIT" />
-		<result column="big_image" property="big_image" jdbcType="LONGVARBINARY" />
-		<result column="small_image" property="small_image" jdbcType="LONGVARBINARY" />
-    </association>
+    <association property="picture" javaType="com.pitaya.bookingnow.entity.Food_Picture">
+	  	<id column="p_id" property="id" jdbcType="BIGINT" />
+		<result column="p_name" property="name" jdbcType="VARCHAR" />
+		<result column="p_last_modify_time" property="last_modify_time" jdbcType="TIMESTAMP" />
+		<result column="p_enabled" property="enabled" jdbcType="BIT" />
+		<result column="p_big_image" property="big_image" jdbcType="LONGVARBINARY" />
+		<result column="p_small_image" property="small_image" jdbcType="LONGVARBINARY" />
+	</association>
+    
   </resultMap>
   
+  
   <sql id="Base_Column_List" >
-    A.id as "id", A.picture_id as "picture_id", A.name as "name", A.version as "version", A.period as "period", A.price as "price", A.category as "category", A.description as "description"
+    A.id as id, A.picture_id as picture_id, A.name as name, A.version as version, A.period as period, A.price as price, A.category as category, A.description as description
   </sql>
   
   <sql id="Food_Picture_Column_List">
-		B.id as "picture.id", B.name as "picture.name", B.last_modify_time as "picture.last_modify_time", B.enabled as "picture.enabled",B.big_image as "picture.big_image", B.small_image as "picture.small_image"
+		B.id as p_id, B.name as p_name, B.last_modify_time as p_last_modify_time, B.enabled as p_enabled,B.big_image as p_big_image, B.small_image as p_small_image
 	</sql>
   
   
@@ -34,14 +36,51 @@
     select 
     <include refid="Base_Column_List" />
     ,
-    <include refid="Base_Column_List" />
-    from pitaya_food A left outer join pitaya_food_picture B on A.picture_id = B.id
-    where A.id = #{id,jdbcType=BIGINT}
+    <include refid="Food_Picture_Column_List" />
+    from pitaya_food A 
+    	,pitaya_food_picture B
+    where A.picture_id = B.id and A.id = #{id,jdbcType=BIGINT}
   </select>
+  
+  
+  <select id="selectFoods" resultMap="BaseResultMap" parameterType="Food" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Food_Picture_Column_List" />
+    from pitaya_food A 
+    	,pitaya_food_picture B
+    
+    <where>
+        A.picture_id = B.id
+      <if test="name != null" >
+        and A.name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="version != null" >
+        and A.version = #{version,jdbcType=INTEGER}
+      </if>
+      <if test="period != null" >
+        and A.period = #{period,jdbcType=TIMESTAMP}
+      </if>
+      <if test="price != null" >
+        and A.price = #{price,jdbcType=DECIMAL}
+      </if>
+      <if test="category != null" >
+        and A.category = #{category,jdbcType=INTEGER}
+      </if>
+      <if test="description != null" >
+        and A.description = #{description,jdbcType=VARCHAR}
+      </if>
+    </where>
+    
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from pitaya_food
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  
+  
   <insert id="insert" parameterType="com.pitaya.bookingnow.entity.Food" >
     <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
@@ -53,6 +92,7 @@
       #{period,jdbcType=TIMESTAMP}, #{price,jdbcType=DECIMAL}, #{category,jdbcType=INTEGER}, 
       #{description,jdbcType=VARCHAR})
   </insert>
+  
   <insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Food" >
     <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
@@ -105,6 +145,7 @@
       </if>
     </trim>
   </insert>
+  
   <update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Food" >
     update pitaya_food
     <set >

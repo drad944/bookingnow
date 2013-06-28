@@ -1,5 +1,7 @@
 package com.pitaya.bookingnow.dao;
 
+import java.util.Date;
+
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.Test;
@@ -24,6 +26,34 @@ public class TestFood_PictureMapper {
     		System.out.println("name : " + newFood_Picture.getName());
     		System.out.println("Last_modify_time : " + newFood_Picture.getLast_modify_time());
     		System.out.println("Small_image : " + newFood_Picture.getSmall_image());
+    		
+    		
+    	}finally { 
+            sqlSession.close(); 
+        } 
+    }
+    
+    @Test 
+    public void testInsertSelective() { 
+    	SqlSession sqlSession = sqlSessionFactory.openSession();
+    	try { 
+    		
+    		Food_PictureMapper food_PictureMapper = sqlSession.getMapper(Food_PictureMapper.class);
+    		Food_Picture picture = new Food_Picture();
+    		picture.setEnabled(true);
+    		picture.setLast_modify_time(new Date());
+    		picture.setName("回锅炒肉");
+    		picture.setSmall_image(new byte[]{1,2,3});
+    		food_PictureMapper.insertSelective(picture);
+    		sqlSession.commit();
+    		
+    		Food_Picture tempPicture = food_PictureMapper.selectByPrimaryKey(picture.getId());
+    		
+    		if(picture != null) {
+    			System.out.println("id : " + tempPicture.getId());
+        		System.out.println("name : " + tempPicture.getName());
+        		System.out.println("Last_modify_time : " + tempPicture.getLast_modify_time());
+    		}
     		
     		
     	}finally { 

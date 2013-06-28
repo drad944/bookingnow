@@ -19,12 +19,12 @@ public class Food_PictureService implements IFood_PictureService{
 	}
 
 	@Override
-	public boolean add(Food_Picture food_picture) {
+	public int add(Food_Picture food_picture) {
 		int result = food_pictureDao.insertSelective(food_picture);
 		if (result > 0) {
-			return true;
+			return result;
 		}
-		return false;
+		return result;
 	}
 
 	@Override

@@ -57,10 +57,11 @@
 		delete from pitaya_food_picture
 		where id = #{id,jdbcType=BIGINT}
 	</delete>
-	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Food_Picture">
+	
+	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Food_Picture" useGeneratedKeys="true">
 		<selectKey resultType="java.lang.Long" keyProperty="id"
 			order="AFTER">
-			SELECT LAST_INSERT_ID()
+			SELECT LAST_INSERT_ID() as id
 		</selectKey>
 		insert into pitaya_food_picture (name, last_modify_time, enabled,
 		big_image, small_image)
@@ -68,10 +69,10 @@
 		#{enabled,jdbcType=BIT},
 		#{big_image,jdbcType=LONGVARBINARY}, #{small_image,jdbcType=LONGVARBINARY})
 	</insert>
-	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Food_Picture">
-		<selectKey resultType="java.lang.Long" keyProperty="id"
-			order="AFTER">
-			SELECT LAST_INSERT_ID()
+	
+	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Food_Picture" useGeneratedKeys="true" flushCache="true">
+		<selectKey resultType="java.lang.Long" keyProperty="id"	order="AFTER">
+			SELECT LAST_INSERT_ID() as id
 		</selectKey>
 		insert into pitaya_food_picture
 		<trim prefix="(" suffix=")" suffixOverrides=",">
