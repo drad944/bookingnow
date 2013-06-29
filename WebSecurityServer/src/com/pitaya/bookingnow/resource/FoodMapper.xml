@@ -49,6 +49,18 @@
     where A.picture_id = B.id and A.id = #{id,jdbcType=BIGINT}
   </select>
   
+  
+  
+  <select id="selectAllFoods" resultMap="BaseResultMap" >
+    select 
+    <include refid="Aliase_Base_Column_List" />
+    ,
+    <include refid="Food_Picture_Column_List" />
+    from pitaya_food A 
+    left outer join pitaya_food_picture B on 
+    A.picture_id = B.id
+  </select>
+  
    <select id="selectFoods" resultMap="BaseResultMap" parameterType="Food" >
     select 
     <include refid="Aliase_Base_Column_List" />
