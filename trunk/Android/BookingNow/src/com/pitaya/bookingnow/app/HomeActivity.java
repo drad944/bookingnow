@@ -112,6 +112,9 @@ public class HomeActivity extends FragmentActivity implements LoaderManager.Load
 			} else {
 				MessageService.initService("192.168.0.102", 19191);
 			}
+		} else {
+			Log.i(TAG, "The service is ready");
+			this.checkMenuUpdate();
 		}
 	}
 	
@@ -144,13 +147,12 @@ public class HomeActivity extends FragmentActivity implements LoaderManager.Load
 			LinearLayout menuitems = (LinearLayout)(leftmenu.findViewById(R.id.leftmenu));
 			if(this.role == null){
 				for(int i=0; i < 3; i++){
-					final int index = i;
 					TextView menuitem = new TextView(this);
 					menuitem.setTextColor(android.graphics.Color.WHITE);
 					menuitem.setTextSize(25);
 					menuitem.setGravity(Gravity.CENTER);
 					
-					switch(index){
+					switch(i){
 						case 0:
 							menuitem.setText("菜单");
 							menuitem.setOnClickListener(new OnClickListener(){
@@ -198,6 +200,11 @@ public class HomeActivity extends FragmentActivity implements LoaderManager.Load
 				contentViews.add(orderview);
 				FoodMenuContentView menucontentview = new FoodMenuContentView("menu", this, homecontent);
 				contentViews.add(menucontentview);
+			}
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 			homecontent.setMenu(leftmenu);
 		}
@@ -266,7 +273,6 @@ public class HomeActivity extends FragmentActivity implements LoaderManager.Load
 			Log.i("HomeActivity", "Success to login");
 			this.role = message.getDetail();
 			this.loginDialog.dismiss();
-			//updateHomeContent(null);
 		} else if(message.getResult() == Constants.FAIL){
 			this.showLoginDialog(message.getDetail());
 		}
@@ -312,29 +318,29 @@ public class HomeActivity extends FragmentActivity implements LoaderManager.Load
 			updateProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL|ProgressDialog.THEME_HOLO_DARK);
 			updateProgressDialog.setTitle("菜单更新中");
 			updateProgressDialog.setProgress(total);
-			updateProgressDialog.setCancelable(false);
+			updateProgressDialog.setCancelable(true);
 			updateProgressDialog.show();
-			FoodService.updateMenuFoods(this, foodsToUpdate, new ProgressHandler(total){
-
-				@Override
-				public void onSuccess(String response){
-					Log.i(TAG, "Success to update food " + this.index);
-					updateProgressDialog.setProgress(this.index);
-				}
-				
-				@Override
-				public void onFail(int statuscode){
-					Log.w(TAG, "Fail to update food " + this.index +", status code  is " + statuscode);
-					updateProgressDialog.setProgress(this.index);
-				}
-				
-				@Override
-				public void onOtherFail(String detail){
-					Log.w(TAG, "Fail to update food " + this.index + ", detail is " + detail);
-					updateProgressDialog.setProgress(this.index);
-				}
-				
-			});
+//			FoodService.updateMenuFoods(this, foodsToUpdate, new ProgressHandler(total){
+//
+//				@Override
+//				public void onSuccess(String response){
+//					Log.i(TAG, "Success to update food " + this.index);
+//					updateProgressDialog.setProgress(this.index);
+//				}
+//				
+//				@Override
+//				public void onFail(int statuscode){
+//					Log.w(TAG, "Fail to update food " + this.index +", status code  is " + statuscode);
+//					updateProgressDialog.setProgress(this.index);
+//				}
+//				
+//				@Override
+//				public void onOtherFail(String detail){
+//					Log.w(TAG, "Fail to update food " + this.index + ", detail is " + detail);
+//					updateProgressDialog.setProgress(this.index);
+//				}
+//				
+//			});
 		} else {
 			Log.i(TAG, "The menu is latest.");
 		}

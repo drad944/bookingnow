@@ -38,4 +38,9 @@ public class Constants {
 	public static final int USER_MALE = USER_SEX + 1;
 	public static final int USER_FAMALE = USER_MALE + 1;
 	public static final int USER_OTHER = USER_FAMALE + 1;
+	
+	public static final int KITCHEN_ROLE = 1300;
+	public static final int WAITER_ROLE = KITCHEN_ROLE + 1;
+	public static final int WELCOME_ROLE = WAITER_ROLE + 1;
+	public static final int CASH_ROLE = WELCOME_ROLE + 1;
 }

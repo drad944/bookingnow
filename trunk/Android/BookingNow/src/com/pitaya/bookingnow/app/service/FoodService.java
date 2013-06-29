@@ -75,7 +75,7 @@ public class FoodService {
 		 }
 		 try {
 			jparam.put("clientMenuFoods", check_foods);
-			HttpService.post("checkUpdateFood.action", new StringEntity(jparam.toString()), callback);
+			HttpService.post("updateMenuFood.action", new StringEntity(jparam.toString()), callback);
 		 } catch (JSONException e) {
 			e.printStackTrace();
 		 } catch (UnsupportedEncodingException e) {
@@ -89,9 +89,9 @@ public class FoodService {
 		try {
 			jfood.put("id", Long.parseLong(food.getKey()));
 			jparam.put("food", jfood);
-			HttpService.downloadFile("getSmallImageOfFood", context, 
+			HttpService.downloadFile("getSmallFood_Picture.action", context, 
 					food.getSmallImageName(), new StringEntity(jparam.toString()), handler);
-			HttpService.downloadFile("getLargeImageOfFood", context, 
+			HttpService.downloadFile("getLargeFood_Picture.action", context, 
 					food.getLargeImageName(), new StringEntity(jparam.toString()), handler);
 			
 		} catch (NumberFormatException e) {

@@ -177,6 +177,8 @@ public class Food implements Serializable, IJSONTransition{
 			this.isRecommended = jfood.getInt("recommendation") > 0;
 			this.status = jfood.getInt("status");
 			this.version = jfood.getLong("version");
+			this.image_s_name = this.key + "_s";
+			this.image_l_name = this.key + "_l";
 			if(jfood.getJSONObject("picture") != null){
 				this.image_version = jfood.getJSONObject("picture").getLong("version");
 			}
