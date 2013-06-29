@@ -63,6 +63,19 @@
     	</init-param>
        
     	<load-on-startup>1</load-on-startup>
+    	
+    	
+	</servlet>
+	
+	<servlet>
+		<servlet-name>message service servlet</servlet-name>
+   	 	<servlet-class>com.pitaya.bookingnow.servlet.InitMessageServiceServlet</servlet-class>
+    	<init-param>
+        	<param-name>port</param-name>
+        	<param-value>19191</param-value>
+    	</init-param>
+       
+    	<load-on-startup>1</load-on-startup>
 	</servlet>
 	
 	<filter>
