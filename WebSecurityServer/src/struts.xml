@@ -90,6 +90,19 @@
 	        </result>
 	        
 		</action>
+		
+		<action name="*Food" class="com.pitaya.bookingnow.action.FoodAction" method="{1}Food">
+	        
+	        <result name="updateMenuSuccess" type="json">
+	        	<param name="excludeNullProperties">true</param>
+				<param name="root">newMenuFood</param>
+	        </result>
+	        
+	        <result name="Fail" type="json">
+				<param name="includeProperties">result, detail</param>  
+	        </result>
+	        
+		</action>
 
 	</package>
 </struts>   

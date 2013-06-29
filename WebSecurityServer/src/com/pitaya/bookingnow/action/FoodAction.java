@@ -1,10 +1,13 @@
 package com.pitaya.bookingnow.action;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.service.IFoodService;
+import com.pitaya.bookingnow.util.Constants;
 
 public class FoodAction extends BaseAction{
 	private static final long serialVersionUID = -675955597630577906L;
@@ -80,13 +83,33 @@ public class FoodAction extends BaseAction{
 	}
 	
 	public String updateMenuFood() {
-		if (clientMenuFoods != null && clientMenuFoods.size() > 0) {
-			foodService.updateMenuFoods(clientMenuFoods);
-			
-			return "updateSuccess";
+		if (clientMenuFoods != null) {
+			newMenuFood = foodService.updateMenuFoods(clientMenuFoods);
+			return "updateMenuSuccess";
 		}
-		
-		return "updateFail";
+		this.setResult(Constants.FAIL);
+		this.setDetail("updateMenuFood: Can't get menu foods parameters");
+		return "Fail";
+	}
+	
+	public InputStream getSmallImageOfFood(){
+		if(this.food != null && food.getId() != null){
+			//do get file stream
+			return null;
+		} else {
+			String resultStr = "{ result : "+Constants.FAIL+", detail: \"Can't get food parameter or the id is missing\"}";
+			return new ByteArrayInputStream(resultStr.getBytes());
+		}
+	}
+	
+	public InputStream getLargeImageOfFood(){
+		if(this.food != null && food.getId() != null){
+			//do get file stream
+			return null;
+		} else {
+			String resultStr = "{ result : "+Constants.FAIL+", detail: \"Can't get food parameter or the id is missing\"}";
+			return new ByteArrayInputStream(resultStr.getBytes());
+		}
 	}
 	
 }
