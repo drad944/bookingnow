@@ -1,6 +1,23 @@
 package com.pitaya.bookingnow.app.model;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -11,10 +28,14 @@ import android.widget.Toast;
 import com.pitaya.bookingnow.app.*;
 import com.pitaya.bookingnow.app.model.Ticket.OnTicketStatusChangedListener;
 import com.pitaya.bookingnow.app.service.DataService;
+import com.pitaya.bookingnow.app.service.HttpService;
 import com.pitaya.bookingnow.app.views.TicketDetailFragment;
+import com.pitaya.bookingnow.message.BaseResultMessage;
 import com.pitaya.bookinnow.app.util.ToastUtil;
 
 public class TicketDetailFragmentAdapter extends TicketDetailAdapter{
+	
+	private static final String TAG = "TicketDetailFragmentAdapter";
 	
 	public TicketDetailFragmentAdapter(Context c, View view, Ticket ticket)
 			throws IllegalArgumentException, IllegalAccessException {
@@ -46,10 +67,37 @@ public class TicketDetailFragmentAdapter extends TicketDetailAdapter{
 					@Override
 					public void onClick(View v) {
 						//TODO commit the ticket and remove it from local database
-						//DataService.removeTicket(mContext, mTicket.getTicketKey());
-						ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
-						mTicket.markDirty(false);
-						mTicket.setStatus(Ticket.COMMITED);
+						JSONObject orderDetail = new JSONObject();
+						JSONObject orderJson = new JSONObject();
+						try {
+							orderDetail.put("order_id", "123123123");
+							orderJson.put("order", orderDetail);
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+						HttpService.setUrl("http://192.168.0.102:18080/Booking/commitOrder.action");
+						try {
+							HttpService.post(new StringEntity(orderJson.toString()), new Handler(){
+							    
+								@Override  
+							    public void handleMessage(Message msg) {
+							        super.handleMessage(msg);
+							        Bundle bundle = msg.getData();  
+							        String result =bundle.getString("result");
+									try {
+										Log.i(TAG, result);
+									} catch (ParseException e) {
+										e.printStackTrace();
+									}
+									//DataService.removeTicket(mContext, mTicket.getTicketKey());
+									ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
+									mTicket.markDirty(false);
+									mTicket.setStatus(Ticket.COMMITED);
+							    }
+							});
+						} catch (UnsupportedEncodingException e) {
+							e.printStackTrace();
+						}
 					}
 					
 				});
