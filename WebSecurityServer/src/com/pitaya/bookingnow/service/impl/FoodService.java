@@ -106,32 +106,47 @@ public class FoodService implements IFoodService{
 		List<Food> allDBFoods = foodDao.selectAllFoods();
 
 		
-		for (int i = 0; i < allDBFoods.size(); i++) {
-			Food DBFood = allDBFoods.get(i);
-			
-			 
-			for (int j = 0; j < clientFoods.size(); j++) {
-				Food clientFood = clientFoods.get(j);
-				
-				if(clientFood.getId().equals(DBFood)) {
-					//find the same id of food
-					if (DBFood.getVersion().equals(clientFood.getVersion())) {
-						//version is the same,do nothing
-						allDBFoods.remove(i);
-						clientFoods.remove(j);
-						break;
-					}else if (DBFood.getVersion() > clientFood.getVersion()) {
-						//get need update food
+		for (int j = clientFoods.size() - 1; j >= 0; j--){
+			Food clientFood = clientFoods.get(j);
+			for(int i = allDBFoods.size()-1; i >= 0; i--){
+				Food DBFood = allDBFoods.get(i);
+				if(DBFood.getId().equals(clientFood.getId())){
+					if(DBFood.getVersion() > clientFood.getVersion()){
 						updateFoods.add(DBFood);
-						allDBFoods.remove(i);
-						clientFoods.remove(j);
-						break;
 					}
+					allDBFoods.remove(i);
+					clientFoods.remove(j);
+					break;
 				}
-				
-				
 			}
 		}
+		
+//		for (int i = 0; i < allDBFoods.size(); i++) {
+//			Food DBFood = allDBFoods.get(i);
+//			
+//			 
+//			for (int j = 0; j < clientFoods.size(); j++) {
+//				Food clientFood = clientFoods.get(j);
+//				
+//				if(clientFood.getId().equals(DBFood.getId())) {
+//					//find the same id of food
+//					if (DBFood.getVersion().equals(clientFood.getVersion())) {
+//						//version is the same,do nothing
+//						allDBFoods.remove(i);
+//						clientFoods.remove(j);
+//						break;
+//					} else if (DBFood.getVersion() > clientFood.getVersion()) {
+//						//get need update food
+//						updateFoods.add(DBFood);
+//						allDBFoods.remove(i);
+//						clientFoods.remove(j);
+//						break;
+//					}
+//				}
+//				
+//				
+//			}
+//		}
 		//the remain in allDBFoods should be of new food 
 		newFoods = allDBFoods;
 		
