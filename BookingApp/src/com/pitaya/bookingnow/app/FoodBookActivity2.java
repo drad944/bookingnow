@@ -71,7 +71,7 @@ public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderC
 			public boolean onTouch(View v, MotionEvent event) {
 			    InputMethodManager imm = (InputMethodManager)FoodBookActivity2.this.getSystemService(Context.INPUT_METHOD_SERVICE); 
         	    if(imm.isActive()){
-        	    	imm.hideSoftInputFromWindow(flipView.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+        	    	imm.hideSoftInputFromWindow(flipView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         	    }
 				return false;
 			}
@@ -81,69 +81,31 @@ public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderC
     }
     
     private void updateCurrentFoodInfo(){
-    	if(mCurrentFood == null)
-    		return;
-    	if(mTicket == null){
-    		setOperationsViewGone();
+    	if(mCurrentFood == null){
     		return;
     	}
-    	mQuantityText.clearFocus();
     	mFoodNameText.setText(mCurrentFood.getName());
     	mPriceText.setText(String.valueOf(mCurrentFood.getPrice())+"元/份");
-    	if(mTextWatcher != null){
-    		mQuantityText.removeTextChangedListener(mTextWatcher);
-	    } else {
-	    	mTextWatcher = new TextWatcher(){
-	        	
-				@Override
-				public void afterTextChanged(Editable text) {
-					int quantity = 0;
-					try{
-						quantity = Integer.parseInt(text.toString());
-					} catch(Exception e){
-						Log.e("FoodMenuView", "Fail to parse food quantity");
-						quantity = 0;
-					}
-					if(mCurrentFood != null){
-						Ticket.Food bookingfood = mTicket.new Food(mCurrentFood.getKey(), mCurrentFood.getName(), mCurrentFood.getPrice());
-						if(mTicket.getStatus() == Ticket.NEW){
-							DataService.updateTicketDetails(FoodBookActivity2.this, mTicket, bookingfood, quantity);
-						}
-					}
-				}
-
-				@Override
-				public void beforeTextChanged(CharSequence text, int arg1,
-						int arg2, int arg3) {
-					mQuantityText.setSelection(text.length());
-				}
-
-				@Override
-				public void onTextChanged(CharSequence text, int arg1, int arg2, int arg3) {
-				}
-	        	
-	        };
-	    }
-    	mQuantityText.addTextChangedListener(mTextWatcher);
+    	if(mTicket == null){
+    		mQuantityText.setVisibility(View.GONE);
+     		((Button)mFoodStepper.findViewById(R.id.addbtn)).setVisibility(View.GONE);
+     		((Button)mFoodStepper.findViewById(R.id.minusbtn)).setVisibility(View.GONE);
+    	} else {
+            boolean hasFound = false;
+            for(Entry<com.pitaya.bookingnow.app.model.Ticket.Food, Integer> entry : mTicket.getFoods().entrySet()){
+            	if(entry.getKey().getKey().equals(mCurrentFood.getKey())){
+            		 mQuantityText.setText(String.valueOf(entry.getValue()));
+            		 hasFound = true;
+            		 break;
+            	}
+            }
+            if(!hasFound){
+            	mQuantityText.setText("0");
+            }
+    	}
     	
-        boolean hasFound = false;
-        for(Entry<com.pitaya.bookingnow.app.model.Ticket.Food, Integer> entry : mTicket.getFoods().entrySet()){
-        	if(entry.getKey().getKey().equals(mCurrentFood.getKey())){
-        		 mQuantityText.setText(String.valueOf(entry.getValue()));
-        		 hasFound = true;
-        		 break;
-        	}
-        }
-        if(!hasFound){
-        	mQuantityText.setText("0");
-        }
     }
 
-    private void setOperationsViewGone(){
-    	mFoodStepper.setVisibility(View.GONE);
-    	mPriceText.setVisibility(View.VISIBLE);
-    }
-    
     private void setHomeContent(){
     	setContentView(R.layout.foodbooklayout);
     	RelativeLayout fooditemRL = (RelativeLayout)findViewById(R.id.foodbookitem);
@@ -159,9 +121,40 @@ public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderC
         
         RelativeLayout fsRL  = (RelativeLayout) mFoodStepper.findViewById(R.id.food_stepper);
 	    mPriceText = (TextView) fsRL.findViewById(R.id.price);
-	    
 	    mQuantityText = (EditText)fsRL.findViewById(R.id.quantity);
-	    mQuantityText.clearFocus();
+	    
+	    mTextWatcher = new TextWatcher(){
+        	
+			@Override
+			public void afterTextChanged(Editable text) {
+				int quantity = 0;
+				try{
+					quantity = Integer.parseInt(text.toString());
+				} catch(Exception e){
+					Log.e("FoodMenuView", "Fail to parse food quantity");
+					quantity = 0;
+				}
+				if(mCurrentFood != null){
+					Ticket.Food bookingfood = mTicket.new Food(mCurrentFood.getKey(), mCurrentFood.getName(), mCurrentFood.getPrice());
+					if(mTicket.getStatus() == Ticket.NEW){
+						DataService.updateTicketDetails(FoodBookActivity2.this, mTicket, bookingfood, quantity);
+					}
+				}
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence text, int arg1,
+					int arg2, int arg3) {
+				mQuantityText.setSelection(text.length());
+			}
+
+			@Override
+			public void onTextChanged(CharSequence text, int arg1, int arg2, int arg3) {
+			}
+        	
+        };
+        
+        mQuantityText.addTextChangedListener(mTextWatcher);
 	    
         ((Button)fsRL.findViewById(R.id.minusbtn)).setOnClickListener(new OnClickListener(){
         	
