@@ -120,7 +120,7 @@ public class FoodService implements IFoodService{
 						allDBFoods.remove(i);
 						clientFoods.remove(j);
 						break;
-					}else if (DBFood.getVersion() > clientFoods.get(i).getVersion()) {
+					}else if (DBFood.getVersion() > clientFood.getVersion()) {
 						//get need update food
 						updateFoods.add(DBFood);
 						allDBFoods.remove(i);
