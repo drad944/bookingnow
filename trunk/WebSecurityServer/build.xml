@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="avatar" basedir="." default="deploy">
+<project name="Booking" basedir="." default="deploy">
 	<property file="${basedir}/build.properties" />
 	
 	<property name="webapp.dir" value="${deploy.dir}" />	
