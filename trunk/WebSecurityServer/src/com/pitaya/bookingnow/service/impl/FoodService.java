@@ -100,27 +100,46 @@ public class FoodService implements IFoodService{
 	public Map<String, List<Food>> updateMenuFoods(List<Food> clientFoods) {
 		Map<String, List<Food>> newMenuFoods = new HashMap<String, List<Food>>();
 		
-		List<Food> newFoods = new ArrayList<Food>();
-		List<Food> deleteFoods = new ArrayList<Food>();
+		List<Food> newFoods = null;
+		List<Food> deleteFoods = null;
 		List<Food> updateFoods = new ArrayList<Food>();
-		List<Food> allDBFoods = new ArrayList<Food>();
+		List<Food> allDBFoods = foodDao.selectAllFoods();
+
 		
-		for (int i = 0; i < clientFoods.size(); i++) {
-			Food clientFood = clientFoods.get(i);
-			if(clientFood.getId() != null) {
-				Food databaseFood = foodDao.selectByPrimaryKey(clientFood.getId());
-				if (databaseFood != null) {
-					//check food between clientfood and databasefood
-					if (databaseFood.getVersion() > clientFood.getVersion()) {
-						
+		for (int i = 0; i < allDBFoods.size(); i++) {
+			Food DBFood = clientFoods.get(i);
+			
+			 
+			for (int j = 0; j < clientFoods.size(); j++) {
+				Food clientFood = clientFoods.get(j);
+				
+				if(clientFood.getId().equals(DBFood)) {
+					//find the same id of food
+					if (DBFood.getVersion().equals(clientFood.getVersion())) {
+						//version is the same,do nothing
+						allDBFoods.remove(i);
+						clientFoods.remove(j);
+						break;
+					}else if (DBFood.getVersion() > clientFoods.get(i).getVersion()) {
+						//get need update food
+						updateFoods.add(DBFood);
+						allDBFoods.remove(i);
+						clientFoods.remove(j);
+						break;
 					}
-				}else {
-					//can not find in db,delete it
-					deleteFoods.add(clientFood);
 				}
+				
+				
 			}
 		}
+		//the remain in allDBFoods should be of new food 
+		newFoods = allDBFoods;
 		
+		//the remain in clientFoods should be of delete food
+		deleteFoods = clientFoods;
+		newMenuFoods.put("new", newFoods);
+		newMenuFoods.put("update", updateFoods);
+		newMenuFoods.put("delete", deleteFoods);
 		
 		return newMenuFoods;
 	}
