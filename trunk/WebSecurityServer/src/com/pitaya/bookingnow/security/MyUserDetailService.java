@@ -52,7 +52,7 @@ public class MyUserDetailService implements UserDetailsService {
         
         Collection<GrantedAuthority> auths = new ArrayList<GrantedAuthority>();
         //List<String> list = userDao.getAuthoritiesByUsername(username);
-        List<String> list = new ArrayList<>();
+        List<String> list = new ArrayList<String>();
         list.add("ROLE_ADMIN");
         list.add("ROLE_USER");
         
