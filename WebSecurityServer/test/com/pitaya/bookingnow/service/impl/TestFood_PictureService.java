@@ -1,6 +1,12 @@
 package com.pitaya.bookingnow.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -41,4 +47,45 @@ public class TestFood_PictureService {
 		System.out.println(result);
 		
 	}
+	
+	@Test
+	public void update() {
+		List<Food_Picture> pictures = food_pictureService.searchAllFood_Pictures();
+		
+		
+		for (int i = 0; i < pictures.size(); i++) {
+			try {
+				Food_Picture newPicture = pictures.get(i);
+				
+				File file = new File("/WebContent/images/Small/" + (i + 1) + ".png");
+				FileInputStream fis = new FileInputStream(file);
+				
+				byte[] buffer = new byte[1024];
+				byte[] pictureImage = new byte[]{};
+				
+				int len = 0;
+				int startIndex = 0;
+				while((len = fis.read(buffer)) > 0) {
+					
+					System.arraycopy(buffer, 0, pictureImage, startIndex, len);
+					startIndex = startIndex + len;
+				}
+				fis.close();
+				
+				
+				newPicture.setSmall_image(pictureImage);
+				food_pictureService.modify(newPicture);
+			}catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		
+		System.out.println("");
+		
+	}
+	
 }

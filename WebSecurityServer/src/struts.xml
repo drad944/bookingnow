@@ -10,6 +10,10 @@
 	<constant name="struts.configuration.xmlreload" value="true"/>
 	<constant name="struts.devMode" value="true"/>
 	
+	<!-- set user common-fileUpload parser  -->
+	<constant name="struts.multipart.parser" value="jakarta"></constant>
+	<!-- set one time of file upload size  -->
+	<constant name="struts.multipart.maxSize" value="104857600"/>
 	<!-- 
 	<constant name="struts.objectFactory" value="spring "></constant>
 	 -->
@@ -30,6 +34,38 @@
 			<result name="login">/login.jsp</result>
 			<result name="error">/page/error.jsp</result>
 		</global-results>
+		
+		<!-- 文件上传和下载控制器 ，class 引用spring 的注入 -->
+	        <action name="*Food_Picture" class="Food_PictureAction" method="{1}Food_Picture">
+
+	        	
+				<result name="uploadSuccess" type="redirectAction">
+				    showMyFile.action
+				</result>
+				
+				
+				<result name="downloadSuccess" type="stream">
+				
+					<!-- 下载文件的类型 ,这里表示无限制
+					<param name="contentType">application/octet-stream;charset=GBK</param>
+					-->
+					<param name="contentType">application/octet-stream;charset="iso-8859-1"</param>
+					
+					<!-- 下载文件的长度 -->
+					<param name="contentLength">${realDownloadFile.length()}</param>
+					
+					<!-- inputName 流对象名 —— 比如这里写targetFile，它就会自动去找Action中的getTargetFile方法 -->
+					<param name="inputName">downloadFileStream</param>
+					
+					<!-- contentDisposition 使用经过转码的文件名作为下载文件名 —— 默认
+					格式是attachment;filename="${fileName}",将调用该Action中的getDownloadFileName方法。 -->
+					<param name="contentDisposition">attachment;filename="${downloadFileName}"</param>
+					
+					<!-- 设置下载缓冲大小 -->
+					<param name="bufferSize">4096</param>
+				</result>
+					
+	        </action>
 
 		<action name="*User" class="com.pitaya.bookingnow.action.UserAction" method="{1}User">
 			<result name="loginFail" type="dispatcher">

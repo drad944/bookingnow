@@ -2,6 +2,7 @@ package com.pitaya.bookingnow.dao;
 
 import java.util.List;
 
+import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Food_Picture;
 
 public interface Food_PictureMapper {
@@ -20,4 +21,8 @@ public interface Food_PictureMapper {
     int updateByPrimaryKey(Food_Picture picture);
     
     List<Food_Picture> searchFood_Pictures(Food_Picture picture);
+    
+    Food_Picture selectByFoodId(Long foodId);
+    
+    List<Food_Picture> searchAllFood_Pictures();
 }

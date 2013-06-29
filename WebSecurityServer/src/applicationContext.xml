@@ -80,6 +80,10 @@
 		<property name="food_pictureDao" ref="food_pictureDao" />
 	</bean>
 	
+	<bean id="food_pictureAction" class="com.pitaya.bookingnow.action.Food_PictureAction" scope="prototype">
+		<property name="food_pictureService" ref="food_pictureService" />
+	</bean>
+	
 	
 	<bean id="orderDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.OrderMapper" />   
