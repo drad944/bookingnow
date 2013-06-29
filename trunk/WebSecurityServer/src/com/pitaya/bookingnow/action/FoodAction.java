@@ -92,24 +92,6 @@ public class FoodAction extends BaseAction{
 		return "Fail";
 	}
 	
-	public InputStream getSmallImageOfFood(){
-		if(this.food != null && food.getId() != null){
-			//do get file stream
-			return null;
-		} else {
-			String resultStr = "{ result : "+Constants.FAIL+", detail: \"Can't get food parameter or the id is missing\"}";
-			return new ByteArrayInputStream(resultStr.getBytes());
-		}
-	}
 	
-	public InputStream getLargeImageOfFood(){
-		if(this.food != null && food.getId() != null){
-			//do get file stream
-			return null;
-		} else {
-			String resultStr = "{ result : "+Constants.FAIL+", detail: \"Can't get food parameter or the id is missing\"}";
-			return new ByteArrayInputStream(resultStr.getBytes());
-		}
-	}
 	
 }

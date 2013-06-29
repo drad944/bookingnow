@@ -17,5 +17,7 @@ public interface IFood_PictureService {
 	
 	List<Food_Picture> searchFood_Pictures(Food_Picture food_picture);
 	
+	Food_Picture searchPictureByFoodId(Long id);
 	
+	List<Food_Picture> searchAllFood_Pictures();
 }

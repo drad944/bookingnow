@@ -51,5 +51,17 @@ public class Food_PictureService implements IFood_PictureService{
 		return food_pictureDao.searchFood_Pictures(food_picture);
 	}
 
+	@Override
+	public Food_Picture searchPictureByFoodId(Long id) {
+		// TODO Auto-generated method stub
+		return food_pictureDao.selectByFoodId(id);
+	}
+
+	@Override
+	public List<Food_Picture> searchAllFood_Pictures() {
+		// TODO Auto-generated method stub
+		return food_pictureDao.searchAllFood_Pictures();
+	}
+
 
 }
