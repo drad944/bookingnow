@@ -1,7 +1,5 @@
 package com.pitaya.bookingnow.entity;
 
-import java.util.Date;
-
 public class Order_Food_Detail {
     private Long id;
 
@@ -11,7 +9,7 @@ public class Order_Food_Detail {
 
     private Integer preference;
 
-    private Date last_modify_time;
+    private Long last_modify_time;
 
     private Boolean enabled;
 
@@ -51,11 +49,11 @@ public class Order_Food_Detail {
         this.preference = preference;
     }
 
-    public Date getLast_modify_time() {
+    public Long getLast_modify_time() {
         return last_modify_time;
     }
 
-    public void setLast_modify_time(Date last_modify_time) {
+    public void setLast_modify_time(Long last_modify_time) {
         this.last_modify_time = last_modify_time;
     }
 

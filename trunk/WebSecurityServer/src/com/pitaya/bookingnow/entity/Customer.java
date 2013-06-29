@@ -1,7 +1,5 @@
 package com.pitaya.bookingnow.entity;
 
-import java.util.Date;
-
 public class Customer {
     private Long id;
 
@@ -21,19 +19,9 @@ public class Customer {
 
     private String address;
 
-    private Date birthday;
-    
-    private Customer_Picture picture;
+    private Long birthday;
 
-    public Customer_Picture getPicture() {
-		return picture;
-	}
-
-	public void setPicture(Customer_Picture picture) {
-		this.picture = picture;
-	}
-
-	public Long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -105,11 +93,11 @@ public class Customer {
         this.address = address;
     }
 
-    public Date getBirthday() {
+    public Long getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(Long birthday) {
         this.birthday = birthday;
     }
 }

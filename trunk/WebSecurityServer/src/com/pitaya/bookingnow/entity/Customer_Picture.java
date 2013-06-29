@@ -1,13 +1,11 @@
 package com.pitaya.bookingnow.entity;
 
-import java.util.Date;
-
 public class Customer_Picture {
     private Long id;
 
     private String name;
 
-    private Date last_modify_time;
+    private Long last_modify_time;
 
     private Boolean enabled;
 
@@ -29,11 +27,11 @@ public class Customer_Picture {
         this.name = name;
     }
 
-    public Date getLast_modify_time() {
+    public Long getLast_modify_time() {
         return last_modify_time;
     }
 
-    public void setLast_modify_time(Date last_modify_time) {
+    public void setLast_modify_time(Long last_modify_time) {
         this.last_modify_time = last_modify_time;
     }
 

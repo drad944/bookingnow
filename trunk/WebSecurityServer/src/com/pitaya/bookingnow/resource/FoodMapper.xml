@@ -1,27 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.pitaya.bookingnow.dao.FoodMapper" >
-  <resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.Food" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="picture_id" property="picture_id" jdbcType="BIGINT" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="version" property="version" jdbcType="TIMESTAMP" />
-    <result column="period" property="period" jdbcType="TIMESTAMP" />
-    <result column="price" property="price" jdbcType="DECIMAL" />
-    <result column="category" property="category" jdbcType="INTEGER" />
-    <result column="description" property="description" jdbcType="VARCHAR" />
-  
-	<association property="picture" javaType="com.pitaya.bookingnow.entity.Food_Picture">
-	  	<id column="p_id" property="id" jdbcType="BIGINT" />
-		<result column="p_name" property="name" jdbcType="VARCHAR" />
-		<result column="p_version" property="version" jdbcType="TIMESTAMP" />
-		<result column="p_enabled" property="enabled" jdbcType="BIT" />
-		<result column="p_big_image" property="big_image" jdbcType="LONGVARBINARY" />
-		<result column="p_small_image" property="small_image" jdbcType="LONGVARBINARY" />
-	</association>  
-  </resultMap>
-  <sql id="Base_Column_List" >
-    A.id, A.picture_id, A.name, A.version, A.period, A.price, A.category, A.description
+<mapper namespace="com.pitaya.bookingnow.dao.FoodMapper">
+	<resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.Food">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="recommendation" property="recommendation" jdbcType="INTEGER" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="picture_id" property="picture_id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="version" property="version" jdbcType="BIGINT" />
+		<result column="period" property="period" jdbcType="BIGINT" />
+		<result column="price" property="price" jdbcType="DOUBLE" />
+		<result column="category" property="category" jdbcType="VARCHAR" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		
+		<association property="picture" javaType="com.pitaya.bookingnow.entity.Food_Picture">
+			<id column="p_id" property="id" jdbcType="BIGINT" />
+			<result column="p_name" property="name" jdbcType="VARCHAR" />
+			<result column="p_version" property="version" jdbcType="BIGINT" />
+			<result column="p_enabled" property="enabled" jdbcType="BIT" />
+			<result column="p_big_image" property="big_image" jdbcType="LONGVARBINARY" />
+			<result column="p_small_image" property="small_image" jdbcType="LONGVARBINARY" />
+		</association> 
+	
+	</resultMap>
+	
+	
+	<sql id="Base_Column_List">
+		id, recommendation, status, picture_id, name, version, period, price,
+		category, description
+	</sql>
+	
+	<sql id="Aliase_Base_Column_List" >
+    A.id, A.recommendation, A.status, A.picture_id, A.name, A.version, A.period, A.price,
+		A.category, A.description
   </sql>
   
    <sql id="Food_Picture_Column_List">
@@ -30,7 +41,7 @@
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
-    <include refid="Base_Column_List" />
+    <include refid="Aliase_Base_Column_List" />
     ,
     <include refid="Food_Picture_Column_List" />
     from pitaya_food A 
@@ -40,139 +51,177 @@
   
    <select id="selectFoods" resultMap="BaseResultMap" parameterType="Food" >
     select 
-    <include refid="Base_Column_List" />
+    <include refid="Aliase_Base_Column_List" />
     ,
     <include refid="Food_Picture_Column_List" />
     from pitaya_food A 
     	,pitaya_food_picture B
     
     <where>
-    	A.picture_id = B.id
-      <if test="name != null" >
-        and A.name = #{name,jdbcType=VARCHAR}
-      </if>
-      <if test="version != null" >
-        and A.version = #{version,jdbcType=INTEGER}
-      </if>
-      <if test="period != null" >
-        and A.period = #{period,jdbcType=TIMESTAMP}
-      </if>
-      <if test="price != null" >
-        and A.price = #{price,jdbcType=DECIMAL}
-      </if>
-      <if test="category != null" >
-        and A.category = #{category,jdbcType=INTEGER}
-      </if>
-      <if test="description != null" >
-        and A.description = #{description,jdbcType=VARCHAR}
-      </if>
+    			A.picture_id = B.id
+      		<if test="recommendation != null">
+				and recommendation = #{recommendation,jdbcType=INTEGER}
+			</if>
+			<if test="status != null">
+				and status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="picture_id != null">
+				and picture_id = #{picture_id,jdbcType=BIGINT}
+			</if>
+			<if test="name != null">
+				and name = #{name,jdbcType=VARCHAR}
+			</if>
+			<if test="version != null">
+				and version = #{version,jdbcType=BIGINT}
+			</if>
+			<if test="period != null">
+				and period = #{period,jdbcType=BIGINT}
+			</if>
+			<if test="price != null">
+				and price = #{price,jdbcType=DOUBLE}
+			</if>
+			<if test="category != null">
+				and category = #{category,jdbcType=VARCHAR}
+			</if>
+			<if test="description != null">
+				and description = #{description,jdbcType=VARCHAR}
+			</if>
     	
     </where>
     </select>
-  
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from pitaya_food
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.pitaya.bookingnow.entity.Food" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into pitaya_food (picture_id, name, version, 
-      period, price, category, 
-      description)
-    values (#{picture_id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{version,jdbcType=INTEGER}, 
-      #{period,jdbcType=TIMESTAMP}, #{price,jdbcType=DECIMAL}, #{category,jdbcType=INTEGER}, 
-      #{description,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Food" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into pitaya_food
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="picture_id != null" >
-        picture_id,
-      </if>
-      <if test="name != null" >
-        name,
-      </if>
-      <if test="version != null" >
-        version,
-      </if>
-      <if test="period != null" >
-        period,
-      </if>
-      <if test="price != null" >
-        price,
-      </if>
-      <if test="category != null" >
-        category,
-      </if>
-      <if test="description != null" >
-        description,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="picture_id != null" >
-        #{picture_id,jdbcType=BIGINT},
-      </if>
-      <if test="name != null" >
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="version != null" >
-        #{version,jdbcType=INTEGER},
-      </if>
-      <if test="period != null" >
-        #{period,jdbcType=TIMESTAMP},
-      </if>
-      <if test="price != null" >
-        #{price,jdbcType=DECIMAL},
-      </if>
-      <if test="category != null" >
-        #{category,jdbcType=INTEGER},
-      </if>
-      <if test="description != null" >
-        #{description,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Food" >
-    update pitaya_food
-    <set >
-      <if test="picture_id != null" >
-        picture_id = #{picture_id,jdbcType=BIGINT},
-      </if>
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="version != null" >
-        version = #{version,jdbcType=INTEGER},
-      </if>
-      <if test="period != null" >
-        period = #{period,jdbcType=TIMESTAMP},
-      </if>
-      <if test="price != null" >
-        price = #{price,jdbcType=DECIMAL},
-      </if>
-      <if test="category != null" >
-        category = #{category,jdbcType=INTEGER},
-      </if>
-      <if test="description != null" >
-        description = #{description,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Food" >
-    update pitaya_food
-    set picture_id = #{picture_id,jdbcType=BIGINT},
-      name = #{name,jdbcType=VARCHAR},
-      version = #{version,jdbcType=INTEGER},
-      period = #{period,jdbcType=TIMESTAMP},
-      price = #{price,jdbcType=DECIMAL},
-      category = #{category,jdbcType=INTEGER},
-      description = #{description,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+    
+    
+    
+    
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from pitaya_food
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Food">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_food (recommendation, status, picture_id,
+		name, version, period,
+		price, category, description
+		)
+		values (#{recommendation,jdbcType=INTEGER}, #{status,jdbcType=INTEGER},
+		#{picture_id,jdbcType=BIGINT},
+		#{name,jdbcType=VARCHAR}, #{version,jdbcType=BIGINT}, #{period,jdbcType=BIGINT},
+		#{price,jdbcType=DOUBLE}, #{category,jdbcType=VARCHAR},
+		#{description,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Food">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_food
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="recommendation != null">
+				recommendation,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="picture_id != null">
+				picture_id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="version != null">
+				version,
+			</if>
+			<if test="period != null">
+				period,
+			</if>
+			<if test="price != null">
+				price,
+			</if>
+			<if test="category != null">
+				category,
+			</if>
+			<if test="description != null">
+				description,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="recommendation != null">
+				#{recommendation,jdbcType=INTEGER},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="picture_id != null">
+				#{picture_id,jdbcType=BIGINT},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="version != null">
+				#{version,jdbcType=BIGINT},
+			</if>
+			<if test="period != null">
+				#{period,jdbcType=BIGINT},
+			</if>
+			<if test="price != null">
+				#{price,jdbcType=DOUBLE},
+			</if>
+			<if test="category != null">
+				#{category,jdbcType=VARCHAR},
+			</if>
+			<if test="description != null">
+				#{description,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Food">
+		update pitaya_food
+		<set>
+			<if test="recommendation != null">
+				recommendation = #{recommendation,jdbcType=INTEGER},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="picture_id != null">
+				picture_id = #{picture_id,jdbcType=BIGINT},
+			</if>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="version != null">
+				version = #{version,jdbcType=BIGINT},
+			</if>
+			<if test="period != null">
+				period = #{period,jdbcType=BIGINT},
+			</if>
+			<if test="price != null">
+				price = #{price,jdbcType=DOUBLE},
+			</if>
+			<if test="category != null">
+				category = #{category,jdbcType=VARCHAR},
+			</if>
+			<if test="description != null">
+				description = #{description,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Food">
+		update pitaya_food
+		set recommendation = #{recommendation,jdbcType=INTEGER},
+		status = #{status,jdbcType=INTEGER},
+		picture_id = #{picture_id,jdbcType=BIGINT},
+		name = #{name,jdbcType=VARCHAR},
+		version = #{version,jdbcType=BIGINT},
+		period = #{period,jdbcType=BIGINT},
+		price = #{price,jdbcType=DOUBLE},
+		category = #{category,jdbcType=VARCHAR},
+		description = #{description,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
 </mapper>

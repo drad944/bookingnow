@@ -29,28 +29,28 @@ public class TestFoodService {
 	 @Test
 	 public void testAdd() {
 		 Food newFood = new Food();
-		 newFood.setCategory(2);
+		 newFood.setCategory("sichuan food");
 		 newFood.setDescription("I don't know what it is");
 		 newFood.setName("红烧猪蹄");
-		 newFood.setPeriod(new Date());
-		 newFood.setPrice(new BigDecimal(52.15));
-		 newFood.setVersion(2);
+		 newFood.setPeriod(new Date().getTime());
+		 newFood.setPrice(52.15);
+		 newFood.setVersion(new Date().getTime());
 		 
 		 foodService.add(newFood);
 		 
 		 Food newFood2 = new Food();
-		 newFood2.setCategory(2);
+		 newFood2.setCategory("sichuan food");
 		 newFood2.setDescription("卤猪蹄，好吃得很。");
 		 newFood2.setName("卤猪蹄");
-		 newFood2.setPeriod(new Date());
-		 newFood2.setPrice(new BigDecimal(35.00));
-		 newFood2.setVersion(2);
+		 newFood2.setPeriod(new Date().getTime());
+		 newFood2.setPrice(35.00);
+		 newFood2.setVersion(new Date().getTime());
 		 
 		 Food_Picture picture = new Food_Picture();
 		 picture.setEnabled(true);
 		 picture.setName("new pi");
 		 picture.setBig_image(new byte[]{4,45,6});
-		 picture.setVersion(new Date());
+		 picture.setVersion(new Date().getTime());
 		 newFood2.setPicture(picture);
 		 
 		 foodService.add(newFood2);
@@ -59,33 +59,41 @@ public class TestFoodService {
 	 
 	 @Test
 	 public void testRemove() {
+		 //food have not id
 		 Food newFood = new Food();
-		 newFood.setCategory(2);
 		 newFood.setName("红烧猪蹄");
-		 newFood.setPeriod(new Date());
-		 newFood.setPrice(new BigDecimal(52.15));
-		 newFood.setVersion(2);
 		 
-		 foodService.add(newFood);
-		 newFood = foodService.searchFoods(newFood).get(0);
+		 foodService.remove(newFood);
+		 
+		 //food have not picture
+		 newFood.setId((long) 23);
+		 foodService.remove(newFood);
+		 
+		 //food have picture
+		 Food newFood2 = new Food();
+		 newFood2.setName("红烧猪蹄");
+		 newFood.setId((long) 23);
 		 
 		 Food_Picture picture = new Food_Picture();
 		 picture.setEnabled(true);
 		 picture.setName("new pi");
 		 
-		 newFood.setPicture(picture);
+		 newFood2.setPicture(picture);
+		 
+		 foodService.remove(newFood);
+		 System.out.println("remove test.");
 		 
 	 }
 	 
 	 @Test
 	 public void testModify() {
 		 Food newFood = new Food();
-		 newFood.setCategory(2);
+		 newFood.setCategory("sichuan food");
 		 newFood.setDescription("I don't know what it is");
 		 newFood.setName("红烧猪蹄");
-		 newFood.setPeriod(new Date());
-		 newFood.setPrice(new BigDecimal(52.15));
-		 newFood.setVersion(2);
+		 newFood.setPeriod(new Date().getTime());
+		 newFood.setPrice(52.15);
+		 newFood.setVersion(new Date().getTime());
 		 
 		 foodService.add(newFood);
 		 newFood = foodService.searchFoods(newFood).get(0);
@@ -101,12 +109,12 @@ public class TestFoodService {
 	 @Test
 	 public void testSearchFoods() {
 		 Food newFood = new Food();
-		 newFood.setCategory(2);
+		 newFood.setCategory("sichuan food");
 		 newFood.setDescription("I don't know what it is");
 		 newFood.setName("红烧猪蹄");
-		 newFood.setPeriod(new Date());
-		 newFood.setPrice(new BigDecimal(52.15));
-		 newFood.setVersion(2);
+		 newFood.setPeriod(new Date().getTime());
+		 newFood.setPrice(52.15);
+		 newFood.setVersion(new Date().getTime());
 		 
 		 foodService.add(newFood);
 		 newFood = foodService.searchFoods(newFood).get(0);
@@ -118,24 +126,10 @@ public class TestFoodService {
 		 newFood.setPicture(picture);
 		 
 	 }
+	 
 	 @Test
 	 public void testRemoveFoodById() {
-		 Food newFood = new Food();
-		 newFood.setCategory(2);
-		 newFood.setDescription("I don't know what it is");
-		 newFood.setName("红烧猪蹄");
-		 newFood.setPeriod(new Date());
-		 newFood.setPrice(new BigDecimal(52.15));
-		 newFood.setVersion(2);
-		 
-		 foodService.add(newFood);
-		 newFood = foodService.searchFoods(newFood).get(0);
-		 
-		 Food_Picture picture = new Food_Picture();
-		 picture.setEnabled(true);
-		 picture.setName("new pi");
-		 
-		 newFood.setPicture(picture);
+		 foodService.removeFoodById((long)23);
 		 
 	 }
 	 

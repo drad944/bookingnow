@@ -33,7 +33,7 @@ public class TestFood_PictureService {
 		
 		Food_Picture picture = new Food_Picture();
 		picture.setEnabled(true);
-		picture.setVersion(new Date());
+		picture.setVersion(new Date().getTime());
 		picture.setName("回锅炒肉");
 		picture.setSmall_image(new byte[]{1,2,3});
 		

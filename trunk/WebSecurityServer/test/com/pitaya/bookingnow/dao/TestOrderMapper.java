@@ -22,11 +22,11 @@ public class TestOrderMapper {
     		OrderMapper orderMapper = sqlSession.getMapper(OrderMapper.class);
     		Order newOrder = new Order();
     		
-    		newOrder.setSubmit_time(new Date());
+    		newOrder.setSubmit_time(new Date().getTime());
     		newOrder.setEnabled(true);
-    		newOrder.setAllowance(98);
+    		newOrder.setAllowance(0.98);
     		newOrder.setStatus(1);
-    		newOrder.setModifyTime(new Date());
+    		newOrder.setModifyTime(new Date().getTime());
     		
     		orderMapper.insert(newOrder);
    		
@@ -67,7 +67,7 @@ public class TestOrderMapper {
 
 			List<Order> resultOrders = null;
 			Order templateOrder = new Order();
-			templateOrder.setAllowance(95);
+			templateOrder.setAllowance(0.95);
 
 			resultOrders = orderMapper.searchOrders(templateOrder);
 

@@ -1,5 +1,8 @@
 package com.pitaya.bookingnow.action;
 
+import java.util.List;
+import java.util.Map;
+
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.service.IFoodService;
 
@@ -7,7 +10,22 @@ public class FoodAction extends BaseAction{
 	private static final long serialVersionUID = -675955597630577906L;
 	private IFoodService foodService;
 	private Food food;
+	private List<Food> clientMenuFoods;
+	private Map<String, List<Food>> newMenuFood;
 	
+	
+	public Map<String, List<Food>> getNewMenuFood() {
+		return newMenuFood;
+	}
+	public void setNewMenuFood(Map<String, List<Food>> newMenuFood) {
+		this.newMenuFood = newMenuFood;
+	}
+	public List<Food> getClientMenuFoods() {
+		return clientMenuFoods;
+	}
+	public void setClientMenuFoods(List<Food> clientMenuFoods) {
+		this.clientMenuFoods = clientMenuFoods;
+	}
 	public IFoodService getFoodService() {
 		return foodService;
 	}
@@ -54,6 +72,16 @@ public class FoodAction extends BaseAction{
 	public String updateFood() {
 		if (food != null) {
 			foodService.modify(food);
+			
+			return "updateSuccess";
+		}
+		
+		return "updateFail";
+	}
+	
+	public String updateMenuFood() {
+		if (clientMenuFoods != null && clientMenuFoods.size() > 0) {
+			foodService.updateMenuFoods(clientMenuFoods);
 			
 			return "updateSuccess";
 		}

@@ -1,8 +1,5 @@
 package com.pitaya.bookingnow.entity;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 public class Order {
     private Long id;
 
@@ -14,15 +11,15 @@ public class Order {
 
     private Integer customer_count;
 
-    private Date modifyTime;
+    private Long modifyTime;
 
-    private Integer allowance;
+    private Double allowance;
 
-    private BigDecimal total_price;
+    private Double total_price;
 
-    private BigDecimal prePay;
+    private Double prePay;
 
-    private Date submit_time;
+    private Long submit_time;
 
     private Boolean enabled;
 
@@ -34,23 +31,7 @@ public class Order {
         this.id = id;
     }
 
-    public BigDecimal getTotal_price() {
-		return total_price;
-	}
-
-	public void setTotal_price(BigDecimal total_price) {
-		this.total_price = total_price;
-	}
-
-	public BigDecimal getPrePay() {
-		return prePay;
-	}
-
-	public void setPrePay(BigDecimal prePay) {
-		this.prePay = prePay;
-	}
-
-	public Integer getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
@@ -82,28 +63,43 @@ public class Order {
         this.customer_count = customer_count;
     }
 
-    public Date getModifyTime() {
+    public Long getModifyTime() {
         return modifyTime;
     }
 
-    public void setModifyTime(Date modifyTime) {
+    public void setModifyTime(Long modifyTime) {
         this.modifyTime = modifyTime;
     }
 
-    public Integer getAllowance() {
+    public Double getAllowance() {
         return allowance;
     }
 
-    public void setAllowance(Integer allowance) {
+    public void setAllowance(Double allowance) {
         this.allowance = allowance;
     }
 
+    public Double getTotal_price() {
+        return total_price;
+    }
 
-    public Date getSubmit_time() {
+    public void setTotal_price(Double total_price) {
+        this.total_price = total_price;
+    }
+
+    public Double getPrePay() {
+        return prePay;
+    }
+
+    public void setPrePay(Double prePay) {
+        this.prePay = prePay;
+    }
+
+    public Long getSubmit_time() {
         return submit_time;
     }
 
-    public void setSubmit_time(Date submit_time) {
+    public void setSubmit_time(Long submit_time) {
         this.submit_time = submit_time;
     }
 

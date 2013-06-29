@@ -1,30 +1,28 @@
 package com.pitaya.bookingnow.entity;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
 public class Food {
     private Long id;
+
+    private Integer recommendation;
+
+    private Integer status;
 
     private Long picture_id;
 
     private String name;
 
-    private Integer version;
+    private Long version;
 
-    private Date period;
+    private Long period;
 
-    private BigDecimal price;
+    private Double price;
 
-    private Integer category;
+    private String category;
 
     private String description;
     
     private Food_Picture picture;
     
-    private List<Food_Material_Detail> material_details;
-
     public Food_Picture getPicture() {
 		return picture;
 	}
@@ -33,20 +31,28 @@ public class Food {
 		this.picture = picture;
 	}
 
-	public List<Food_Material_Detail> getMaterial_details() {
-		return material_details;
-	}
-
-	public void setMaterial_details(List<Food_Material_Detail> material_details) {
-		this.material_details = material_details;
-	}
-
 	public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getRecommendation() {
+        return recommendation;
+    }
+
+    public void setRecommendation(Integer recommendation) {
+        this.recommendation = recommendation;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Long getPicture_id() {
@@ -65,35 +71,35 @@ public class Food {
         this.name = name;
     }
 
-    public Integer getVersion() {
+    public Long getVersion() {
         return version;
     }
 
-    public void setVersion(Integer version) {
+    public void setVersion(Long version) {
         this.version = version;
     }
 
-    public Date getPeriod() {
+    public Long getPeriod() {
         return period;
     }
 
-    public void setPeriod(Date period) {
+    public void setPeriod(Long period) {
         this.period = period;
     }
 
-    public BigDecimal getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public Integer getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Integer category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 

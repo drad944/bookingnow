@@ -38,21 +38,21 @@ create table pitaya_order(
 	user_id bigint,
 	customer_id bigint,
 	customer_count integer,
-	modifyTime timestamp,
-	allowance integer,
-	total_price decimal(8,2),
-	prePay decimal(8,2),
-	submit_time timestamp,
+	modifyTime bigint,
+	allowance double,
+	total_price double,
+	prePay double,
+	submit_time bigint,
 	enabled boolean
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 	
-insert into pitaya_order values (1,1,0,1,4,'2013-05-08 01:12:03',95,0,0,'2013-05-08 01:02:03',true);
-insert into pitaya_order values (2,2,1,0,5,'2013-05-08 01:12:03',90,0,0,'2013-05-08 01:02:03',false);
-insert into pitaya_order values (3,3,0,2,6,'2013-05-08 01:12:03',95,0,0,'2013-05-08 01:02:03',1);
-insert into pitaya_order values (4,4,0,3,7,'2013-05-08 01:12:03',100,0,0,'2013-05-08 01:02:03',0);
-insert into pitaya_order values (5,5,2,0,4,'2013-05-08 01:12:03',90,0,0,'2013-05-08 01:02:03',true);
-insert into pitaya_order values (6,6,3,0,5,'2013-05-08 01:12:03',95,0,0,'2013-05-08 01:02:03',false);
-insert into pitaya_order values (7,3,1,0,4,'2013-05-08 01:12:03',90,0,0,'2013-05-08 01:02:03',true);
+insert into pitaya_order values (1,1,0,1,4,1351232321,0.95,0,0,1351232321,true);
+insert into pitaya_order values (2,2,1,0,5,1351232321,0.90,0,0,1351232321,false);
+insert into pitaya_order values (3,3,0,2,6,1351232321,0.95,0,0,1351232321,1);
+insert into pitaya_order values (4,4,0,3,7,1351232321,1,0,0,1351232321,0);
+insert into pitaya_order values (5,5,2,0,4,1351232321,0.90,0,0,1351232321,true);
+insert into pitaya_order values (6,6,3,0,5,1351232321,0.95,0,0,1351232321,false);
+insert into pitaya_order values (7,3,1,0,4,1351232321,0.90,0,0,1351232321,true);
 
 create table pitaya_order_table_detail(
 	id bigint not null auto_increment primary key,
@@ -80,35 +80,37 @@ insert into pitaya_order_table_detail values (10,3,true,10,7);
 
 create table pitaya_food(
 	id bigint not null auto_increment primary key,
+	recommendation integer,
+	status integer,
 	picture_id bigint,
 	name varchar(50),
-	version integer,
-	period timestamp,
-	price decimal(8,2),
-	category integer,
+	version bigint,
+	period bigint,
+	price double,
+	category varchar(50),
 	description varchar(100)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 	
-insert into pitaya_food values (1,1,'Sweet and sour pork ribs',1,'2013-05-01 01:02:03',21.50,501,'good food');
-insert into pitaya_food values (2,2,'Tomato soup',1,'2013-05-01 01:02:03',11.50,501,'good food');
-insert into pitaya_food values (3,3,'Green pepper and potato silk',1,'2013-05-01 01:02:03',10,501,'good food');
-insert into pitaya_food values (4,4,'Griddle chicken',1,'2013-05-01 01:02:03',21.50,501,'good food');
-insert into pitaya_food values (5,5,'Saliva chicken',1,'2013-05-01 01:02:03',61.50,501,'good food');
-insert into pitaya_food values (6,6,'hamburger',1,'2013-05-01 01:02:03',11.50,501,'good food');
-insert into pitaya_food values (7,7,'Saliva chicken',1,'2013-05-01 01:02:03',21.50,501,'good food');
-insert into pitaya_food values (8,8,'Saliva chicken',1,'2013-05-01 01:02:03',21.50,501,'good food');
-insert into pitaya_food values (9,9,'Saliva chicken',1,'2013-05-01 01:02:03',21.50,501,'good food');
-insert into pitaya_food values (10,10,'Saliva chicken',1,'2013-05-01 01:02:03',31.50,501,'good food');
-insert into pitaya_food values (11,11,'Saliva chicken',1,'2013-05-01 01:02:03',41.50,501,'good food');
-insert into pitaya_food values (12,12,'Saliva chicken',1,'2013-05-01 01:02:03',11.50,501,'good food');
-insert into pitaya_food values (13,13,'Saliva chicken',1,'2013-05-01 01:02:03',21.50,501,'good food');
-insert into pitaya_food values (14,14,'Saliva chicken',1,'2013-05-01 01:02:03',11.50,501,'good food');
-insert into pitaya_food values (15,15,'Saliva chicken',1,'2013-05-01 01:02:03',21.50,501,'good food');
-insert into pitaya_food values (16,16,'Saliva chicken',1,'2013-05-01 01:02:03',13.50,501,'good food');
-insert into pitaya_food values (17,17,'Saliva chicken',1,'2013-05-01 01:02:03',24.50,501,'good food');
-insert into pitaya_food values (18,18,'Saliva chicken',1,'2013-05-01 01:02:03',25.50,501,'good food');
-insert into pitaya_food values (19,19,'Saliva chicken',1,'2013-05-01 01:02:03',26.50,501,'good food');
-insert into pitaya_food values (20,20,'fish',1,'2013-05-01 01:02:03',27.50,501,'good food');
+insert into pitaya_food values (1,5,1,1,'Sweet and sour pork ribs',1351232321,1351232321,21.50,'chinese food','good food');
+insert into pitaya_food values (2,4,1,2,'Tomato soup',1351232321,1351232321,11.50,'chinese food','good food');
+insert into pitaya_food values (3,5,1,3,'Green pepper and potato silk',1351232321,1351232321,10,'chinese food','good food');
+insert into pitaya_food values (4,5,1,4,'Griddle chicken',1351232321,1351232321,21.50,'western food','good food');
+insert into pitaya_food values (5,5,1,5,'Saliva chicken',1351232321,1351232321,61.50,'chinese food','good food');
+insert into pitaya_food values (6,5,1,6,'hamburger',1351232321,1351232321,11.50,'western food','good food');
+insert into pitaya_food values (7,5,1,7,'Saliva chicken',1351232321,1351232321,21.50,'chinese food','good food');
+insert into pitaya_food values (8,5,1,8,'Saliva chicken',1351232321,1351232321,21.50,'chinese food','good food');
+insert into pitaya_food values (9,5,1,9,'Saliva chicken',1351232321,1351232321,21.50,'chinese food','good food');
+insert into pitaya_food values (10,5,1,10,'Saliva chicken',1351232321,1351232321,31.50,'chinese food','good food');
+insert into pitaya_food values (11,5,1,11,'Saliva chicken',1351232321,1351232321,41.50,'western food','good food');
+insert into pitaya_food values (12,5,1,12,'Saliva chicken',1351232321,1351232321,11.50,'sichuan food','good food');
+insert into pitaya_food values (13,5,1,13,'Saliva chicken',1351232321,1351232321,21.50,'chinese food','good food');
+insert into pitaya_food values (14,5,1,14,'Saliva chicken',1351232321,1351232321,11.50,'western food','good food');
+insert into pitaya_food values (15,5,1,15,'Saliva chicken',1351232321,1351232321,21.50,'chinese food','good food');
+insert into pitaya_food values (16,5,1,16,'Saliva chicken',1351232321,1351232321,13.50,'sichuan food','good food');
+insert into pitaya_food values (17,5,1,17,'Saliva chicken',1351232321,1351232321,24.50,'chinese food','good food');
+insert into pitaya_food values (18,5,1,18,'Saliva chicken',1351232321,1351232321,25.50,'sichuan food','good food');
+insert into pitaya_food values (19,5,1,19,'Saliva chicken',1351232321,1351232321,26.50,'sichuan food','good food');
+insert into pitaya_food values (20,5,1,20,'fish',1351232321,1351232321,27.50,'chinese food','good food');
 
 
 create table pitaya_order_food_detail(
@@ -116,7 +118,7 @@ create table pitaya_order_food_detail(
 	status integer,
 	count integer,
 	preference integer,
-	last_modify_time timestamp,
+	last_modify_time bigint,
 	enabled boolean,
 	food_id bigint not null,
 	order_id bigint not null,
@@ -126,55 +128,55 @@ create table pitaya_order_food_detail(
 	CONSTRAINT fk_order_food_detail_order FOREIGN KEY (order_id) REFERENCES pitaya_order (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_order_food_detail values (1,301,1,401,'2013-05-01 01:02:03',true,1,1);
-insert into pitaya_order_food_detail values (2,302,1,402,'2013-05-01 01:02:03',true,2,1);
-insert into pitaya_order_food_detail values (3,303,1,403,'2013-05-01 01:02:03',true,3,1);
-insert into pitaya_order_food_detail values (4,304,2,403,'2013-05-01 01:02:03',true,4,2);
-insert into pitaya_order_food_detail values (5,304,1,401,'2013-05-01 01:02:03',true,5,2);
-insert into pitaya_order_food_detail values (6,301,3,402,'2013-05-01 01:02:03',true,6,2);
-insert into pitaya_order_food_detail values (7,301,1,403,'2013-05-01 01:02:03',true,7,2);
-insert into pitaya_order_food_detail values (8,302,2,403,'2013-05-01 01:02:03',true,8,3);
-insert into pitaya_order_food_detail values (9,302,1,402,'2013-05-01 01:02:03',true,9,4);
-insert into pitaya_order_food_detail values (10,303,1,401,'2013-05-01 01:02:03',true,10,5);
-insert into pitaya_order_food_detail values (11,302,2,402,'2013-05-01 01:02:03',true,11,5);
-insert into pitaya_order_food_detail values (12,303,1,403,'2013-05-01 01:02:03',true,12,6);
-insert into pitaya_order_food_detail values (13,304,3,401,'2013-05-01 01:02:03',true,13,6);
-insert into pitaya_order_food_detail values (14,302,1,402,'2013-05-01 01:02:03',true,14,6);
-insert into pitaya_order_food_detail values (15,303,4,403,'2013-05-01 01:02:03',true,15,6);
-insert into pitaya_order_food_detail values (16,301,1,402,'2013-05-01 01:02:03',true,16,7);
-insert into pitaya_order_food_detail values (17,304,2,401,'2013-05-01 01:02:03',true,17,7);
-insert into pitaya_order_food_detail values (18,302,1,403,'2013-05-01 01:02:03',true,18,7);
+insert into pitaya_order_food_detail values (1,301,1,401,1351232321,true,1,1);
+insert into pitaya_order_food_detail values (2,302,1,402,1351232321,true,2,1);
+insert into pitaya_order_food_detail values (3,303,1,403,1351232321,true,3,1);
+insert into pitaya_order_food_detail values (4,304,2,403,1351232321,true,4,2);
+insert into pitaya_order_food_detail values (5,304,1,401,1351232321,true,5,2);
+insert into pitaya_order_food_detail values (6,301,3,402,1351232321,true,6,2);
+insert into pitaya_order_food_detail values (7,301,1,403,1351232321,true,7,2);
+insert into pitaya_order_food_detail values (8,302,2,403,1351232321,true,8,3);
+insert into pitaya_order_food_detail values (9,302,1,402,1351232321,true,9,4);
+insert into pitaya_order_food_detail values (10,303,1,401,1351232321,true,10,5);
+insert into pitaya_order_food_detail values (11,302,2,402,1351232321,true,11,5);
+insert into pitaya_order_food_detail values (12,303,1,403,1351232321,true,12,6);
+insert into pitaya_order_food_detail values (13,304,3,401,1351232321,true,13,6);
+insert into pitaya_order_food_detail values (14,302,1,402,1351232321,true,14,6);
+insert into pitaya_order_food_detail values (15,303,4,403,1351232321,true,15,6);
+insert into pitaya_order_food_detail values (16,301,1,402,1351232321,true,16,7);
+insert into pitaya_order_food_detail values (17,304,2,401,1351232321,true,17,7);
+insert into pitaya_order_food_detail values (18,302,1,403,1351232321,true,18,7);
 
 
 create table pitaya_food_picture(
 	id bigint not null auto_increment primary key,
 	name varchar(50),
-	version timestamp,
+	version bigint,
 	big_image mediumblob,
 	small_image mediumblob,
 	enabled boolean
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_food_picture values (1,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (2,'b','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (3,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (4,'c','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (5,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (6,'b','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (7,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (8,'b','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (9,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (10,'c','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (11,'c','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (12,'c','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (13,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (14,'b','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (15,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (16,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (17,'b','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (18,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (19,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
-insert into pitaya_food_picture values (20,'a','2006-01-01 00:00:00','\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (1,'a',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (2,'b',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (3,'a',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (4,'c',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (5,'a',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (6,'b',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (7,'a',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (8,'b',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (9,'a',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (10,'c',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (11,'c',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (12,'c',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (13,'a',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (14,'b',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (15,'a',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (16,'a',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (17,'b',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (18,'a',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (19,'a',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
+insert into pitaya_food_picture values (20,'a',1351232321,'\cc\dd\cc\dd','\cc\dd',true);
 
 
 create table pitaya_customer(
@@ -187,30 +189,30 @@ create table pitaya_customer(
 	sex integer,
 	email varchar(50),
 	address varchar(100),
-	birthday timestamp
+	birthday bigint
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_customer values (1,1,'zhang','zhang','123456','13579024832',601,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03');
-insert into pitaya_customer values (2,2,'li','li','123456','13579024832',602,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03');
-insert into pitaya_customer values (3,3,'wang di','wang di','123456','13579024832',601,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03');
-insert into pitaya_customer values (4,4,'cheng','cheng','123456','13579024832',602,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03');
-insert into pitaya_customer values (5,5,'yang','yang','123456','13579024832',601,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03');
-insert into pitaya_customer values (6,6,'zhouli','zhouli','123456','13579024832',602,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03');
+insert into pitaya_customer values (1,1,'zhang','zhang','123456','13579024832',601,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
+insert into pitaya_customer values (2,2,'li','li','123456','13579024832',602,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
+insert into pitaya_customer values (3,3,'wang di','wang di','123456','13579024832',601,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
+insert into pitaya_customer values (4,4,'cheng','cheng','123456','13579024832',602,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
+insert into pitaya_customer values (5,5,'yang','yang','123456','13579024832',601,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
+insert into pitaya_customer values (6,6,'zhouli','zhouli','123456','13579024832',602,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
 
 create table pitaya_customer_picture(
 	id bigint not null auto_increment primary key,
 	name varchar(50),
-	last_modify_time timestamp,
+	last_modify_time bigint,
 	image mediumblob,
 	enabled boolean
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_customer_picture values (1,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);
-insert into pitaya_customer_picture values (2,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);
-insert into pitaya_customer_picture values (3,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);
-insert into pitaya_customer_picture values (4,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);
-insert into pitaya_customer_picture values (5,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);
-insert into pitaya_customer_picture values (6,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);
+insert into pitaya_customer_picture values (1,'a',1351232321,'\cc\dd\cc\dd',true);
+insert into pitaya_customer_picture values (2,'a',1351232321,'\cc\dd\cc\dd',true);
+insert into pitaya_customer_picture values (3,'a',1351232321,'\cc\dd\cc\dd',true);
+insert into pitaya_customer_picture values (4,'a',1351232321,'\cc\dd\cc\dd',true);
+insert into pitaya_customer_picture values (5,'a',1351232321,'\cc\dd\cc\dd',true);
+insert into pitaya_customer_picture values (6,'a',1351232321,'\cc\dd\cc\dd',true);
 
 
 
@@ -224,33 +226,33 @@ create table pitaya_user(
 	sex integer,
 	email varchar(50),
 	address varchar(100),
-	birthday timestamp,
+	birthday bigint,
 	description varchar(100),
 	department integer,
 	sub_system integer
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_user values (1,1,'hang','hang','123456','13579024832',701,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03','I am a cooker',801,1000);
-insert into pitaya_user values (2,2,'lili','lili','123456','13579024832',702,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03','I am a waiter',801,1000);
-insert into pitaya_user values (3,3,'ang di','ang di','123456','13579024832',701,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03','I am a boss',801,1000);
-insert into pitaya_user values (4,4,'che','che','123456','13579024832',702,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03','I am a casher',801,1000);
-insert into pitaya_user values (5,5,'yan','yan','123456','13579024832',701,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03','I am a service man',801,1000);
-insert into pitaya_user values (6,6,'zhoushuai','zhoushuai','123456','13579024832',702,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china','1986-05-01 01:02:03','I am a cooker',801,1000);
+insert into pitaya_user values (1,1,'hang','hang','123456','13579024832',701,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
+insert into pitaya_user values (2,2,'lili','lili','123456','13579024832',702,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a waiter',801,1000);
+insert into pitaya_user values (3,3,'ang di','ang di','123456','13579024832',701,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a boss',801,1000);
+insert into pitaya_user values (4,4,'che','che','123456','13579024832',702,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a casher',801,1000);
+insert into pitaya_user values (5,5,'yan','yan','123456','13579024832',701,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a service man',801,1000);
+insert into pitaya_user values (6,6,'zhoushuai','zhoushuai','123456','13579024832',702,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
 
 create table pitaya_user_picture(
 	id bigint not null auto_increment primary key,
 	name varchar(50),
-	last_modify_time timestamp,
+	last_modify_time bigint,
 	image mediumblob,
 	enabled boolean
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_user_picture values (1,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);
-insert into pitaya_user_picture values (2,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);
-insert into pitaya_user_picture values (3,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);
-insert into pitaya_user_picture values (4,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);
-insert into pitaya_user_picture values (5,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);
-insert into pitaya_user_picture values (6,'a','2006-01-01 00:00:00','\cc\dd\cc\dd',true);	
+insert into pitaya_user_picture values (1,'a',1351232321,'\cc\dd\cc\dd',true);
+insert into pitaya_user_picture values (2,'a',1351232321,'\cc\dd\cc\dd',true);
+insert into pitaya_user_picture values (3,'a',1351232321,'\cc\dd\cc\dd',true);
+insert into pitaya_user_picture values (4,'a',1351232321,'\cc\dd\cc\dd',true);
+insert into pitaya_user_picture values (5,'a',1351232321,'\cc\dd\cc\dd',true);
+insert into pitaya_user_picture values (6,'a',1351232321,'\cc\dd\cc\dd',true);	
 
 
 
@@ -271,7 +273,7 @@ insert into pitaya_material values (5,'huajiao','big garlic,haha',901);
 create table pitaya_food_material_detail(
 	id bigint not null auto_increment primary key,
 	count integer,
-	price decimal(8,2),
+	price double,
 	weight double,
 	enabled boolean,
 	food_id bigint not null,
@@ -466,8 +468,6 @@ insert into pitaya_authority_resource_detail values (40,true,7,7);
 insert into pitaya_authority_resource_detail values (41,true,8,7);
 insert into pitaya_authority_resource_detail values (42,true,9,7);
 insert into pitaya_authority_resource_detail values (43,true,10,7);
-
-
 
 
 

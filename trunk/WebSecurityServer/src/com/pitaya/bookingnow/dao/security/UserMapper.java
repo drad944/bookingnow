@@ -7,16 +7,17 @@ import com.pitaya.bookingnow.entity.security.User;
 public interface UserMapper {
     int deleteByPrimaryKey(Long id);
 
-    int insert(User record);
+    int insert(User user);
 
-    int insertSelective(User record);
+    int insertSelective(User user);
 
     User selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(User record);
+    int updateByPrimaryKeySelective(User user);
 
-    int updateByPrimaryKey(User record);
+    int updateByPrimaryKey(User user);
     
-    List<User> searchUsers(User record);
-    User login(User record);
+    List<User> searchUsers(User user);
+    
+    User login(User user);
 }
