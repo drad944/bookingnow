@@ -107,7 +107,7 @@ public class FoodService implements IFoodService{
 
 		
 		for (int i = 0; i < allDBFoods.size(); i++) {
-			Food DBFood = clientFoods.get(i);
+			Food DBFood = allDBFoods.get(i);
 			
 			 
 			for (int j = 0; j < clientFoods.size(); j++) {
