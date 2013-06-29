@@ -63,6 +63,7 @@
     
 	<bean id="foodService" class="com.pitaya.bookingnow.service.impl.FoodService">
 		<property name="foodDao" ref="foodDao" />
+		<property name="food_pictureDao" ref="food_pictureDao" />
 	</bean>
 
 	<bean id="foodAction" class="com.pitaya.bookingnow.action.FoodAction" scope="prototype">

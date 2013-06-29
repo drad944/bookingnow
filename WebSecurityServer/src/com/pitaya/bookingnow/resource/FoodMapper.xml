@@ -21,7 +21,7 @@
 	</association>  
   </resultMap>
   <sql id="Base_Column_List" >
-    id, picture_id, name, version, period, price, category, description
+    A.id, A.picture_id, A.name, A.version, A.period, A.price, A.category, A.description
   </sql>
   
    <sql id="Food_Picture_Column_List">
