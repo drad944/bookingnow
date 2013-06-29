@@ -20,7 +20,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.pitaya.bookingnow.message.LoginMessage;
-import com.pitaya.bookingnow.message.LoginResultMessage;
 import com.pitaya.bookingnow.message.Message;
 import com.pitaya.bookingnow.message.ResultMessage;
 import com.pitaya.bookingnow.util.Constants;
