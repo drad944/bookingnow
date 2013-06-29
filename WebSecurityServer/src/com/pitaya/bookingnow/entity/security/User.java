@@ -1,7 +1,5 @@
 package com.pitaya.bookingnow.entity.security;
 
-import java.util.Date;
-
 public class User {
     private Long id;
 
@@ -21,7 +19,7 @@ public class User {
 
     private String address;
 
-    private Date birthday;
+    private Long birthday;
 
     private String description;
 
@@ -101,11 +99,11 @@ public class User {
         this.address = address;
     }
 
-    public Date getBirthday() {
+    public Long getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(Long birthday) {
         this.birthday = birthday;
     }
 

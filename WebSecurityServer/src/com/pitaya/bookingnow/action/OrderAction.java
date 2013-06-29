@@ -11,7 +11,6 @@ public class OrderAction extends BaseAction{
 	private static final long serialVersionUID = 6767573103054031438L;
 	private IOrderService orderService;
 	private Order order;
-	private int allowance;
 	private List<Order> matchedOrders;
 	
 	
@@ -20,12 +19,6 @@ public class OrderAction extends BaseAction{
 	}
 	public void setMatchedOrders(List<Order> matchedOrders) {
 		this.matchedOrders = matchedOrders;
-	}
-	public int getAllowance() {
-		return allowance;
-	}
-	public void setAllowance(int allowance) {
-		this.allowance = allowance;
 	}
 	public IOrderService getOrderService() {
 		return orderService;
@@ -41,9 +34,7 @@ public class OrderAction extends BaseAction{
 	}
 	
 	public String searchOrder() {
-		if (allowance != -1) {
-			order = new Order();
-			order.setAllowance(allowance);
+		if (order != null) {
 			
 			matchedOrders = orderService.searchOrders(order);
 			

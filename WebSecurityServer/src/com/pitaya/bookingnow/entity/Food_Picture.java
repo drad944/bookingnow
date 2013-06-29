@@ -1,13 +1,11 @@
 package com.pitaya.bookingnow.entity;
 
-import java.util.Date;
-
 public class Food_Picture {
     private Long id;
 
     private String name;
 
-    private Date version;
+    private Long version;
 
     private Boolean enabled;
     
@@ -15,15 +13,7 @@ public class Food_Picture {
 
     private byte[] small_image;
 
-    public Date getVersion() {
-		return version;
-	}
-
-	public void setVersion(Date version) {
-		this.version = version;
-	}
-
-	public byte[] getBig_image() {
+    public byte[] getBig_image() {
         return big_image;
     }
 
@@ -55,6 +45,13 @@ public class Food_Picture {
         this.name = name;
     }
 
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 
     public Boolean getEnabled() {
         return enabled;

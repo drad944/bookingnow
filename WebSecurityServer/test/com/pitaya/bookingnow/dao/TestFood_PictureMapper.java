@@ -41,7 +41,7 @@ public class TestFood_PictureMapper {
     		Food_PictureMapper food_PictureMapper = sqlSession.getMapper(Food_PictureMapper.class);
     		Food_Picture picture = new Food_Picture();
     		picture.setEnabled(true);
-    		picture.setVersion(new Date());
+    		picture.setVersion(new Date().getTime());
     		picture.setName("回锅炒肉");
     		picture.setSmall_image(new byte[]{1,2,3});
     		food_PictureMapper.insertSelective(picture);

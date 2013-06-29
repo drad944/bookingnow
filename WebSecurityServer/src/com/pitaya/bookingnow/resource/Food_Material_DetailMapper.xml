@@ -1,117 +1,122 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.pitaya.bookingnow.dao.Food_Material_DetailMapper" >
-  <resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.Food_Material_Detail" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="count" property="count" jdbcType="INTEGER" />
-    <result column="price" property="price" jdbcType="DOUBLE" />
-    <result column="weight" property="weight" jdbcType="DOUBLE" />
-    <result column="enabled" property="enabled" jdbcType="BIT" />
-    <result column="food_id" property="food_id" jdbcType="BIGINT" />
-    <result column="material_id" property="material_id" jdbcType="BIGINT" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, count, price, weight, enabled, food_id, material_id
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from pitaya_food_material_detail
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from pitaya_food_material_detail
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.pitaya.bookingnow.entity.Food_Material_Detail" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into pitaya_food_material_detail (count, price, weight, 
-      enabled, food_id, material_id
-      )
-    values (#{count,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE}, #{weight,jdbcType=DOUBLE}, 
-      #{enabled,jdbcType=BIT}, #{food_id,jdbcType=BIGINT}, #{material_id,jdbcType=BIGINT}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Food_Material_Detail" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into pitaya_food_material_detail
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="count != null" >
-        count,
-      </if>
-      <if test="price != null" >
-        price,
-      </if>
-      <if test="weight != null" >
-        weight,
-      </if>
-      <if test="enabled != null" >
-        enabled,
-      </if>
-      <if test="food_id != null" >
-        food_id,
-      </if>
-      <if test="material_id != null" >
-        material_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="count != null" >
-        #{count,jdbcType=INTEGER},
-      </if>
-      <if test="price != null" >
-        #{price,jdbcType=DOUBLE},
-      </if>
-      <if test="weight != null" >
-        #{weight,jdbcType=DOUBLE},
-      </if>
-      <if test="enabled != null" >
-        #{enabled,jdbcType=BIT},
-      </if>
-      <if test="food_id != null" >
-        #{food_id,jdbcType=BIGINT},
-      </if>
-      <if test="material_id != null" >
-        #{material_id,jdbcType=BIGINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Food_Material_Detail" >
-    update pitaya_food_material_detail
-    <set >
-      <if test="count != null" >
-        count = #{count,jdbcType=INTEGER},
-      </if>
-      <if test="price != null" >
-        price = #{price,jdbcType=DOUBLE},
-      </if>
-      <if test="weight != null" >
-        weight = #{weight,jdbcType=DOUBLE},
-      </if>
-      <if test="enabled != null" >
-        enabled = #{enabled,jdbcType=BIT},
-      </if>
-      <if test="food_id != null" >
-        food_id = #{food_id,jdbcType=BIGINT},
-      </if>
-      <if test="material_id != null" >
-        material_id = #{material_id,jdbcType=BIGINT},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Food_Material_Detail" >
-    update pitaya_food_material_detail
-    set count = #{count,jdbcType=INTEGER},
-      price = #{price,jdbcType=DOUBLE},
-      weight = #{weight,jdbcType=DOUBLE},
-      enabled = #{enabled,jdbcType=BIT},
-      food_id = #{food_id,jdbcType=BIGINT},
-      material_id = #{material_id,jdbcType=BIGINT}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+<mapper namespace="com.pitaya.bookingnow.dao.Food_Material_DetailMapper">
+	<resultMap id="BaseResultMap"
+		type="com.pitaya.bookingnow.entity.Food_Material_Detail">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="count" property="count" jdbcType="INTEGER" />
+		<result column="price" property="price" jdbcType="DOUBLE" />
+		<result column="weight" property="weight" jdbcType="DOUBLE" />
+		<result column="enabled" property="enabled" jdbcType="BIT" />
+		<result column="food_id" property="food_id" jdbcType="BIGINT" />
+		<result column="material_id" property="material_id" jdbcType="BIGINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, count, price, weight, enabled, food_id, material_id
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_food_material_detail
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from pitaya_food_material_detail
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Food_Material_Detail">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_food_material_detail (count, price, weight,
+		enabled, food_id, material_id
+		)
+		values (#{count,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE},
+		#{weight,jdbcType=DOUBLE},
+		#{enabled,jdbcType=BIT}, #{food_id,jdbcType=BIGINT}, #{material_id,jdbcType=BIGINT}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Food_Material_Detail">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_food_material_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="count != null">
+				count,
+			</if>
+			<if test="price != null">
+				price,
+			</if>
+			<if test="weight != null">
+				weight,
+			</if>
+			<if test="enabled != null">
+				enabled,
+			</if>
+			<if test="food_id != null">
+				food_id,
+			</if>
+			<if test="material_id != null">
+				material_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="count != null">
+				#{count,jdbcType=INTEGER},
+			</if>
+			<if test="price != null">
+				#{price,jdbcType=DOUBLE},
+			</if>
+			<if test="weight != null">
+				#{weight,jdbcType=DOUBLE},
+			</if>
+			<if test="enabled != null">
+				#{enabled,jdbcType=BIT},
+			</if>
+			<if test="food_id != null">
+				#{food_id,jdbcType=BIGINT},
+			</if>
+			<if test="material_id != null">
+				#{material_id,jdbcType=BIGINT},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Food_Material_Detail">
+		update pitaya_food_material_detail
+		<set>
+			<if test="count != null">
+				count = #{count,jdbcType=INTEGER},
+			</if>
+			<if test="price != null">
+				price = #{price,jdbcType=DOUBLE},
+			</if>
+			<if test="weight != null">
+				weight = #{weight,jdbcType=DOUBLE},
+			</if>
+			<if test="enabled != null">
+				enabled = #{enabled,jdbcType=BIT},
+			</if>
+			<if test="food_id != null">
+				food_id = #{food_id,jdbcType=BIGINT},
+			</if>
+			<if test="material_id != null">
+				material_id = #{material_id,jdbcType=BIGINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Food_Material_Detail">
+		update pitaya_food_material_detail
+		set count = #{count,jdbcType=INTEGER},
+		price = #{price,jdbcType=DOUBLE},
+		weight = #{weight,jdbcType=DOUBLE},
+		enabled = #{enabled,jdbcType=BIT},
+		food_id = #{food_id,jdbcType=BIGINT},
+		material_id = #{material_id,jdbcType=BIGINT}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
 </mapper>

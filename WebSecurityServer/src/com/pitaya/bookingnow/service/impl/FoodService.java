@@ -1,6 +1,9 @@
 package com.pitaya.bookingnow.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.pitaya.bookingnow.dao.FoodMapper;
 import com.pitaya.bookingnow.dao.Food_PictureMapper;
@@ -86,8 +89,40 @@ public class FoodService implements IFoodService{
 
 	@Override
 	public boolean removeFoodById(Long id) {
-		// TODO Auto-generated method stub
+		
+		if (id != null) {
+			Food food = foodDao.selectByPrimaryKey(id);
+			return this.remove(food);
+		}
 		return false;
+	}
+	
+	public Map<String, List<Food>> updateMenuFoods(List<Food> clientFoods) {
+		Map<String, List<Food>> newMenuFoods = new HashMap<String, List<Food>>();
+		
+		List<Food> newFoods = new ArrayList<Food>();
+		List<Food> deleteFoods = new ArrayList<Food>();
+		List<Food> updateFoods = new ArrayList<Food>();
+		List<Food> allDBFoods = new ArrayList<>();
+		
+		for (int i = 0; i < clientFoods.size(); i++) {
+			Food clientFood = clientFoods.get(i);
+			if(clientFood.getId() != null) {
+				Food databaseFood = foodDao.selectByPrimaryKey(clientFood.getId());
+				if (databaseFood != null) {
+					//check food between clientfood and databasefood
+					if (databaseFood.getVersion() > clientFood.getVersion()) {
+						
+					}
+				}else {
+					//can not find in db,delete it
+					deleteFoods.add(clientFood);
+				}
+			}
+		}
+		
+		
+		return newMenuFoods;
 	}
 
 }

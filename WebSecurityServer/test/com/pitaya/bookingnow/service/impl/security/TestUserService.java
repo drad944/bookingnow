@@ -35,7 +35,7 @@ public class TestUserService {
 	  
 		newUser.setAccount("shax");
 		newUser.setAddress("lsdjf sldf sdlfkj sldkf");
-		newUser.setBirthday(new Date());
+		newUser.setBirthday(new Date().getTime());
 		newUser.setDepartment(1);
 		newUser.setDescription("good man");
 		newUser.setEmail("shax@qq.com");

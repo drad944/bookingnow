@@ -14,18 +14,8 @@ public class Food_Material_Detail {
     private Long food_id;
 
     private Long material_id;
-    
-    private Material material;
 
-    public Material getMaterial() {
-		return material;
-	}
-
-	public void setMaterial(Material material) {
-		this.material = material;
-	}
-
-	public Long getId() {
+    public Long getId() {
         return id;
     }
 

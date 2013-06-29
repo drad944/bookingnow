@@ -5,13 +5,13 @@ import com.pitaya.bookingnow.entity.Material;
 public interface MaterialMapper {
     int deleteByPrimaryKey(Long id);
 
-    int insert(Material record);
+    int insert(Material material);
 
-    int insertSelective(Material record);
+    int insertSelective(Material material);
 
     Material selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(Material record);
+    int updateByPrimaryKeySelective(Material material);
 
-    int updateByPrimaryKey(Material record);
+    int updateByPrimaryKey(Material material);
 }

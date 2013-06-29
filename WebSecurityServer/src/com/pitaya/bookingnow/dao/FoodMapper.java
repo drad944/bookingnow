@@ -16,5 +16,6 @@ public interface FoodMapper {
     int updateByPrimaryKeySelective(Food food);
 
     int updateByPrimaryKey(Food food);
+    
     List<Food> selectFoods(Food food);
 }

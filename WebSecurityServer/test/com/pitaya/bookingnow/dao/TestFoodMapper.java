@@ -47,7 +47,7 @@ public class TestFoodMapper {
     	try { 
     		FoodMapper foodMapper = sqlSession.getMapper(FoodMapper.class);
     		Food tempFood = new Food();
-    		tempFood.setCategory(501);
+    		tempFood.setCategory("中餐");
     		
     		List<Food> newFoods = foodMapper.selectFoods(tempFood);
     		if(newFoods != null) {
@@ -78,17 +78,17 @@ public class TestFoodMapper {
     	try { 
     		FoodMapper foodMapper = sqlSession.getMapper(FoodMapper.class);
     		Food newFood = new Food();
-    		newFood.setCategory(505);
+    		newFood.setCategory("");
     		newFood.setDescription("laji");
     		newFood.setName("回锅肉");
-    		newFood.setPeriod(new Date());
-    		newFood.setPrice(new BigDecimal(108));
-    		newFood.setVersion(2);
+    		newFood.setPeriod(new Date().getTime());
+    		newFood.setPrice(108.00);
+    		newFood.setVersion(new Date().getTime());
     		
     		Food_PictureMapper food_PictureMapper = sqlSession.getMapper(Food_PictureMapper.class);
     		Food_Picture picture = new Food_Picture();
     		picture.setEnabled(true);
-    		picture.setVersion(new Date());
+    		picture.setVersion(new Date().getTime());
     		picture.setName("回锅炒肉");
     		picture.setSmall_image(new byte[]{1,2,3});
     		
@@ -126,11 +126,11 @@ public class TestFoodMapper {
     		tempFood.setPicture_id((long)22);
     		tempFood.setName("回锅肉2");
     		tempFood.setDescription("回锅肉更新了哈");
-    		tempFood.setPrice(new BigDecimal(98.12));
+    		tempFood.setPrice(98.1);
     		
     		Food_Picture picture = new Food_Picture();
     		picture.setEnabled(true);
-    		picture.setVersion(new Date());
+    		picture.setVersion(new Date().getTime());
     		picture.setName("回锅炒肉 图片2");
     		picture.setSmall_image(new byte[]{1,2,3,4,5,6});
     		picture.setBig_image(new byte[]{7,8,9});
@@ -165,7 +165,7 @@ public class TestFoodMapper {
     	try { 
     		FoodMapper foodMapper = sqlSession.getMapper(FoodMapper.class);
     		Food tempFood = new Food();
-    		tempFood.setName("回锅肉2");
+    		tempFood.setName("卤猪蹄");
     		
     		List<Food> newFoods = foodMapper.selectFoods(tempFood);
     		if(newFoods != null && newFoods.size() > 0) {

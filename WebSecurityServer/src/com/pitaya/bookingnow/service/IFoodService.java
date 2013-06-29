@@ -1,6 +1,7 @@
 package com.pitaya.bookingnow.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.pitaya.bookingnow.entity.Food;
 
@@ -17,5 +18,5 @@ public interface IFoodService {
 	
 	List<Food> searchFoods(Food food);
 	
-	
+	public Map<String, List<Food>> updateMenuFoods(List<Food> clientFoods);
 }
