@@ -6,12 +6,10 @@
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="version" property="version" jdbcType="BIGINT" />
 		<result column="enabled" property="enabled" jdbcType="BIT" />
-	</resultMap>
-	<resultMap id="ResultMapWithBLOBs"
-		type="com.pitaya.bookingnow.entity.Food_PictureWithBLOBs" extends="BaseResultMap">
 		<result column="big_image" property="big_image" jdbcType="LONGVARBINARY" />
 		<result column="small_image" property="small_image" jdbcType="LONGVARBINARY" />
 	</resultMap>
+	
 	<sql id="Base_Column_List">
 		id, name, version, enabled
 	</sql>
@@ -21,7 +19,7 @@
 	
 	
 	
-	<select id="searchFood_Pictures" resultMap="ResultMapWithBLOBs"
+	<select id="searchFood_Pictures" resultMap="BaseResultMap"
 		parameterType="java.lang.Long">
 		select
 		<include refid="Base_Column_List" />
@@ -48,7 +46,7 @@
 		</where>
 	</select>
 	
-	<select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs"
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Long">
 		select
 		<include refid="Base_Column_List" />
@@ -61,7 +59,7 @@
 		delete from pitaya_food_picture
 		where id = #{id,jdbcType=BIGINT}
 	</delete>
-	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Food_PictureWithBLOBs">
+	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Food_Picture">
 		<selectKey resultType="java.lang.Long" keyProperty="id"
 			order="AFTER">
 			SELECT LAST_INSERT_ID()
@@ -72,7 +70,7 @@
 		#{enabled,jdbcType=BIT},
 		#{big_image,jdbcType=LONGVARBINARY}, #{small_image,jdbcType=LONGVARBINARY})
 	</insert>
-	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Food_PictureWithBLOBs">
+	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Food_Picture">
 		<selectKey resultType="java.lang.Long" keyProperty="id"
 			order="AFTER">
 			SELECT LAST_INSERT_ID()
@@ -113,7 +111,7 @@
 			</if>
 		</trim>
 	</insert>
-	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Food_PictureWithBLOBs">
+	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Food_Picture">
 		update pitaya_food_picture
 		<set>
 			<if test="name != null">
@@ -134,7 +132,7 @@
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
-	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.pitaya.bookingnow.entity.Food_PictureWithBLOBs">
+	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.pitaya.bookingnow.entity.Food_Picture">
 		update pitaya_food_picture
 		set name = #{name,jdbcType=VARCHAR},
 		version = #{version,jdbcType=BIGINT},
