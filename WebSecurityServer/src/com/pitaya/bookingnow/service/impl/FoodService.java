@@ -103,7 +103,7 @@ public class FoodService implements IFoodService{
 		List<Food> newFoods = new ArrayList<Food>();
 		List<Food> deleteFoods = new ArrayList<Food>();
 		List<Food> updateFoods = new ArrayList<Food>();
-		List<Food> allDBFoods = new ArrayList<>();
+		List<Food> allDBFoods = new ArrayList<Food>();
 		
 		for (int i = 0; i < clientFoods.size(); i++) {
 			Food clientFood = clientFoods.get(i);

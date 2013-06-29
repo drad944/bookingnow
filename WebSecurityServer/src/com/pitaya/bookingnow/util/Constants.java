@@ -16,14 +16,17 @@ public class Constants {
 	public static final int SUCCESS = 50;
 	public static final int FAIL = SUCCESS + 1;
 	
+	public static final int SOCKET_CONNECTION = 100;
+	public static final int LOGIN_REQUEST = SOCKET_CONNECTION + 1;
+	
 	//table status
-	public static final int TABLE_STATUS = 100;
+	public static final int TABLE_STATUS = 200;
 	public static final int TABLE_EMPTY = TABLE_STATUS + 1;
 	public static final int TABLE_BOOKING = TABLE_EMPTY + 1;
 	public static final int TABLE_USING = TABLE_BOOKING + 1;
 	
 	//food version
-	public static final int FOOD_VERSION = 200;
+	public static final int FOOD_VERSION = 300;
 	public static final int FOOD_VERSION_1_0 = FOOD_VERSION + 1;
 	
 	//food preference
@@ -77,4 +80,9 @@ public class Constants {
 	public static final int RESOURCE_TYPE_HTML = RESOURCE_TYPE_JSP + 1;
 	public static final int RESOURCE_TYPE_CLASS = RESOURCE_TYPE_HTML + 1;
 	public static final int RESOURCE_TYPE_CLASS_METHOD = RESOURCE_TYPE_CLASS + 1;
+	
+	public static final int KITCHEN_ROLE = 1300;
+	public static final int WAITER_ROLE = KITCHEN_ROLE + 1;
+	public static final int WELCOME_ROLE = WAITER_ROLE + 1;
+	public static final int CASH_ROLE = WELCOME_ROLE + 1;
 }

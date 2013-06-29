@@ -19,10 +19,11 @@ import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.pitaya.bookingnow.message.BaseResultMessage;
 import com.pitaya.bookingnow.message.LoginMessage;
 import com.pitaya.bookingnow.message.LoginResultMessage;
 import com.pitaya.bookingnow.message.Message;
+import com.pitaya.bookingnow.message.ResultMessage;
+import com.pitaya.bookingnow.util.Constants;
 
 class ClientAgent extends Thread{
 	
@@ -32,7 +33,7 @@ class ClientAgent extends Thread{
 	PrintWriter out;
 	BufferedReader in;
 	String username;
-	String role;
+	Integer role;
 	
 	ClientAgent(MessageService service, Socket socket){
 		this.client_socket = socket;
@@ -149,12 +150,12 @@ public class MessageService {
 	private MessageServerThread serverThread;
 	private int port;
 	private boolean hasStarted;
-	private Map<String, Map<String, ClientAgent>> groups;
+	private Map<Integer, Map<String, ClientAgent>> groups;
 	
 	private MessageService(int port){
 		this.hasStarted = false;
 		this.port = port;
-		this.groups = new ConcurrentHashMap <String, Map<String, ClientAgent>>();
+		this.groups = new ConcurrentHashMap <Integer, Map<String, ClientAgent>>();
 		this.start();
 	}
 	
@@ -177,7 +178,7 @@ public class MessageService {
         				_instance.serverSocket.close();
         			}
         			_instance.hasStarted = false;
-					for(Entry<String, Map<String, ClientAgent>> entry : _instance.groups.entrySet()){
+					for(Entry<Integer, Map<String, ClientAgent>> entry : _instance.groups.entrySet()){
 						for(Entry<String, ClientAgent> subentry : ((Map<String, ClientAgent>)entry.getValue()).entrySet()){
 							subentry.getValue().shutdown();
 						}
@@ -218,7 +219,7 @@ public class MessageService {
 		return true;
 	}
 	
-	public boolean sendMessageToGroup(String groupType, Message message){
+	public boolean sendMessageToGroup(int groupType, Message message){
 		logger.info("Send message to group");
 		Map<String, ClientAgent> group = this.groups.get(groupType);
 		String msgstring = parseMessage(message);
@@ -241,19 +242,22 @@ public class MessageService {
 			String username = ((LoginMessage)message).getUsername();
 			String password = ((LoginMessage)message).getPassword();
 			String key = ((LoginMessage)message).getKey();
-			BaseResultMessage resultmsg = null;
+			ResultMessage resultmsg = null;
 			//Get password from database service
 			if(password.equals("123456")){
 				clientAgent.username = username;
 				//Get role from database service
 				clientAgent.role = Constants.WAITER_ROLE;
 				if(this.addClient(clientAgent)){
-					resultmsg = new BaseResultMessage(key, "login", "success", Constants.WAITER_ROLE);
+					resultmsg = new ResultMessage(key, Constants.LOGIN_REQUEST, 
+							Constants.SUCCESS, String.valueOf(Constants.WAITER_ROLE));
 				} else {
-					resultmsg = new BaseResultMessage(key, "login", "fail", "Can't login two clients with same user!");
+					resultmsg = new ResultMessage(key, Constants.LOGIN_REQUEST, 
+							Constants.FAIL, "Can't login two clients with same user!");
 				}
 			} else {
-				resultmsg = new BaseResultMessage(key, "login", "fail", "Wrong username or password!");
+				resultmsg = new ResultMessage(key, Constants.LOGIN_REQUEST, 
+						Constants.FAIL, "Wrong username or password!");
 			}
 			clientAgent.sendMessage(parseMessage(resultmsg));
 		}

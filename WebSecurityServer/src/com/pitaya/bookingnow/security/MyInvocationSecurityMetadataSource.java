@@ -92,7 +92,7 @@ public class MyInvocationSecurityMetadataSource
 				.getMapper(AuthorityMapper.class);
 		//List<String> query = authorityEntityMapper.selectAllAuthoritiesName();
 
-		List<String> query = new ArrayList<>();
+		List<String> query = new ArrayList<String>();
 		query.add("ROLE_USER");
 		query.add("ROLE_ADMIN");
 		
