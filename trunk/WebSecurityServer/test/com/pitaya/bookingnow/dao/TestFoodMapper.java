@@ -122,7 +122,7 @@ public class TestFoodMapper {
     	try { 
     		FoodMapper foodMapper = sqlSession.getMapper(FoodMapper.class);
     		Food tempFood = new Food();
-    		tempFood.setId((long)22);
+    		tempFood.setId((long)21);
     		tempFood.setPicture_id((long)22);
     		tempFood.setName("回锅肉2");
     		tempFood.setDescription("回锅肉更新了哈");
@@ -165,7 +165,7 @@ public class TestFoodMapper {
     	try { 
     		FoodMapper foodMapper = sqlSession.getMapper(FoodMapper.class);
     		Food tempFood = new Food();
-    		tempFood.setName("回锅肉");
+    		tempFood.setName("回锅肉2");
     		
     		List<Food> newFoods = foodMapper.selectFoods(tempFood);
     		if(newFoods != null && newFoods.size() > 0) {

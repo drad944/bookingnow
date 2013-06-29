@@ -40,10 +40,8 @@
         <typeAlias alias="Food_Picture"  type="com.pitaya.bookingnow.entity.Food_Picture" /> 
         <typeAlias alias="Food"  type="com.pitaya.bookingnow.entity.Food" /> 
         <typeAlias alias="Material"  type="com.pitaya.bookingnow.entity.Material" /> 
-        <typeAlias alias="Order_Customer_Detail"  type="com.pitaya.bookingnow.entity.Order_Customer_Detail" /> 
         <typeAlias alias="Order_Food_Detail"  type="com.pitaya.bookingnow.entity.Order_Food_Detail" /> 
         <typeAlias alias="Order_Table_Detail"  type="com.pitaya.bookingnow.entity.Order_Table_Detail" /> 
-        <typeAlias alias="Order_User_Detail"  type="com.pitaya.bookingnow.entity.Order_User_Detail" /> 
         <typeAlias alias="Order"  type="com.pitaya.bookingnow.entity.Order" /> 
         <typeAlias alias="Table"  type="com.pitaya.bookingnow.entity.Table" />
          
@@ -100,10 +98,8 @@
 		<mapper resource="com/pitaya/bookingnow/resource/CustomerMapper.xml" />
 		<mapper resource="com/pitaya/bookingnow/resource/Customer_PictureMapper.xml" />
 		<mapper resource="com/pitaya/bookingnow/resource/OrderMapper.xml" />
-		<mapper resource="com/pitaya/bookingnow/resource/Order_Customer_DetailMapper.xml" />
 		<mapper resource="com/pitaya/bookingnow/resource/Order_Food_DetailMapper.xml" />
 		<mapper resource="com/pitaya/bookingnow/resource/Order_Table_DetailMapper.xml" />
-		<mapper resource="com/pitaya/bookingnow/resource/Order_User_DetailMapper.xml" />
 		<mapper resource="com/pitaya/bookingnow/resource/TableMapper.xml" />
 		
 		
