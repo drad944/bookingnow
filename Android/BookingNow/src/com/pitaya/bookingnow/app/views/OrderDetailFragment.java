@@ -2,8 +2,8 @@ package com.pitaya.bookingnow.app.views;
 
 import java.util.Map.Entry;
 
+import com.pitaya.bookingnow.app.data.OrderDetailFragmentAdapter;
 import com.pitaya.bookingnow.app.model.Order;
-import com.pitaya.bookingnow.app.model.OrderDetailFragmentAdapter;
 import com.pitaya.bookingnow.app.model.Order.Food;
 
 import android.os.Bundle;

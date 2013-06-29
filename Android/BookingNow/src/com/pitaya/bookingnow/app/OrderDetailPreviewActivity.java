@@ -21,8 +21,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.pitaya.bookingnow.app.data.OrderDetailPreviewAdapter;
 import com.pitaya.bookingnow.app.model.Order;
-import com.pitaya.bookingnow.app.model.OrderDetailPreviewAdapter;
 import com.pitaya.bookingnow.app.model.Order.Food;
 import com.pitaya.bookingnow.app.service.DataService;
 import java.util.Map.Entry;

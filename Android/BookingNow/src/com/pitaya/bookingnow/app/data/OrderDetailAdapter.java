@@ -1,4 +1,4 @@
-package com.pitaya.bookingnow.app.model;
+package com.pitaya.bookingnow.app.data;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +22,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ListView;
 import com.pitaya.bookingnow.app.R;
+import com.pitaya.bookingnow.app.model.Order;
+import com.pitaya.bookingnow.app.model.Order.Food;
+import com.pitaya.bookingnow.app.model.Order.OnFoodStatusChangedListener;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.RoleManager;
 

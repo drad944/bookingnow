@@ -16,9 +16,10 @@ public class FoodMenuTable {
 	  public static final String COLUMN_STATUS = "status";
 	  public static final String COLUMN_RECOMMENDATION = "recommendation";
 	  public static final String COLUMN_ORDERINDEX = "orderidx";
-	  public static final String COLUMN_IMAGE_S = "largeimage";
-	  public static final String COLUMN_IMAGE_L = "smallimage";
+//	  public static final String COLUMN_IMAGE_S = "largeimage";
+//	  public static final String COLUMN_IMAGE_L = "smallimage";
 	  public static final String COLUMN_REVISION = "revision";
+	  public static final String COLUMN_IAMGE_REVISION = "image_revision";
 	  
 	  private static final String TABLE_CREATE = "create table " 
 		      + TABLE_FOOD
@@ -32,10 +33,11 @@ public class FoodMenuTable {
 		      + COLUMN_PRICE + " real not null," 
 		      + COLUMN_STATUS + " text not null," 
 		      + COLUMN_RECOMMENDATION + " text," 
-		      + COLUMN_ORDERINDEX + " integer not null,"
-		      + COLUMN_IMAGE_S + " blob not null," 
-		      + COLUMN_IMAGE_L + " blob not null," 
-		      + COLUMN_REVISION + " text not null" 
+		      + COLUMN_ORDERINDEX + " integer,"
+//		      + COLUMN_IMAGE_S + " text not null," 
+//		      + COLUMN_IMAGE_L + " text not null," 
+		      + COLUMN_REVISION + " text not null," 
+		      + COLUMN_IAMGE_REVISION + " text not null"
 		      + ");";
 
 	 public static void onCreate(SQLiteDatabase database) {

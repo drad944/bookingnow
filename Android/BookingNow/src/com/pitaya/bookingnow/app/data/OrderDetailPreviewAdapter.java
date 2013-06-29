@@ -1,4 +1,4 @@
-package com.pitaya.bookingnow.app.model;
+package com.pitaya.bookingnow.app.data;
 
 import android.content.Context;
 import android.view.View;
@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.OrderDetailPreviewActivity;
+import com.pitaya.bookingnow.app.model.Order;
+import com.pitaya.bookingnow.app.model.Order.OnDirtyChangedListener;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookinnow.app.util.ToastUtil;
 

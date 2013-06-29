@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
@@ -30,13 +31,19 @@ import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout.LayoutParams;
 
 import com.aphidmobile.flip.FlipViewController;
+import com.pitaya.bookingnow.app.data.AsyncDrawable;
+import com.pitaya.bookingnow.app.data.AsyncImageTask;
+import com.pitaya.bookingnow.app.data.FlipAsyncImageTask;
+import com.pitaya.bookingnow.app.data.OrderDetailAdapter;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.model.Order;
-import com.pitaya.bookingnow.app.model.OrderDetailAdapter;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
+import com.pitaya.bookinnow.app.util.Constants;
 
 public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderCallbacks<Cursor>{
+	
+	public static final int MENU_LOADER =  0;
 	
 	private FlipViewController flipView;
 	private Order mOrder;
@@ -47,6 +54,7 @@ public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderC
 	private View mFoodStepper;
 	private Food mCurrentFood;
 	private ArrayList<Food> mFoodsList;
+	private Bitmap placeholderBitmap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,7 +85,8 @@ public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderC
 			}
 			  
 		  });
-		  this.getLoaderManager().initLoader(0, null, (LoaderCallbacks<Cursor>) this);
+		  placeholderBitmap = BitmapFactory.decodeResource(getResources(), android.R.drawable.dark_header);
+		  this.getLoaderManager().initLoader(MENU_LOADER, null, (LoaderCallbacks<Cursor>) this);
     }
     
     private void updateCurrentFoodInfo(){
@@ -231,21 +240,23 @@ public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderC
 						FoodMenuTable.COLUMN_FOOD_KEY,
 						FoodMenuTable.COLUMN_NAME,
 						FoodMenuTable.COLUMN_PRICE,
+						FoodMenuTable.COLUMN_RECOMMENDATION,
 						FoodMenuTable.COLUMN_DESCRIPTION,
-						FoodMenuTable.COLUMN_CATEGORY,
-						FoodMenuTable.COLUMN_IMAGE_L
+						FoodMenuTable.COLUMN_CATEGORY
 				});
 				for(cursor.moveToFirst(); ! cursor.isAfterLast(); cursor.moveToNext()){
 					String key = cursor.getString(indexs[0]);
 					String name = cursor.getString(indexs[1]);
 					float price = cursor.getFloat(indexs[2]);
-					String desc = cursor.getString(indexs[3]);
-					String category = cursor.getString(indexs[4]);
-					byte[] image = cursor.getBlob(indexs[5]);
-					mFoodsList.add(new Food(key, name, price, desc, category, null, image));
+					boolean isRecmd = Boolean.parseBoolean(cursor.getString(indexs[3]));
+					String desc = cursor.getString(indexs[4]);
+					String category = cursor.getString(indexs[5]);
+					mFoodsList.add(new Food(key, name, price, desc, category, isRecmd));
 				}
+				
 				//Update flip view
 				flipView.setAdapter(new BaseAdapter() {
+					
 				      @Override
 				      public int getCount() {
 				        return mFoodsList.size();
@@ -270,10 +281,28 @@ public class FoodBookActivity2 extends Activity implements LoaderManager.LoaderC
 				          view = new ImageView(context);
 				          ((ImageView)view).setScaleType(ScaleType.FIT_CENTER);
 				        }
-				        ((ImageView)view).setImageBitmap(BitmapFactory
-				        	  .decodeByteArray(food.getLargeImage(), 0, food.getLargeImage().length));
-				        return view;
+
+				         boolean needReload = true;
+				         AsyncImageTask previousTask = AsyncDrawable.getTask(((ImageView)view));
+				         if (previousTask != null) {
+					           if (previousTask.getPageIndex() == position && previousTask.getImageName()
+					               .equals(food.getLargeImageName()))  {
+					        	   needReload = false;
+					           } else {
+					        	   previousTask.cancel(true);
+					           }
+				         }
+
+				         if (needReload) {
+					           AsyncImageTask task = new FlipAsyncImageTask(flipView, FoodBookActivity2.this, ((ImageView)view),
+					        		   position, food.getLargeImageName());
+					           ((ImageView)view).setImageDrawable(new AsyncDrawable(FoodBookActivity2.this.getResources(), 
+					        		   placeholderBitmap, task));
+					           task.execute();
+				         }
+				         return view;
 				      }
+				      
 				}, index);
 				//Update current food
 				if(mFoodsList.size() > index){

@@ -13,7 +13,7 @@ public class Message implements Serializable, IJSONTransition{
 	private static final long serialVersionUID = 6356895567978585140L;
 	
 	private String key;
-	protected String type; 
+	protected String type;
 	
 	public Message(){}
 	
