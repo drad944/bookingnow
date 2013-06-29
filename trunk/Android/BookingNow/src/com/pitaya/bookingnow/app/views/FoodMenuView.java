@@ -2,7 +2,13 @@ package com.pitaya.bookingnow.app.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,16 +27,23 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.pitaya.bookingnow.app.FoodBookActivity;
+
+import com.aphidmobile.utils.IO;
 import com.pitaya.bookingnow.app.FoodBookActivity2;
 import com.pitaya.bookingnow.app.R;
+import com.pitaya.bookingnow.app.data.AsyncDrawable;
+import com.pitaya.bookingnow.app.data.AsyncImageTask;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.DataService;
+import com.pitaya.bookinnow.app.util.FileUtil;
 
+import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 
 /*
@@ -83,11 +96,14 @@ public class FoodMenuView extends FrameLayout{
 		private View mView;
 		private EditText mEditText;
 		private Map<Integer, TextWatcher> watchers;
+		private Bitmap placeholderBitmap;
        
         public ImageAdapter(Context c, View view) throws IllegalArgumentException, IllegalAccessException{  
             mContext = c;
             this.mView = view;
             this.watchers = new HashMap<Integer, TextWatcher>();
+            //Use a system resource as the placeholder
+            placeholderBitmap = BitmapFactory.decodeResource(mContext.getResources(), android.R.drawable.dark_header);
         }
         
         @Override
@@ -111,11 +127,28 @@ public class FoodMenuView extends FrameLayout{
 	         final int index = position;
 	         View view = convertView;
 	         if(view == null){
-	        	view = View.inflate(mContext, R.layout.foodview, null);
+	        	 view = View.inflate(mContext, R.layout.foodview, null);
 	         }
 			 RelativeLayout fooditemRL = (RelativeLayout) view.findViewById(R.id.fooditem);
 	         ImageView image = (ImageView) fooditemRL.findViewById(R.id.image);
-	         image.setImageBitmap(BitmapFactory.decodeByteArray(food.getSmallImage(), 0, food.getSmallImage().length));
+	         
+	         boolean needReload = true;
+	         AsyncImageTask previousTask = AsyncDrawable.getTask(image);
+	         if (previousTask != null) {
+		           if (previousTask.getPageIndex() == position && previousTask.getImageName()
+		               .equals(food.getSmallImageName()))  {
+		        	   needReload = false;
+		           } else {
+		        	   previousTask.cancel(true);
+		           }
+	         }
+
+	         if (needReload) {
+		            AsyncImageTask task = new AsyncImageTask(mContext, image, position, food.getSmallImageName());
+		           	image .setImageDrawable(new AsyncDrawable(mContext.getResources(), placeholderBitmap, task));
+		           	task.execute();
+	         }
+
 	         TextView text = (TextView) fooditemRL.findViewById(R.id.introduction);
 	         text.setTextSize(20);
 	         String name = food.getName();
@@ -123,8 +156,7 @@ public class FoodMenuView extends FrameLayout{
 	         text.setText(name + "\n\n" + desc);
 	         
 	         if(food.getCategory() != null && !food.getCategory().equals("")){
-	         	
-	         	image.setOnClickListener(new OnClickListener(){
+	         	 image.setOnClickListener(new OnClickListener(){
 	             	
 					@Override
 					public void onClick(View v) {
@@ -279,6 +311,7 @@ public class FoodMenuView extends FrameLayout{
 		            }
 	         	}
 	        } else {
+	        	//Display category item view
         		image.setOnClickListener(new OnClickListener(){
              	
 					@Override
@@ -293,4 +326,5 @@ public class FoodMenuView extends FrameLayout{
         }
           
     }
+
 }

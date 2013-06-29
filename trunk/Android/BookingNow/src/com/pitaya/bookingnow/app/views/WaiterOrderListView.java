@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.pitaya.bookingnow.app.HomeActivity;
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.DataService;
@@ -62,7 +63,7 @@ public class WaiterOrderListView extends FrameLayout implements LoaderManager.Lo
     	switch(mListType){
     		case WaiterOrderLeftView.MYORDERS:
     			//TODO get my orders from server
-    			mParentView.getActivity().getLoaderManager().initLoader(1, null, (LoaderCallbacks<Cursor>) this);
+    			mParentView.getActivity().getLoaderManager().initLoader(HomeActivity.ORDER_LIST_LOADER, null, (LoaderCallbacks<Cursor>) this);
     			break;
     		case WaiterOrderLeftView.WAITING_ORDERS:
     			//TODO get my orders from server

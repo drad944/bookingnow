@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import com.pitaya.bookingnow.app.model.Order;
-import com.pitaya.bookingnow.app.model.OrderDetailAdapter;
+import com.pitaya.bookingnow.app.model.Food;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,22 +13,29 @@ import android.database.Cursor;
 
 public class DataService {
 
+	public static CursorLoader getFoodCheckingData(Context context){
+		String[] projection = {
+	    		FoodMenuTable.COLUMN_ID,
+	    		FoodMenuTable.COLUMN_REVISION, 
+	    		FoodMenuTable.COLUMN_IAMGE_REVISION};
+		CursorLoader cursorLoader = new CursorLoader(context, FoodMenuContentProvider.CONTENT_URI, 
+				projection, null, null, FoodMenuTable.COLUMN_ORDERINDEX);
+		return cursorLoader;
+	}
+	
 	public static CursorLoader getAllFoodData(Context context){
 		String[] projection = { 		    		
 				FoodMenuTable.COLUMN_CATEGORY, 
 	    		FoodMenuTable.COLUMN_DESCRIPTION,
 	    		FoodMenuTable.COLUMN_FOOD_KEY, 
-	    		FoodMenuTable.COLUMN_ID, 
-	    		FoodMenuTable.COLUMN_IMAGE_S,
-	    		FoodMenuTable.COLUMN_IMAGE_L,
+	    		FoodMenuTable.COLUMN_ID,
 	    		FoodMenuTable.COLUMN_MATERIAL, 
 	    		FoodMenuTable.COLUMN_NAME,
 	    		FoodMenuTable.COLUMN_PRICE,
 	    		FoodMenuTable.COLUMN_RECOMMENDATION,
-	    		FoodMenuTable.COLUMN_ORDERINDEX,
 	    		FoodMenuTable.COLUMN_STATUS };
 		CursorLoader cursorLoader = new CursorLoader(context, FoodMenuContentProvider.CONTENT_URI, 
-				projection, null, null, FoodMenuTable.COLUMN_ORDERINDEX);
+				projection, null, null, null);
 		return cursorLoader;
 	}
 	
@@ -37,14 +44,13 @@ public class DataService {
 				FoodMenuTable.COLUMN_CATEGORY, 
 	    		FoodMenuTable.COLUMN_DESCRIPTION,
 	    		FoodMenuTable.COLUMN_FOOD_KEY,
-	    		FoodMenuTable.COLUMN_IMAGE_L,
 	    		FoodMenuTable.COLUMN_NAME,
 	    		FoodMenuTable.COLUMN_PRICE,
+	    		FoodMenuTable.COLUMN_RECOMMENDATION,
 	    		FoodMenuTable.COLUMN_ORDERINDEX,
 	    		FoodMenuTable.COLUMN_STATUS };
 		  CursorLoader cursorLoader = new CursorLoader(context, FoodMenuContentProvider.CONTENT_URI, 
-				projection, FoodMenuTable.COLUMN_CATEGORY + "=?", 
-				new String[]{category}, FoodMenuTable.COLUMN_ORDERINDEX);
+				projection, FoodMenuTable.COLUMN_CATEGORY + "=?",  new String[]{category}, null);
 		  return cursorLoader;
 	}
 	
@@ -68,6 +74,48 @@ public class DataService {
 					projection, OrderTable.COLUMN_STATUS + "=?", 
 					new String[]{String.valueOf(status)},OrderTable.COLUMN_LAST_MODIFACTION_DATE);
 		}
+	}
+	
+	public static void addNewFood(Context context, Food food){
+		ContentValues values = new ContentValues();
+		values.put(FoodMenuTable.COLUMN_FOOD_KEY, food.getKey());
+		values.put(FoodMenuTable.COLUMN_NAME, food.getName());
+		values.put(FoodMenuTable.COLUMN_CATEGORY, food.getCategory());
+		values.put(FoodMenuTable.COLUMN_PRICE, food.getPrice());
+		values.put(FoodMenuTable.COLUMN_DESCRIPTION, food.getDescription());
+		values.put(FoodMenuTable.COLUMN_RECOMMENDATION, "false");
+		values.put(FoodMenuTable.COLUMN_STATUS, food.getStatus());
+		values.put(FoodMenuTable.COLUMN_REVISION, food.getVersion());
+		values.put(FoodMenuTable.COLUMN_IAMGE_REVISION, food.getImageVersion());
+		context.getContentResolver().insert(FoodMenuContentProvider.CONTENT_URI, values);
+	}
+	
+	public static void removeFood(Context context, String foodkey){
+		context.getContentResolver().delete(FoodMenuContentProvider.CONTENT_URI,
+				FoodMenuTable.COLUMN_FOOD_KEY +"=?",
+				new String[]{foodkey});
+	}
+	
+	public static void updateFood(Context context, Food food){
+		ContentValues values = new ContentValues();
+		values.put(FoodMenuTable.COLUMN_NAME, food.getName());
+		values.put(FoodMenuTable.COLUMN_CATEGORY, food.getCategory());
+		values.put(FoodMenuTable.COLUMN_PRICE, food.getPrice());
+		values.put(FoodMenuTable.COLUMN_DESCRIPTION, food.getDescription());
+		//values.put(FoodMenuTable.COLUMN_RECOMMENDATION, "false");
+		values.put(FoodMenuTable.COLUMN_STATUS, food.getStatus());
+		values.put(FoodMenuTable.COLUMN_REVISION, food.getVersion());
+		context.getContentResolver().update(FoodMenuContentProvider.CONTENT_URI, values, 
+				FoodMenuTable.COLUMN_FOOD_KEY + "=?", 
+				new String[]{food.getKey()});
+	}
+	
+	public static void updateFoodImage(Context context, String foodkey, String imageversion){
+		ContentValues values = new ContentValues();
+		values.put(FoodMenuTable.COLUMN_IAMGE_REVISION, imageversion);
+		context.getContentResolver().update(FoodMenuContentProvider.CONTENT_URI, values, 
+				FoodMenuTable.COLUMN_FOOD_KEY + "=?", 
+				new String[]{ foodkey});
 	}
 	
 	public static void getFoodsOfOrder(Context context, Order order){
@@ -116,13 +164,14 @@ public class DataService {
 		values.put(OrderTable.COLUMN_STATUS, status);
 		String tablenum = order.getTableNum();
 		String submitter = order.getSubmitter();
-		if(tablenum != null && submitter != null){
+		if(tablenum != null){
 			values.put(OrderTable.COLUMN_TABLE_NUMBER, tablenum);
 			values.put(OrderTable.COLUMN_SUBMITTER, submitter);
 		} else {
 			String customer = order.getCustomerName();
 			String phone = order.getPhoneNumber();
 			int count = order.getPeopleCount();
+			values.put(OrderTable.COLUMN_SUBMITTER, submitter);
 			values.put(OrderTable.COLUMN_CUSTOMER, customer);
 			values.put(OrderTable.COLUMN_PHONE, phone);
 			values.put(OrderTable.COLUMN_PEOPLE_COUNT, count);

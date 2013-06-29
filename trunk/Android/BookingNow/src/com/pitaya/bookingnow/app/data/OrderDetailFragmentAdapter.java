@@ -1,23 +1,10 @@
-package com.pitaya.bookingnow.app.model;
+package com.pitaya.bookingnow.app.data;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.ParseException;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -26,11 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pitaya.bookingnow.app.*;
+import com.pitaya.bookingnow.app.model.Order;
+import com.pitaya.bookingnow.app.model.Order.OnDirtyChangedListener;
 import com.pitaya.bookingnow.app.model.Order.OnOrderStatusChangedListener;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.HttpService;
+import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.views.OrderDetailFragment;
-import com.pitaya.bookingnow.message.BaseResultMessage;
+import com.pitaya.bookingnow.message.ResultMessage;
 import com.pitaya.bookinnow.app.util.ToastUtil;
 
 public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
@@ -67,37 +57,50 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 					@Override
 					public void onClick(View v) {
 						//TODO commit the order and remove it from local database
-						JSONObject orderDetail = new JSONObject();
-						JSONObject orderJson = new JSONObject();
-						try {
-							orderDetail.put("order_id", "123123123");
-							orderJson.put("order", orderDetail);
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-						HttpService.setUrl("http://192.168.0.102:18080/Booking/commitOrder.action");
-						try {
-							HttpService.post(new StringEntity(orderJson.toString()), new Handler(){
-							    
-								@Override  
-							    public void handleMessage(Message msg) {
-							        super.handleMessage(msg);
-							        Bundle bundle = msg.getData();  
-							        String result =bundle.getString("result");
-									try {
-										Log.i(TAG, result);
-									} catch (ParseException e) {
-										e.printStackTrace();
-									}
-									//DataService.removeOrder(mContext, mOrder.getOrderKey());
-									ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
-									mOrder.markDirty(false);
-									mOrder.setStatus(Order.COMMITED);
-							    }
-							});
-						} catch (UnsupportedEncodingException e) {
-							e.printStackTrace();
-						}
+						HttpService.testDownload(mContext, "tests.jpg",new HttpHandler(){
+						    
+							@Override  
+						    public void onSuccess(String response) {
+								//DataService.removeOrder(mContext, mOrder.getOrderKey());
+								ToastUtil.showToast(mContext, "文件下载成功", Toast.LENGTH_SHORT);
+						    }
+							
+							@Override
+							public void onFail(int statuscode){
+								ToastUtil.showToast(mContext, "文件下载失败", Toast.LENGTH_SHORT);
+							}
+							
+						});
+						HttpService.testDownload(mContext, "testl.jpg", new HttpHandler(){
+						    
+							@Override  
+						    public void onSuccess(String response) {
+								//DataService.removeOrder(mContext, mOrder.getOrderKey());
+								ToastUtil.showToast(mContext, "文件下载成功", Toast.LENGTH_SHORT);
+						    }
+							
+							@Override
+							public void onFail(int statusCode){
+								ToastUtil.showToast(mContext, "文件下载失败", Toast.LENGTH_SHORT);
+							}
+							
+						});
+//						OrderService.commitOrder(mOrder, new HttpHandler(){
+//						    
+//							@Override  
+//						    public void onSuccess(String response) {
+//								Log.i(TAG, response);
+//								//DataService.removeOrder(mContext, mOrder.getOrderKey());
+//								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
+//								mOrder.setStatus(Order.COMMITED);
+//						    }
+//							
+//							@Override
+//							public void onFail(int statusCode){
+//								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitfail), Toast.LENGTH_SHORT);
+//							}
+//							
+//						});
 					}
 					
 				});
@@ -126,7 +129,7 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 
 					@Override
 					public void onDirtyChanged(Order order, boolean flag) {
-						setViewByOrderStatus(itemView);
+						 setViewByOrderStatus(itemView);
 					}
 					
 				});

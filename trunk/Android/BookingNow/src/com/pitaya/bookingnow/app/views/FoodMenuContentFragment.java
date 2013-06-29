@@ -19,11 +19,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.pitaya.bookingnow.app.HomeActivity;
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.OrderDetailPreviewActivity;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
+import com.pitaya.bookinnow.app.util.Constants;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -48,7 +51,8 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		}
 			
 		public int getCurrentViewIndex(){
-			if(this.mFoodMenuViewPager != null && this.mFoodMenuAdapter != null){
+			if(this.mFoodMenuViewPager != null && this.mFoodMenuAdapter != null
+					&& this.mFoodMenuAdapter.getCount() > 0){
 				return this.mFoodMenuViewPager.getCurrentItem();
 			} else {
 				return -1;
@@ -82,7 +86,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			mFoodMenuContentView = inflater.inflate(R.layout.foodmenucontentview, container, false);
 			mFoodMenuViewPager = (ViewPager)mFoodMenuContentView.findViewById(R.id.foodmenuviewpager);
 			
-			this.getActivity().getLoaderManager().initLoader(0, null, (LoaderCallbacks<Cursor>) this);
+			this.getActivity().getLoaderManager().initLoader(HomeActivity.MENU_LOADER, null, (LoaderCallbacks<Cursor>) this);
 			
 			TextView showOrderBtn = (TextView)mFoodMenuContentView.findViewById(R.id.showOrder);
 			if(this.mContentContainer.getOrder() != null){
@@ -140,7 +144,6 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 
 		@Override
 		public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-			Log.e(TAG, "Get food menu from database " + (cursor == null));
 			if (cursor != null) {
 				Map<String, ArrayList<Food>> foods = new LinkedHashMap<String, ArrayList<Food>>();
 				foods.put("全部", new ArrayList<Food>());
@@ -148,23 +151,23 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 						FoodMenuTable.COLUMN_FOOD_KEY,
 						FoodMenuTable.COLUMN_NAME,
 						FoodMenuTable.COLUMN_PRICE,
+						FoodMenuTable.COLUMN_RECOMMENDATION,
 						FoodMenuTable.COLUMN_DESCRIPTION,
-						FoodMenuTable.COLUMN_CATEGORY,
-						FoodMenuTable.COLUMN_IMAGE_S
+						FoodMenuTable.COLUMN_CATEGORY
 				});
 				for(cursor.moveToFirst(); ! cursor.isAfterLast(); cursor.moveToNext()){
 					String key = cursor.getString(indexs[0]);
 					String name = cursor.getString(indexs[1]);
 					float price = cursor.getFloat(indexs[2]);
-					String desc = cursor.getString(indexs[3]);
-					String category = cursor.getString(indexs[4]);
-					byte[] image = cursor.getBlob(indexs[5]);
+					boolean isRecmd = Boolean.parseBoolean(cursor.getString(indexs[3]));
+					String desc = cursor.getString(indexs[4]);
+					String category = cursor.getString(indexs[5]);
 					ArrayList<Food> foodsByCategory = foods.get(category);
 					if(foods.get(category) == null){
 						foodsByCategory = new ArrayList<Food>();
 						foods.put(category, foodsByCategory);
 					}
-					foodsByCategory.add(new Food(key, name, price, desc, category, image));
+					foodsByCategory.add(new Food(key, name, price, desc, category, isRecmd));
 				}
 				ArrayList<Food> allCategory = null;
 				for(Entry<String, ArrayList<Food>> entry : foods.entrySet()){
@@ -172,7 +175,8 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 						allCategory = entry.getValue();
 					} else {
 						//This is for category view
-						allCategory.add(new Food(null, entry.getKey(), 0f, "", "", entry.getValue().get(0).getSmallImage()));
+						Food firstFood = entry.getValue().get(0);
+						allCategory.add(new Food(firstFood.getKey(), entry.getKey(), 0f, "", null, false));
 					}
 				}
 				mFoodMenuAdapter = new FoodMenuAdapter(mFoodMenuContentView.getContext(),  foods);
@@ -199,14 +203,14 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			
 				private Context mContext;
 				private ArrayList<FoodMenuView> mFoodMenus;
-				private Map<String, ArrayList<Food>> mFoodList;
+				private Map<String, ArrayList<Food>> mFoodPages;
 				private List<String> mTitleList;
 			
 			    public FoodMenuAdapter(Context context, Map<String, ArrayList<Food>> foods) {
 			        this.mContext = context;
 			        mFoodMenus = new ArrayList<FoodMenuView>();
 			        mTitleList = new ArrayList<String>();
-			        mFoodList = foods;
+			        mFoodPages = foods;
 			        for(Entry<String, ArrayList<Food>> entry : foods.entrySet()){
 						mTitleList.add(entry.getKey());
 			        }
@@ -238,7 +242,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			        	menuView = new FoodMenuView(mContext);
 			        	menuView.setContentContainer(mContentContainer);
 		            	int index = 0;
-				        for(Entry<String, ArrayList<Food>> entry : this.mFoodList.entrySet()){
+				        for(Entry<String, ArrayList<Food>> entry : this.mFoodPages.entrySet()){
 							if((index++) == position){
 								menuView.setupViews(entry.getValue());
 								break;
@@ -252,7 +256,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		      
 				@Override
 				public int getCount() {
-					return mFoodList.size();
+					return mFoodPages.size();
 				}
 				
 				@Override

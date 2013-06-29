@@ -1,29 +1,39 @@
 package com.pitaya.bookingnow.app;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.pitaya.bookingnow.app.R;
-
+import com.pitaya.bookingnow.app.data.HttpHandler;
+import com.pitaya.bookingnow.app.data.ProgressHandler;
+import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.model.Order;
+import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuContentProvider;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
+import com.pitaya.bookingnow.app.service.FoodService;
 import com.pitaya.bookingnow.app.service.MessageService;
 import com.pitaya.bookingnow.app.views.*;
 import com.pitaya.bookingnow.message.*;
-import com.pitaya.bookinnow.app.util.ToastUtil;
+import com.pitaya.bookinnow.app.util.*;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.LoaderManager;
 import android.app.ProgressDialog;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -41,11 +51,17 @@ import android.view.LayoutInflater;
 import android.content.ContentValues;
 import android.content.DialogInterface;  
 import android.content.Intent;
+import android.content.Loader;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-public class HomeActivity extends FragmentActivity {
+public class HomeActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+	
+	public static final int MENU_CHECKING_LOADER = 0;
+	public static final int MENU_LOADER = MENU_CHECKING_LOADER + 1;
+	public static final int ORDER_LIST_LOADER = MENU_LOADER + 1;
 	
 	private static String TAG = "HomeActivity";
 	private static String messageKey = UUID.randomUUID().toString();
@@ -90,9 +106,12 @@ public class HomeActivity extends FragmentActivity {
 	public void onResume() {
 		super.onResume();
 		Log.i(TAG, "Role is " + this.role);
-		MessageService.initService("192.168.0.102", 19191);
-		if(messageService.isConnecting()){ 
-			showConnectResultToast("正在连接服务器...");
+		if(!messageService.isReady()){
+			if(messageService.isConnecting()){ 
+				showConnectResultToast("正在连接服务器...");
+			} else {
+				MessageService.initService("192.168.0.102", 19191);
+			}
 		}
 	}
 	
@@ -241,53 +260,137 @@ public class HomeActivity extends FragmentActivity {
 		this.showLoginDialog(error);
 	}
 	
-	private void handleLoginResultMsg(BaseResultMessage message){
+	private void handleLoginResultMsg(ResultMessage message){
 		this.progressingDialog.dismiss();
-		if(message.getResult().equals("success")){
+		if(message.getResult() == Constants.SUCCESS){
 			Log.i("HomeActivity", "Success to login");
 			this.role = message.getDetail();
 			this.loginDialog.dismiss();
 			//updateHomeContent(null);
-		} else if(message.getResult().equals("fail")){
+		} else if(message.getResult() == Constants.FAIL){
 			this.showLoginDialog(message.getDetail());
 		}
 	}
 	
-	private void handleConnectResultMsg(BaseResultMessage message){
+	private void handleConnectResultMsg(ResultMessage message){
 		showConnectResultToast(message.getDetail());
+		if(message.getResult() == Constants.SUCCESS){
+			this.checkMenuUpdate();
+		}
 	}
 	
 	
 	private class MessageHandler extends Handler{
+		
         @Override  
         public void handleMessage(Message msg) {
             super.handleMessage(msg);  
             Bundle bundle = msg.getData();  
             Object obj =bundle.getSerializable("message");
-            if(obj instanceof BaseResultMessage){
-            	BaseResultMessage resultmsg = (BaseResultMessage)obj;
-            	if(resultmsg.getRequestType().equals("login")){
+            if(obj instanceof ResultMessage){
+            	ResultMessage resultmsg = (ResultMessage)obj;
+            	if(resultmsg.getRequestType() == Constants.LOGIN_REQUEST){
             		handleLoginResultMsg(resultmsg);
-            	} else if(resultmsg.getRequestType().equals("connection")){
+            	} else if(resultmsg.getRequestType() == Constants.SOCKET_CONNECTION){
             		handleConnectResultMsg(resultmsg);
             	}
             }
         }
     }
 	
-	//Temp function for test
-	private byte[] getIconData(Bitmap bitmap){
-	    int size = bitmap.getWidth()*bitmap.getHeight()*4;
-	    ByteArrayOutputStream out = new ByteArrayOutputStream(size);
-	    try {
-	        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-	        out.close();
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
-	    return out.toByteArray();
+	private void checkMenuUpdate(){
+		getLoaderManager().initLoader(MENU_CHECKING_LOADER, null, (LoaderCallbacks<Cursor>) this);
 	}
 	
+	private void executeUpdateMenu(Map<String, ArrayList<Food>> foodsToUpdate){
+		int total = 0;
+		for(Entry<String, ArrayList<Food>> entry : foodsToUpdate.entrySet()){
+			total += entry.getValue().size();
+		}
+		if(total > 0){
+			final ProgressDialog updateProgressDialog=new ProgressDialog(this);
+			updateProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL|ProgressDialog.THEME_HOLO_DARK);
+			updateProgressDialog.setTitle("菜单更新中");
+			updateProgressDialog.setProgress(total);
+			updateProgressDialog.setCancelable(false);
+			updateProgressDialog.show();
+			FoodService.updateMenuFoods(this, foodsToUpdate, new ProgressHandler(total){
+
+				@Override
+				public void onSuccess(String response){
+					Log.i(TAG, "Success to update food " + this.index);
+					updateProgressDialog.setProgress(this.index);
+				}
+				
+				@Override
+				public void onFail(int statuscode){
+					Log.w(TAG, "Fail to update food " + this.index +", status code  is " + statuscode);
+					updateProgressDialog.setProgress(this.index);
+				}
+				
+				@Override
+				public void onOtherFail(String detail){
+					Log.w(TAG, "Fail to update food " + this.index + ", detail is " + detail);
+					updateProgressDialog.setProgress(this.index);
+				}
+				
+			});
+		} else {
+			Log.i(TAG, "The menu is latest.");
+		}
+	}
+	
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		return DataService.getFoodCheckingData(this);
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		if (cursor != null) {
+			int [] indexs = DataService.getColumnIndexs(cursor, new String[]{
+					FoodMenuTable.COLUMN_FOOD_KEY,
+					FoodMenuTable.COLUMN_REVISION,
+					FoodMenuTable.COLUMN_IAMGE_REVISION
+			});
+			ArrayList<Food> check_foods = new ArrayList<Food>();
+			for(cursor.moveToFirst(); ! cursor.isAfterLast(); cursor.moveToNext()){
+				String id = cursor.getString(indexs[0]);
+				Long food_v = Long.parseLong(cursor.getString(indexs[1]));
+				Long image_v = Long.parseLong(cursor.getString(indexs[2]));
+				check_foods.add(new Food(id, food_v, image_v));
+			}
+			FoodService.checkUpdate(check_foods, new HttpHandler(){
+					
+				@Override
+				public void onSuccess(String response){
+					if(response == null || response.trim().equals("")){
+						Log.i(TAG, "No need to update menu, response is blank");
+					} else {
+						try {
+							executeUpdateMenu(FoodService.getUpdatedFoodsList(response));
+						} catch (JSONException e) {
+							Log.e(TAG, "Fail to parse menu update response: " + response);
+							e.printStackTrace();
+						}
+					}
+				}
+				
+				@Override
+				public void onFail(int statuscode){
+					Log.e(TAG, "Fail to check menu update due to http fail with status: " + statuscode);
+				}
+				
+			});
+		}
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
+		
+	}
+	
+	//temp for test
 	private void testInsertDB(){
         Field[] fields = R.drawable.class.getDeclaredFields();
         String [] categories = new String[]{"中餐","西餐","点心","酒水"};
@@ -324,8 +427,12 @@ public class HomeActivity extends FragmentActivity {
 					e.printStackTrace();
 				}
 				
-				byte[] simage = this.getIconData(BitmapFactory.decodeResource(this.getResources(), index));
-				byte[] limage = this.getIconData(BitmapFactory.decodeResource(this.getResources(), index2));
+				byte[] simage = FileUtil.getImageBytes(BitmapFactory.decodeResource(this.getResources(), index));
+				byte[] limage =FileUtil.getImageBytes(BitmapFactory.decodeResource(this.getResources(), index2));
+				String image_s_name = food_key + "_s";
+				String image_l_name =  food_key + "_l";
+				FileUtil.writeFile(this, image_s_name, simage);
+				FileUtil.writeFile(this, image_l_name, limage);
 				String revision = String.valueOf(System.currentTimeMillis());
 				ContentValues values = new ContentValues();
 				values.put(FoodMenuTable.COLUMN_FOOD_KEY, food_key);
@@ -334,10 +441,10 @@ public class HomeActivity extends FragmentActivity {
 				values.put(FoodMenuTable.COLUMN_DESCRIPTION, desc);
 				values.put(FoodMenuTable.COLUMN_PRICE, price);
 				values.put(FoodMenuTable.COLUMN_STATUS, status);
+				values.put(FoodMenuTable.COLUMN_RECOMMENDATION, "false");
 				values.put(FoodMenuTable.COLUMN_ORDERINDEX, orderidx);
-				values.put(FoodMenuTable.COLUMN_IMAGE_S, simage);
-				values.put(FoodMenuTable.COLUMN_IMAGE_L, limage);
 				values.put(FoodMenuTable.COLUMN_REVISION, revision);
+				values.put(FoodMenuTable.COLUMN_IAMGE_REVISION, revision);
 				getContentResolver().insert(FoodMenuContentProvider.CONTENT_URI, values);
             }
         }  

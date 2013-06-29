@@ -27,7 +27,7 @@ public class MessageService {
 	public static MessageService initService(String ip, int port){
 		if(_instance == null){
 			_instance = new MessageService(ip, port);
-		} else if(!_instance.isConnecting() && !_instance.isReady()){
+		} else if(!_instance.isReady() && !_instance.isConnecting()){
 			_instance.start(ip, port);
 		}
 		return _instance;
@@ -82,10 +82,10 @@ public class MessageService {
 		return this.clientAgent.isReady();
 	}
 	
-	//For some service message
+	//For only system service message, broadcast to all handlers
 	void onMessage(Message message){
 		for(Entry<String, Handler> entry : handlers.entrySet()){
-			android.os.Message amsg = new android.os.Message();  
+			android.os.Message amsg = new android.os.Message();
 	        Bundle bundle = new Bundle();  
 	        bundle.putSerializable("message", message);
 	        amsg.setData(bundle);

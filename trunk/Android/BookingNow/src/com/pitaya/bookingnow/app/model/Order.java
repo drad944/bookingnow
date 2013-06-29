@@ -1,7 +1,9 @@
 package com.pitaya.bookingnow.app.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -9,7 +11,8 @@ import java.util.UUID;
 public class Order implements Serializable{
 	
 	public static final int ALL = -1;
-	//order status
+	
+	//order and food status	
 	public static final int NEW = 0;
 	public static final int COMMITED = NEW + 1;
 	public static final int PAYING = COMMITED + 1;
@@ -17,6 +20,7 @@ public class Order implements Serializable{
 	public static final int WAITING = FINISHED + 1;
 	public static final int COOKING = WAITING + 1;
 	public static final int UNAVAILABLE = COOKING + 1;
+	public static final int AVAILABLE = UNAVAILABLE + 1;
 	
 	//results
 	public static final int ADDED = 0;
@@ -26,8 +30,6 @@ public class Order implements Serializable{
 	
 	//food status
 
-	
-	
 	private static final long serialVersionUID = -7178941729755818383L;
 	
 	private Map<Order.Food, Integer> foods;
@@ -38,6 +40,9 @@ public class Order implements Serializable{
 	private Long commit_ts;
 	private String phoneNumber;
 	private String customername;
+	private Long customer_id;
+	private Long user_id;
+	private List<Long> table_ids;
 	private int peoplecount;
 	private int status;
 	private volatile boolean isDirty;
@@ -138,6 +143,18 @@ public class Order implements Serializable{
 		return this.peoplecount;
 	}
 	
+	public Long getCustomerId(){
+		return this.customer_id;
+	}
+	
+	public Long getSubmitterId(){
+		return this.user_id;
+	}
+	
+	public List<Long> getTableIds(){
+		return this.table_ids;
+	}
+	
 	public int getStatus(){
 		return this.status;
 	}
@@ -186,6 +203,21 @@ public class Order implements Serializable{
 	
 	public void setLastModifyTime(Long ts){
 		this.modification_ts = ts;
+	}
+	
+	public void setCustomerId(Long id){
+		this.customer_id = id;
+	}
+	
+	public void setUserId(Long id){
+		this.user_id = id;
+	}
+	
+	public void addTable(Long id){
+		if(this.table_ids == null){
+			this.table_ids = new ArrayList<Long>();
+		}
+		this.table_ids .add(id);
 	}
 	
 	public void setStatus(int status){
@@ -252,7 +284,7 @@ public class Order implements Serializable{
 		}
 	}
 	
-	public synchronized int addFood(String key, String name, float price, int quantity){
+	public synchronized int addFood(String key, String name, double price, int quantity){
 		Order.Food food = this.new Food(key, name, price); 
 		return addFood(food, quantity);
 	}
@@ -265,12 +297,12 @@ public class Order implements Serializable{
 		private static final long serialVersionUID = -8964367536151118314L;
 		private String key;
 		private String name;
-		private float price;
+		private double price;
 		private int status;
 		private boolean isFree;
 		private transient OnFoodStatusChangedListener listener;
 		
-		public Food(String key, String name, float price){
+		public Food(String key, String name, double price){
 			this.key = key;
 			this.name = name;
 			this.price = price;
@@ -286,7 +318,7 @@ public class Order implements Serializable{
 			return this.name;
 		}
 		
-		public float getPrice(){
+		public double getPrice(){
 			return this.price;
 		}
 		

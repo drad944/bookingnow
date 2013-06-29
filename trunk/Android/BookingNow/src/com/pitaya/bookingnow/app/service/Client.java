@@ -7,7 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import com.pitaya.bookingnow.message.BaseResultMessage;
+import com.pitaya.bookingnow.message.ResultMessage;
+import com.pitaya.bookinnow.app.util.Constants;
 
 
 import android.util.Log;
@@ -37,7 +38,7 @@ public class Client extends Thread{
 				Log.i(LOGTAG, "Success to connect to web server");
             	String message = null;
 	        	if(this.service != null){
-    				this.service.onMessage(new BaseResultMessage("systemservice", "connection", "success", "连接服务器成功"));
+    				this.service.onMessage(new ResultMessage("system", Constants.SOCKET_CONNECTION, Constants.SUCCESS, "连接服务器成功"));
     			}
             	while((message = in.readLine()) != null){
         			if(this.service != null){
@@ -50,13 +51,13 @@ public class Client extends Thread{
             	}
 	        } catch (UnknownHostException e) {
 	        	if(this.service != null){
-    				this.service.onMessage(new BaseResultMessage("systemservice", "connection", "fail", "无法连接到服务器"));
+    				this.service.onMessage(new ResultMessage("system", Constants.SOCKET_CONNECTION, Constants.FAIL, "无法连接到服务器"));
     			}
 	        	Log.e(LOGTAG, "Fail to connect to web server");
 	            e.printStackTrace();
 	        } catch (IOException e) {
 	        	if(this.service != null){
-    				this.service.onMessage(new BaseResultMessage("systemservice", "connection", "fail", "无法连接到服务器或连接断开"));
+    				this.service.onMessage(new ResultMessage("system", Constants.SOCKET_CONNECTION, Constants.FAIL, "无法连接到服务器或连接断开"));
     			}
 	        	Log.e(LOGTAG, "Fail to connect to web server");
 				e.printStackTrace();

@@ -30,6 +30,7 @@
     <string name="paying">已申请结帐</string>
     <string name="reset">清空</string>
     <string name="commitsuccess">提交成功</string>
+    <string name="commitfail">提交失败</string>
     
     <string name="order_list_title1">桌号</string>
     <string name="order_list_title2">提交者</string>

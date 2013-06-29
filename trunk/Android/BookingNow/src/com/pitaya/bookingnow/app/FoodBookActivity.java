@@ -2,8 +2,8 @@ package com.pitaya.bookingnow.app;
 
 import java.util.ArrayList;
 import com.aphidmobile.flip.FlipViewController;
+import com.pitaya.bookingnow.app.data.FoodBookAdapter;
 import com.pitaya.bookingnow.app.model.Food;
-import com.pitaya.bookingnow.app.model.FoodBookAdapter;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
@@ -69,18 +69,19 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 							FoodMenuTable.COLUMN_FOOD_KEY,
 							FoodMenuTable.COLUMN_NAME,
 							FoodMenuTable.COLUMN_PRICE,
+							FoodMenuTable.COLUMN_RECOMMENDATION,
 							FoodMenuTable.COLUMN_DESCRIPTION,
-							FoodMenuTable.COLUMN_CATEGORY,
-							FoodMenuTable.COLUMN_IMAGE_L
+							FoodMenuTable.COLUMN_CATEGORY
 					});
 					for(cursor.moveToFirst(); ! cursor.isAfterLast(); cursor.moveToNext()){
 						String key = cursor.getString(indexs[0]);
 						String name = cursor.getString(indexs[1]);
 						float price = cursor.getFloat(indexs[2]);
-						String desc = cursor.getString(indexs[3]);
-						String category = cursor.getString(indexs[4]);
-						byte[] image = cursor.getBlob(indexs[5]);
-						foods.add(new Food(key, name, price, desc, category, null, image));
+						boolean isRecommended = Boolean.parseBoolean(cursor.getString(indexs[3]));
+						String desc = cursor.getString(indexs[4]);
+						String category = cursor.getString(indexs[5]);
+						String image = cursor.getString(indexs[6]);
+//						foods.add(new Food(key, name, price, desc, category, null, image));
 					}
 					flipView.setAdapter(new FoodBookAdapter(this, foods, mOrder), index);
 			  }

@@ -152,8 +152,6 @@ public class FoodMenuContentProvider extends ContentProvider {
 		    		FoodMenuTable.COLUMN_FOOD_KEY, 
 		    		FoodMenuTable.COLUMN_CATEGORY, 
 		    		FoodMenuTable.COLUMN_DESCRIPTION,
-		    		FoodMenuTable.COLUMN_IMAGE_S,
-		    		FoodMenuTable.COLUMN_IMAGE_L,
 		    		FoodMenuTable.COLUMN_MATERIAL, 
 		    		FoodMenuTable.COLUMN_PRICE,
 		    		FoodMenuTable.COLUMN_RECOMMENDATION,

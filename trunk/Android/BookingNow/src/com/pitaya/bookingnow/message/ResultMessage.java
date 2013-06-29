@@ -5,29 +5,29 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-public class BaseResultMessage extends Message{
+public class ResultMessage extends Message{
 	
 	private static String LOGTAG = "BaseResultMessage";
 	private static final long serialVersionUID = 6351604296315217738L;
 	
-	private String requestType;
-	private String result;
+	private int requestType;
+	private int result;
 	private String detail;
 	
-	public BaseResultMessage(){}
+	public ResultMessage(){}
 	
-	public BaseResultMessage(String key, String reqtype, String result, String detail) {
+	public ResultMessage(String key, int reqtype, int result, String detail) {
 		super(key);
 		this.result = result;
 		this.detail = detail;
 		this.requestType = reqtype;
 	}
 
-	public void setResult(String rs){
+	public void setResult(int rs){
 		this.result = rs;
 	}
 	
-	public String getResult(){
+	public int getResult(){
 		return this.result;
 	}
 	
@@ -39,11 +39,11 @@ public class BaseResultMessage extends Message{
 		return this.detail;
 	}
 	
-	public void setRequestType(String type){
+	public void setRequestType(int type){
 		this.requestType = type;
 	}
 	
-	public String getRequestType(){
+	public int getRequestType(){
 		return this.requestType;
 	}
 	
@@ -64,9 +64,9 @@ public class BaseResultMessage extends Message{
 	public void fromJSONObject(JSONObject jsonObj) {
 		try {
 			super.fromJSONObject(jsonObj);
-			this.setResult(jsonObj.getString("result"));
+			this.setResult(jsonObj.getInt("result"));
 			this.setDetail(jsonObj.getString("detail"));
-			this.setRequestType(jsonObj.getString("requestType"));
+			this.setRequestType(jsonObj.getInt("requestType"));
 		} catch (JSONException e) {
 			Log.e(LOGTAG, "Fail to parse login result message from json string");
 			e.printStackTrace();
