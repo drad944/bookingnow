@@ -156,7 +156,8 @@ public class FoodMenuContentProvider extends ContentProvider {
 		    		FoodMenuTable.COLUMN_PRICE,
 		    		FoodMenuTable.COLUMN_RECOMMENDATION,
 		    		FoodMenuTable.COLUMN_ORDERINDEX,
-		    		FoodMenuTable.COLUMN_REVISION, 
+		    		FoodMenuTable.COLUMN_REVISION,
+		    		FoodMenuTable.COLUMN_IAMGE_REVISION,
 		    		FoodMenuTable.COLUMN_STATUS };
 		    if (projection != null) {
 			      HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));

@@ -14,8 +14,8 @@ public class SlideContent extends RelativeLayout {
 	
 	public SlideContent(Context context, ArrayList<BaseContentView> views) {
 		super(context);
-		this.contentViews = views;
 		init(context);
+		this.contentViews = views;
 	}
 
 	private void init(Context context) {

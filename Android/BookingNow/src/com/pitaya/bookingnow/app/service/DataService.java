@@ -15,11 +15,11 @@ public class DataService {
 
 	public static CursorLoader getFoodCheckingData(Context context){
 		String[] projection = {
-	    		FoodMenuTable.COLUMN_ID,
+	    		FoodMenuTable.COLUMN_FOOD_KEY,
 	    		FoodMenuTable.COLUMN_REVISION, 
 	    		FoodMenuTable.COLUMN_IAMGE_REVISION};
 		CursorLoader cursorLoader = new CursorLoader(context, FoodMenuContentProvider.CONTENT_URI, 
-				projection, null, null, FoodMenuTable.COLUMN_ORDERINDEX);
+				projection, null, null, null);
 		return cursorLoader;
 	}
 	
