@@ -17,6 +17,11 @@
 		big_image, small_image
 	</sql>
 	
+	<select id="searchAllFood_PicturesWithoutImage" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_food_picture
+	</select>
 	
 	<select id="searchAllFood_Pictures" resultMap="BaseResultMap">
 		select
@@ -36,8 +41,27 @@
 		where A.id = #{id,jdbcType=BIGINT}
 	</select>
 	
+	<select id="searchFood_PicturesWithoutImage" resultMap="BaseResultMap"
+		parameterType="com.pitaya.bookingnow.entity.Food_Picture">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_food_picture
+		<where>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR}
+			</if>
+			<if test="version != null">
+				and version = #{version,jdbcType=BIGINT}
+			</if>
+			<if test="enabled != null">
+				and enabled = #{enabled,jdbcType=BIT}
+			</if>
+		
+		</where>
+	</select>
+	
 	<select id="searchFood_Pictures" resultMap="BaseResultMap"
-		parameterType="java.lang.Long">
+		parameterType="com.pitaya.bookingnow.entity.Food_Picture">
 		select
 		<include refid="Base_Column_List" />
 		,
@@ -128,6 +152,7 @@
 			</if>
 		</trim>
 	</insert>
+	
 	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Food_Picture">
 		update pitaya_food_picture
 		<set>
@@ -149,6 +174,7 @@
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
+	
 	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.pitaya.bookingnow.entity.Food_Picture">
 		update pitaya_food_picture
 		set name = #{name,jdbcType=VARCHAR},
@@ -158,6 +184,7 @@
 		small_image = #{small_image,jdbcType=LONGVARBINARY}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
+	
 	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Food_Picture">
 		update pitaya_food_picture
 		set name = #{name,jdbcType=VARCHAR},

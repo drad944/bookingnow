@@ -18,6 +18,8 @@ public interface FoodMapper {
     int updateByPrimaryKey(Food food);
     
     List<Food> selectFoods(Food food);
+    List<Food> selectFoodsWithoutImage(Food food);
     
     List<Food> selectAllFoods();
+    List<Food> selectAllFoodsWithoutImage();
 }
