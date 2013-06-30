@@ -36,7 +36,7 @@
 		</global-results>
 		
 		<!-- 文件上传和下载控制器 ，class 引用spring 的注入 -->
-	        <action name="*Food_Picture" class="Food_PictureAction" method="{1}Food_Picture">
+	        <action name="*Food_Picture" class="com.pitaya.bookingnow.action.Food_PictureAction" method="{1}Food_Picture">
 
 	        	
 				<result name="uploadSuccess" type="redirectAction">
