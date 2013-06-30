@@ -38,6 +38,10 @@
    <sql id="Food_Picture_Column_List">
 		B.id as p_id, B.name as p_name, B.version as p_version, B.enabled as p_enabled,B.big_image as p_big_image, B.small_image as p_small_image
 	</sql>
+	
+	<sql id="Food_Picture_Without_Image_Column_List">
+		B.id as p_id, B.name as p_name, B.version as p_version, B.enabled as p_enabled
+	</sql>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -56,6 +60,16 @@
     <include refid="Aliase_Base_Column_List" />
     ,
     <include refid="Food_Picture_Column_List" />
+    from pitaya_food A 
+    left outer join pitaya_food_picture B on 
+    A.picture_id = B.id
+  </select>
+  
+  <select id="selectAllFoodsWithoutImage" resultMap="BaseResultMap" >
+    select 
+    <include refid="Aliase_Base_Column_List" />
+    ,
+    <include refid="Food_Picture_Without_Image_Column_List" />
     from pitaya_food A 
     left outer join pitaya_food_picture B on 
     A.picture_id = B.id
@@ -102,7 +116,46 @@
     </where>
     </select>
     
+    <select id="selectFoodsWithoutImage" resultMap="BaseResultMap" parameterType="Food" >
+    select 
+    <include refid="Aliase_Base_Column_List" />
+    ,
+    <include refid="Food_Picture_Without_Image_Column_List" />
+    from pitaya_food A 
+    	,pitaya_food_picture B
     
+    <where>
+    			A.picture_id = B.id
+      		<if test="recommendation != null">
+				and recommendation = #{recommendation,jdbcType=INTEGER}
+			</if>
+			<if test="status != null">
+				and status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="picture_id != null">
+				and picture_id = #{picture_id,jdbcType=BIGINT}
+			</if>
+			<if test="name != null">
+				and name = #{name,jdbcType=VARCHAR}
+			</if>
+			<if test="version != null">
+				and version = #{version,jdbcType=BIGINT}
+			</if>
+			<if test="period != null">
+				and period = #{period,jdbcType=BIGINT}
+			</if>
+			<if test="price != null">
+				and price = #{price,jdbcType=DOUBLE}
+			</if>
+			<if test="category != null">
+				and category = #{category,jdbcType=VARCHAR}
+			</if>
+			<if test="description != null">
+				and description = #{description,jdbcType=VARCHAR}
+			</if>
+    	
+    </where>
+    </select>
     
     
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
