@@ -170,21 +170,34 @@ public class Food implements Serializable, IJSONTransition{
 	public void fromJSONObject(JSONObject jfood) {
 		try {
 			this.key = String.valueOf(jfood.getLong("id"));
-			this.name = jfood.getString("name");
-			this.category = jfood.getString("category");
-			this.description = jfood.getString("description");
-			this.price = jfood.getDouble("price");
-			this.isRecommended = jfood.getInt("recommendation") > 0;
-			this.status = jfood.getInt("status");
-			this.version = jfood.getLong("version");
 			this.image_s_name = this.key + "_s";
 			this.image_l_name = this.key + "_l";
-			if(jfood.getJSONObject("picture") != null){
+			if(jfood.has("name")){
+				this.name = jfood.getString("name");
+			}
+			if(jfood.has("category")){
+				this.category = jfood.getString("category");
+			}
+			if(jfood.has("description")){
+				this.description = jfood.getString("description");
+			}
+			if(jfood.has("price")){
+				this.price = jfood.getDouble("price");
+			}
+			if(jfood.has("recommendation")){
+				this.isRecommended = jfood.getInt("recommendation") > 0;
+			}
+			if(jfood.has("status")){
+				this.status = jfood.getInt("status");
+			}
+			if(jfood.has("version")){
+				this.version = jfood.getLong("version");
+			}
+			if(jfood.has("picture") && jfood.getJSONObject("picture") != null){
 				this.image_version = jfood.getJSONObject("picture").getLong("version");
 			}
 		} catch (JSONException e) {
-			Log.w(TAG, "Fail to parse food from json object: " + jfood.toString());
-			e.printStackTrace();
+			Log.e(TAG, "Key is missing when parse food from json object: " + jfood.toString());
 		}
 	}
 	

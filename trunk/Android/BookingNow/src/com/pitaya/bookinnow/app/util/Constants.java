@@ -43,4 +43,11 @@ public class Constants {
 	public static final int WAITER_ROLE = KITCHEN_ROLE + 1;
 	public static final int WELCOME_ROLE = WAITER_ROLE + 1;
 	public static final int CASH_ROLE = WELCOME_ROLE + 1;
+	
+	//error code, pay attention to avoid conflict with the one used by http status code
+	public static final int WRONG_ACTION_ERROR = 0;
+	public static final int IO_EXCEPTION_ERROR = WRONG_ACTION_ERROR + 1;
+	public static final int PROTOCOL_EXCEPTION_ERROR = IO_EXCEPTION_ERROR + 1;
+	public static final int WRITE_FILE_ERROR = PROTOCOL_EXCEPTION_ERROR + 1;
+	public static final int GET_FOOD_IMAGE_ERROR = WRITE_FILE_ERROR + 1;
 }
