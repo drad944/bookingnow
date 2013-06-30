@@ -61,7 +61,7 @@ public class TestFood_PictureService {
 				FileInputStream fis = new FileInputStream(file);
 				
 				byte[] buffer = new byte[1024];
-				byte[] pictureImage = new byte[1024*1024*10];
+				byte[] pictureImage = new byte[1024*1024*5];
 				
 				int len = 0;
 				int startIndex = 0;
@@ -94,7 +94,7 @@ public class TestFood_PictureService {
 				FileInputStream fis = new FileInputStream(file);
 				
 				byte[] buffer = new byte[1024];
-				byte[] pictureImage = new byte[1024*1024*10];
+				byte[] pictureImage = new byte[1024*1024*5];
 				
 				int len = 0;
 				int startIndex = 0;
