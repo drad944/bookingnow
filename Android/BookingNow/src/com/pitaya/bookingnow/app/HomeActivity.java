@@ -377,6 +377,7 @@ public class HomeActivity extends FragmentActivity {
 						synchronized(HomeActivity.this) {
 							HomeActivity.this.isUpdating = false;
 						}
+						updateProgressDialog.dismiss();
 						onUpdateMenuFinish();
 					}
 				}
@@ -389,6 +390,7 @@ public class HomeActivity extends FragmentActivity {
 						synchronized(HomeActivity.this) {
 							HomeActivity.this.isUpdating = false;
 						}
+						updateProgressDialog.dismiss();
 						onUpdateMenuFinish();
 					}
 				}
