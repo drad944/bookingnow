@@ -20,4 +20,8 @@ public interface OrderMapper {
     List<Order> searchOrders(Order order);
     
     Order selectFullOrderByPrimaryKey(Long id);
+    
+    List<Order> selectFullOrders(Order order);
+    
+    
 }
