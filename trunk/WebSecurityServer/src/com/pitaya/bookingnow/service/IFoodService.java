@@ -17,6 +17,10 @@ public interface IFoodService {
 	boolean modify(Food food);
 	
 	List<Food> searchFoods(Food food);
+	List<Food> searchFoodsWithoutImage(Food food);
+	
+	List<Food> searchALLFoods();
+	List<Food> searchALLFoodsWithoutImage();
 	
 	public Map<String, List<Food>> updateMenuFoods(List<Food> clientFoods);
 }

@@ -50,7 +50,7 @@ public class TestFood_PictureService {
 	
 	@Test
 	public void update() {
-		List<Food_Picture> pictures = food_pictureService.searchAllFood_Pictures();
+		List<Food_Picture> pictures = food_pictureService.searchAllFood_PicturesWithoutImage();
 		
 		
 		for (int i = 0; i < pictures.size(); i++) {
@@ -72,15 +72,49 @@ public class TestFood_PictureService {
 				}
 				fis.close();
 				
-				
+				newPicture.setBig_image(null);
 				newPicture.setSmall_image(pictureImage);
+				
 				food_pictureService.modify(newPicture);
 			}catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+				
+		}
+		
+		pictures = food_pictureService.searchAllFood_PicturesWithoutImage();
+		
+		for (int i = 0; i < pictures.size(); i++) {
+			try {
+				Food_Picture newPicture = pictures.get(i);
+				
+				File file = new File("WebContent/images/Large/" + (i + 1) + ".png");
+				FileInputStream fis = new FileInputStream(file);
+				
+				byte[] buffer = new byte[1024];
+				byte[] pictureImage = new byte[1024*1024*10];
+				
+				int len = 0;
+				int startIndex = 0;
+				while((len = fis.read(buffer)) > 0) {
+					
+					System.arraycopy(buffer, 0, pictureImage, startIndex, len);
+					startIndex = startIndex + len;
+				}
+				fis.close();
+				
+				newPicture.setSmall_image(null);
+				newPicture.setBig_image(pictureImage);
+				
+				food_pictureService.modify(newPicture);
+			}catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+				
 		}
 		
 		

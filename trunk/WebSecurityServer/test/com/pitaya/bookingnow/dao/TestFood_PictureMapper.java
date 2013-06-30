@@ -21,12 +21,12 @@ public class TestFood_PictureMapper {
     	SqlSession sqlSession = sqlSessionFactory.openSession(); 
     	try { 
     		Food_PictureMapper food_pictureMapper = sqlSession.getMapper(Food_PictureMapper.class);
-    		Food_Picture newFood_Picture = food_pictureMapper.selectByPrimaryKey((long)2);
+    		Food_Picture newFood_Picture = food_pictureMapper.selectByPrimaryKey((long)5);
     		System.out.println("id : " + newFood_Picture.getId());
     		System.out.println("name : " + newFood_Picture.getName());
     		System.out.println("Last_modify_time : " + newFood_Picture.getVersion());
     		System.out.println("Small_image : " + newFood_Picture.getSmall_image());
-    		
+    		System.out.println("big image : " + newFood_Picture.getBig_image());
     		
     	}finally { 
             sqlSession.close(); 

@@ -77,14 +77,17 @@ public class FoodService implements IFoodService{
 
 	@Override
 	public boolean modify(Food food) {
-		// TODO Auto-generated method stub
+		int result = foodDao.updateByPrimaryKeySelective(food);
+		if(result > 0 ) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public List<Food> searchFoods(Food food) {
 		// TODO Auto-generated method stub
-		return null;
+		return foodDao.selectFoods(food);
 	}
 
 	@Override
@@ -103,7 +106,7 @@ public class FoodService implements IFoodService{
 		List<Food> newFoods = null;
 		List<Food> deleteFoods = null;
 		List<Food> updateFoods = new ArrayList<Food>();
-		List<Food> allDBFoods = foodDao.selectAllFoods();
+		List<Food> allDBFoods = foodDao.selectAllFoodsWithoutImage();
 
 		
 		for (int j = clientFoods.size() - 1; j >= 0; j--){
@@ -112,6 +115,13 @@ public class FoodService implements IFoodService{
 				Food DBFood = allDBFoods.get(i);
 				if(DBFood.getId().equals(clientFood.getId())){
 					if(DBFood.getVersion() > clientFood.getVersion()){
+						if(DBFood.getPicture().getVersion() > clientFood.getPicture().getVersion()) {
+							
+						}else {
+							//do not return picture object in food
+							DBFood.setPicture(null);
+							
+						}
 						updateFoods.add(DBFood);
 					}
 					allDBFoods.remove(i);
@@ -157,6 +167,21 @@ public class FoodService implements IFoodService{
 		newMenuFoods.put("delete", deleteFoods);
 		
 		return newMenuFoods;
+	}
+
+	@Override
+	public List<Food> searchALLFoods() {
+		return foodDao.selectAllFoods();
+	}
+
+	@Override
+	public List<Food> searchFoodsWithoutImage(Food food) {
+		return foodDao.selectFoodsWithoutImage(food);
+	}
+
+	@Override
+	public List<Food> searchALLFoodsWithoutImage() {
+		return foodDao.selectAllFoodsWithoutImage();
 	}
 
 }

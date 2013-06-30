@@ -41,7 +41,10 @@ public class Food_PictureService implements IFood_PictureService{
 
 	@Override
 	public boolean modify(Food_Picture food_picture) {
-		// TODO Auto-generated method stub
+		int result = food_pictureDao.updateByPrimaryKeySelective(food_picture);
+		if(result > 0) {
+			return true;
+		}
 		return false;
 	}
 
@@ -53,14 +56,25 @@ public class Food_PictureService implements IFood_PictureService{
 
 	@Override
 	public Food_Picture searchPictureByFoodId(Long id) {
-		// TODO Auto-generated method stub
 		return food_pictureDao.selectByFoodId(id);
 	}
 
 	@Override
 	public List<Food_Picture> searchAllFood_Pictures() {
-		// TODO Auto-generated method stub
 		return food_pictureDao.searchAllFood_Pictures();
+	}
+
+	@Override
+	public List<Food_Picture> searchFood_PicturesWithoutImage(
+			Food_Picture food_picture) {
+		// TODO Auto-generated method stub
+		return food_pictureDao.searchFood_PicturesWithoutImage(food_picture);
+	}
+
+	@Override
+	public List<Food_Picture> searchAllFood_PicturesWithoutImage() {
+		// TODO Auto-generated method stub
+		return food_pictureDao.searchAllFood_PicturesWithoutImage();
 	}
 
 
