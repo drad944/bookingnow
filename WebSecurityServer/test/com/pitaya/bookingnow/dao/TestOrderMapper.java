@@ -14,6 +14,39 @@ public class TestOrderMapper {
     static { 
        sqlSessionFactory = MyBatisUtil.getSqlSessionFactory(); 
     } 
+    
+    @Test 
+    public void testSelectFullOrderByPrimaryKey() {
+       SqlSession sqlSession = sqlSessionFactory.openSession(); 
+       try { 
+           OrderMapper orderMapper = sqlSession.getMapper(OrderMapper.class); 
+           
+           Order newOrder = null;
+	   		
+           newOrder = orderMapper.selectFullOrderByPrimaryKey((long)1);
+           
+           if (newOrder != null) {
+        	   
+        	   System.out.println("order id: "+newOrder.getId()); 
+	           System.out.println("status: "+newOrder.getStatus());
+	           System.out.println("allowance: "+newOrder.getAllowance()); 
+	           System.out.println("PrePay: "+newOrder.getPrePay()); 
+	           System.out.println("Total_price: "+newOrder.getTotal_price()); 
+	           System.out.println("Submit_time: "+newOrder.getSubmit_time()); 
+	           System.out.println("Enabled: "+newOrder.getEnabled());
+	           System.out.println();
+	           
+           }else {
+			System.out.println("can not find order!");
+		}
+           
+	           
+           
+           
+       } finally { 
+           sqlSession.close(); 
+       } 
+    } 
  
     @Test 
     public void testAdd() { 

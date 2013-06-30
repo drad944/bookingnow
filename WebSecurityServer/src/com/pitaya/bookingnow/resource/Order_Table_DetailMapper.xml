@@ -4,8 +4,7 @@
 	<resultMap id="BaseResultMap"
 		type="com.pitaya.bookingnow.entity.Order_Table_Detail">
 		<id column="id" property="id" jdbcType="BIGINT" />
-		<result column="realCustomerCount" property="realCustomerCount"
-			jdbcType="INTEGER" />
+		<result column="realCustomerCount" property="realCustomerCount"	jdbcType="INTEGER" />
 		<result column="enabled" property="enabled" jdbcType="BIT" />
 		<result column="table_id" property="table_id" jdbcType="BIGINT" />
 		<result column="order_id" property="order_id" jdbcType="BIGINT" />

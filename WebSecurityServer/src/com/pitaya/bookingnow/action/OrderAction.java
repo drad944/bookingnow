@@ -82,6 +82,8 @@ public class OrderAction extends BaseAction{
 	 */
 	public String commitWaitingOrder(){
 		if (order != null) {
+			orderService.add(order);
+			
 			this.setResult(Constants.SUCCESS);
 			return "commitSuccess";
 		}
