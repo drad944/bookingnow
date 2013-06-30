@@ -73,7 +73,7 @@ public class TestFood_PictureService {
 				fis.close();
 				
 				newPicture.setSmall_image(pictureImage);
-				
+				newPicture.setVersion(new Date().getTime());
 				food_pictureService.modify(newPicture);
 				newPicture.setSmall_image(null);
 			}catch (FileNotFoundException e) {
@@ -90,7 +90,7 @@ public class TestFood_PictureService {
 			try {
 				Food_Picture newPicture = pictures.get(i);
 				
-				File file = new File("WebContent/images/Large/" + (i + 1) + ".png");
+				File file = new File("WebContent/images/Large/" + (i + 1) + ".jpg");
 				FileInputStream fis = new FileInputStream(file);
 				
 				byte[] buffer = new byte[1024];
@@ -106,6 +106,7 @@ public class TestFood_PictureService {
 				fis.close();
 				
 				newPicture.setBig_image(pictureImage);
+				newPicture.setVersion(new Date().getTime());
 				
 				food_pictureService.modify(newPicture);
 				newPicture.setBig_image(null);
