@@ -57,11 +57,11 @@ public class TestFood_PictureService {
 			try {
 				Food_Picture newPicture = pictures.get(i);
 				
-				File file = new File("/WebContent/images/Small/" + (i + 1) + ".png");
+				File file = new File("WebContent/images/Small/" + (i + 1) + ".png");
 				FileInputStream fis = new FileInputStream(file);
 				
 				byte[] buffer = new byte[1024];
-				byte[] pictureImage = new byte[]{};
+				byte[] pictureImage = new byte[1024*1024*10];
 				
 				int len = 0;
 				int startIndex = 0;
@@ -87,5 +87,6 @@ public class TestFood_PictureService {
 		System.out.println("");
 		
 	}
+	
 	
 }
