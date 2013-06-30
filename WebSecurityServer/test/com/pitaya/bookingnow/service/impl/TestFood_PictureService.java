@@ -72,10 +72,10 @@ public class TestFood_PictureService {
 				}
 				fis.close();
 				
-				newPicture.setBig_image(null);
 				newPicture.setSmall_image(pictureImage);
 				
 				food_pictureService.modify(newPicture);
+				newPicture.setSmall_image(null);
 			}catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -105,10 +105,11 @@ public class TestFood_PictureService {
 				}
 				fis.close();
 				
-				newPicture.setSmall_image(null);
 				newPicture.setBig_image(pictureImage);
 				
 				food_pictureService.modify(newPicture);
+				newPicture.setBig_image(null);
+				
 			}catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
