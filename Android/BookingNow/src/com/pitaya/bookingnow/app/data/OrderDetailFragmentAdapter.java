@@ -57,34 +57,6 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 					@Override
 					public void onClick(View v) {
 						//TODO commit the order and remove it from local database
-						HttpService.testDownload(mContext, "tests.jpg",new HttpHandler(){
-						    
-							@Override  
-						    public void onSuccess(String response) {
-								//DataService.removeOrder(mContext, mOrder.getOrderKey());
-								ToastUtil.showToast(mContext, "文件下载成功", Toast.LENGTH_SHORT);
-						    }
-							
-							@Override
-							public void onFail(int statuscode){
-								ToastUtil.showToast(mContext, "文件下载失败", Toast.LENGTH_SHORT);
-							}
-							
-						});
-						HttpService.testDownload(mContext, "testl.jpg", new HttpHandler(){
-						    
-							@Override  
-						    public void onSuccess(String response) {
-								//DataService.removeOrder(mContext, mOrder.getOrderKey());
-								ToastUtil.showToast(mContext, "文件下载成功", Toast.LENGTH_SHORT);
-						    }
-							
-							@Override
-							public void onFail(int statusCode){
-								ToastUtil.showToast(mContext, "文件下载失败", Toast.LENGTH_SHORT);
-							}
-							
-						});
 //						OrderService.commitOrder(mOrder, new HttpHandler(){
 //						    
 //							@Override  

@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,12 +27,9 @@ import com.pitaya.bookingnow.app.views.*;
 import com.pitaya.bookingnow.message.*;
 import com.pitaya.bookinnow.app.util.*;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.LoaderManager;
 import android.app.ProgressDialog;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -51,13 +47,11 @@ import android.view.LayoutInflater;
 import android.content.ContentValues;
 import android.content.DialogInterface;  
 import android.content.Intent;
-import android.content.Loader;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-public class HomeActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class HomeActivity extends FragmentActivity {
 	
 	public static final int MENU_CHECKING_LOADER = 0;
 	public static final int MENU_LOADER = MENU_CHECKING_LOADER + 1;
@@ -73,6 +67,7 @@ public class HomeActivity extends FragmentActivity implements LoaderManager.Load
 	private ProgressDialog progressingDialog;
 	
 	private MessageService messageService;
+	private  boolean isUpdating = false;
 	
 	@Override
 	public void onCreate(Bundle bundle) {
@@ -305,95 +300,103 @@ public class HomeActivity extends FragmentActivity implements LoaderManager.Load
     }
 	
 	private void checkMenuUpdate(){
-		getLoaderManager().initLoader(MENU_CHECKING_LOADER, null, (LoaderCallbacks<Cursor>) this);
+		synchronized(this) {
+			if(this.isUpdating){
+				return;
+			} else {
+				this.isUpdating = true;
+			}
+		}
+		final HttpHandler handler = new HttpHandler(){
+			
+			@Override
+			public void onSuccess(String action, String response){
+				if(response == null || response.trim().equals("")){
+					Log.i(TAG, "No need to update menu, response is blank");
+				} else{
+					try {
+						executeUpdateMenu(FoodService.getUpdatedFoodsList(response));
+					} catch (JSONException e) {
+						Log.e(TAG, "Fail to parse menu update response: " + response);
+						e.printStackTrace();
+					}
+				}
+			}
+			
+			@Override
+			public void onFail(String action, int errorcode){
+				Log.e(TAG, "Fail to check menu update with error code: " + errorcode);
+				synchronized(HomeActivity.this) {
+					HomeActivity.this.isUpdating = false;
+				}
+			}
+			
+		};
+		new Thread(){
+			
+			@Override
+			public void run(){
+				ArrayList<Food> check_foods = DataService.getFoodsForUpdate(HomeActivity.this);
+				if(check_foods != null){
+					FoodService.checkUpdate(check_foods, handler);
+				}
+			}
+			
+		}.start();
 	}
 	
+	private void onUpdateMenuFinish(){
+		
+	};
+	
 	private void executeUpdateMenu(Map<String, ArrayList<Food>> foodsToUpdate){
+		if(foodsToUpdate == null){
+			return;
+		}
 		int total = 0;
 		for(Entry<String, ArrayList<Food>> entry : foodsToUpdate.entrySet()){
 			total += entry.getValue().size();
 		}
 		if(total > 0){
 			final ProgressDialog updateProgressDialog=new ProgressDialog(this);
-			updateProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL|ProgressDialog.THEME_HOLO_DARK);
+			updateProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 			updateProgressDialog.setTitle("菜单更新中");
-			updateProgressDialog.setProgress(total);
+			updateProgressDialog.setMax(total);
+			updateProgressDialog.setProgress(0);
 			updateProgressDialog.setCancelable(true);
+			updateProgressDialog.setIndeterminate(false);
 			updateProgressDialog.show();
-//			FoodService.updateMenuFoods(this, foodsToUpdate, new ProgressHandler(total){
-//
-//				@Override
-//				public void onSuccess(String response){
-//					Log.i(TAG, "Success to update food " + this.index);
-//					updateProgressDialog.setProgress(this.index);
-//				}
-//				
-//				@Override
-//				public void onFail(int statuscode){
-//					Log.w(TAG, "Fail to update food " + this.index +", status code  is " + statuscode);
-//					updateProgressDialog.setProgress(this.index);
-//				}
-//				
-//				@Override
-//				public void onOtherFail(String detail){
-//					Log.w(TAG, "Fail to update food " + this.index + ", detail is " + detail);
-//					updateProgressDialog.setProgress(this.index);
-//				}
-//				
-//			});
-		} else {
-			Log.i(TAG, "The menu is latest.");
-		}
-	}
-	
-	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		return DataService.getFoodCheckingData(this);
-	}
+			final int max = total;
+			FoodService.updateMenuFoods(this, foodsToUpdate, new ProgressHandler(total){
 
-	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-		if (cursor != null) {
-			int [] indexs = DataService.getColumnIndexs(cursor, new String[]{
-					FoodMenuTable.COLUMN_FOOD_KEY,
-					FoodMenuTable.COLUMN_REVISION,
-					FoodMenuTable.COLUMN_IAMGE_REVISION
-			});
-			ArrayList<Food> check_foods = new ArrayList<Food>();
-			for(cursor.moveToFirst(); ! cursor.isAfterLast(); cursor.moveToNext()){
-				String id = cursor.getString(indexs[0]);
-				Long food_v = Long.parseLong(cursor.getString(indexs[1]));
-				Long image_v = Long.parseLong(cursor.getString(indexs[2]));
-				check_foods.add(new Food(id, food_v, image_v));
-			}
-			FoodService.checkUpdate(check_foods, new HttpHandler(){
-					
 				@Override
-				public void onSuccess(String response){
-					if(response == null || response.trim().equals("")){
-						Log.i(TAG, "No need to update menu, response is blank");
-					} else {
-						try {
-							executeUpdateMenu(FoodService.getUpdatedFoodsList(response));
-						} catch (JSONException e) {
-							Log.e(TAG, "Fail to parse menu update response: " + response);
-							e.printStackTrace();
+				public void onSuccess(String action, String response){
+					Log.i(TAG, "Success to update food " + this.index);
+					updateProgressDialog.setProgress(this.index);
+					if(this.index == max){
+						synchronized(HomeActivity.this) {
+							HomeActivity.this.isUpdating = false;
 						}
+						onUpdateMenuFinish();
 					}
 				}
 				
 				@Override
-				public void onFail(int statuscode){
-					Log.e(TAG, "Fail to check menu update due to http fail with status: " + statuscode);
+				public void onFail(String action, int errorcode){
+					Log.w(TAG, "Fail to update food " + (this.index) +" with error code:" + errorcode);
+					updateProgressDialog.setProgress(this.index);
+					if(this.index == max){
+						synchronized(HomeActivity.this) {
+							HomeActivity.this.isUpdating = false;
+						}
+						onUpdateMenuFinish();
+					}
 				}
 				
 			});
+		} else {
+			Log.i(TAG, "The menu is latest.");
 		}
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
-		
 	}
 	
 	//temp for test

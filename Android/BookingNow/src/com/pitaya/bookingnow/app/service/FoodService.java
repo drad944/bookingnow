@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.pitaya.bookingnow.app.data.HttpHandler;
 import com.pitaya.bookingnow.app.data.ProgressHandler;
+import com.pitaya.bookingnow.app.data.FileDownloadHandler;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookinnow.app.util.Constants;
 import com.pitaya.bookinnow.app.util.FileUtil;
@@ -44,6 +45,10 @@ public class FoodService {
 	
 	public static Map<String, ArrayList<Food>> getUpdatedFoodsList(String response) throws JSONException{
 		JSONObject jresp = new JSONObject(response);
+		if(jresp.has("result") && jresp.getInt("result") == Constants.FAIL){
+			Log.e(TAG, "Fail to get updated food list response");
+			return null;
+		}
 		Map<String, ArrayList<Food>> foodsToUpdate = new HashMap<String, ArrayList<Food>>();
 		if(jresp.getJSONArray("new") != null){
 			JSONArray newFoodArray =  jresp.getJSONArray("new");
@@ -83,60 +88,130 @@ public class FoodService {
 		 }
 	}
 	
-	private static void getFoodImages(Context context, Food food, ProgressHandler handler){
-		JSONObject jparam = new JSONObject();
+	private static void getFoodImages(final Context context, final Food food, final ProgressHandler handler, final int type){
+		final JSONObject jparam = new JSONObject();
 		JSONObject jfood = new JSONObject();
+		android.os.Message amsg = new android.os.Message();
+        Bundle bundle = new Bundle();
+        amsg.setData(bundle);
 		try {
 			jfood.put("id", Long.parseLong(food.getKey()));
 			jparam.put("food", jfood);
-			HttpService.downloadFile("getSmallFood_Picture.action", context, 
-					food.getSmallImageName(), new StringEntity(jparam.toString()), handler);
-			HttpService.downloadFile("getLargeFood_Picture.action", context, 
-					food.getLargeImageName(), new StringEntity(jparam.toString()), handler);
+			
+			FileDownloadHandler fileHandler = new FileDownloadHandler(){
+				
+				@Override
+				public void onSuccess(String action, String response){
+					Log.i(TAG, "["+food.getKey()+"][" + action + "] response: " + response);
+		        	android.os.Message amsg = new android.os.Message();
+			        Bundle bundle = new Bundle();
+			        bundle.putString(HttpHandler.ACTION_TYPE, action);
+			        bundle.putString("key", food.getKey());
+			        String filename = null;
+			        boolean finish = false;
+			        if(action.equals("getSmallFood_Picture.action")){
+			        	filename = food.getSmallImageName();
+			        } else if(action.equals("getLargeFood_Picture.action")){
+			        	filename =  food.getLargeImageName();
+			        } else {
+			        	return;
+			        }
+					if(FileUtil.writeFile(context, filename, this.fileBytes)){
+				        bundle.putInt(HttpHandler.RESULT, Constants.SUCCESS);
+					} else {
+						bundle.putInt(HttpHandler.RESULT, Constants.FAIL);
+						bundle.putInt(HttpHandler.ERROR_CODE, Constants.GET_FOOD_IMAGE_ERROR);
+					}
+			        if(action.equals("getSmallFood_Picture.action")){
+			        	try {
+							HttpService.getFileViaPost("getLargeFood_Picture.action", new StringEntity(jparam.toString()), this);
+						} catch (UnsupportedEncodingException e) {
+							e.printStackTrace();
+						}
+			        } else if(action.equals("getLargeFood_Picture.action")){
+			        	if( type == 0){
+			        		DataService.addNewFood(context, food);
+			        	} else {
+			        		DataService.updateFood(context, food);
+			        	}
+			        	finish = true;
+			        }
+			        if(bundle.getInt(HttpHandler.RESULT) == Constants.FAIL){
+			        	amsg.setData(bundle);
+			        	handler.sendMessage(amsg);
+			        } else if(finish){
+			        	amsg.setData(bundle);
+			        	handler.sendMessage(amsg);
+			        }
+				}
+				
+				@Override
+				public void onFail(String action, int statuscode){
+		        	android.os.Message amsg = new android.os.Message();
+			        Bundle bundle = new Bundle();
+			        bundle.putString("key", food.getKey());
+			        bundle.putInt(HttpHandler.RESULT, Constants.FAIL);
+			        bundle.putString(HttpHandler.ACTION_TYPE, action);
+			        bundle.putInt(HttpHandler.ERROR_CODE, statuscode);
+			        amsg.setData(bundle);
+			        handler.sendMessage(amsg);
+				}
+				
+			};
+			
+			HttpService.getFileViaPost("getSmallFood_Picture.action", new StringEntity(jparam.toString()), fileHandler);
 			
 		} catch (NumberFormatException e) {
+			bundle.putInt(HttpHandler.RESULT, Constants.FAIL);
+			bundle.putInt(HttpHandler.ERROR_CODE, Constants.GET_FOOD_IMAGE_ERROR);
+		    handler.sendMessage(amsg);
 			e.printStackTrace();
 		} catch (JSONException e) {
+			bundle.putInt(HttpHandler.RESULT, Constants.FAIL);
+			bundle.putInt(HttpHandler.ERROR_CODE, Constants.GET_FOOD_IMAGE_ERROR);
+		    handler.sendMessage(amsg);
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
+			bundle.putInt(HttpHandler.RESULT, Constants.FAIL);
+			bundle.putInt(HttpHandler.ERROR_CODE, Constants.GET_FOOD_IMAGE_ERROR);
+		    handler.sendMessage(amsg);
 			e.printStackTrace();
 		}
 	}
 	
 	public static void updateMenuFoods(Context context, Map<String, ArrayList<Food>> foodsToUpdate, ProgressHandler handler){
 
-		int index = 1;
 		if(foodsToUpdate.get("new") != null){
 			for(Food food : foodsToUpdate.get("new")){
-				handler.setIndex(index++);
-				getFoodImages(context, food, handler);
-				DataService.addNewFood(context, food);
+				getFoodImages(context, food, handler, 0);
 			}
-		} else if(foodsToUpdate.get("delete") != null){
+		} 
+		if(foodsToUpdate.get("delete") != null){
 			for(Food food : foodsToUpdate.get("delete")){
-				handler.setIndex(index++);
-				DataService.removeFood(context, food.getKey());
 				FileUtil.removeFile(context, food.getSmallImageName());
 				FileUtil.removeFile(context, food.getLargeImageName());
+				DataService.removeFood(context, food.getKey());
 				android.os.Message amsg = new android.os.Message();
 	        	Bundle bundle = new Bundle();
-	        	bundle.putInt("result", Constants.SUCCESS);
-		        bundle.putString("detail", "success to remove food images");
+	        	bundle.putInt(HttpHandler.RESULT, Constants.SUCCESS);
+	        	bundle.putString("key", food.getKey());
+		        bundle.putString(HttpHandler.RESPONSE, "success to remove food");
 		        amsg.setData(bundle);
 		        handler.sendMessage(amsg);
 			}
-		} else if(foodsToUpdate.get("update") != null){
+		}
+		if(foodsToUpdate.get("update") != null){
 			for(Food food : foodsToUpdate.get("update")){
-				handler.setIndex(index++);
-				DataService.updateFood(context, food);
 				if(food.getImageVersion() != null){
-					getFoodImages(context, food, handler);
+					getFoodImages(context, food, handler, 1);
 				} else {
 					Log.i(TAG, "No need to update image of this food");
+					DataService.updateFood(context, food);
 					android.os.Message amsg = new android.os.Message();
 		        	Bundle bundle = new Bundle();
-		        	bundle.putInt("result", Constants.SUCCESS);
-			        bundle.putString("detail", "success to update food");
+		        	bundle.putInt(HttpHandler.RESULT, Constants.SUCCESS);
+		        	bundle.putString("key", food.getKey());
+			        bundle.putString(HttpHandler.RESPONSE, "success to update food");
 			        amsg.setData(bundle);
 			        handler.sendMessage(amsg);
 				}

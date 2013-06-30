@@ -76,6 +76,27 @@ public class DataService {
 		}
 	}
 	
+	public static ArrayList<Food> getFoodsForUpdate(Context context){
+		String[] projection = {
+	    		FoodMenuTable.COLUMN_FOOD_KEY,
+	    		FoodMenuTable.COLUMN_REVISION, 
+	    		FoodMenuTable.COLUMN_IAMGE_REVISION};
+		Cursor cursor = context.getContentResolver().query(FoodMenuContentProvider.CONTENT_URI, projection, 
+				null, null, null);
+		if(cursor != null) {
+			int indexes[] = getColumnIndexs(cursor, projection);
+			ArrayList<Food> check_foods = new ArrayList<Food>();
+			for(cursor.moveToFirst(); ! cursor.isAfterLast(); cursor.moveToNext()){
+				String id = cursor.getString(indexes[0]);
+				Long food_v = Long.parseLong(cursor.getString(indexes[1]));
+				Long image_v = Long.parseLong(cursor.getString(indexes[2]));
+				check_foods.add(new Food(id, food_v, image_v));
+			}
+			return check_foods;
+		}
+		return null;
+	}
+	
 	public static void addNewFood(Context context, Food food){
 		ContentValues values = new ContentValues();
 		values.put(FoodMenuTable.COLUMN_FOOD_KEY, food.getKey());
@@ -83,7 +104,7 @@ public class DataService {
 		values.put(FoodMenuTable.COLUMN_CATEGORY, food.getCategory());
 		values.put(FoodMenuTable.COLUMN_PRICE, food.getPrice());
 		values.put(FoodMenuTable.COLUMN_DESCRIPTION, food.getDescription());
-		values.put(FoodMenuTable.COLUMN_RECOMMENDATION, "false");
+		values.put(FoodMenuTable.COLUMN_RECOMMENDATION, food.isRecommended());
 		values.put(FoodMenuTable.COLUMN_STATUS, food.getStatus());
 		values.put(FoodMenuTable.COLUMN_REVISION, food.getVersion());
 		values.put(FoodMenuTable.COLUMN_IAMGE_REVISION, food.getImageVersion());
@@ -102,9 +123,12 @@ public class DataService {
 		values.put(FoodMenuTable.COLUMN_CATEGORY, food.getCategory());
 		values.put(FoodMenuTable.COLUMN_PRICE, food.getPrice());
 		values.put(FoodMenuTable.COLUMN_DESCRIPTION, food.getDescription());
-		//values.put(FoodMenuTable.COLUMN_RECOMMENDATION, "false");
+		values.put(FoodMenuTable.COLUMN_RECOMMENDATION, food.isRecommended());
 		values.put(FoodMenuTable.COLUMN_STATUS, food.getStatus());
 		values.put(FoodMenuTable.COLUMN_REVISION, food.getVersion());
+		if(food.getImageVersion() != null){
+			values.put(FoodMenuTable.COLUMN_IAMGE_REVISION, food.getImageVersion());
+		}
 		context.getContentResolver().update(FoodMenuContentProvider.CONTENT_URI, values, 
 				FoodMenuTable.COLUMN_FOOD_KEY + "=?", 
 				new String[]{food.getKey()});
