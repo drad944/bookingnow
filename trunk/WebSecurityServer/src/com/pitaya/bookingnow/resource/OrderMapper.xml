@@ -31,16 +31,30 @@
 		<association property="user" javaType="com.pitaya.bookingnow.entity.security.User">
 			<id column="U_id" property="id" jdbcType="BIGINT" />
 			<result column="U_picture_id" property="picture_id" jdbcType="BIGINT" />
+			<result column="U_account" property="account" jdbcType="VARCHAR" />
 			<result column="U_name" property="name" jdbcType="VARCHAR" />
+			<result column="U_password" property="password" jdbcType="VARCHAR" />
+			<result column="U_phone" property="phone" jdbcType="VARCHAR" />
 			<result column="U_sex" property="sex" jdbcType="INTEGER" />
+			<result column="U_email" property="email" jdbcType="VARCHAR" />
+			<result column="U_address" property="address" jdbcType="VARCHAR" />
+			<result column="U_birthday" property="birthday" jdbcType="BIGINT" />
+			<result column="U_description" property="description" jdbcType="VARCHAR" />
 			<result column="U_department" property="department" jdbcType="INTEGER" />
+			<result column="U_sub_system" property="sub_system" jdbcType="INTEGER" />
 		</association>
 		
 		<association property="customer" javaType="com.pitaya.bookingnow.entity.Customer">
 			<id column="C_id" property="id" jdbcType="BIGINT" />
 			<result column="C_picture_id" property="picture_id" jdbcType="BIGINT" />
 			<result column="C_name" property="name" jdbcType="VARCHAR" />
+			<result column="C_account" property="account" jdbcType="VARCHAR" />
+			<result column="C_password" property="password" jdbcType="VARCHAR" />
+			<result column="C_phone" property="phone" jdbcType="VARCHAR" />
 			<result column="C_sex" property="sex" jdbcType="INTEGER" />
+			<result column="C_email" property="email" jdbcType="VARCHAR" />
+			<result column="C_address" property="address" jdbcType="VARCHAR" />
+			<result column="C_birthday" property="birthday" jdbcType="BIGINT" />
 		</association>
 		
 		<collection property="table_details" ofType="Order_Table_Detail">
@@ -54,6 +68,7 @@
 				<id column="T_id" property="id" jdbcType="BIGINT" />
 				<result column="T_status" property="status" jdbcType="INTEGER" />
 				<result column="T_seatCount" property="seatCount" jdbcType="INTEGER" />
+				<result column="T_maxCustomerCount" property="maxCustomerCount" jdbcType="INTEGER" />
 				<result column="T_address" property="address" jdbcType="VARCHAR" />
 			</association> 
 		</collection>
@@ -62,6 +77,7 @@
 			<id column="FD_id" property="id" jdbcType="BIGINT" />
 			<result column="FD_status" property="status" jdbcType="INTEGER" />
 			<result column="FD_count" property="count" jdbcType="INTEGER" />
+			<result column="FD_preference" property="preference" jdbcType="INTEGER" />
 			<result column="FD_last_modify_time" property="last_modify_time" jdbcType="BIGINT" />
 			<result column="FD_enabled" property="enabled" jdbcType="BIT" />
 			<result column="FD_food_id" property="food_id" jdbcType="BIGINT" />
@@ -69,11 +85,15 @@
 			
 			<association property="food" javaType="com.pitaya.bookingnow.entity.Food">
 				<id column="F_id" property="id" jdbcType="BIGINT" />
+				<result column="F_recommendation" property="recommendation" jdbcType="INTEGER" />
 				<result column="F_status" property="status" jdbcType="INTEGER" />
 				<result column="F_picture_id" property="picture_id" jdbcType="BIGINT" />
 				<result column="F_name" property="name" jdbcType="VARCHAR" />
+				<result column="F_version" property="version" jdbcType="BIGINT" />
+				<result column="F_period" property="period" jdbcType="BIGINT" />
 				<result column="F_price" property="price" jdbcType="DOUBLE" />
 				<result column="F_category" property="category" jdbcType="VARCHAR" />
+				<result column="F_description" property="description" jdbcType="VARCHAR" />
 			</association> 
 		</collection>
 	</resultMap>
@@ -178,14 +198,14 @@
 		U.picture_id as U_picture_id, 
 		U.name as U_name, 
 		U.sex as U_sex, 
-		U.department as U_department, 
+		U.department as U_department
 	</sql>
 	
 	<sql id="Customer_Base_Column_List">
 		C.id as C_id, 
 		C.picture_id as C_picture_id, 
 		C.name as C_name, 
-		C.sex as C_sex, 
+		C.sex as C_sex 
 	</sql>
 	
 	<sql id="Table_Detail_Base_Column_List">
@@ -219,7 +239,7 @@
 		F.picture_id as F_picture_id, 
 		F.name as F_name, 
 		F.price as F_price,
-		F.category as F_category, 
+		F.category as F_category
 	</sql>
 	
 	
