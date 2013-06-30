@@ -18,7 +18,7 @@ public class Food_PictureAction extends ActionSupport{
 	
 	private static final long serialVersionUID = 2899868808373852803L;
 	
-	private Food_PictureService food_PictureService;
+	private Food_PictureService food_pictureService;
 	
 	private File upload;
 	private String uploadFileName;
@@ -30,6 +30,14 @@ public class Food_PictureAction extends ActionSupport{
 	private String downloadFileName;//下载时显示的下载文件名
 	private File realDownloadFile;//下载的真实文件
 	
+	public Food_PictureService getFood_pictureService() {
+		return food_pictureService;
+	}
+
+	public void setFood_pictureService(Food_PictureService food_pictureService) {
+		this.food_pictureService = food_pictureService;
+	}
+
 	public Food getFood() {
 		return food;
 	}
@@ -38,13 +46,6 @@ public class Food_PictureAction extends ActionSupport{
 		this.food = food;
 	}
 
-	public Food_PictureService getFood_PictureService() {
-		return food_PictureService;
-	}
-
-	public void setFood_PictureService(Food_PictureService food_PictureService) {
-		this.food_PictureService = food_PictureService;
-	}
 
 	public File getUpload() {
 		return upload;
@@ -83,25 +84,18 @@ public class Food_PictureAction extends ActionSupport{
 	}
 
 
-	
-	//下载文件时的输出流入口
-	public InputStream getDownloadFileStream() { 
-		//* 注意使用getResourceAsStream方法时，文件路径必须是以“/”开头，且是相对路径。这个路径是相对于项目根目录的。 
-		//* 可以用return new FileInputStream(fileName)的方法来得到绝对路径的文件。
-		
-		//return ServletActionContext.getServletContext().getResourceAsStream("/" + downloadFileName); 
-		
-		try {
-			return new FileInputStream(realDownloadFile);
-		} catch (Exception e) {
-			return null;
-		}
-		
+	public String getSmallFood_Picture(){
+		return "getSmallImageSuccess";
 	}
+	
+	public String getLargeFood_Picture(){
+		return "getLargeImageSuccess";
+	}
+
 	
 	public InputStream getSmallImageFood_Picture(){
 		if(this.food != null && food.getId() != null){
-			Food_Picture picture = food_PictureService.searchPictureByFoodId(food.getId());
+			Food_Picture picture = food_pictureService.searchPictureByFoodId(food.getId());
 			
 			return  new ByteArrayInputStream(picture.getSmall_image());
 		} else {
@@ -112,7 +106,7 @@ public class Food_PictureAction extends ActionSupport{
 	
 	public InputStream getLargeImageFood_Picture(){
 		if(this.food != null && food.getId() != null){
-			Food_Picture picture = food_PictureService.searchPictureByFoodId(food.getId());
+			Food_Picture picture = food_pictureService.searchPictureByFoodId(food.getId());
 			
 			return  new ByteArrayInputStream(picture.getBig_image());
 		} else {
@@ -168,5 +162,20 @@ public class Food_PictureAction extends ActionSupport{
 		} 
 
 		return downloadFileName;
+	}
+	
+	//下载文件时的输出流入口
+	public InputStream getDownloadFileStream() { 
+		//* 注意使用getResourceAsStream方法时，文件路径必须是以“/”开头，且是相对路径。这个路径是相对于项目根目录的。 
+		//* 可以用return new FileInputStream(fileName)的方法来得到绝对路径的文件。
+		
+		//return ServletActionContext.getServletContext().getResourceAsStream("/" + downloadFileName); 
+		
+		try {
+			return new FileInputStream(realDownloadFile);
+		} catch (Exception e) {
+			return null;
+		}
+		
 	}
 }
