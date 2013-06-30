@@ -42,9 +42,18 @@
 				<result name="uploadSuccess" type="redirectAction">
 				    showMyFile.action
 				</result>
+				<result name="getSmallImageSuccess" type="stream">
+					<param name="inputName">smallImageFood_Picture</param>
+					<param name="bufferSize">4096</param>
+				</result>
+				
+				<result name="getLargeImageSuccess" type="stream">
+					<param name="inputName">largeImageFood_Picture</param>
+					<param name="bufferSize">4096</param>
+				</result>
 				
 				
-				<result name="downloadSuccess" type="stream">
+				<result name="getSmallImageSuccess" type="stream">
 				
 					<!-- 下载文件的类型 ,这里表示无限制
 					<param name="contentType">application/octet-stream;charset=GBK</param>
