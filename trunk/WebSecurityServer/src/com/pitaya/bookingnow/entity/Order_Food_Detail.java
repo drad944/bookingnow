@@ -16,8 +16,19 @@ public class Order_Food_Detail {
     private Long food_id;
 
     private Long order_id;
+    
+    private Food food;
+    
 
-    public Long getId() {
+    public Food getFood() {
+		return food;
+	}
+
+	public void setFood(Food food) {
+		this.food = food;
+	}
+
+	public Long getId() {
         return id;
     }
 

@@ -5,13 +5,42 @@
 		<id column="id" property="id" jdbcType="BIGINT" />
 		<result column="status" property="status" jdbcType="INTEGER" />
 		<result column="seatCount" property="seatCount" jdbcType="INTEGER" />
-		<result column="maxCustomerCount" property="maxCustomerCount"
-			jdbcType="INTEGER" />
+		<result column="maxCustomerCount" property="maxCustomerCount" jdbcType="INTEGER" />
 		<result column="address" property="address" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		id, status, seatCount, maxCustomerCount, address
 	</sql>
+	
+	
+	
+	<select id="searchAllTables" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_table
+	</select>
+	
+	<select id="searchTables" resultMap="BaseResultMap"
+		parameterType="com.pitaya.bookingnow.entity.Table">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_table
+		<where>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="seatCount != null">
+				and seatCount = #{seatCount,jdbcType=INTEGER}
+			</if>
+			<if test="maxCustomerCount != null">
+				and maxCustomerCount = #{maxCustomerCount,jdbcType=INTEGER}
+			</if>
+			<if test="address != null">
+				and address = #{address,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Long">
 		select
@@ -19,10 +48,13 @@
 		from pitaya_table
 		where id = #{id,jdbcType=BIGINT}
 	</select>
+	
+	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		delete from pitaya_table
 		where id = #{id,jdbcType=BIGINT}
 	</delete>
+	
 	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Table">
 		<selectKey resultType="java.lang.Long" keyProperty="id"
 			order="AFTER">
@@ -34,6 +66,7 @@
 		#{maxCustomerCount,jdbcType=INTEGER},
 		#{address,jdbcType=VARCHAR})
 	</insert>
+	
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Table">
 		<selectKey resultType="java.lang.Long" keyProperty="id"
 			order="AFTER">
@@ -69,6 +102,7 @@
 			</if>
 		</trim>
 	</insert>
+	
 	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Table">
 		update pitaya_table
 		<set>
@@ -87,6 +121,7 @@
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
+	
 	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Table">
 		update pitaya_table
 		set status = #{status,jdbcType=INTEGER},

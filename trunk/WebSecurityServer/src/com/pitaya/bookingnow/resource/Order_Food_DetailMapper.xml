@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.pitaya.bookingnow.dao.Order_Food_DetailMapper">
-	<resultMap id="BaseResultMap"
-		type="com.pitaya.bookingnow.entity.Order_Food_Detail">
+	<resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.Order_Food_Detail">
 		<id column="id" property="id" jdbcType="BIGINT" />
 		<result column="status" property="status" jdbcType="INTEGER" />
 		<result column="count" property="count" jdbcType="INTEGER" />
 		<result column="preference" property="preference" jdbcType="INTEGER" />
-		<result column="last_modify_time" property="last_modify_time"
-			jdbcType="BIGINT" />
+		<result column="last_modify_time" property="last_modify_time" jdbcType="BIGINT" />
 		<result column="enabled" property="enabled" jdbcType="BIT" />
 		<result column="food_id" property="food_id" jdbcType="BIGINT" />
 		<result column="order_id" property="order_id" jdbcType="BIGINT" />

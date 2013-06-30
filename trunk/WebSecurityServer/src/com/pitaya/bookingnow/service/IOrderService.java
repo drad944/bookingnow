@@ -14,4 +14,7 @@ public interface IOrderService {
 	boolean modify(Order order);
 	
 	List<Order> searchOrders(Order order);
+	
+	boolean addWaitingOrder(Order order);
+	
 }
