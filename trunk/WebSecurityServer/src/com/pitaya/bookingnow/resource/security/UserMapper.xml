@@ -16,24 +16,95 @@
 		<result column="department" property="department" jdbcType="INTEGER" />
 		<result column="sub_system" property="sub_system" jdbcType="INTEGER" />
 	</resultMap>
+	
+	<resultMap id="User_BaseResultMap" type="com.pitaya.bookingnow.entity.security.User">
+		<id column="U_id" property="id" jdbcType="BIGINT" />
+		<result column="U_picture_id" property="picture_id" jdbcType="BIGINT" />
+		<result column="U_account" property="account" jdbcType="VARCHAR" />
+		<result column="U_name" property="name" jdbcType="VARCHAR" />
+		<result column="U_password" property="password" jdbcType="VARCHAR" />
+		<result column="U_phone" property="phone" jdbcType="VARCHAR" />
+		<result column="U_sex" property="sex" jdbcType="INTEGER" />
+		<result column="U_email" property="email" jdbcType="VARCHAR" />
+		<result column="U_address" property="address" jdbcType="VARCHAR" />
+		<result column="U_birthday" property="birthday" jdbcType="BIGINT" />
+		<result column="U_description" property="description" jdbcType="VARCHAR" />
+		<result column="U_department" property="department" jdbcType="INTEGER" />
+		<result column="U_sub_system" property="sub_system" jdbcType="INTEGER" />
+		
+		<collection property="role_details" ofType="User_Role_Detail">
+			<id column="UR_id" property="id" jdbcType="BIGINT" />
+			<result column="UR_enabled" property="enabled" jdbcType="BIT" />
+			<result column="UR_role_id" property="role_id" jdbcType="BIGINT" />
+			<result column="UR_user_id" property="user_id" jdbcType="BIGINT" />
+			
+			<association property="role" javaType="com.pitaya.bookingnow.entity.security.Role">
+				<id column="R_id" property="id" jdbcType="BIGINT" />
+				<result column="R_name" property="name" jdbcType="VARCHAR" />
+				<result column="R_description" property="description" jdbcType="VARCHAR" />
+				<result column="R_issys" property="issys" jdbcType="BIT" />
+				<result column="R_module" property="module" jdbcType="INTEGER" />
+			</association> 
+		</collection>
+	</resultMap>
+	
 	<sql id="Base_Column_List">
 		id, picture_id, account, name, password, phone, sex, email, address,
 		birthday, description,
 		department, sub_system
 	</sql>
 	
-	<select id="login" resultMap="BaseResultMap"
-		parameterType="com.pitaya.bookingnow.entity.security.User">
+	<sql id="User_Base_Column_List">
+		U.id as U_id, 
+		U.picture_id as U_picture_id, 
+		U.account as U_account, 
+		U.name as U_name, 
+		U.password as U_password, 
+		U.phone as U_phone, 
+		U.sex as U_sex, 
+		U.email as U_email, 
+		U.address as U_address,
+		U.birthday as U_birthday, 
+		U.description as U_description,
+		U.department as U_department, 
+		U.sub_system as U_sub_system
+	</sql>
+	
+	<sql id="Role_Detail_Base_Column_List">
+		UR.id as UR_id, 
+		UR.enabled as UR_enabled
+	</sql>
+	
+	<sql id="Role_Base_Column_List">
+		R.id as R_id, 
+		R.name as R_name
+	</sql>
+	
+	<select id="login" resultMap="User_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">
 		select
-		<include refid="Base_Column_List" />
-		from pitaya_user
-		where account = #{account,jdbcType=VARCHAR} and password = #{password,jdbcType=VARCHAR}
+		<include refid="User_Base_Column_List" />
+		,
+		<include refid="Role_Detail_Base_Column_List" />
+		,
+		<include refid="Role_Base_Column_List" />
+		
+		from pitaya_user U
+			left outer join pitaya_user_role_detail UR on UR.user_id = U.id
+			left outer join pitaya_role R on R.id = UR.role_id
+		where U.account = #{account,jdbcType=VARCHAR} and U.password = #{password,jdbcType=VARCHAR}
 	</select>
 	
-	<select id="searchUsers" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">
+	<select id="searchUsers" resultMap="User_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">
 		select
-		<include refid="Base_Column_List" />
-		from pitaya_user
+		<include refid="User_Base_Column_List" />
+		,
+		<include refid="Role_Detail_Base_Column_List" />
+		,
+		<include refid="Role_Base_Column_List" />
+		
+		from pitaya_user U
+			left outer join pitaya_user_role_detail UR on UR.user_id = U.id
+			left outer join pitaya_role R on R.id = UR.role_id
 		<where>
 			<if test="picture_id != null">
 				picture_id = #{picture_id,jdbcType=BIGINT}
