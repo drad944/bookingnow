@@ -1,6 +1,15 @@
 package com.pitaya.bookingnow.entity.security;
 
 public class User {
+	public User() {
+		
+	}
+	
+	public User(String account,String password) {
+		this.account = account;
+		this.password = password;
+	}
+	
     private Long id;
 
     private Long picture_id;
