@@ -17,4 +17,7 @@ public interface IOrderService {
 	
 	boolean addWaitingOrder(Order order);
 	
+	boolean addNewOrder(Order order);
+	
+	
 }

@@ -78,13 +78,15 @@
 	        </action>
 
 		<action name="*User" class="com.pitaya.bookingnow.action.UserAction" method="{1}User">
-			<result name="loginFail" type="dispatcher">
+			<result name="loginSuccess" type="json">
+				<param name="root">loginUser</param>
+	        </result>
+	        
+			<result name="loginFail" type="json">
 				/Page/Common/error.jsp
 	        </result>
 
-			<result name="loginSuccess" type="dispatcher">
-				/Page/Security/showUserInfo.jsp
-	        </result>
+			
 	        
 			<result name="findFail" type="dispatcher">
 				/Page/error.jsp

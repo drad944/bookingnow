@@ -119,4 +119,40 @@ public class OrderService implements IOrderService{
 		return false;
 	}
 
+	@Override
+	public boolean addNewOrder(Order order) {
+		if (order.getUser_id() != null) {
+			//check waiter info is exist in order
+			
+			List<Order_Table_Detail> table_Details = order.getTable_details();
+			
+			if (table_Details != null && table_Details.size() > 0) {
+				for (int i = 0; i < table_Details.size(); i++) {
+					Order_Table_Detail table_Detail = table_Details.get(i);
+					if(table_Detail.getTable_id() != null){
+						//check table info is exist in order
+						
+						
+						orderDao.insertSelective(order);
+						
+						table_Detail.setOrder_id(order.getId());
+						
+						table_DetailDao.insertSelective(table_Detail);
+						
+						Table table = new Table();
+						table.setId(table_Detail.getTable_id());
+						table.setStatus(Constants.TABLE_USING);
+						
+						tableDao.updateByPrimaryKeySelective(table);
+						
+						
+					}
+				}
+				return true;
+			}
+			
+		}
+		return false;
+	}
+
 }

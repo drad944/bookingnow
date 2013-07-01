@@ -8,13 +8,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
-import com.opensymphony.xwork2.ActionSupport;
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Food_Picture;
 import com.pitaya.bookingnow.service.impl.Food_PictureService;
 import com.pitaya.bookingnow.util.Constants;
 
-public class Food_PictureAction extends ActionSupport{
+public class Food_PictureAction extends BaseAction{
 	
 	private static final long serialVersionUID = 2899868808373852803L;
 	
