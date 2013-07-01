@@ -78,14 +78,14 @@ public class OrderAction extends BaseAction{
 	}
 	
 	/*		
-	 * 		Commit a new created order which contains user id and table id
+	 * 		submit a new created order which contains user id and table id
 	 */
-	public String commitWaitingOrder(){
+	public String submitWaitingOrder(){
 		if (order != null) {
-			orderService.add(order);
-			
-			this.setResult(Constants.SUCCESS);
-			return "commitSuccess";
+			if (orderService.addWaitingOrder(order)) {
+				this.setResult(Constants.SUCCESS);
+				return "commitSuccess";
+			}
 		}
 		this.setResult(Constants.FAIL);
 		this.setDetail("Some reason cause the operation fail");
@@ -93,9 +93,9 @@ public class OrderAction extends BaseAction{
 	}
 	
 	/*		
-	 * 		Commit a new created order which contains food list
+	 * 		submit a new created order which contains food list
 	 */
-	public String commitNewOrder(){
+	public String submitNewOrder(){
 		if (order != null) {
 			this.setResult(Constants.SUCCESS);
 			return "commitSuccess";

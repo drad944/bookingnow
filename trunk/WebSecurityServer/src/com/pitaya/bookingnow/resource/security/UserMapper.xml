@@ -27,7 +27,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_user
-		where account = #{account,jdbcType=VARCHAR} and and password = #{password,jdbcType=VARCHAR}
+		where account = #{account,jdbcType=VARCHAR} and password = #{password,jdbcType=VARCHAR}
 	</select>
 	
 	<select id="searchUsers" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">

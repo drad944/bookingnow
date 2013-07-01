@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionSupport;
 import com.pitaya.bookingnow.entity.security.User;
 import com.pitaya.bookingnow.service.security.IUserService;
 
@@ -14,8 +13,25 @@ public class UserAction extends BaseAction{
 	private static final long serialVersionUID = 1921350238570284375L;
 	
 	private IUserService userService;
+	
 	private User user;
 	
+	private String account;
+	
+	private String password;
+	
+	public String getAccount() {
+		return account;
+	}
+	public void setAccount(String account) {
+		this.account = account;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
 	public IUserService getUserService() {
 		return userService;
 	}
@@ -31,6 +47,13 @@ public class UserAction extends BaseAction{
 	
 	public String loginUser() {
 		User loginUser = null;
+		if(account != null && password != null){
+			user = new User();
+			user.setAccount(account);
+			user.setPassword(password);
+		}
+			
+		
 		if(user != null) {
         	loginUser = userService.login(user);
         }

@@ -18,23 +18,45 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<!--
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
+	<script src="${pageContext.request.contextPath}/JS/jquery-1.6.4.min.js" type="text/javascript"></script>
+	<script language="javascript">
+		function loginSubmit(){
+			
+		    	$.post("loginUser.action", 
+		    			{
+		    				
+		    					account:$("#account").val(),
+		    					password:$("#password").val()
+		    				
+		    				
+		    			}, 
+		    		    function(data){
+		    				var user = data;
+		    				alert("user name:" + user.name);
+		    				
+		    		        $.each(data, function(areaIdx, area) {
+		    		            //alert(area.radius);
+		    		        });
+		    		    },
+		    		    "json");
+		}
+	</script>
   </head>
   
   <body>
     This is my JSP page. <br>
     
-    <form action="loginUser.action" method="post">
     	<table>
     		<tr>
     			<td>username:</td>
-    			<td><input type="text" name="user.user_account" value="" /></td>
+    			<td><input type="text" id="account" name="account" value="" /></td>
     		</tr>
     		<tr>
     			<td>password:</td>
-    			<td><input type="text" name="user.user_password" value="" /></td>
+    			<td><input type="text" id="password" name="password" value="" /></td>
     		</tr>
     		<tr>
-    			<td><input type="submit" name="submit" value="submit" /></td>
+    			<td><input type="button" name="submit" value="submit" onclick="loginSubmit();"/></td>
     			<td><input type="reset" name="reset" value="reset" /></td>
     		</tr>
     		<tr>
@@ -42,7 +64,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     			<td></td>
     		</tr>
     	</table>
-    </form>
     
     <h2><a href="Page/Common/registerUser.jsp">register account</a></h2>
   </body>
