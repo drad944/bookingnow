@@ -21,14 +21,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script src="${pageContext.request.contextPath}/JS/jquery-1.6.4.min.js" type="text/javascript"></script>
 	<script language="javascript">
 			function loginSubmit(){
-				alert("start!");
-				
+				var user = new Object();
+				user.account = $("#account").val();
+				user.password = $("#password").val();
+
 				
 			    	$.post("loginUser.action", 
-			    			{
-			    		account:$("#account").val(),
-			    		password:$("#password").val()
-			    			}, 
+			    			user, 
 			    		    function(data){
 			    				var len = data.length;
 			    				alert("len:" + len);

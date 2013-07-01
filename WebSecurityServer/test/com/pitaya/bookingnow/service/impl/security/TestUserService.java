@@ -11,28 +11,27 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.pitaya.bookingnow.entity.security.User;
-import com.pitaya.bookingnow.service.impl.security.UserService;
-
 
 public class TestUserService {
 	Logger logger = Logger.getLogger("TestUserService");
-	 
-	 UserService service = null;
 
-	 @Before
-	 public void init() {
-	  
-	  ApplicationContext aCtx = new FileSystemXmlApplicationContext("src/applicationContext.xml");
-	  UserService service = (UserService) aCtx.getBean("userService");
-	  assertNotNull(service);
-	  this.service = service;
-	 }
-	 
-	 @Test
-	 public void testAddUser() {
+	UserService service = null;
 
-	  User newUser = new User();
-	  
+	@Before
+	public void init() {
+
+		ApplicationContext aCtx = new FileSystemXmlApplicationContext(
+				"src/applicationContext.xml");
+		UserService service = (UserService) aCtx.getBean("userService");
+		assertNotNull(service);
+		this.service = service;
+	}
+
+	@Test
+	public void testAddUser() {
+
+		User newUser = new User();
+
 		newUser.setAccount("shax");
 		newUser.setAddress("lsdjf sldf sdlfkj sldkf");
 		newUser.setBirthday(new Date().getTime());
@@ -44,11 +43,20 @@ public class TestUserService {
 		newUser.setPhone("13245678910");
 		newUser.setSex(1);
 		newUser.setSub_system(2);
-	  
-	  service.add(newUser);
-	  
-	  User userFromDb =  service.login(newUser);
-	  assertNotNull(userFromDb);
-	  System.out.println("id: " + userFromDb.getId());
-	 }
+
+		service.add(newUser);
+
+		User userFromDb = service.login(newUser);
+		assertNotNull(userFromDb);
+		System.out.println("id: " + userFromDb.getId());
+	}
+
+	@Test
+	public void testLoginUser() {
+		User newUser = new User();
+		newUser.setAccount("lili");
+		newUser.setPassword("123456");
+		User loginUser = service.login(newUser);
+		System.out.println("user id : " + loginUser.getId());
+	}
 }
