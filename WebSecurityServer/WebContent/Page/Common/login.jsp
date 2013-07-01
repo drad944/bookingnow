@@ -20,25 +20,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	-->
 	<script src="${pageContext.request.contextPath}/JS/jquery-1.6.4.min.js" type="text/javascript"></script>
 	<script language="javascript">
-		function loginSubmit(){
-			
-		    	$.post("loginUser.action", 
-		    			{
-		    				"userString":{
-		    					"account":$("#account").val(),
-		    					"password":$("#password").val()
-		    				}
-		    			}, 
-		    		    function(data){
-		    				var user = data;
-		    				alert("user name:" + user.name);
-		    				
-		    		        $.each(data, function(areaIdx, area) {
-		    		            //alert(area.radius);
-		    		        });
-		    		    },
-		    		    "json");
-		}
+			function loginSubmit(){
+				alert("start!");
+				
+				
+			    	$.post("loginUser.action", 
+			    			{
+			    		account:$("#account").val(),
+			    		password:$("#password").val()
+			    			}, 
+			    		    function(data){
+			    				var len = data.length;
+			    				alert("len:" + len);
+			    				
+			    		        $.each(data, function(areaIdx, area) {
+			    		            //alert(area.radius);
+			    		        });
+			    		    },
+			    		    "json");
+			}
 	</script>
   </head>
   

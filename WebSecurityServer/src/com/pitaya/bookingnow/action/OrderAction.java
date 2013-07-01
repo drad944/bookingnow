@@ -13,7 +13,15 @@ public class OrderAction extends BaseAction{
 	private Order order;
 	private List<Order> matchedOrders;
 	
+	private Double allowance;
 	
+	
+	public Double getAllowance() {
+		return allowance;
+	}
+	public void setAllowance(Double allowance) {
+		this.allowance = allowance;
+	}
 	public List<Order> getMatchedOrders() {
 		return matchedOrders;
 	}
@@ -34,6 +42,11 @@ public class OrderAction extends BaseAction{
 	}
 	
 	public String searchOrder() {
+		if (allowance != null) {
+			order = new Order();
+			order.setAllowance(allowance);
+		}
+		
 		if (order != null) {
 			
 			matchedOrders = orderService.searchOrders(order);
