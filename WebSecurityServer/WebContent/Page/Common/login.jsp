@@ -24,11 +24,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			
 		    	$.post("loginUser.action", 
 		    			{
-		    				
-		    					account:$("#account").val(),
-		    					password:$("#password").val()
-		    				
-		    				
+		    				"userString":{
+		    					"account":$("#account").val(),
+		    					"password":$("#password").val()
+		    				}
 		    			}, 
 		    		    function(data){
 		    				var user = data;
