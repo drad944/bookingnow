@@ -246,10 +246,10 @@ public class MessageService {
 			if(password.equals("123456")){
 				clientAgent.username = username;
 				//Get role from database service
-				clientAgent.role = Constants.WAITER_ROLE;
+				clientAgent.role = Constants.ROLE_WAITER;
 				if(this.addClient(clientAgent)){
 					resultmsg = new ResultMessage(key, Constants.LOGIN_REQUEST, 
-							Constants.SUCCESS, String.valueOf(Constants.WAITER_ROLE));
+							Constants.SUCCESS, String.valueOf(Constants.ROLE_WAITER));
 				} else {
 					resultmsg = new ResultMessage(key, Constants.LOGIN_REQUEST, 
 							Constants.FAIL, "Can't login two clients with same user!");
@@ -326,7 +326,7 @@ public class MessageService {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			messageService.sendMessageToGroup(Constants.WAITER_ROLE, new Message("test"));
+			messageService.sendMessageToGroup(Constants.ROLE_WAITER, new Message("test"));
     	}
     }
 	

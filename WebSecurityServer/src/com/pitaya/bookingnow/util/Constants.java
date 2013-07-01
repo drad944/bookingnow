@@ -81,8 +81,28 @@ public class Constants {
 	public static final int RESOURCE_TYPE_CLASS = RESOURCE_TYPE_HTML + 1;
 	public static final int RESOURCE_TYPE_CLASS_METHOD = RESOURCE_TYPE_CLASS + 1;
 	
-	public static final int KITCHEN_ROLE = 1300;
-	public static final int WAITER_ROLE = KITCHEN_ROLE + 1;
-	public static final int WELCOME_ROLE = WAITER_ROLE + 1;
-	public static final int CASH_ROLE = WELCOME_ROLE + 1;
+	public static final int ROLE_TYPE = 1300;
+	public static final int ROLE_ANONYMOUS = ROLE_TYPE + 1;
+	public static final int ROLE_CUSTOMER = ROLE_ANONYMOUS + 1;
+	public static final int ROLE_CUSTOMER_VIP1 = ROLE_CUSTOMER + 1;
+	public static final int ROLE_CUSTOMER_VIP2 = ROLE_CUSTOMER_VIP1 + 1;
+	public static final int ROLE_WELCOME = ROLE_CUSTOMER_VIP2 + 1;
+	public static final int ROLE_CHEF = ROLE_WELCOME + 1;
+	public static final int ROLE_WAITER = ROLE_CHEF + 1;
+	public static final int ROLE_CASHIER = ROLE_WAITER + 1;
+	public static final int ROLE_MANAGER = ROLE_CASHIER + 1;
+	public static final int ROLE_ADMIN = ROLE_MANAGER + 1;
+	
+	public static final int AUTHORITY_TYPE = 1400;
+	public static final int AUTHORITY_ANONYMOUS = AUTHORITY_TYPE + 1;
+	public static final int AUTHORITY_CUSTOMER = AUTHORITY_ANONYMOUS + 1;
+	public static final int AUTHORITY_CUSTOMER_VIP1 = AUTHORITY_CUSTOMER + 1;
+	public static final int AUTHORITY_CUSTOMER_VIP2 = AUTHORITY_CUSTOMER_VIP1 + 1;
+	public static final int AUTHORITY_WELCOME = AUTHORITY_CUSTOMER_VIP2 + 1;
+	public static final int AUTHORITY_CHEF = AUTHORITY_WELCOME + 1;
+	public static final int AUTHORITY_WAITER = AUTHORITY_CHEF + 1;
+	public static final int AUTHORITY_CASHIER = AUTHORITY_WAITER + 1;
+	public static final int AUTHORITY_MANAGER = AUTHORITY_CASHIER + 1;
+	public static final int AUTHORITY_ADMIN = AUTHORITY_MANAGER + 1;
+	
 }

@@ -77,7 +77,8 @@
 	
 	<sql id="Role_Base_Column_List">
 		R.id as R_id, 
-		R.name as R_name
+		R.name as R_name,
+		R.type as R_type
 	</sql>
 	
 	<select id="login" resultMap="User_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">

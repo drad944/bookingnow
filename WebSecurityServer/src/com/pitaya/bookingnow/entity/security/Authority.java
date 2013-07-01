@@ -10,8 +10,18 @@ public class Authority {
     private Boolean issys;
 
     private Integer module;
+    
+    private Integer type;
+    
+    public Integer getType() {
+		return type;
+	}
 
-    public Long getId() {
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public Long getId() {
         return id;
     }
 
