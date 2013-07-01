@@ -57,13 +57,6 @@ public class UserAction extends BaseAction{
 	
 	public String loginUser() {
 		
-		if(account != null && password != null){
-			user = new User();
-			user.setAccount(account);
-			user.setPassword(password);
-		}
-			
-		
 		if(user != null) {
         	loginUser = userService.login(user);
         }
