@@ -43,7 +43,7 @@ public class HttpService {
 	private static ExecutorService pool;
 	
 	static {
-		pool = Executors.newFixedThreadPool(5);
+		pool = Executors.newFixedThreadPool(10);
 	}
 	
 	public static void setUrl(String url){

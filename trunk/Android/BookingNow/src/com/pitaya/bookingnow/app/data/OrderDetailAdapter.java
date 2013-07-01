@@ -26,7 +26,8 @@ import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.model.Order.Food;
 import com.pitaya.bookingnow.app.model.Order.OnFoodStatusChangedListener;
 import com.pitaya.bookingnow.app.service.DataService;
-import com.pitaya.bookingnow.app.service.RoleManager;
+import com.pitaya.bookingnow.app.service.UserManager;
+import com.pitaya.bookinnow.app.util.Constants;
 
 public class OrderDetailAdapter extends BaseAdapter {
     
@@ -441,18 +442,18 @@ public class OrderDetailAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		//This implementation is only for food item, you have to implement bottom buttons or header view in subclass
 		View itemView = null;
-		switch(RoleManager.getRole()){
-			case RoleManager.WAITER:
+		switch(UserManager.getUserRole()){
+			case Constants.WAITER_ROLE:
 				itemView = View.inflate(mContext, R.layout.fooditem_waiter, null);
 				setupWaiterView(itemView, position);
 				break;
-			case RoleManager.KITCHEN:
+			case Constants.KITCHEN_ROLE:
 				itemView = View.inflate(mContext, R.layout.fooditem_kitchen, null);
 				setupKitchenView(itemView, position);
 				break;
-			case RoleManager.CASHER:
+			case Constants.CASH_ROLE:
 				break;
-			case RoleManager.WELCOMER:
+			case Constants.WELCOME_ROLE:
 				break;
 		}
 		return itemView;

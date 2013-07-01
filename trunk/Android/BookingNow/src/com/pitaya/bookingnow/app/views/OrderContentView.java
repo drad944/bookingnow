@@ -10,7 +10,8 @@ import android.view.ViewGroup;
 
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.model.*;
-import com.pitaya.bookingnow.app.service.RoleManager;
+import com.pitaya.bookingnow.app.service.UserManager;
+import com.pitaya.bookinnow.app.util.Constants;
 
 public class OrderContentView extends BaseContentView{
 	
@@ -32,11 +33,11 @@ public class OrderContentView extends BaseContentView{
 		FragmentManager fragmentManager = ((FragmentActivity)this.mContext).getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		if(mLeftView == null){
-			switch(RoleManager.getRole()){
-				case RoleManager.WAITER:
+			switch(UserManager.getUserRole()){
+				case Constants.WAITER_ROLE:
 					mLeftView = new WaiterOrderLeftView();
 					break;
-				case RoleManager.WELCOMER:
+				case Constants.WELCOME_ROLE:
 					mLeftView = new WelcomerOrderLeftView();
 			}
 			mLeftView.setContainer(this);
