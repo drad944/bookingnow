@@ -15,7 +15,17 @@ public class UserAction extends BaseAction{
 	private IUserService userService;
 	
 	private User user;
+	private User loginUser;
 	
+	public User getLoginUser() {
+		return loginUser;
+	}
+	public void setLoginUser(User loginUser) {
+		this.loginUser = loginUser;
+	}
+
+
+
 	private String account;
 	
 	private String password;
@@ -46,7 +56,7 @@ public class UserAction extends BaseAction{
 	}
 	
 	public String loginUser() {
-		User loginUser = null;
+		
 		if(account != null && password != null){
 			user = new User();
 			user.setAccount(account);
