@@ -3,6 +3,8 @@ package com.pitaya.bookingnow.entity.security;
 public class Role {
     private Long id;
 
+    private Integer type;
+    
     private String name;
 
     private String description;
@@ -11,7 +13,15 @@ public class Role {
 
     private Integer module;
 
-    public Long getId() {
+    public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public Long getId() {
         return id;
     }
 

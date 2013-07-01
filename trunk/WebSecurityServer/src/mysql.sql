@@ -306,16 +306,16 @@ create table pitaya_role(
 	module integer
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_role values (1,1,'ROLE_ANONYMOUS','Anonymous',false,1101);	
-insert into pitaya_role values (2,2,'ROLE_CUSTOMER','customer',false,1101);
-insert into pitaya_role values (3,3,'ROLE_CUSTOMER_VIP1','customer',false,1101);
-insert into pitaya_role values (4,4,'ROLE_CUSTOMER_VIP2','customer',false,1101);
-insert into pitaya_role values (5,5,'ROLE_WELCOME','welcome',false,1101);
-insert into pitaya_role values (6,6,'ROLE_CHEF','chef',false,1101);
-insert into pitaya_role values (7,7,'ROLE_WAITER','waiter',false,1101);
-insert into pitaya_role values (8,8,'ROLE_CASHIER','cashier',false,1101);
-insert into pitaya_role values (9,9,'ROLE_MANAGER','manager',false,1101);
-insert into pitaya_role values (10,10,'ROLE_ADMIN','administrator',1,1101);
+insert into pitaya_role values (1,1301,'ROLE_ANONYMOUS','Anonymous',false,1101);	
+insert into pitaya_role values (2,1302,'ROLE_CUSTOMER','customer',false,1101);
+insert into pitaya_role values (3,1303,'ROLE_CUSTOMER_VIP1','customer',false,1101);
+insert into pitaya_role values (4,1304,'ROLE_CUSTOMER_VIP2','customer',false,1101);
+insert into pitaya_role values (5,1305,'ROLE_WELCOME','welcome',false,1101);
+insert into pitaya_role values (6,1306,'ROLE_CHEF','chef',false,1101);
+insert into pitaya_role values (7,1307,'ROLE_WAITER','waiter',false,1101);
+insert into pitaya_role values (8,1308,'ROLE_CASHIER','cashier',false,1101);
+insert into pitaya_role values (9,1309,'ROLE_MANAGER','manager',false,1101);
+insert into pitaya_role values (10,1310,'ROLE_ADMIN','administrator',1,1101);
 
 
 
@@ -329,16 +329,16 @@ create table pitaya_authority(
 	module integer
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_authority values (1,1,'ROLE_ANONYMOUS','authority Anonymous',false,1101);	
-insert into pitaya_authority values (2,2,'ROLE_CUSTOMER','authority customer',false,1101);
-insert into pitaya_authority values (3,3,'ROLE_CUSTOMER_VIP1','authority customer',false,1101);
-insert into pitaya_authority values (4,4,'ROLE_CUSTOMER_VIP2','authority customer',false,1101);
-insert into pitaya_authority values (5,5,'ROLE_WELCOME','authority welcome',false,1101);
-insert into pitaya_authority values (6,6,'ROLE_CHEF','authority chef',false,1101);
-insert into pitaya_authority values (7,7,'ROLE_WAITER','authority waiter',false,1101);
-insert into pitaya_authority values (8,8,'ROLE_CASHIER','authority cashier',false,1101);
-insert into pitaya_authority values (9,9,'ROLE_MANAGER','authority manager',false,1101);
-insert into pitaya_authority values (10,10,'ROLE_ADMIN','authority administrator',1,1101);
+insert into pitaya_authority values (1,1401,'AUTHORITY_ANONYMOUS','authority Anonymous',false,1101);	
+insert into pitaya_authority values (2,1402,'AUTHORITY_CUSTOMER','authority customer',false,1101);
+insert into pitaya_authority values (3,1403,'AUTHORITY_CUSTOMER_VIP1','authority customer',false,1101);
+insert into pitaya_authority values (4,1404,'AUTHORITY_CUSTOMER_VIP2','authority customer',false,1101);
+insert into pitaya_authority values (5,1405,'AUTHORITY_WELCOME','authority welcome',false,1101);
+insert into pitaya_authority values (6,1406,'AUTHORITY_CHEF','authority chef',false,1101);
+insert into pitaya_authority values (7,1407,'AUTHORITY_WAITER','authority waiter',false,1101);
+insert into pitaya_authority values (8,1408,'AUTHORITY_CASHIER','authority cashier',false,1101);
+insert into pitaya_authority values (9,1409,'AUTHORITY_MANAGER','authority manager',false,1101);
+insert into pitaya_authority values (10,1410,'AUTHORITY_ADMIN','authority administrator',1,1101);
 
 
 create table pitaya_resource(
