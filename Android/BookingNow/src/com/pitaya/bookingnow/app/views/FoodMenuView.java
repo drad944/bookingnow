@@ -145,7 +145,7 @@ public class FoodMenuView extends FrameLayout{
 
 	         if (needReload) {
 		            AsyncImageTask task = new AsyncImageTask(mContext, image, position, food.getSmallImageName());
-		           	image .setImageDrawable(new AsyncDrawable(mContext.getResources(), placeholderBitmap, task));
+		           	image.setImageDrawable(new AsyncDrawable(mContext.getResources(), placeholderBitmap, task));
 		           	task.execute();
 	         }
 

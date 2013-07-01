@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,6 +24,7 @@ import com.pitaya.bookingnow.app.service.FoodMenuContentProvider;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
 import com.pitaya.bookingnow.app.service.FoodService;
 import com.pitaya.bookingnow.app.service.MessageService;
+import com.pitaya.bookingnow.app.service.UserManager;
 import com.pitaya.bookingnow.app.views.*;
 import com.pitaya.bookingnow.message.*;
 import com.pitaya.bookinnow.app.util.*;
@@ -47,6 +49,7 @@ import android.view.LayoutInflater;
 import android.content.ContentValues;
 import android.content.DialogInterface;  
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -75,6 +78,11 @@ public class HomeActivity extends FragmentActivity {
 		if(bundle != null){
 			this.role = bundle.getString("role");
 		}
+		SharedPreferences settings = getSharedPreferences(UserManager.SETTING_INFOS, 0);
+		settings.edit()
+				.putString(UserManager.NAME, "lili")
+				.putString(UserManager.PASSWORD, "123456")
+				.commit();
 		this.setHomeContent();
 		messageService = MessageService.initService("192.168.0.102", 19191);
 		messageService.registerHandler(messageKey,  new MessageHandler());
@@ -100,7 +108,6 @@ public class HomeActivity extends FragmentActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		Log.i(TAG, "Role is " + this.role);
 		if(!messageService.isReady()){
 			if(messageService.isConnecting()){ 
 				showConnectResultToast("正在连接服务器...");
@@ -109,6 +116,7 @@ public class HomeActivity extends FragmentActivity {
 			}
 		} else {
 			Log.i(TAG, "The service is ready");
+			this.doLoginIfNeed();
 			this.checkMenuUpdate();
 		}
 	}
@@ -133,6 +141,15 @@ public class HomeActivity extends FragmentActivity {
 		Log.i(TAG, "onDestroy");
 		messageService.unregisterHandler(messageKey);
     }
+	
+	private synchronized void refreshMenuByRole(){
+		Integer role = UserManager.getUserRole();
+		if(role != null){
+			
+		} else {
+			
+		}
+	}
 	
 	private void setHomeContent(){
 		if(homecontent == null){
@@ -276,10 +293,51 @@ public class HomeActivity extends FragmentActivity {
 	private void handleConnectResultMsg(ResultMessage message){
 		showConnectResultToast(message.getDetail());
 		if(message.getResult() == Constants.SUCCESS){
+			this.doLoginIfNeed();
 			this.checkMenuUpdate();
 		}
 	}
 	
+	private void doLoginIfNeed(){
+		if(UserManager.getUserRole() == null){
+			String [] userinfo = UserManager.getUsernameAndPassword(this);
+			if(userinfo != null){
+				//auto login
+				UserManager.login(userinfo[0], userinfo[1], new HttpHandler(){
+				
+					@Override
+					public void onSuccess(String action, String response){
+						if(response != null && !response.equals("")){
+							try {
+								JSONObject jresp =  new JSONObject(response);
+								if(jresp.has("result") && jresp.getInt("result") == Constants.FAIL){
+									Log.w(TAG, "Login fail reason:" + jresp.getString("detail"));
+								} else {
+									Long id = jresp.getLong("id");
+									JSONArray roles = jresp.getJSONArray("role_Details");
+									JSONObject firstrole = roles.getJSONObject(0);
+									JSONObject jrole = firstrole.getJSONObject("role");
+									String role_name = jrole.getString("name");
+									Log.i(TAG, "Login sucessfully: id is " + id + " role is " + role_name);
+									UserManager.setUserId(id);
+									UserManager.setUserRole(Constants.WAITER_ROLE);
+									HomeActivity.this.refreshMenuByRole();
+								}
+								
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+					
+					@Override
+					public void onFail(String action, int statuscode){
+						Log.e(TAG, "Login fail with error code:" + statuscode);
+					}
+				});
+			}
+		}
+	}
 	
 	private class MessageHandler extends Handler{
 		
