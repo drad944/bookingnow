@@ -32,7 +32,7 @@
 		<result column="U_department" property="department" jdbcType="INTEGER" />
 		<result column="U_sub_system" property="sub_system" jdbcType="INTEGER" />
 		
-		<collection property="role_details" ofType="User_Role_Detail">
+		<collection property="role_Details" ofType="User_Role_Detail">
 			<id column="UR_id" property="id" jdbcType="BIGINT" />
 			<result column="UR_enabled" property="enabled" jdbcType="BIT" />
 			<result column="UR_role_id" property="role_id" jdbcType="BIGINT" />
