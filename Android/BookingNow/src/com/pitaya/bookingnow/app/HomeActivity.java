@@ -360,6 +360,7 @@ public class HomeActivity extends FragmentActivity {
 	private void checkMenuUpdate(){
 		synchronized(this) {
 			if(this.isUpdating){
+				Log.i(TAG, "Menu is in updating");
 				return;
 			} else {
 				this.isUpdating = true;
@@ -455,6 +456,9 @@ public class HomeActivity extends FragmentActivity {
 				
 			});
 		} else {
+			synchronized(HomeActivity.this) {
+				HomeActivity.this.isUpdating = false;
+			}
 			Log.i(TAG, "The menu is latest.");
 		}
 	}

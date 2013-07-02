@@ -218,11 +218,12 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 
 			    public void refresh(int index){
 			    	if(index < mFoodMenus.size()){
+			    		mFoodMenus.get(index).needUpdateImage(false);
 			    		mFoodMenus.get(index).refresh();
 			    	}
 			    }
 			    
-			    @Override  
+			    @Override
 			    public void destroyItem(View container, int position, Object object) {  
 			    	FoodMenuView itemView = (FoodMenuView)object;  
 			        itemView.recycle();

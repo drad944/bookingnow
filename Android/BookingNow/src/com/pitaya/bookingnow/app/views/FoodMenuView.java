@@ -55,6 +55,7 @@ public class FoodMenuView extends FrameLayout{
 	private FoodMenuContentView mContentContainer;
 	private ArrayList<Food> foodList = new ArrayList<Food>();
 	private ImageAdapter mFoodMenuAdapter;
+	private boolean needUpdateImage = true;
 	
     public FoodMenuView(Context context){
         super(context);
@@ -62,6 +63,10 @@ public class FoodMenuView extends FrameLayout{
       
     public FoodMenuView(Context context, AttributeSet attrs) {  
         super(context, attrs);
+    }
+    
+    public void needUpdateImage(boolean flag){
+    	this.needUpdateImage = flag;
     }
     
     public void setContentContainer(FoodMenuContentView v){
@@ -141,12 +146,14 @@ public class FoodMenuView extends FrameLayout{
 		           } else {
 		        	   previousTask.cancel(true);
 		           }
+	         } else if(image.getDrawable() != null && !needUpdateImage){
+	        	 needReload = false;
 	         }
-
+	         
 	         if (needReload) {
-		            AsyncImageTask task = new AsyncImageTask(mContext, image, position, food.getSmallImageName());
-		           	image.setImageDrawable(new AsyncDrawable(mContext.getResources(), placeholderBitmap, task));
-		           	task.execute();
+	        	 AsyncImageTask task = new AsyncImageTask(mContext, image, position, food.getSmallImageName());
+           		 image.setImageDrawable(new AsyncDrawable(mContext.getResources(), placeholderBitmap, task));
+	           	 task.execute();
 	         }
 
 	         TextView text = (TextView) fooditemRL.findViewById(R.id.introduction);
