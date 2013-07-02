@@ -36,7 +36,7 @@
                 android:windowSoftInputMode="adjustPan">
         </activity>
         <activity 
-            	android:name=".FoodBookActivity2"
+            	android:name=".FoodBookActivity"
             	android:configChanges="screenSize|orientation"
             	android:windowSoftInputMode="adjustPan">
         </activity>
