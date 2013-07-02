@@ -44,6 +44,7 @@
 				<result column="R_description" property="description" jdbcType="VARCHAR" />
 				<result column="R_issys" property="issys" jdbcType="BIT" />
 				<result column="R_module" property="module" jdbcType="INTEGER" />
+				<result column="R_type" property="type" jdbcType="INTEGER" />
 			</association> 
 		</collection>
 	</resultMap>
