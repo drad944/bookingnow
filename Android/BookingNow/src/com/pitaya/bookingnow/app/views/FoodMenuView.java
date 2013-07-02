@@ -29,7 +29,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aphidmobile.utils.IO;
-import com.pitaya.bookingnow.app.FoodBookActivity2;
+import com.pitaya.bookingnow.app.FoodBookActivity;
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.data.AsyncDrawable;
 import com.pitaya.bookingnow.app.data.AsyncImageTask;
@@ -164,7 +164,7 @@ public class FoodMenuView extends FrameLayout{
 						bundle.putString("category", food.getCategory());
 						bundle.putInt("index", index);
 						bundle.putSerializable("order", mContentContainer.getOrder());
-						Intent intent = new Intent(FoodMenuView.this.getContext(), FoodBookActivity2.class);
+						Intent intent = new Intent(FoodMenuView.this.getContext(), FoodBookActivity.class);
 						intent.putExtras(bundle);
 						FoodMenuView.this.getContext().startActivity(intent);
 					}
