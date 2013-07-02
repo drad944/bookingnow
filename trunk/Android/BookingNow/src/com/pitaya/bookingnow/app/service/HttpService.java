@@ -116,12 +116,6 @@ public class HttpService {
 		         }
 	        	amsg.setData(bundle);
 		        handler.sendMessage(amsg);
-		        //for temp test
-//				try {
-//					Thread.sleep(10000);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
 			}
 		});
 	}
