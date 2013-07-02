@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -57,22 +58,22 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 					@Override
 					public void onClick(View v) {
 						//TODO commit the order and remove it from local database
-//						OrderService.commitOrder(mOrder, new HttpHandler(){
-//						    
-//							@Override  
-//						    public void onSuccess(String response) {
-//								Log.i(TAG, response);
-//								//DataService.removeOrder(mContext, mOrder.getOrderKey());
-//								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
-//								mOrder.setStatus(Order.COMMITED);
-//						    }
-//							
-//							@Override
-//							public void onFail(int statusCode){
-//								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitfail), Toast.LENGTH_SHORT);
-//							}
-//							
-//						});
+						OrderService.commitOrder(mOrder, new HttpHandler(){
+						    
+							@Override  
+						    public void onSuccess(String action, String response) {
+								Log.i(TAG, response);
+								//DataService.removeOrder(mContext, mOrder.getOrderKey());
+								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
+								mOrder.setStatus(Order.COMMITED);
+						    }
+							
+							@Override
+							public void onFail(String action, int statusCode){
+								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitfail), Toast.LENGTH_SHORT);
+							}
+							
+						});
 					}
 					
 				});

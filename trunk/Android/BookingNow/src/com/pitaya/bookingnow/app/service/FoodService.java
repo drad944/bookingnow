@@ -94,7 +94,8 @@ public class FoodService {
 		android.os.Message amsg = new android.os.Message();
         Bundle bundle = new Bundle();
         amsg.setData(bundle);
-		try {
+        boolean error = false;
+        try {
 			jfood.put("id", Long.parseLong(food.getKey()));
 			jparam.put("food", jfood);
 			
@@ -105,44 +106,42 @@ public class FoodService {
 					Log.i(TAG, "["+food.getKey()+"][" + action + "] response: " + response);
 		        	android.os.Message amsg = new android.os.Message();
 			        Bundle bundle = new Bundle();
+			        amsg.setData(bundle);
 			        bundle.putString(HttpHandler.ACTION_TYPE, action);
 			        bundle.putString("key", food.getKey());
 			        String filename = null;
-			        boolean finish = false;
 			        if(action.equals("getSmallFood_Picture.action")){
 			        	filename = food.getSmallImageName();
 			        } else if(action.equals("getLargeFood_Picture.action")){
 			        	filename =  food.getLargeImageName();
-			        } else {
-			        	return;
 			        }
 					if(FileUtil.writeFile(context, filename, this.fileBytes)){
-				        bundle.putInt(HttpHandler.RESULT, Constants.SUCCESS);
+				        if(action.equals("getSmallFood_Picture.action")){
+				        	try {
+								HttpService.getFileViaPost("getLargeFood_Picture.action", new StringEntity(jparam.toString()), this);
+							} catch (UnsupportedEncodingException e) {
+								bundle.putInt(HttpHandler.RESULT, Constants.FAIL);
+								bundle.putInt(HttpHandler.ERROR_CODE, Constants.GET_FOOD_IMAGE_ERROR);
+								handler.sendMessage(amsg);
+								e.printStackTrace();
+								this.fileBytes = null;
+							}
+				        } else if(action.equals("getLargeFood_Picture.action")){
+				        	if(type == 0){
+				        		DataService.addNewFood(context, food);
+				        	} else {
+				        		DataService.updateFood(context, food);
+				        	}
+				        	bundle.putInt(HttpHandler.RESULT, Constants.SUCCESS);
+				        	handler.sendMessage(amsg);
+				        	this.fileBytes = null;
+				        }
 					} else {
 						bundle.putInt(HttpHandler.RESULT, Constants.FAIL);
 						bundle.putInt(HttpHandler.ERROR_CODE, Constants.GET_FOOD_IMAGE_ERROR);
+			        	handler.sendMessage(amsg);
+			        	this.fileBytes = null;
 					}
-			        if(action.equals("getSmallFood_Picture.action")){
-			        	try {
-							HttpService.getFileViaPost("getLargeFood_Picture.action", new StringEntity(jparam.toString()), this);
-						} catch (UnsupportedEncodingException e) {
-							e.printStackTrace();
-						}
-			        } else if(action.equals("getLargeFood_Picture.action")){
-			        	if( type == 0){
-			        		DataService.addNewFood(context, food);
-			        	} else {
-			        		DataService.updateFood(context, food);
-			        	}
-			        	finish = true;
-			        }
-			        if(bundle.getInt(HttpHandler.RESULT) == Constants.FAIL){
-			        	amsg.setData(bundle);
-			        	handler.sendMessage(amsg);
-			        } else if(finish){
-			        	amsg.setData(bundle);
-			        	handler.sendMessage(amsg);
-			        }
 				}
 				
 				@Override
@@ -162,30 +161,24 @@ public class FoodService {
 			HttpService.getFileViaPost("getSmallFood_Picture.action", new StringEntity(jparam.toString()), fileHandler);
 			
 		} catch (NumberFormatException e) {
-			bundle.putInt(HttpHandler.RESULT, Constants.FAIL);
-			bundle.putInt(HttpHandler.ERROR_CODE, Constants.GET_FOOD_IMAGE_ERROR);
-		    handler.sendMessage(amsg);
+			error = true;
 			e.printStackTrace();
 		} catch (JSONException e) {
-			bundle.putInt(HttpHandler.RESULT, Constants.FAIL);
-			bundle.putInt(HttpHandler.ERROR_CODE, Constants.GET_FOOD_IMAGE_ERROR);
-		    handler.sendMessage(amsg);
+			error = true;
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
+			error = true;
+			e.printStackTrace();
+		}
+        if(error){
 			bundle.putInt(HttpHandler.RESULT, Constants.FAIL);
 			bundle.putInt(HttpHandler.ERROR_CODE, Constants.GET_FOOD_IMAGE_ERROR);
 		    handler.sendMessage(amsg);
-			e.printStackTrace();
-		}
+        }
 	}
 	
 	public static void updateMenuFoods(Context context, Map<String, ArrayList<Food>> foodsToUpdate, ProgressHandler handler){
 
-		if(foodsToUpdate.get("new") != null){
-			for(Food food : foodsToUpdate.get("new")){
-				getFoodImages(context, food, handler, 0);
-			}
-		} 
 		if(foodsToUpdate.get("delete") != null){
 			for(Food food : foodsToUpdate.get("delete")){
 				FileUtil.removeFile(context, food.getSmallImageName());
@@ -205,7 +198,7 @@ public class FoodService {
 				if(food.getImageVersion() != null){
 					getFoodImages(context, food, handler, 1);
 				} else {
-					Log.i(TAG, "No need to update image of this food");
+					Log.i(TAG, "The image of this food is latest");
 					DataService.updateFood(context, food);
 					android.os.Message amsg = new android.os.Message();
 		        	Bundle bundle = new Bundle();
@@ -215,6 +208,11 @@ public class FoodService {
 			        amsg.setData(bundle);
 			        handler.sendMessage(amsg);
 				}
+			}
+		}
+		if(foodsToUpdate.get("new") != null){
+			for(Food food : foodsToUpdate.get("new")){
+				getFoodImages(context, food, handler, 0);
 			}
 		}
 	}
