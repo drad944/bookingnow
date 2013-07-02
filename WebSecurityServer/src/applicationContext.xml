@@ -65,6 +65,13 @@
 		<property name="foodService" ref="foodService" />
 	</bean>
 	
+	<bean id="food_detailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.Order_Food_DetailMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+    
+	
+	
 	
 	
 	<bean id="food_pictureDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
@@ -90,7 +97,10 @@
 	<bean id="orderService" class="com.pitaya.bookingnow.service.impl.OrderService">
 		<property name="orderDao" ref="orderDao" />
 		<property name="userDao" ref="userDao" />
-		<property name="table_DetailDao" ref="table_DetailDao" />
+		<property name="table_detailDao" ref="table_detailDao" />
+		<property name="tableDao" ref="tableDao" />
+		<property name="foodDao" ref="foodDao" />
+		<property name="food_detailDao" ref="food_detailDao" />
 	</bean>
 
 	<bean id="orderAction" class="com.pitaya.bookingnow.action.OrderAction" scope="prototype">
@@ -99,7 +109,7 @@
 	
 	
 	
-	<bean id="table_DetailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	<bean id="table_detailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.Order_Table_DetailMapper" />   
         <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
     </bean>

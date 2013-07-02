@@ -8,12 +8,6 @@ to run this project successfully,you need to do below steps:
 	7.
 	
 	
-	for privalige control of *mapper.java,we should 7 mapper xml conf files and 7 mapper interface.
-	some question:
-	how to select data from tables join - write sql in *mapper.xml, define interface for *mapper.java
-	
-	update food.version to timestamp
-	add picture.version(timestamp)
 	
 	
 	
