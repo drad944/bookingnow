@@ -37,7 +37,7 @@
 		
 		<!-- 文件上传和下载控制器 ，class 引用spring 的注入 -->
 	        <action name="*Food_Picture" class="com.pitaya.bookingnow.action.Food_PictureAction" method="{1}Food_Picture">
-
+				
 	        	
 				<result name="uploadSuccess" type="redirectAction">
 				    showMyFile.action
@@ -131,6 +131,10 @@
 	        <result name="commitSuccess" type="json">
 	        	<param name="excludeNullProperties">true</param>  
 				<param name="includeProperties">result</param>
+	        </result>
+	        
+	        <result name="Success" type="json">
+				<param name="includeProperties">result, detail</param>  
 	        </result>
 	        
 	        <result name="Fail" type="json">

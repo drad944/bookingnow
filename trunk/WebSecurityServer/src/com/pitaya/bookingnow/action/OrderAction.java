@@ -1,6 +1,7 @@
 package com.pitaya.bookingnow.action;
 
 import java.util.List;
+import java.util.Map;
 
 import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.service.IOrderService;
@@ -51,7 +52,10 @@ public class OrderAction extends BaseAction{
 			
 			matchedOrders = orderService.searchOrders(order);
 			
-			return "searchSuccess";
+			this.setResult(Constants.SUCCESS);
+			this.setDetail("123123");
+			//return "searchSuccess";
+			return "SUCCESS";
 		}
 		
 		
@@ -95,7 +99,9 @@ public class OrderAction extends BaseAction{
 	 */
 	public String submitWaitingOrder(){
 		if (order != null) {
-			if (orderService.addWaitingOrder(order)) {
+			Map<String, String> updateStatusMap = orderService.addWaitingOrder(order);
+			
+			if (updateStatusMap.get("order_status").equals("true")) {
 				this.setResult(Constants.SUCCESS);
 				return "commitSuccess";
 			}

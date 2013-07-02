@@ -2,16 +2,26 @@ package com.pitaya.bookingnow.util;
 
 public class Constants {
 	
-	//order and food status
+	//order status
 	public static final int ALL = -1;
-	public static final int NEW = 0;
-	public static final int COMMITED = NEW + 1;
-	public static final int PAYING = COMMITED + 1;
-	public static final int FINISHED = PAYING + 1;
-	public static final int WAITING = FINISHED + 1;
-	public static final int COOKING = WAITING + 1;
-	public static final int UNAVAILABLE = COOKING + 1;
-	public static final int AVAILABLE = UNAVAILABLE + 1;
+	
+	public static final int ORDER_NEW = 1;
+	public static final int ORDER_WAITING = ORDER_NEW + 1;
+	public static final int ORDER_COMFIRMED = ORDER_WAITING + 1;
+	public static final int ORDER_COOKING = ORDER_COMFIRMED + 1;
+	public static final int ORDER_PAYING = ORDER_COOKING + 1;
+	public static final int ORDER_FINISHED = ORDER_PAYING + 1;
+	public static final int ORDER_UNAVAILABLE = ORDER_FINISHED + 1;
+	public static final int ORDER_AVAILABLE = ORDER_UNAVAILABLE + 1;
+	
+	//food status
+	public static final int FOOD_NEW = 30;
+	public static final int FOOD_COMFIRMED = FOOD_NEW + 1;
+	public static final int FOOD_WAITING = FOOD_COMFIRMED + 1;
+	public static final int FOOD_COOKING = FOOD_WAITING + 1;
+	public static final int FOOD_FINISHED = FOOD_COOKING + 1;
+	public static final int FOOD_UNAVAILABLE = FOOD_FINISHED + 1;
+	public static final int FOOD_AVAILABLE = FOOD_UNAVAILABLE + 1;
 	
 	public static final int SUCCESS = 50;
 	public static final int FAIL = SUCCESS + 1;
