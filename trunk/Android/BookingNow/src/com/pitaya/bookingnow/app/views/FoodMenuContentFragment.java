@@ -12,16 +12,23 @@ import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.PopupWindow.OnDismissListener;
 import android.widget.TextView;
 
 import com.pitaya.bookingnow.app.HomeActivity;
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.OrderDetailPreviewActivity;
+import com.pitaya.bookingnow.app.data.OrderDetailPreviewAdapter;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
@@ -95,11 +102,39 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 					@Override
 					public void onClick(View arg0) {
 						//get current good items
-						Bundle bundle = new Bundle();
-						bundle.putSerializable("order", mContentContainer.getOrder());
-						Intent intent = new Intent(FoodMenuContentFragment.this.getActivity(), OrderDetailPreviewActivity.class);
-						intent.putExtras(bundle);
-						startActivity(intent);
+//						Bundle bundle = new Bundle();
+//						bundle.putSerializable("order", mContentContainer.getOrder());
+//						Intent intent = new Intent(FoodMenuContentFragment.this.getActivity(), OrderDetailPreviewActivity.class);
+//						intent.putExtras(bundle);
+//						startActivity(intent);
+						final ListView orderPreview = new ListView(getActivity());
+						OrderDetailPreviewAdapter orderAdapter;
+						try {
+							orderAdapter = new OrderDetailPreviewAdapter(getActivity(), orderPreview, mContentContainer.getOrder());
+							orderPreview.setAdapter(orderAdapter);
+						} catch (IllegalArgumentException e) {
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							e.printStackTrace();
+						}
+						final PopupWindow popupWindow =  new PopupWindow(orderPreview, 700,  
+								LayoutParams.WRAP_CONTENT , true);
+						popupWindow.setFocusable(true);
+				        popupWindow.setOutsideTouchable(false);
+				        popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+				        popupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+				        popupWindow.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.common_background));
+				        popupWindow.setAnimationStyle(R.style.AnimBottom);
+				        popupWindow.setOnDismissListener(new OnDismissListener(){
+
+							@Override
+							public void onDismiss() {
+								refreshAllPages();
+							}
+				        	
+				        });
+				        popupWindow.showAtLocation(mFoodMenuContentView, 
+				        		Gravity.CENTER_HORIZONTAL|Gravity.CENTER_HORIZONTAL, 0, 0);
 					}
 					
 					
