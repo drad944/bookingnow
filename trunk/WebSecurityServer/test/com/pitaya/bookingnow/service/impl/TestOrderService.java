@@ -17,15 +17,16 @@ import com.pitaya.bookingnow.entity.Order_Food_Detail;
 import com.pitaya.bookingnow.entity.Order_Table_Detail;
 import com.pitaya.bookingnow.entity.Table;
 import com.pitaya.bookingnow.entity.security.User;
+import com.pitaya.bookingnow.service.IOrderService;
 
 public class TestOrderService {
-	private OrderService orderService;
+	private IOrderService orderService;
 
-	public OrderService getOrderService() {
+	public IOrderService getOrderService() {
 		return orderService;
 	}
 
-	public void setOrderService(OrderService orderService) {
+	public void setOrderService(IOrderService orderService) {
 		this.orderService = orderService;
 	}
 
@@ -33,7 +34,7 @@ public class TestOrderService {
 	public void init() {
 
 		ApplicationContext aCtx = new FileSystemXmlApplicationContext("src/applicationContext.xml");
-		OrderService orderService = (OrderService) aCtx.getBean("orderService");
+		IOrderService orderService = aCtx.getBean(IOrderService.class);
 		assertNotNull(orderService);
 		this.orderService = orderService;
 	}
