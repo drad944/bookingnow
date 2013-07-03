@@ -1,23 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"  
-    android:layout_height="wrap_content"  
+<?xml version="1.0" encoding="utf-8"?><LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"  
+    android:layout_height="match_parent"
+    android:gravity="left"
     android:orientation="vertical" >
     
 	<TextView
-	    android:layout_width="fill_parent"   
+	    android:layout_width="match_parent"   
 	    android:layout_height="wrap_content"   
 	    android:layout_marginLeft="20dip"  
 	    android:layout_marginRight="20dip"  
 	    android:text="@string/account"  
 	    android:gravity="left"
+	    android:textColor="@android:color/white"
 	    android:textAppearance="?android:attr/textAppearanceMedium">  
     </TextView>  
       
     <EditText
         android:id="@+id/username"  
         android:layout_height="wrap_content"   
-        android:layout_width="fill_parent"   
+        android:layout_width="match_parent"   
         android:layout_marginLeft="20dip"  
         android:layout_marginRight="20dip"
         android:gravity="fill_horizontal"
@@ -25,25 +26,37 @@
         android:textAppearance="?android:attr/textAppearanceMedium">  
     </EditText>
   
-    <TextView 
-	    android:layout_width="fill_parent"   
+    <TextView
+	    android:layout_width="match_parent"   
 	    android:layout_height="wrap_content"   
 	    android:layout_marginLeft="20dip"  
 	    android:layout_marginRight="20dip"  
-	    android:text="@string/password"  
+	    android:text="@string/password"
 	    android:gravity="left"  
+	    android:textColor="@android:color/white"
 	    android:textAppearance="?android:attr/textAppearanceMedium">  
-    </TextView>  
+    </TextView>
           
-    <EditText   
+    <EditText
         android:id="@+id/password"
         android:layout_height="wrap_content"   
-        android:layout_width="fill_parent"   
+        android:layout_width="match_parent"   
         android:layout_marginLeft="20dip"  
         android:layout_marginRight="20dip"
         android:gravity="fill_horizontal"  
         android:inputType="textPassword"
         android:textAppearance="?android:attr/textAppearanceMedium">  
     </EditText>
+    
+    <CheckBox 
+	    android:id="@+id/autologin" 
+	    android:layout_width="match_parent" 
+	    android:layout_height="wrap_content"
+	    android:layout_marginLeft="20dip"  
+        android:layout_marginRight="20dip"
+	    android:text="@string/rememberme"
+	    android:textColor="@android:color/white"
+	    android:textAppearance="?android:attr/textAppearanceMedium"
+    />
      
 </LinearLayout>

@@ -39,10 +39,17 @@ public class Constants {
 	public static final int USER_FAMALE = USER_MALE + 1;
 	public static final int USER_OTHER = USER_FAMALE + 1;
 	
-	public static final int KITCHEN_ROLE = 1300;
-	public static final int WAITER_ROLE = KITCHEN_ROLE + 1;
-	public static final int WELCOME_ROLE = WAITER_ROLE + 1;
-	public static final int CASH_ROLE = WELCOME_ROLE + 1;
+	public static final int ROLE_TYPE = 1300;
+	public static final int ROLE_ANONYMOUS = ROLE_TYPE + 1;
+	public static final int ROLE_CUSTOMER = ROLE_ANONYMOUS + 1;
+	public static final int ROLE_CUSTOMER_VIP1 = ROLE_CUSTOMER + 1;
+	public static final int ROLE_CUSTOMER_VIP2 = ROLE_CUSTOMER_VIP1 + 1;
+	public static final int ROLE_WELCOME = ROLE_CUSTOMER_VIP2 + 1;
+	public static final int ROLE_CHEF = ROLE_WELCOME + 1;
+	public static final int ROLE_WAITER = ROLE_CHEF + 1;
+	public static final int ROLE_CASHIER = ROLE_WAITER + 1;
+	public static final int ROLE_MANAGER = ROLE_CASHIER + 1;
+	public static final int ROLE_ADMIN = ROLE_MANAGER + 1;
 	
 	//error code, pay attention to avoid conflict with the one used by http status code
 	public static final int WRONG_ACTION_ERROR = 0;

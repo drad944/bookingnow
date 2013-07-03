@@ -27,7 +27,7 @@ public class UserManager {
 		return ROLE;
 	}
 	
-	public static void setUserRole(int role){
+	public static void setUserRole(Integer role){
 		ROLE = role;
 	}
 	

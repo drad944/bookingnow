@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BookingNow</string>
+    
+    <string name="menu_btn">菜 单</string>
+    <string name="login_btn">登 录</string>
+    <string name="logout_btn">退 出</string>
+    <string name="order_btn">订 单</string>
+    <string name="setting_btn">设 置</string>
+    
     <string name="action_settings">Settings</string>
     <string name="account">帐号：</string>  
     <string name="password">密码：</string>  
@@ -31,6 +38,7 @@
     <string name="reset">清空</string>
     <string name="commitsuccess">提交成功</string>
     <string name="commitfail">提交失败</string>
+    <string name="rememberme">自动登录</string>
     
     <string name="order_list_title1">桌号</string>
     <string name="order_list_title2">提交者</string>
