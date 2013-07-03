@@ -443,17 +443,21 @@ public class OrderDetailAdapter extends BaseAdapter {
 		//This implementation is only for food item, you have to implement bottom buttons or header view in subclass
 		View itemView = null;
 		switch(UserManager.getUserRole()){
-			case Constants.WAITER_ROLE:
+			case Constants.ROLE_WAITER:
 				itemView = View.inflate(mContext, R.layout.fooditem_waiter, null);
 				setupWaiterView(itemView, position);
 				break;
-			case Constants.KITCHEN_ROLE:
+			case Constants.ROLE_CHEF:
 				itemView = View.inflate(mContext, R.layout.fooditem_kitchen, null);
 				setupKitchenView(itemView, position);
 				break;
-			case Constants.CASH_ROLE:
+			case Constants.ROLE_CASHIER:
+//				itemView = View.inflate(mContext, R.layout.fooditem_waiter, null);
+//				setupWaiterView(itemView, position);
 				break;
-			case Constants.WELCOME_ROLE:
+			case Constants.ROLE_WELCOME:
+//				itemView = View.inflate(mContext, R.layout.fooditem_waiter, null);
+//				setupWaiterView(itemView, position);
 				break;
 		}
 		return itemView;

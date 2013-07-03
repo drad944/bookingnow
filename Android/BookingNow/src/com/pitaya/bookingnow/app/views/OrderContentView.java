@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,8 +16,10 @@ import com.pitaya.bookinnow.app.util.Constants;
 
 public class OrderContentView extends BaseContentView{
 	
+	private static final String TAG = "OrderContentView";
 	private View mView;
 	private OrderLeftView mLeftView;
+	private int currentUserRole;
 	
 	public OrderContentView(String key, Context context, SlideContent home) {
 		super(key, context, home);
@@ -32,15 +35,22 @@ public class OrderContentView extends BaseContentView{
 		mView = View.inflate(this.mContext, R.layout.ordercontentview, null);
 		FragmentManager fragmentManager = ((FragmentActivity)this.mContext).getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		if(mLeftView == null){
+		if(mLeftView == null || currentUserRole != UserManager.getUserRole()){
+			currentUserRole = UserManager.getUserRole();
 			switch(UserManager.getUserRole()){
-				case Constants.WAITER_ROLE:
+				case Constants.ROLE_WAITER:
 					mLeftView = new WaiterOrderLeftView();
 					break;
-				case Constants.WELCOME_ROLE:
+				case Constants.ROLE_WELCOME:
 					mLeftView = new WelcomerOrderLeftView();
+					break;
 			}
+		}
+		if(mLeftView != null){
 			mLeftView.setContainer(this);
+		} else {
+			Log.w(TAG, "Unsupported user role:" + UserManager.getUserRole());
+			return;
 		}
 		fragmentTransaction.replace(R.id.orderlist, mLeftView);
 		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);

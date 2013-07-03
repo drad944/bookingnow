@@ -1,6 +1,5 @@
 package com.pitaya.bookingnow.app;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -44,6 +43,7 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.CheckBox;
 import android.widget.Toast;
 import android.view.LayoutInflater;
 import android.content.ContentValues;
@@ -64,25 +64,22 @@ public class HomeActivity extends FragmentActivity {
 	private static String messageKey = UUID.randomUUID().toString();
 	
 	private SlideContent homecontent;
-	private String role;
+	private View mLeftMenu;
 	
 	private AlertDialog loginDialog;
-	private ProgressDialog progressingDialog;
 	
 	private MessageService messageService;
-	private  boolean isUpdating = false;
+	private boolean isUpdating = false;
+	private boolean isRemeberMe = false;
+	private String username;
+	private String password;
 	
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
-		if(bundle != null){
-			this.role = bundle.getString("role");
-		}
-		SharedPreferences settings = getSharedPreferences(UserManager.SETTING_INFOS, 0);
-		settings.edit()
-				.putString(UserManager.NAME, "lili")
-				.putString(UserManager.PASSWORD, "123456")
-				.commit();
+//		SharedPreferences settings = getSharedPreferences(UserManager.SETTING_INFOS, 0);
+//		settings.edit().remove(UserManager.NAME).remove(UserManager.PASSWORD)
+//				.commit();
 		this.setHomeContent();
 		messageService = MessageService.initService("192.168.0.102", 19191);
 		messageService.registerHandler(messageKey,  new MessageHandler());
@@ -116,18 +113,17 @@ public class HomeActivity extends FragmentActivity {
 			}
 		} else {
 			Log.i(TAG, "The service is ready");
-			this.doLoginIfNeed();
+			this.doAutoLogin();
 			this.checkMenuUpdate();
 		}
 	}
 	
 	
-   @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-		savedInstanceState.putString("role", this.role);
-		super.onSaveInstanceState(savedInstanceState);
-    }
-	   
+//   @Override
+//    public void onSaveInstanceState(Bundle savedInstanceState) {
+//		super.onSaveInstanceState(savedInstanceState);
+//    }
+//	   
 //    @Override
 //    public void onConfigurationChanged(Configuration newConfig){
 //    	super.onConfigurationChanged(newConfig);
@@ -145,9 +141,13 @@ public class HomeActivity extends FragmentActivity {
 	private synchronized void refreshMenuByRole(){
 		Integer role = UserManager.getUserRole();
 		if(role != null){
-			
+			this.mLeftMenu.findViewById(R.id.order_btn).setVisibility(View.VISIBLE);
+			this.mLeftMenu.findViewById(R.id.login_btn).setVisibility(View.GONE);
+			this.mLeftMenu.findViewById(R.id.logout_btn).setVisibility(View.VISIBLE);
 		} else {
-			
+			this.mLeftMenu.findViewById(R.id.order_btn).setVisibility(View.GONE);
+			this.mLeftMenu.findViewById(R.id.login_btn).setVisibility(View.VISIBLE);
+			this.mLeftMenu.findViewById(R.id.logout_btn).setVisibility(View.GONE);
 		}
 	}
 	
@@ -155,72 +155,80 @@ public class HomeActivity extends FragmentActivity {
 		if(homecontent == null){
 			ArrayList<BaseContentView> contentViews = new ArrayList<BaseContentView>();
 			homecontent = new SlideContent(this, contentViews);
-			View leftmenu = getLayoutInflater().inflate(R.layout.leftmenu, null);
-			LinearLayout menuitems = (LinearLayout)(leftmenu.findViewById(R.id.leftmenu));
-			if(this.role == null){
-				for(int i=0; i < 3; i++){
-					TextView menuitem = new TextView(this);
-					menuitem.setTextColor(android.graphics.Color.WHITE);
-					menuitem.setTextSize(25);
-					menuitem.setGravity(Gravity.CENTER);
-					
-					switch(i){
-						case 0:
-							menuitem.setText("菜单");
-							menuitem.setOnClickListener(new OnClickListener(){
-								@Override
-								public void onClick(View view) {
-									((FoodMenuContentView)homecontent.getContentView("menu")).setOrder(null);
-									homecontent.selectItem("menu");
-								}
-							});
-							break;
-						case 1:
-							menuitem.setText("登录");
-							menuitem.setOnClickListener(new OnClickListener(){
-								@Override
-								public void onClick(View view) {
-									showLoginDialog(getResources().getString(R.string.login_title));
-								}
-								
-							});
-							break;
-						case 2:
-							menuitem.setText("订单");
-							menuitem.setOnClickListener(new OnClickListener(){
-								@Override
-								public void onClick(View view) {
-									if(homecontent.getCurrentContentViewKey().equals("menu")){
-										Order currentOrder =  ((FoodMenuContentView)homecontent.getContentView("menu")).getOrder();
-										if(currentOrder != null && currentOrder.isDirty() && currentOrder.getStatus() != Order.NEW){
-											showConfirmDialog("order");
-										} else {
-											homecontent.selectItem("order");
-										}
-									} else {
-										homecontent.selectItem("order");
-									}
-								}
-								
-							});
-							break;
+			this.mLeftMenu = getLayoutInflater().inflate(R.layout.leftmenu, null);
+			
+			LinearLayout menuitems = (LinearLayout)(mLeftMenu.findViewById(R.id.leftmenu));
+			
+			View menuitem = menuitems.findViewById(R.id.menu_btn);
+			menuitem.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View view) {
+					((FoodMenuContentView)homecontent.getContentView("menu")).setOrder(null);
+					homecontent.selectItem("menu");
+				}
+			});
+			
+			menuitem = menuitems.findViewById(R.id.order_btn);
+			menuitem.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View view) {
+					if(homecontent.getCurrentContentViewKey().equals("menu")){
+						Order currentOrder =  ((FoodMenuContentView)homecontent.getContentView("menu")).getOrder();
+						if(currentOrder != null && currentOrder.isDirty() && currentOrder.getStatus() != Order.NEW){
+							showConfirmDialog("order");
+						} else {
+							homecontent.selectItem("order");
+						}
+					} else {
+						homecontent.selectItem("order");
 					}
-					
-					menuitems.addView(menuitem);
-				}//end for
-				OrderContentView orderview = new OrderContentView("order", this, homecontent);
-				contentViews.add(orderview);
-				FoodMenuContentView menucontentview = new FoodMenuContentView("menu", this, homecontent);
-				contentViews.add(menucontentview);
-			}
+				}
+				
+			});
+			
+			menuitem = menuitems.findViewById(R.id.login_btn);
+			menuitem.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View view) {
+					showLoginDialog();
+				}
+				
+			});
+			
+			menuitem = menuitems.findViewById(R.id.logout_btn);
+			menuitem.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View view) {
+					UserManager.setUserRole(null);
+					SharedPreferences settings = getSharedPreferences(UserManager.SETTING_INFOS, 0);
+					settings.edit().remove(UserManager.NAME).remove(UserManager.PASSWORD).commit();
+					HomeActivity.this.refreshMenuByRole();
+					HomeActivity.this.homecontent.selectItem("menu");
+				}
+				
+			});
+			
+			menuitem = menuitems.findViewById(R.id.setting_btn);
+			menuitem.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View view) {
+					//TODO:
+				}
+				
+			});
+			OrderContentView orderview = new OrderContentView("order", this, homecontent);
+			contentViews.add(orderview);
+			FoodMenuContentView menucontentview = new FoodMenuContentView("menu", this, homecontent);
+			contentViews.add(menucontentview);
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			homecontent.setMenu(leftmenu);
+			homecontent.setMenu(this.mLeftMenu);
 		}
 		setContentView(homecontent);
+		this.refreshMenuByRole();
 	}
 	
 	private void showConfirmDialog(final String key){
@@ -253,52 +261,115 @@ public class HomeActivity extends FragmentActivity {
 		 ToastUtil.showToast(this, result , Toast.LENGTH_SHORT);
 	}
 	
-	private void showLoginDialog(String title){
+	private void showLoginDialog(){
          LayoutInflater factory = LayoutInflater.from(HomeActivity.this);  
          final View dialogView = factory.inflate(R.layout.logindialog, null);
          loginDialog = new AlertDialog.Builder(HomeActivity.this)
-                .setTitle(title)
+                .setTitle(getResources().getString(R.string.login_title))
                 .setView(dialogView)
                 .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener(){
                      @Override  
                      public void onClick(DialogInterface dialog, int which) {
-                    	 progressingDialog  = ProgressDialog.show(HomeActivity.this, getResources().getString(R.string.waiting), getResources().getString(R.string.logining), true);  
-                    	 String username = ((EditText)dialogView.findViewById(R.id.username)).getText().toString();
-                    	 String password = ((EditText)dialogView.findViewById(R.id.password)).getText().toString();
-                    	 if(!messageService.sendMessage(new LoginMessage(messageKey, username, password))){
-                    		 handleLoginError("请检查连接");
-                    	 }
+                    	 final ProgressDialog progressingDialog  = ProgressDialog.show(HomeActivity.this, getResources().getString(R.string.waiting), getResources().getString(R.string.logining), true);  
+                    	 HomeActivity.this.username = ((EditText)dialogView.findViewById(R.id.username)).getText().toString();
+                    	 HomeActivity.this.password = ((EditText)dialogView.findViewById(R.id.password)).getText().toString();
+                    	 HomeActivity.this.isRemeberMe = ((CheckBox)dialogView.findViewById(R.id.autologin)).isChecked();
+//                    	 Use http to login instead of socket message
+//                    	 if(!messageService.sendMessage(new LoginMessage(messageKey, username, password))){
+//                    		 handleLoginError("请检查连接");
+//                    	 }
+                    	 UserManager.login(username, password, new HttpHandler(){
+	                    		@Override
+	                 			public void onSuccess(String action, String response){
+	                    			progressingDialog.dismiss();
+	                 				if(response == null || response.trim().equals("")){
+	                 					handleLoginError("服务器错误");
+	                 				} else{
+	                 					try {
+											JSONObject juser = new JSONObject(response);
+											afterLoginSuccess(juser, false);
+										} catch (JSONException e) {
+											e.printStackTrace();
+											handleLoginError("服务器错误");
+										}
+	                 				}
+	                 			}
+	                 			
+	                 			@Override
+	                 			public void onFail(String action, int errorcode){
+	                 				progressingDialog.dismiss();
+	                 				Log.e(TAG, "Fail to login with error code: " + errorcode);
+	                 				handleLoginError("请检查网络连接");
+	                 			}
+                    	 });
                      }  
                  })
                  .create();  
          loginDialog.show();
     }
 	
-	private void handleLoginError(String error){
-		this.progressingDialog.dismiss();
-		this.showLoginDialog(error);
+	private void handleLoginError(String detail){
+		ToastUtil.showToast(this, detail, Toast.LENGTH_SHORT);
+		this.showLoginDialog();
 	}
 	
 	private void handleLoginResultMsg(ResultMessage message){
-		this.progressingDialog.dismiss();
 		if(message.getResult() == Constants.SUCCESS){
 			Log.i("HomeActivity", "Success to login");
-			this.role = message.getDetail();
 			this.loginDialog.dismiss();
 		} else if(message.getResult() == Constants.FAIL){
-			this.showLoginDialog(message.getDetail());
+			handleLoginError(message.getDetail());
 		}
 	}
 	
 	private void handleConnectResultMsg(ResultMessage message){
 		showConnectResultToast(message.getDetail());
 		if(message.getResult() == Constants.SUCCESS){
-			this.doLoginIfNeed();
+			this.doAutoLogin();
 			this.checkMenuUpdate();
 		}
 	}
 	
-	private void doLoginIfNeed(){
+	private void afterLoginSuccess(JSONObject jresp, boolean isAuto){
+		String error = null;
+		try {
+			if(jresp.has("result") && jresp.getInt("result") == Constants.FAIL){
+				error = jresp.getString("detail");
+			} else {
+				Long id = jresp.getLong("id");
+				JSONArray roles = jresp.getJSONArray("role_Details");
+				JSONObject firstrole = roles.getJSONObject(0);
+				JSONObject jrole = firstrole.getJSONObject("role");
+				int role = jrole.getInt("type");
+				Log.i(TAG, "Login sucessfully: id is " + id + " type is " + role);
+				UserManager.setUserId(id);
+				UserManager.setUserRole(role);
+				if(this.isRemeberMe){
+					SharedPreferences settings = getSharedPreferences(UserManager.SETTING_INFOS, 0);
+					settings.edit()
+							  .putString(UserManager.NAME, this.username)
+							  .putString(UserManager.PASSWORD, this.password)
+							  .commit();
+				}
+				ToastUtil.showToast(this, "登录成功", Toast.LENGTH_SHORT);
+				this.refreshMenuByRole();
+				this.homecontent.selectItem("menu");
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			error = "服务器返回异常:" + jresp.toString();
+		}
+		if(error != null){
+			Log.e(TAG, "Auto login fail: " + error);
+			if(!isAuto){
+				this.handleLoginError(error);
+			} else {
+				ToastUtil.showToast(this, error, Toast.LENGTH_SHORT);
+			}
+		}
+	}
+	
+	private void doAutoLogin(){
 		if(UserManager.getUserRole() == null){
 			String [] userinfo = UserManager.getUsernameAndPassword(this);
 			if(userinfo != null){
@@ -310,22 +381,10 @@ public class HomeActivity extends FragmentActivity {
 						if(response != null && !response.equals("")){
 							try {
 								JSONObject jresp =  new JSONObject(response);
-								if(jresp.has("result") && jresp.getInt("result") == Constants.FAIL){
-									Log.w(TAG, "Login fail reason:" + jresp.getString("detail"));
-								} else {
-									Long id = jresp.getLong("id");
-									JSONArray roles = jresp.getJSONArray("role_Details");
-									JSONObject firstrole = roles.getJSONObject(0);
-									JSONObject jrole = firstrole.getJSONObject("role");
-									String role_name = jrole.getString("name");
-									Log.i(TAG, "Login sucessfully: id is " + id + " role is " + role_name);
-									UserManager.setUserId(id);
-									UserManager.setUserRole(Constants.WAITER_ROLE);
-									HomeActivity.this.refreshMenuByRole();
-								}
-								
+								afterLoginSuccess(jresp, true);
 							} catch (JSONException e) {
 								e.printStackTrace();
+								ToastUtil.showToast(HomeActivity.this, "登录失败，服务器错误", Toast.LENGTH_SHORT);
 							}
 						}
 					}
@@ -424,6 +483,7 @@ public class HomeActivity extends FragmentActivity {
 			updateProgressDialog.setProgress(0);
 			updateProgressDialog.setCancelable(true);
 			updateProgressDialog.setIndeterminate(false);
+			updateProgressDialog.setCanceledOnTouchOutside(false);
 			updateProgressDialog.show();
 			final int max = total;
 			FoodService.updateMenuFoods(this, foodsToUpdate, new ProgressHandler(total){
@@ -461,66 +521,6 @@ public class HomeActivity extends FragmentActivity {
 			}
 			Log.i(TAG, "The menu is latest.");
 		}
-	}
-	
-	//temp for test
-	private void testInsertDB(){
-        Field[] fields = R.drawable.class.getDeclaredFields();
-        String [] categories = new String[]{"中餐","西餐","点心","酒水"};
-        for (int i=0; i < fields.length; i++){
-        	Field field = fields[i];
-        	
-            if (field.getName().endsWith("s")){
-            	String food_key = UUID.randomUUID().toString();
-            	String name = field.getName();
-            	String category = categories[i%4];
-            	String desc = "这是第"+i+"道菜的描述";
-            	float price = i*10f;
-            	String status = "ready";
-            	int orderidx = i%4+1;
-
-                int index = 0;
-				try {
-					index = field.getInt(R.drawable.class);
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
-				
-				int index2 = 0;
-				try {
-					Field field2 = R.drawable.class.getField(field.getName().substring(0,1)+"l");
-					index2 = field2.getInt(R.drawable.class);
-				} catch (NoSuchFieldException e) {
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
-				
-				byte[] simage = FileUtil.getImageBytes(BitmapFactory.decodeResource(this.getResources(), index));
-				byte[] limage =FileUtil.getImageBytes(BitmapFactory.decodeResource(this.getResources(), index2));
-				String image_s_name = food_key + "_s";
-				String image_l_name =  food_key + "_l";
-				FileUtil.writeFile(this, image_s_name, simage);
-				FileUtil.writeFile(this, image_l_name, limage);
-				String revision = String.valueOf(System.currentTimeMillis());
-				ContentValues values = new ContentValues();
-				values.put(FoodMenuTable.COLUMN_FOOD_KEY, food_key);
-				values.put(FoodMenuTable.COLUMN_NAME, name);
-				values.put(FoodMenuTable.COLUMN_CATEGORY, category);
-				values.put(FoodMenuTable.COLUMN_DESCRIPTION, desc);
-				values.put(FoodMenuTable.COLUMN_PRICE, price);
-				values.put(FoodMenuTable.COLUMN_STATUS, status);
-				values.put(FoodMenuTable.COLUMN_RECOMMENDATION, "false");
-				values.put(FoodMenuTable.COLUMN_ORDERINDEX, orderidx);
-				values.put(FoodMenuTable.COLUMN_REVISION, revision);
-				values.put(FoodMenuTable.COLUMN_IAMGE_REVISION, revision);
-				getContentResolver().insert(FoodMenuContentProvider.CONTENT_URI, values);
-            }
-        }  
 	}
 	
 }
