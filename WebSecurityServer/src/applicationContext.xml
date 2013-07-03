@@ -34,8 +34,33 @@
 		<property name="dataSource" ref="c3p0DataSource" />
 	</bean>
 
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	  <property name="dataSource" ref="c3p0DataSource" />
+	</bean>
 
+	<tx:advice id="myTxAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="remove*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception" no-rollback-for="java.lang.RuntimeException" />
+			<tx:method name="delete*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception" no-rollback-for="java.lang.RuntimeException"/>
+			
+			<tx:method name="add*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.RuntimeException" />
+			<tx:method name="insert*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.RuntimeException" />
+			
+			<tx:method name="modify*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception" />
+			<tx:method name="update*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception" />
+			
+			<tx:method name="find*" propagation="SUPPORTS" />
+			<tx:method name="search*" propagation="SUPPORTS" />
+			<tx:method name="select*" propagation="SUPPORTS" />
+		</tx:attributes>
+	</tx:advice>
 
+	<aop:config>
+		<aop:pointcut id="productServiceMethods" expression="execution(public * com.pitaya.bookingnow.service.impl..*.*(..))" />
+		<aop:advisor pointcut-ref="productServiceMethods" advice-ref="myTxAdvice" />
+	</aop:config>
+	
+	
 	<bean id="userDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.security.UserMapper" />   
         <property name="sqlSessionFactory" ref="sqlSessionFactory" />  

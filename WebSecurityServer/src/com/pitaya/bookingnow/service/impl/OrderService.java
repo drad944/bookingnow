@@ -113,64 +113,54 @@ public class OrderService implements IOrderService{
 	public Map<String, String> addWaitingOrder(Order order) {
 		Map<String, String> updateStatusMap = new HashMap<String, String>();
 		
-		//check user existed in client data and DB data
-		if (order.getUser() != null && order.getUser().getId() != null) {
-			User tempUser = userDao.selectByPrimaryKey(order.getUser().getId());
-			if (tempUser != null && tempUser.getId() != null) {
-				order.setUser_id(tempUser.getId());
-				
-				List<Order_Table_Detail> table_Details = order.getTable_details();
-				
-				if (table_Details != null && table_Details.size() > 0) {
+		try {
+			//check user existed in client data and DB data
+			if (order.getUser() != null && order.getUser().getId() != null) {
+				User tempUser = userDao.selectByPrimaryKey(order.getUser().getId());
+				if (tempUser != null && tempUser.getId() != null) {
+					order.setUser_id(tempUser.getId());
 					
-					try {
+					List<Order_Table_Detail> table_Details = order.getTable_details();
+					
+					if (table_Details != null && table_Details.size() > 0) {
+						
 						//insert order in DB
 						order.setStatus(Constants.ORDER_NEW);
 						order.setSubmit_time(new Date().getTime());
 						order.setModifyTime(order.getSubmit_time());
 						orderDao.insertSelective(order);
 						updateStatusMap.put("order_status", "true");
-					} catch (Exception e) {
-						// TODO: handle exception
-					}
-					
-					for (int i = 0; i < table_Details.size(); i++) {
-						Order_Table_Detail tempTable_Detail = table_Details.get(i);
 						
-						//check table existed in client data and DB data
-						if (tempTable_Detail.getTable() != null && tempTable_Detail.getTable().getId() != null) {
-							Table tempTable = tableDao.selectByPrimaryKey(tempTable_Detail.getTable().getId());
-							if(tempTable != null && tempTable.getId() != null){
-								
-								try {
+						for (int i = 0; i < table_Details.size(); i++) {
+							Order_Table_Detail tempTable_Detail = table_Details.get(i);
+							
+							//check table existed in client data and DB data
+							if (tempTable_Detail.getTable() != null && tempTable_Detail.getTable().getId() != null) {
+								Table tempTable = tableDao.selectByPrimaryKey(tempTable_Detail.getTable().getId());
+								if(tempTable != null && tempTable.getId() != null){
+									
 									//update table status in DB
 									tempTable.setStatus(Constants.TABLE_USING);
 									tableDao.updateByPrimaryKeySelective(tempTable);
 									updateStatusMap.put("table_status_" + tempTable.getId().toString(), "true");
-								} catch (Exception e) {
-									// TODO: handle exception
-								}
 								
-								
-
-								try {
 									//insert table_Detail in DB
 									tempTable_Detail.setOrder_id(order.getId());
 									tempTable_Detail.setTable_id(tempTable.getId());
 									tempTable_Detail.setEnabled(true);
 									table_detailDao.insertSelective(tempTable_Detail);
 									updateStatusMap.put("table_detail_status", "true");
-								} catch (Exception e) {
-									// TODO: handle exception
+									
 								}
-								
 							}
+							
 						}
-						
 					}
+					
 				}
-				
 			}
+		} catch (Exception e) {
+			throw new RuntimeException("-------- addWaitingOrder failed in OrderService.");
 		}
 		
 		return updateStatusMap;
