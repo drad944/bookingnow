@@ -73,7 +73,7 @@ public class TestOrderService {
 	@Test
 	public void testUpdateWaitingOrderToConfirmed() {
 		Order order = new Order();
-		order.setId((long) 9);
+		order.setId((long) 8);
 		order.setTotal_price(105.0);
 		order.setCustomer_count(3);
 		
@@ -87,8 +87,10 @@ public class TestOrderService {
 			Order_Food_Detail food_Detail = new Order_Food_Detail();
 			
 			Food food = new Food();
-			food.setId((long) i);
+			food.setId((long) i+1);
+			food.setPrice(i + 11.0);
 			food_Detail.setFood(food);
+			food_Detail.setCount(2);
 			food_Details.add(food_Detail);
 		}
 		order.setFood_details(food_Details);
