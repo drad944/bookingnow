@@ -172,86 +172,95 @@ public class OrderService implements IOrderService{
 	public Map<String, String> updateWaitingOrderToConfirmed(Order order) {
 		Map<String, String> updateStatusMap = new HashMap<String, String>();
 		double totalPrice = 0;
-		
-		//check user existed in client data and DB data
-		if (order.getUser() != null && order.getUser().getId() != null) {
-			User realUser = userDao.selectByPrimaryKey(order.getUser().getId());
-			if (realUser != null && realUser.getId() != null) {
-				
-				
-				
-				//check order existed in client data and DB data
-				if(order.getId() != null) {
-					Order realOrder = orderDao.selectByPrimaryKey(order.getId());
-					if(realOrder != null && realOrder.getId() != null){
-						
-						//check customer existed in client data and DB data
-//						if (order.getCustomer_count() != null && order.getCustomer_count() > 0) {
-//							if (order.getCustomer_count() != realOrder.getCustomer_count()) {
-//								
-//							}
-//						}
-						
-						List<Order_Food_Detail> food_Details = order.getFood_details();
-						if (food_Details != null && food_Details.size() > 0) {
+		try {
+			//check user existed in client data and DB data
+			if (order.getUser() != null && order.getUser().getId() != null) {
+				User realUser = userDao.selectByPrimaryKey(order.getUser().getId());
+				if (realUser != null && realUser.getId() != null) {
+					
+					//check order existed in client data and DB data
+					if(order.getId() != null) {
+						Order realOrder = orderDao.selectByPrimaryKey(order.getId());
+						if(realOrder != null && realOrder.getId() != null){
 							
-							//check food list existed in client data
-							for (int i = 0; i < food_Details.size(); i++) {
-								Order_Food_Detail tempFood_Detail = food_Details.get(i);
+							//check customer existed in client data and DB data
+							if(order.getCustomer_count() != null && order.getCustomer_count() <= 0 && realOrder.getCustomer_count() <= 0) {
+								//notice client need to set customer count
+								updateStatusMap.put("order_customer_count", "empty");
+							}
+							
+							List<Order_Food_Detail> food_Details = order.getFood_details();
+							if (food_Details != null && food_Details.size() > 0) {
 								
-								//validate food count is not 0
-								if (tempFood_Detail.getCount() != null && tempFood_Detail.getCount() > 0) {
-									Food tempFood = tempFood_Detail.getFood();
+								//check food list existed in client data
+								for (int i = 0; i < food_Details.size(); i++) {
+									Order_Food_Detail tempFood_Detail = food_Details.get(i);
 									
-									//check food existed in client data and DB data
-									if (tempFood != null && tempFood.getId() != null) {
-										Food realFood = foodDao.selectByPrimaryKey(tempFood.getId());
-										if (realFood != null) {
-											
-											try {
-												//update food status and insert in DB
-												tempFood_Detail.setFood_id(tempFood.getId());
-												tempFood_Detail.setEnabled(true);
-												tempFood_Detail.setStatus(Constants.FOOD_COMFIRMED);
-												tempFood_Detail.setOrder_id(order.getId());
-												tempFood_Detail.setLast_modify_time(new Date().getTime());
+									//validate food count is not 0
+									if (tempFood_Detail.getCount() != null && tempFood_Detail.getCount() > 0) {
+										Food tempFood = tempFood_Detail.getFood();
+										
+										//check food existed in client data and DB data
+										if (tempFood != null && tempFood.getId() != null) {
+											Food realFood = foodDao.selectByPrimaryKey(tempFood.getId());
+											if (realFood != null) {
+												if(realFood.getPrice() != null && tempFood.getPrice() != null) {
+													if(realFood.getPrice().equals(tempFood.getPrice()) && tempFood.getPrice() != 0) {
+														//update food status and insert in DB
+														tempFood_Detail.setFood_id(tempFood.getId());
+														tempFood_Detail.setEnabled(true);
+														tempFood_Detail.setStatus(Constants.FOOD_COMFIRMED);
+														tempFood_Detail.setOrder_id(order.getId());
+														tempFood_Detail.setLast_modify_time(new Date().getTime());
+														
+														food_detailDao.insertSelective(tempFood_Detail);
+														
+														//total price increase and get success info of insert into DB table.
+														totalPrice = totalPrice + realFood.getPrice() * tempFood_Detail.getCount();
+														updateStatusMap.put("food_status_" + tempFood.getId().toString(), "true");
+													}else if(tempFood.getPrice() == 0 || realFood.getPrice() == 0) {
+														//notice user to check food price is 0 in client and in database.
+														
+													}else {
+														//notice user to update food list for food price.
+														
+													}
+												}
 												
-												food_detailDao.insertSelective(tempFood_Detail);
+													
 												
-												//total price increase and get success info of insert into DB table.
-												totalPrice = totalPrice + realFood.getPrice();
-												updateStatusMap.put("food_status_" + tempFood.getId().toString(), "true");
-											} catch (Exception e) {
-												//show error log
 											}
-											
+										}else {
+											//tell client food is empty
+											System.out.println("food " + "is not exist in DB,please update your food list in client.");
 										}
 									}
 								}
-							}
-						}
-						
-						//update order status in DB
-						if(updateStatusMap.size() > 0) {
-							try {
-								order.setModifyTime(new Date().getTime());
-								order.setStatus(Constants.ORDER_COMFIRMED);
-								order.setTotal_price(totalPrice);
-								orderDao.updateByPrimaryKeySelective(order);
-								updateStatusMap.put("order_status", "true");
-								updateStatusMap.put("order_total_price", "" + totalPrice);
-							} catch (Exception e) {
-								// TODO: handle exception
+								
+								//update order status in DB
+								if(updateStatusMap.size() > 0) {
+										order.setModifyTime(new Date().getTime());
+										order.setStatus(Constants.ORDER_COMFIRMED);
+										order.setTotal_price(totalPrice);
+										orderDao.updateByPrimaryKeySelective(order);
+										updateStatusMap.put("order_status", "true");
+										updateStatusMap.put("order_total_price", "" + totalPrice);
+									
+								}else {
+									updateStatusMap.put("order_status", "false");
+								}
 							}
 							
-						}else {
-							updateStatusMap.put("order_status", "false");
+							
 						}
 					}
+					
 				}
-				
 			}
+		} catch (Exception e) {
+			throw new RuntimeException("failed to exec method updateWaitingOrderToConfirmed in OrderService.java");
 		}
+		
 		
 		
 		/*

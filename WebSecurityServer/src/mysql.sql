@@ -91,26 +91,26 @@ create table pitaya_food(
 	description varchar(100)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 	
-insert into pitaya_food values (1,5,1,1,'Sweet and sour pork ribs',1351232321,1351232321,21.50,'chinese food','good food');
-insert into pitaya_food values (2,4,1,2,'Tomato soup',1351232321,1351232321,11.50,'chinese food','good food');
-insert into pitaya_food values (3,5,1,3,'Green pepper and potato silk',1351232321,1351232321,10,'chinese food','good food');
-insert into pitaya_food values (4,5,1,4,'Griddle chicken',1351232321,1351232321,21.50,'western food','good food');
-insert into pitaya_food values (5,5,1,5,'Saliva chicken',1351232321,1351232321,61.50,'chinese food','good food');
-insert into pitaya_food values (6,5,1,6,'hamburger',1351232321,1351232321,11.50,'western food','good food');
-insert into pitaya_food values (7,5,1,7,'Saliva chicken',1351232321,1351232321,21.50,'chinese food','good food');
-insert into pitaya_food values (8,5,1,8,'Saliva chicken',1351232321,1351232321,21.50,'chinese food','good food');
-insert into pitaya_food values (9,5,1,9,'Saliva chicken',1351232321,1351232321,21.50,'chinese food','good food');
-insert into pitaya_food values (10,5,1,10,'Saliva chicken',1351232321,1351232321,31.50,'chinese food','good food');
-insert into pitaya_food values (11,5,1,11,'Saliva chicken',1351232321,1351232321,41.50,'western food','good food');
-insert into pitaya_food values (12,5,1,12,'Saliva chicken',1351232321,1351232321,11.50,'sichuan food','good food');
-insert into pitaya_food values (13,5,1,13,'Saliva chicken',1351232321,1351232321,21.50,'chinese food','good food');
-insert into pitaya_food values (14,5,1,14,'Saliva chicken',1351232321,1351232321,11.50,'western food','good food');
-insert into pitaya_food values (15,5,1,15,'Saliva chicken',1351232321,1351232321,21.50,'chinese food','good food');
-insert into pitaya_food values (16,5,1,16,'Saliva chicken',1351232321,1351232321,13.50,'sichuan food','good food');
-insert into pitaya_food values (17,5,1,17,'Saliva chicken',1351232321,1351232321,24.50,'chinese food','good food');
-insert into pitaya_food values (18,5,1,18,'Saliva chicken',1351232321,1351232321,25.50,'sichuan food','good food');
-insert into pitaya_food values (19,5,1,19,'Saliva chicken',1351232321,1351232321,26.50,'sichuan food','good food');
-insert into pitaya_food values (20,5,1,20,'fish',1351232321,1351232321,27.50,'chinese food','good food');
+insert into pitaya_food values (1,5,1,1,'Sweet and sour pork ribs',1351232321,1351232321,11,'chinese food','good food');
+insert into pitaya_food values (2,4,1,2,'Tomato soup',1351232321,1351232321,12,'chinese food','good food');
+insert into pitaya_food values (3,5,1,3,'Green pepper and potato silk',1351232321,1351232321,13,'chinese food','good food');
+insert into pitaya_food values (4,5,1,4,'Griddle chicken',1351232321,1351232321,14,'western food','good food');
+insert into pitaya_food values (5,5,1,5,'Saliva chicken',1351232321,1351232321,15,'chinese food','good food');
+insert into pitaya_food values (6,5,1,6,'hamburger',1351232321,1351232321,16,'western food','good food');
+insert into pitaya_food values (7,5,1,7,'Saliva chicken',1351232321,1351232321,17,'chinese food','good food');
+insert into pitaya_food values (8,5,1,8,'Saliva chicken',1351232321,1351232321,18,'chinese food','good food');
+insert into pitaya_food values (9,5,1,9,'Saliva chicken',1351232321,1351232321,19,'chinese food','good food');
+insert into pitaya_food values (10,5,1,10,'Saliva chicken',1351232321,1351232321,20,'chinese food','good food');
+insert into pitaya_food values (11,5,1,11,'Saliva chicken',1351232321,1351232321,21,'western food','good food');
+insert into pitaya_food values (12,5,1,12,'Saliva chicken',1351232321,1351232321,22,'sichuan food','good food');
+insert into pitaya_food values (13,5,1,13,'Saliva chicken',1351232321,1351232321,23,'chinese food','good food');
+insert into pitaya_food values (14,5,1,14,'Saliva chicken',1351232321,1351232321,24,'western food','good food');
+insert into pitaya_food values (15,5,1,15,'Saliva chicken',1351232321,1351232321,25,'chinese food','good food');
+insert into pitaya_food values (16,5,1,16,'Saliva chicken',1351232321,1351232321,26,'sichuan food','good food');
+insert into pitaya_food values (17,5,1,17,'Saliva chicken',1351232321,1351232321,27,'chinese food','good food');
+insert into pitaya_food values (18,5,1,18,'Saliva chicken',1351232321,1351232321,28,'sichuan food','good food');
+insert into pitaya_food values (19,5,1,19,'Saliva chicken',1351232321,1351232321,28,'sichuan food','good food');
+insert into pitaya_food values (20,5,1,20,'fish',1351232321,1351232321,30,'chinese food','good food');
 
 
 create table pitaya_order_food_detail(
