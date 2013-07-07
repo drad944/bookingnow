@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.pitaya.bookingnow.entity.Order;
+import com.pitaya.bookingnow.util.MyResult;
 
 public interface IOrderService {
 	boolean add(Order order);
@@ -16,9 +17,9 @@ public interface IOrderService {
 	
 	List<Order> searchOrders(Order order);
 	
-	Map<String, String> addWaitingOrder(Order order);
+	MyResult addWaitingOrder(Order order);
 	
-	boolean addNewOrder(Order order);
+	MyResult addNewOrder(Order order);
 	
-	Map<String, String> updateWaitingOrderToConfirmed(Order order);
+	MyResult updateWaitingOrderToConfirmed(Order order);
 }

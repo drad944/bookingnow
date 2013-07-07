@@ -6,6 +6,7 @@ import java.util.Map;
 import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.service.IOrderService;
 import com.pitaya.bookingnow.util.Constants;
+import com.pitaya.bookingnow.util.MyResult;
 
 public class OrderAction extends BaseAction{
 	
@@ -99,9 +100,9 @@ public class OrderAction extends BaseAction{
 	 */
 	public String submitWaitingOrder(){
 		if (order != null) {
-			Map<String, String> updateStatusMap = orderService.addWaitingOrder(order);
+			MyResult result = orderService.addWaitingOrder(order);
 			
-			if (updateStatusMap.get("order_status").equals("true")) {
+			if (result.isResult()) {
 				this.setResult(Constants.SUCCESS);
 				return "commitSuccess";
 			}
@@ -116,8 +117,11 @@ public class OrderAction extends BaseAction{
 	 */
 	public String submitNewOrder(){
 		if (order != null) {
-			this.setResult(Constants.SUCCESS);
-			return "commitSuccess";
+			MyResult result = orderService.addNewOrder(order);
+			if (result.isResult()) {
+				this.setResult(Constants.SUCCESS);
+				return "commitSuccess";
+			}
 		}
 		this.setResult(Constants.FAIL);
 		this.setDetail("Some reason cause the operation fail");

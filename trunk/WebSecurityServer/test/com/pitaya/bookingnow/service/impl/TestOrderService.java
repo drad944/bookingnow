@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import com.pitaya.bookingnow.entity.Customer;
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.entity.Order_Food_Detail;
@@ -18,6 +19,8 @@ import com.pitaya.bookingnow.entity.Order_Table_Detail;
 import com.pitaya.bookingnow.entity.Table;
 import com.pitaya.bookingnow.entity.security.User;
 import com.pitaya.bookingnow.service.IOrderService;
+import com.pitaya.bookingnow.util.Constants;
+import com.pitaya.bookingnow.util.MyResult;
 
 public class TestOrderService {
 	private IOrderService orderService;
@@ -60,8 +63,8 @@ public class TestOrderService {
 		order.setUser(user);
 		
 
-		Map<String, String> result = orderService.addWaitingOrder(order);
-		if (result != null && result.size() > 0) {
+		MyResult result = orderService.addWaitingOrder(order);
+		if (result.isResult()) {
 			
 			System.out.println("add waiting order successfully!");
 		} else {
@@ -76,6 +79,7 @@ public class TestOrderService {
 		order.setId((long) 8);
 		order.setTotal_price(105.0);
 		order.setCustomer_count(3);
+		order.setAllowance(1.0);
 		
 		User user = new User();
 		user.setId((long) 3);
@@ -96,8 +100,8 @@ public class TestOrderService {
 		order.setFood_details(food_Details);
 		
 		
-		Map<String, String> result = orderService.updateWaitingOrderToConfirmed(order);
-		if (result != null && result.size() > 0) {
+		MyResult result = orderService.updateWaitingOrderToConfirmed(order);
+		if (result.isResult()) {
 			
 			System.out.println("add waiting order successfully!");
 		} else {
@@ -106,4 +110,29 @@ public class TestOrderService {
 		}
 		
 	}
+	
+	@Test
+	public void testAddNewOrder() {
+		Order order = new Order();
+		
+		Customer customer = new Customer();
+		customer.setName("zhan");
+		customer.setPhone("13546768131");
+		customer.setSex(Constants.CUSTOMER_MALE);
+		
+		order.setCustomer(customer);
+		order.setCustomer_count(6);
+		
+		
+
+		MyResult result = orderService.addNewOrder(order);
+		if (result.isResult()) {
+			
+			System.out.println("add new order successfully!");
+		} else {
+			
+			System.out.println("add new order failed!");
+		}
+	}
+	
 }

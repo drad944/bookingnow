@@ -17,5 +17,5 @@ public interface ICustomerService {
 	
 	List<Customer> searchCustomers(Customer customer);
 	
-	
+	Customer login(Customer customer);
 }
