@@ -1,5 +1,7 @@
 package com.pitaya.bookingnow.dao;
 
+import java.util.List;
+
 import com.pitaya.bookingnow.entity.Customer;
 
 public interface CustomerMapper {
@@ -14,4 +16,8 @@ public interface CustomerMapper {
     int updateByPrimaryKeySelective(Customer customer);
 
     int updateByPrimaryKey(Customer customer);
+    
+    List<Customer> searchCustomers(Customer customer);
+    
+    Customer login(Customer customer);
 }

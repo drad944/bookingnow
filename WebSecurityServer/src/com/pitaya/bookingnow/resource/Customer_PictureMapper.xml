@@ -4,26 +4,21 @@
 	<resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.Customer_Picture">
 		<id column="id" property="id" jdbcType="BIGINT" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
-		<result column="last_modify_time" property="last_modify_time"
-			jdbcType="BIGINT" />
+		<result column="last_modify_time" property="last_modify_time" jdbcType="BIGINT" />
 		<result column="enabled" property="enabled" jdbcType="BIT" />
-	</resultMap>
-	<resultMap id="ResultMapWithBLOBs" type="com.pitaya.bookingnow.entity.Customer_Picture"
-		extends="BaseResultMap">
 		<result column="image" property="image" jdbcType="LONGVARBINARY" />
 	</resultMap>
+	
 	<sql id="Base_Column_List">
-		id, name, last_modify_time, enabled
+		id, name, last_modify_time, enabled, image
 	</sql>
-	<sql id="Blob_Column_List">
-		image
-	</sql>
-	<select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs"
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Long">
 		select
 		<include refid="Base_Column_List" />
 		,
-		<include refid="Blob_Column_List" />
+		<include refid="Base_Column_List" />
 		from pitaya_customer_picture
 		where id = #{id,jdbcType=BIGINT}
 	</select>

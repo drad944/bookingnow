@@ -1,6 +1,4 @@
 
-use mysql;
-
 show databases;
 create database bookingnow;
 
