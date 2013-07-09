@@ -1,9 +1,7 @@
 package com.pitaya.bookingnow.service.impl;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.pitaya.bookingnow.dao.CustomerMapper;
 import com.pitaya.bookingnow.dao.FoodMapper;
@@ -22,7 +20,6 @@ import com.pitaya.bookingnow.entity.security.User;
 import com.pitaya.bookingnow.service.IOrderService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
-import com.sun.crypto.provider.RSACipher;
 
 public class OrderService implements IOrderService{
 
@@ -124,6 +121,12 @@ public class OrderService implements IOrderService{
 
 	@Override
 	public MyResult addWaitingOrder(Order order) {
+		/*
+		 * waiter add a order for customers in table
+		 * in:table_id,user_id,order status:new
+		 * 
+		 */
+		
 		MyResult result = new MyResult();
 		
 		//check user existed in client data and DB data
@@ -211,6 +214,11 @@ public class OrderService implements IOrderService{
 
 	@Override
 	public MyResult updateWaitingOrderToConfirmed(Order order) {
+		/*
+		 * waiter update order to confirm  food list with customer which in table.
+		 * in: food list,order_id,user_id,customer count,order status:confirmed,food status:confirmed
+		 * 
+		 */
 		
 		MyResult result = new MyResult();
 		double totalPrice = 0;
@@ -322,9 +330,33 @@ public class OrderService implements IOrderService{
 		
 		return result;
 	}
+	
+	
+	
+	
+	@Override
+	public MyResult updateOrderToFinished(Order order) {
+		/*
+		 * cashier update order status and all food status to finished,table status to empty if customer pay for the order
+		 * in:order_id,user_id,order status:finished
+		 * 
+		 */
+		MyResult result = new MyResult();
+		
+		return result;
+	}
+	
+
 
 	@Override
 	public MyResult addNewOrder(Order order) {
+		/*
+		 * welcomer add a new order for waiting customer outside
+		 * in:name,phone,customer count,order status:new
+		 * 
+		 */
+		
+		
 		MyResult result = new MyResult();
 		Customer tempCustomer = order.getCustomer();
 		if (tempCustomer != null && tempCustomer.getId() != null) {
@@ -385,4 +417,81 @@ public class OrderService implements IOrderService{
 			
 		return result;
 	}
+	
+	@Override
+	public MyResult updateNewOrderToWaiting(Order order){
+		/*
+		 * welcomer update order with food list when customer is waiting table and choose food
+		 * in:order_id,customer_id,food list,order status:waiting,food status:new
+		 * 
+		 */
+		MyResult result = new MyResult();
+		
+		return result;
+	}
+	
+
+	
+	@Override
+	public MyResult updateNewOrderToConfirmed(Order order) {
+		/*
+		 * waiter update order to take customer to table to seat
+		 * in:table_id,order_id,user_id,order status:confirmed,food status:confirmed
+		 * 
+		 */
+		
+		
+		MyResult result = new MyResult();
+		
+		return result;
+	}
+	
+	@Override
+	public MyResult updateFoodInConfirmedOrder(Order order) {
+		/*
+		 * waiter update order to update food list after customer seat in table and want to modify food list.
+		 * in:order_id,user_id,order status:confirmed,food status:confirmed
+		 * 
+		 */
+		MyResult result = new MyResult();
+		
+		return result;
+	}
+	
+	@Override
+	public MyResult cancelOrder(Order order) {
+		/*
+		 * welcomer cancel order which is order status is new,waiting,
+		 * in:order_id,user_id,order status:confirmed,food status:confirmed
+		 * 
+		 */
+		MyResult result = new MyResult();
+		
+		return result;
+	}
+	
+	@Override
+	public MyResult cancelFoods(Order order) {
+		/*
+		 * waiter cancel food list which customer do not want to eat and chef do not cook
+		 * in:order_id,user_id,food list
+		 * 
+		 */
+		MyResult result = new MyResult();
+		
+		return result;
+	}
+	
+	@Override
+	public MyResult updateOrder(Order order) {
+		/*
+		 * customer and waiter update food list,table
+		 * in:order_id,user_id,food list or table
+		 * 
+		 */
+		MyResult result = new MyResult();
+		
+		return result;
+	}
+
 }

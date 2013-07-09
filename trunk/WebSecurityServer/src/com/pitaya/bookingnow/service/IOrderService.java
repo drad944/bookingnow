@@ -1,7 +1,6 @@
 package com.pitaya.bookingnow.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.util.MyResult;
@@ -19,7 +18,23 @@ public interface IOrderService {
 	
 	MyResult addWaitingOrder(Order order);
 	
+	MyResult updateWaitingOrderToConfirmed(Order order);
+	
+	
 	MyResult addNewOrder(Order order);
 	
-	MyResult updateWaitingOrderToConfirmed(Order order);
+	MyResult updateNewOrderToWaiting(Order order);
+	
+	MyResult updateNewOrderToConfirmed(Order order);
+	
+	MyResult updateFoodInConfirmedOrder(Order order);
+	
+	
+	MyResult cancelFoods(Order order);
+	
+	MyResult cancelOrder(Order order);
+	
+	MyResult updateOrderToFinished(Order order);
+	
+	MyResult updateOrder(Order order);
 }

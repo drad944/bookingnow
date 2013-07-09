@@ -10,7 +10,9 @@
            http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
 
-	<http auto-config="true" access-denied-page="/403.jsp"><!-- 当访问被拒绝时，会转到403.jsp -->
+	<http auto-config="true">
+	    <access-denied-handler ref="accessDeniedHandler"/>
+	    
 		<intercept-url pattern="/Page/Common/*.jsp" access="ROLE_ANONYMOUS,IS_AUTHENTICATED_ANONYMOUSLY" />
 		<intercept-url pattern="/Image/*.jpg" access="ROLE_ANONYMOUS,IS_AUTHENTICATED_ANONYMOUSLY" />
 		<intercept-url pattern="/JS/*.js" access="ROLE_ANONYMOUS,IS_AUTHENTICATED_ANONYMOUSLY" />
@@ -34,6 +36,8 @@
 		<!-- 增加一个filter，这点与Acegi是不一样的，不能修改默认的filter了，这个filter位于FILTER_SECURITY_INTERCEPTOR之前 -->
 		<custom-filter before="FILTER_SECURITY_INTERCEPTOR"	ref="myFilter" />
 	</http>
+	
+	<beans:bean id="accessDeniedHandler" class="com.pitaya.bookingnow.security.MyAccessDeniedHandler"/>
 
 	<!-- 一个自定义的filter，必须包含authenticationManager,accessDecisionManager,securityMetadataSource三个属性，
 	我们的所有控制将在这三个类中实现，解释详见具体配置 -->
@@ -70,20 +74,20 @@
 	</beans:bean>
 	
 	 <beans:bean id="resourceDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<beans:property name="mapperInterface"  value="com.pitaya.bookingnow.security.dao.ResourceMapper" />   
+		<beans:property name="mapperInterface"  value="com.pitaya.bookingnow.dao.security.ResourceMapper" />   
         <beans:property name="sqlSessionFactory" ref="sqlSessionFactory" />  
     </beans:bean>
     
-    <beans:bean id="resourceService" class="com.pitaya.bookingnow.security.service.impl.ResourceService">
+    <beans:bean id="resourceService" class="com.pitaya.bookingnow.service.impl.security.ResourceService">
         <beans:property name="resourceDao" ref="resourceDao" />  
     </beans:bean>
     
     <beans:bean id="authorityDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<beans:property name="mapperInterface"  value="com.pitaya.bookingnow.security.dao.AuthorityMapper" />   
+		<beans:property name="mapperInterface"  value="com.pitaya.bookingnow.dao.security.AuthorityMapper" />   
         <beans:property name="sqlSessionFactory" ref="sqlSessionFactory" />  
     </beans:bean>
     
-    <beans:bean id="authorityService" class="com.pitaya.bookingnow.security.service.impl.AuthorityService">
+    <beans:bean id="authorityService" class="com.pitaya.bookingnow.service.impl.security.AuthorityService">
         <beans:property name="authorityDao" ref="authorityDao" />  
     </beans:bean>
     
