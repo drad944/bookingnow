@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.pitaya.bookingnow.entity.Food;
+import com.pitaya.bookingnow.entity.Order;
+import com.pitaya.bookingnow.util.MyResult;
 
 
 public interface IFoodService {
@@ -23,4 +25,6 @@ public interface IFoodService {
 	List<Food> searchALLFoodsWithoutImage();
 	
 	public Map<String, List<Food>> updateMenuFoods(List<Food> clientFoods);
+	
+	public MyResult updateFoodStatus(Order order);
 }

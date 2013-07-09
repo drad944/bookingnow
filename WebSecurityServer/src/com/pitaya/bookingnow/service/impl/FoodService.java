@@ -9,7 +9,9 @@ import com.pitaya.bookingnow.dao.FoodMapper;
 import com.pitaya.bookingnow.dao.Food_PictureMapper;
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Food_Picture;
+import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.service.IFoodService;
+import com.pitaya.bookingnow.util.MyResult;
 
 public class FoodService implements IFoodService{
 
@@ -101,6 +103,10 @@ public class FoodService implements IFoodService{
 	}
 	
 	public Map<String, List<Food>> updateMenuFoods(List<Food> clientFoods) {
+		/*
+		 * client update to lastest food menu when login or open client app
+		 * 
+		 */
 		Map<String, List<Food>> newMenuFoods = new HashMap<String, List<Food>>();
 		
 		List<Food> newFoods = null;
@@ -168,6 +174,8 @@ public class FoodService implements IFoodService{
 		
 		return newMenuFoods;
 	}
+	
+	
 
 	@Override
 	public List<Food> searchALLFoods() {
@@ -176,12 +184,33 @@ public class FoodService implements IFoodService{
 
 	@Override
 	public List<Food> searchFoodsWithoutImage(Food food) {
+		/*
+		 * chef get all food which need to cook
+		 * in:food status:confirmed
+		 * 
+		 */
+		
 		return foodDao.selectFoodsWithoutImage(food);
 	}
 
 	@Override
 	public List<Food> searchALLFoodsWithoutImage() {
 		return foodDao.selectAllFoodsWithoutImage();
+	}
+
+	@Override
+	public MyResult updateFoodStatus(Order order) {
+		/*
+		 * chef update confirmed food status to cooking,ready,finished
+		 * in:food_id,food status
+		 */
+		
+		MyResult result = new MyResult();
+		if (order.getId() != null) {
+			
+		}
+		// TODO Auto-generated method stub
+		return result;
 	}
 
 }

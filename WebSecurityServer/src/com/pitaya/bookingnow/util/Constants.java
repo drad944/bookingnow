@@ -19,7 +19,8 @@ public class Constants {
 	public static final int FOOD_COMFIRMED = FOOD_NEW + 1;
 	public static final int FOOD_WAITING = FOOD_COMFIRMED + 1;
 	public static final int FOOD_COOKING = FOOD_WAITING + 1;
-	public static final int FOOD_FINISHED = FOOD_COOKING + 1;
+	public static final int FOOD_READY = FOOD_COOKING + 1;
+	public static final int FOOD_FINISHED = FOOD_READY + 1;
 	public static final int FOOD_UNAVAILABLE = FOOD_FINISHED + 1;
 	public static final int FOOD_AVAILABLE = FOOD_UNAVAILABLE + 1;
 	
