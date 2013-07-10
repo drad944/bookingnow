@@ -12,6 +12,16 @@
 	<sql id="Base_Column_List">
 		id, realCustomerCount, enabled, table_id, order_id
 	</sql>
+	
+	
+	<select id="selectByTableId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_order_table_detail
+			left outer join pitaya_table on pitaya_order_table_detail.table_id = pitaya_table.id
+		where pitaya_table.id = #{id,jdbcType=BIGINT}
+	</select>
+	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Long">
 		select
@@ -19,6 +29,7 @@
 		from pitaya_order_table_detail
 		where id = #{id,jdbcType=BIGINT}
 	</select>
+	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		delete from pitaya_order_table_detail
 		where id = #{id,jdbcType=BIGINT}

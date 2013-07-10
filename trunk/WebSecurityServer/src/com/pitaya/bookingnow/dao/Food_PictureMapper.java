@@ -2,7 +2,6 @@ package com.pitaya.bookingnow.dao;
 
 import java.util.List;
 
-import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Food_Picture;
 
 public interface Food_PictureMapper {

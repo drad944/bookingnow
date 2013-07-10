@@ -10,8 +10,18 @@ public class Table {
     private Integer maxCustomerCount;
 
     private String address;
+    
+    private Double indoorPrice;
 
-    public Long getId() {
+    public Double getIndoorPrice() {
+		return indoorPrice;
+	}
+
+	public void setIndoorPrice(Double indoorPrice) {
+		this.indoorPrice = indoorPrice;
+	}
+
+	public Long getId() {
         return id;
     }
 

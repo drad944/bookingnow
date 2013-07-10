@@ -7,9 +7,10 @@
 		<result column="seatCount" property="seatCount" jdbcType="INTEGER" />
 		<result column="maxCustomerCount" property="maxCustomerCount" jdbcType="INTEGER" />
 		<result column="address" property="address" jdbcType="VARCHAR" />
+		<result column="indoorPrice" property="indoorPrice" jdbcType="DOUBLE" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, status, seatCount, maxCustomerCount, address
+		id, status, seatCount, maxCustomerCount, address,indoorPrice
 	</sql>
 	
 	
@@ -38,6 +39,10 @@
 			<if test="address != null">
 				and address = #{address,jdbcType=VARCHAR}
 			</if>
+			<if test="address != null">
+				and indoorPrice = #{indoorPrice,jdbcType=DOUBLE}
+			</if>
+			
 		</where>
 	</select>
 	
@@ -61,10 +66,10 @@
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 		insert into pitaya_table (status, seatCount, maxCustomerCount,
-		address)
+		address,indoorPrice)
 		values (#{status,jdbcType=INTEGER}, #{seatCount,jdbcType=INTEGER},
 		#{maxCustomerCount,jdbcType=INTEGER},
-		#{address,jdbcType=VARCHAR})
+		#{address,jdbcType=VARCHAR}),#{indoorPrice,jdbcType=DOUBLE})
 	</insert>
 	
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Table">
@@ -86,6 +91,9 @@
 			<if test="address != null">
 				address,
 			</if>
+			<if test="indoorPrice != null">
+				indoorPrice,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="status != null">
@@ -99,6 +107,9 @@
 			</if>
 			<if test="address != null">
 				#{address,jdbcType=VARCHAR},
+			</if>
+			<if test="indoorPrice != null">
+				#{indoorPrice,jdbcType=DOUBLE},
 			</if>
 		</trim>
 	</insert>
@@ -118,6 +129,9 @@
 			<if test="address != null">
 				address = #{address,jdbcType=VARCHAR},
 			</if>
+			<if test="indoorPrice != null">
+				indoorPrice = #{indoorPrice,jdbcType=DOUBLE},
+			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
@@ -127,7 +141,8 @@
 		set status = #{status,jdbcType=INTEGER},
 		seatCount = #{seatCount,jdbcType=INTEGER},
 		maxCustomerCount = #{maxCustomerCount,jdbcType=INTEGER},
-		address = #{address,jdbcType=VARCHAR}
+		address = #{address,jdbcType=VARCHAR},
+		indoorPrice = #{indoorPrice,jdbcType=DOUBLE}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 </mapper>
