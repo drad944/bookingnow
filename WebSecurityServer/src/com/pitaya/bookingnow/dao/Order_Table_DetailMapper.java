@@ -14,4 +14,6 @@ public interface Order_Table_DetailMapper {
     int updateByPrimaryKeySelective(Order_Table_Detail table_detail);
 
     int updateByPrimaryKey(Order_Table_Detail table_detail);
+    
+    Order_Table_Detail selectByTableId(Long id);
 }

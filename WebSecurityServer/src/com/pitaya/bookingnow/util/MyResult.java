@@ -11,6 +11,16 @@ public class MyResult {
 	int subTrueCount = 0;
 	
 	int subFalseCount = 0;
+	
+	double totalPriceOfOrder = 0d;
+
+	public double getTotalPriceOfOrder() {
+		return totalPriceOfOrder;
+	}
+
+	public void setTotalPriceOfOrder(double totalPriceOfOrder) {
+		this.totalPriceOfOrder = totalPriceOfOrder;
+	}
 
 	Map<String, String> resultDetails = new HashMap<String, String>();
 

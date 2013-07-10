@@ -15,19 +15,20 @@ create table pitaya_table(
 	status integer,
 	seatCount integer,
 	maxCustomerCount integer,
-	address varchar(50)
+	address varchar(50),
+	indoorPrice double
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_table values (1,1,4,6,'in the first floor');	
-insert into pitaya_table values (2,2,4,6,'in the second floor');
-insert into pitaya_table values (3,3,6,8,'in the first floor');
-insert into pitaya_table values (4,1,6,8,'in the second floor');
-insert into pitaya_table values (5,2,8,8,'in the first floor');
-insert into pitaya_table values (6,1,8,8,'in the second floor');
-insert into pitaya_table values (7,2,10,6,'in the first floor');
-insert into pitaya_table values (8,1,10,6,'in the second floor');
-insert into pitaya_table values (9,4,4,6,'in the second floor');
-insert into pitaya_table values (10,3,4,6,'in the first floor');
+insert into pitaya_table values (1,1,4,6,'in the first floor',0);	
+insert into pitaya_table values (2,2,4,6,'in the second floor',50);
+insert into pitaya_table values (3,3,6,8,'in the first floor',0);
+insert into pitaya_table values (4,1,6,8,'in the second floor',50);
+insert into pitaya_table values (5,2,8,8,'in the first floor',0);
+insert into pitaya_table values (6,1,8,8,'in the second floor',60);
+insert into pitaya_table values (7,2,10,6,'in the first floor',0);
+insert into pitaya_table values (8,1,10,6,'in the second floor',80);
+insert into pitaya_table values (9,4,4,6,'in the second floor',0);
+insert into pitaya_table values (10,3,4,6,'in the first floor',0);
 
 
 create table pitaya_order(

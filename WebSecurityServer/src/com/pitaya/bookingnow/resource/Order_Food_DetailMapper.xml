@@ -11,10 +11,21 @@
 		<result column="food_id" property="food_id" jdbcType="BIGINT" />
 		<result column="order_id" property="order_id" jdbcType="BIGINT" />
 	</resultMap>
+	
 	<sql id="Base_Column_List">
 		id, status, count, preference, last_modify_time, enabled, food_id,
 		order_id
 	</sql>
+	
+	
+	<select id="selectByFoodId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_order_food_detail
+			left outer join pitaya_food on pitaya_order_food_detail.food_id = pitaya_food.id
+		where pitaya_food.id = #{id,jdbcType=BIGINT}
+	</select>
+	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Long">
 		select

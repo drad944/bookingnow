@@ -16,6 +16,7 @@ public interface IOrderService {
 	
 	List<Order> searchOrders(Order order);
 	
+	
 	MyResult addWaitingOrder(Order order);
 	
 	MyResult updateWaitingOrderToConfirmed(Order order);
@@ -37,4 +38,6 @@ public interface IOrderService {
 	MyResult updateOrderToFinished(Order order);
 	
 	MyResult updateOrder(Order order);
+	
+	MyResult calculateOrder(Order order);
 }

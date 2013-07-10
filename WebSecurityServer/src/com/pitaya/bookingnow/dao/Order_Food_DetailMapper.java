@@ -14,4 +14,6 @@ public interface Order_Food_DetailMapper {
     int updateByPrimaryKeySelective(Order_Food_Detail food_detail);
 
     int updateByPrimaryKey(Order_Food_Detail food_detail);
+    
+    Order_Food_Detail selectByFoodId(Long id);
 }
