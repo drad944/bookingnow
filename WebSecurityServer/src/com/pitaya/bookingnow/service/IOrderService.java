@@ -16,6 +16,7 @@ public interface IOrderService {
 	
 	List<Order> searchOrders(Order order);
 	
+	Order searchOrderById(Long id);
 	
 	MyResult addWaitingOrder(Order order);
 	

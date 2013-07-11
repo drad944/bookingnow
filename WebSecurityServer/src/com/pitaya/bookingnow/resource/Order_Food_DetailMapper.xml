@@ -22,8 +22,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_order_food_detail
-			left outer join pitaya_food on pitaya_order_food_detail.food_id = pitaya_food.id
-		where pitaya_food.id = #{id,jdbcType=BIGINT}
+		where food_id = #{id,jdbcType=BIGINT}
 	</select>
 	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"

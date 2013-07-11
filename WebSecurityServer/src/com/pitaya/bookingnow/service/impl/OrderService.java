@@ -435,7 +435,7 @@ public class OrderService implements IOrderService{
 							}
 						}
 						
-						if (result.getSubTrueCount() < tempFood_Details.size()) {
+						if (result.getSubTrueCount() < tempTable_Details.size()) {
 							throw new RuntimeException("can not update all table detail");
 						}else {
 							result.setSubTrueCount(0);
@@ -702,6 +702,12 @@ public class OrderService implements IOrderService{
 			result.getResultDetails().put("order_exist", "can not find order or order id in client data");
 			return result;
 		}
+	}
+
+	@Override
+	public Order searchOrderById(Long id) {
+		Order realOrder= orderDao.selectFullOrderByPrimaryKey(id);
+		return realOrder;
 	}
 
 }
