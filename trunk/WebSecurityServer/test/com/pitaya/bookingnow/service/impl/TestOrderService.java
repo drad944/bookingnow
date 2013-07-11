@@ -138,13 +138,15 @@ public class TestOrderService {
 	public void testUpdateNewOrderToWaiting() {
 		/*
 		 * welcomer update order with food list when customer is waiting table and choose food
-		 * in:order_id,customer_id,food list,order status:waiting,food status:new
+		 * in:order_id,customer_id,food list(food id,count,isFree),order status:waiting,food status:new
 		 * 
 		 */
 		Customer customer = new Customer();
 		customer.setName("zhan");
 		customer.setPhone("13546768131");
 		customer.setSex(Constants.CUSTOMER_MALE);
+		User user = new User();
+		user.setId((long) 3);
 		
 		Order order = orderService.searchOrdersByCustomer(customer).get(0);
 		List<Order_Food_Detail> food_Details = new ArrayList<Order_Food_Detail>();
@@ -152,9 +154,13 @@ public class TestOrderService {
 			Order_Food_Detail tempFood_Detail = new Order_Food_Detail();
 			Food tempFood = new Food();
 			tempFood.setId((long)(i + 1));
+			tempFood.setPrice(i + 11.0);
 			tempFood_Detail.setFood(tempFood);
+			tempFood_Detail.setCount(1);
+			tempFood_Detail.setIsFree(false);
 			food_Details.add(tempFood_Detail);
 		}
+		order.setUser(user);
 		order.setFood_details(food_Details);
 
 		MyResult result = orderService.updateNewOrderToWaiting(order);
@@ -176,6 +182,10 @@ public class TestOrderService {
 		customer.setSex(Constants.CUSTOMER_MALE);
 		
 		Order order = orderService.searchOrdersByCustomer(customer).get(0);
+		User user = new User();
+		user.setId((long) 3);
+		order.setUser(user);
+		
 		List<Order_Table_Detail> table_Details = new ArrayList<Order_Table_Detail>();
 		for (int i = 0; i < 2; i++) {
 			Order_Table_Detail table_Detail = new Order_Table_Detail();
@@ -184,6 +194,7 @@ public class TestOrderService {
 			table_Detail.setTable(table);
 			table_Details.add(table_Detail);
 		}
+		order.setTable_details(table_Details);
 		
 		MyResult result = orderService.updateNewOrderToConfirmed(order);
 		if (result.isResult()) {
