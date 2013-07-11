@@ -8,12 +8,13 @@
 		<result column="preference" property="preference" jdbcType="INTEGER" />
 		<result column="last_modify_time" property="last_modify_time" jdbcType="BIGINT" />
 		<result column="enabled" property="enabled" jdbcType="BIT" />
+		<result column="isFree" property="isFree" jdbcType="BIT" />
 		<result column="food_id" property="food_id" jdbcType="BIGINT" />
 		<result column="order_id" property="order_id" jdbcType="BIGINT" />
 	</resultMap>
 	
 	<sql id="Base_Column_List">
-		id, status, count, preference, last_modify_time, enabled, food_id,
+		id, status, count, preference, last_modify_time, enabled, isFree, food_id,
 		order_id
 	</sql>
 	
@@ -42,11 +43,11 @@
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 		insert into pitaya_order_food_detail (status, count, preference,
-		last_modify_time, enabled, food_id,
+		last_modify_time, enabled, isFree, food_id,
 		order_id)
 		values (#{status,jdbcType=INTEGER}, #{count,jdbcType=INTEGER},
 		#{preference,jdbcType=INTEGER},
-		#{last_modify_time,jdbcType=BIGINT}, #{enabled,jdbcType=BIT}, #{food_id,jdbcType=BIGINT},
+		#{last_modify_time,jdbcType=BIGINT}, #{enabled,jdbcType=BIT}, #{isFree,jdbcType=BIT}, #{food_id,jdbcType=BIGINT},
 		#{order_id,jdbcType=BIGINT})
 	</insert>
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Order_Food_Detail">
@@ -71,6 +72,9 @@
 			<if test="enabled != null">
 				enabled,
 			</if>
+			<if test="isFree != null">
+				isFree,
+			</if>
 			<if test="food_id != null">
 				food_id,
 			</if>
@@ -93,6 +97,9 @@
 			</if>
 			<if test="enabled != null">
 				#{enabled,jdbcType=BIT},
+			</if>
+			<if test="isFree != null">
+				#{isFree,jdbcType=BIT},
 			</if>
 			<if test="food_id != null">
 				#{food_id,jdbcType=BIGINT},
@@ -120,6 +127,9 @@
 			<if test="enabled != null">
 				enabled = #{enabled,jdbcType=BIT},
 			</if>
+			<if test="isFree != null">
+				isFree = #{isFree,jdbcType=BIT},
+			</if>
 			<if test="food_id != null">
 				food_id = #{food_id,jdbcType=BIGINT},
 			</if>
@@ -136,6 +146,7 @@
 		preference = #{preference,jdbcType=INTEGER},
 		last_modify_time = #{last_modify_time,jdbcType=BIGINT},
 		enabled = #{enabled,jdbcType=BIT},
+		isFree = #{isFree,jdbcType=BIT},
 		food_id = #{food_id,jdbcType=BIGINT},
 		order_id = #{order_id,jdbcType=BIGINT}
 		where id = #{id,jdbcType=BIGINT}

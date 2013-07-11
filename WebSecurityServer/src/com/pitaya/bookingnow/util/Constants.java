@@ -7,8 +7,8 @@ public class Constants {
 	
 	public static final int ORDER_NEW = 1;
 	public static final int ORDER_WAITING = ORDER_NEW + 1;
-	public static final int ORDER_COMFIRMED = ORDER_WAITING + 1;
-	public static final int ORDER_COOKING = ORDER_COMFIRMED + 1;
+	public static final int ORDER_CONFIRMED = ORDER_WAITING + 1;
+	public static final int ORDER_COOKING = ORDER_CONFIRMED + 1;
 	public static final int ORDER_PAYING = ORDER_COOKING + 1;
 	public static final int ORDER_FINISHED = ORDER_PAYING + 1;
 	public static final int ORDER_UNAVAILABLE = ORDER_FINISHED + 1;
@@ -16,8 +16,8 @@ public class Constants {
 	
 	//food status
 	public static final int FOOD_NEW = 30;
-	public static final int FOOD_COMFIRMED = FOOD_NEW + 1;
-	public static final int FOOD_WAITING = FOOD_COMFIRMED + 1;
+	public static final int FOOD_CONFIRMED = FOOD_NEW + 1;
+	public static final int FOOD_WAITING = FOOD_CONFIRMED + 1;
 	public static final int FOOD_COOKING = FOOD_WAITING + 1;
 	public static final int FOOD_READY = FOOD_COOKING + 1;
 	public static final int FOOD_FINISHED = FOOD_READY + 1;

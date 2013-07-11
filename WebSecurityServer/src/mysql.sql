@@ -119,6 +119,7 @@ create table pitaya_order_food_detail(
 	preference integer,
 	last_modify_time bigint,
 	enabled boolean,
+	isFree boolean,
 	food_id bigint not null,
 	order_id bigint not null,
 	KEY fk_order_food_detail_food (food_id),
@@ -127,24 +128,24 @@ create table pitaya_order_food_detail(
 	CONSTRAINT fk_order_food_detail_order FOREIGN KEY (order_id) REFERENCES pitaya_order (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_order_food_detail values (1,301,1,401,1351232321,true,1,1);
-insert into pitaya_order_food_detail values (2,302,1,402,1351232321,true,2,1);
-insert into pitaya_order_food_detail values (3,303,1,403,1351232321,true,3,1);
-insert into pitaya_order_food_detail values (4,304,2,403,1351232321,true,4,2);
-insert into pitaya_order_food_detail values (5,304,1,401,1351232321,true,5,2);
-insert into pitaya_order_food_detail values (6,301,3,402,1351232321,true,6,2);
-insert into pitaya_order_food_detail values (7,301,1,403,1351232321,true,7,2);
-insert into pitaya_order_food_detail values (8,302,2,403,1351232321,true,8,3);
-insert into pitaya_order_food_detail values (9,302,1,402,1351232321,true,9,4);
-insert into pitaya_order_food_detail values (10,303,1,401,1351232321,true,10,5);
-insert into pitaya_order_food_detail values (11,302,2,402,1351232321,true,11,5);
-insert into pitaya_order_food_detail values (12,303,1,403,1351232321,true,12,6);
-insert into pitaya_order_food_detail values (13,304,3,401,1351232321,true,13,6);
-insert into pitaya_order_food_detail values (14,302,1,402,1351232321,true,14,6);
-insert into pitaya_order_food_detail values (15,303,4,403,1351232321,true,15,6);
-insert into pitaya_order_food_detail values (16,301,1,402,1351232321,true,16,7);
-insert into pitaya_order_food_detail values (17,304,2,401,1351232321,true,17,7);
-insert into pitaya_order_food_detail values (18,302,1,403,1351232321,true,18,7);
+insert into pitaya_order_food_detail values (1,301,1,401,1351232321,true,false,1,1);
+insert into pitaya_order_food_detail values (2,302,1,402,1351232321,true,true,2,1);
+insert into pitaya_order_food_detail values (3,303,1,403,1351232321,true,false,3,1);
+insert into pitaya_order_food_detail values (4,304,2,403,1351232321,true,false,4,2);
+insert into pitaya_order_food_detail values (5,304,1,401,1351232321,true,true,5,2);
+insert into pitaya_order_food_detail values (6,301,3,402,1351232321,true,false,6,2);
+insert into pitaya_order_food_detail values (7,301,1,403,1351232321,true,true,7,2);
+insert into pitaya_order_food_detail values (8,302,2,403,1351232321,true,false,8,3);
+insert into pitaya_order_food_detail values (9,302,1,402,1351232321,true,false,9,4);
+insert into pitaya_order_food_detail values (10,303,1,401,1351232321,true,false,10,5);
+insert into pitaya_order_food_detail values (11,302,2,402,1351232321,true,true,11,5);
+insert into pitaya_order_food_detail values (12,303,1,403,1351232321,true,false,12,6);
+insert into pitaya_order_food_detail values (13,304,3,401,1351232321,true,false,13,6);
+insert into pitaya_order_food_detail values (14,302,1,402,1351232321,true,false,14,6);
+insert into pitaya_order_food_detail values (15,303,4,403,1351232321,true,false,15,6);
+insert into pitaya_order_food_detail values (16,301,1,402,1351232321,true,true,16,7);
+insert into pitaya_order_food_detail values (17,304,2,401,1351232321,true,false,17,7);
+insert into pitaya_order_food_detail values (18,302,1,403,1351232321,true,false,18,7);
 
 
 create table pitaya_food_picture(

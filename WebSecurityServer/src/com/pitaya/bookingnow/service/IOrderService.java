@@ -2,6 +2,7 @@ package com.pitaya.bookingnow.service;
 
 import java.util.List;
 
+import com.pitaya.bookingnow.entity.Customer;
 import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.util.MyResult;
 
@@ -15,6 +16,8 @@ public interface IOrderService {
 	boolean modify(Order order);
 	
 	List<Order> searchOrders(Order order);
+	
+	List<Order> searchOrdersByCustomer(Customer customer);
 	
 	Order searchOrderById(Long id);
 	

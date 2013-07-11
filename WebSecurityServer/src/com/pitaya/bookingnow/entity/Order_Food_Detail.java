@@ -12,15 +12,24 @@ public class Order_Food_Detail {
     private Long last_modify_time;
 
     private Boolean enabled;
+    
+    private Boolean isFree;
 
     private Long food_id;
 
     private Long order_id;
     
     private Food food;
-    
 
-    public Food getFood() {
+    public Boolean getIsFree() {
+		return isFree;
+	}
+
+	public void setIsFree(Boolean isFree) {
+		this.isFree = isFree;
+	}
+
+	public Food getFood() {
 		return food;
 	}
 

@@ -135,13 +135,74 @@ public class TestOrderService {
 	}
 
 	@Test
+	public void testUpdateNewOrderToWaiting() {
+		/*
+		 * welcomer update order with food list when customer is waiting table and choose food
+		 * in:order_id,customer_id,food list,order status:waiting,food status:new
+		 * 
+		 */
+		Customer customer = new Customer();
+		customer.setName("zhan");
+		customer.setPhone("13546768131");
+		customer.setSex(Constants.CUSTOMER_MALE);
+		
+		Order order = orderService.searchOrdersByCustomer(customer).get(0);
+		List<Order_Food_Detail> food_Details = new ArrayList<Order_Food_Detail>();
+		for (int i = 0; i < 5; i++) {
+			Order_Food_Detail tempFood_Detail = new Order_Food_Detail();
+			Food tempFood = new Food();
+			tempFood.setId((long)(i + 1));
+			tempFood_Detail.setFood(tempFood);
+			food_Details.add(tempFood_Detail);
+		}
+		order.setFood_details(food_Details);
+
+		MyResult result = orderService.updateNewOrderToWaiting(order);
+		if (result.isResult()) {
+			
+			System.out.println("add new order successfully!");
+		} else {
+			
+			System.out.println("add new order failed!");
+		}
+	}
+	
+	@Test
+	public void testUpdateNewOrderToConfirmed() {
+		
+		Customer customer = new Customer();
+		customer.setName("zhan");
+		customer.setPhone("13546768131");
+		customer.setSex(Constants.CUSTOMER_MALE);
+		
+		Order order = orderService.searchOrdersByCustomer(customer).get(0);
+		List<Order_Table_Detail> table_Details = new ArrayList<Order_Table_Detail>();
+		for (int i = 0; i < 2; i++) {
+			Order_Table_Detail table_Detail = new Order_Table_Detail();
+			Table table = new Table();
+			table.setId((long)(i + 2));
+			table_Detail.setTable(table);
+			table_Details.add(table_Detail);
+		}
+		
+		MyResult result = orderService.updateNewOrderToConfirmed(order);
+		if (result.isResult()) {
+			
+			System.out.println("add new order successfully!");
+		} else {
+			
+			System.out.println("add new order failed!");
+		}
+	}
+	
+	@Test
 	public void testCalculateOrder() {
 		Order order = new Order();
 		order.setId((long) 2);
 
 		MyResult result = orderService.calculateOrder(order);
 		if (result.isResult()) {
-			
+			System.out.println("total price : " + result.getTotalPriceOfOrder());
 			System.out.println("add new order successfully!");
 		} else {
 			
