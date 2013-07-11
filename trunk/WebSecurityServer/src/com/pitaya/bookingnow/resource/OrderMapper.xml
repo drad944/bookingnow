@@ -81,6 +81,7 @@
 			<result column="FD_preference" property="preference" jdbcType="INTEGER" />
 			<result column="FD_last_modify_time" property="last_modify_time" jdbcType="BIGINT" />
 			<result column="FD_enabled" property="enabled" jdbcType="BIT" />
+			<result column="FD_isFree" property="isFree" jdbcType="BIT" />
 			<result column="FD_food_id" property="food_id" jdbcType="BIGINT" />
 			<result column="FD_order_id" property="order_id" jdbcType="BIGINT" />
 			
@@ -150,7 +151,8 @@
 		FD.status as FD_status, 
 		FD.count as FD_count, 
 		FD.last_modify_time as FD_last_modify_time, 
-		FD.enabled as FD_enabled, 
+		FD.enabled as FD_enabled,
+		FD.isFree as FD_isFree,  
 		FD.food_id as FD_food_id,
 		FD.order_id as FD_order_id
 	</sql>
@@ -171,6 +173,103 @@
 		prePay, submit_time, enabled
 	</sql>
 	
+	<select id="searchOrdersByCustomer" resultMap="Order_BaseResultMap"	parameterType="com.pitaya.bookingnow.entity.Customer">
+		select
+			<include refid="Order_Base_Column_List" />
+			
+		from pitaya_order O 
+			left outer join pitaya_customer C on O.customer_id = C.id
+		<where>
+			<where>
+		    <if test="picture_id != null">
+				C.picture_id = #{picture_id,jdbcType=BIGINT}
+			</if>
+			<if test="name != null">
+				and C.name = #{name,jdbcType=VARCHAR}
+			</if>
+			<if test="account != null">
+				and C.account = #{account,jdbcType=VARCHAR}
+			</if>
+			<if test="password != null">
+				and C.password = #{password,jdbcType=VARCHAR}
+			</if>
+			<if test="phone != null">
+				and C.phone = #{phone,jdbcType=VARCHAR}
+			</if>
+			<if test="sex != null">
+				and C.sex = #{sex,jdbcType=INTEGER}
+			</if>
+			<if test="email != null">
+				and C.email = #{email,jdbcType=VARCHAR}
+			</if>
+			<if test="address != null">
+				and C.address = #{address,jdbcType=VARCHAR}
+			</if>
+			<if test="birthday != null">
+				and C.birthday = #{birthday,jdbcType=BIGINT}
+			</if>
+		</where>
+		</where>
+	</select>
+	
+	<!-- 
+	<select id="searchOrdersByCustomer" resultMap="Order_BaseResultMap"	parameterType="com.pitaya.bookingnow.entity.Customer">
+		select
+			<include refid="Order_Base_Column_List" />
+			,
+			<include refid="User_Base_Column_List" />
+			,
+			<include refid="Customer_Base_Column_List" />
+			,
+			<include refid="Table_Detail_Base_Column_List" />
+			,
+			<include refid="Table_Base_Column_List" />
+			,
+			<include refid="Food_Detail_Base_Column_List" />
+			,
+			<include refid="Food_Base_Column_List" />
+		from pitaya_order O 
+			left outer join pitaya_user U on O.user_id = U.id
+			left outer join pitaya_customer C on O.customer_id = C.id
+			left outer join pitaya_order_table_detail TD on TD.order_id = O.id
+			left outer join pitaya_table T on TD.table_id = T.id
+			left outer join pitaya_order_food_detail FD on FD.order_id = O.id
+			left outer join pitaya_food F on FD.food_id = F.id
+		<where>
+			<where>
+		    <if test="picture_id != null">
+				C.picture_id = #{picture_id,jdbcType=BIGINT}
+			</if>
+			<if test="name != null">
+				and C.name = #{name,jdbcType=VARCHAR}
+			</if>
+			<if test="account != null">
+				and C.account = #{account,jdbcType=VARCHAR}
+			</if>
+			<if test="password != null">
+				and C.password = #{password,jdbcType=VARCHAR}
+			</if>
+			<if test="phone != null">
+				and C.phone = #{phone,jdbcType=VARCHAR}
+			</if>
+			<if test="sex != null">
+				and C.sex = #{sex,jdbcType=INTEGER}
+			</if>
+			<if test="email != null">
+				and C.email = #{email,jdbcType=VARCHAR}
+			</if>
+			<if test="address != null">
+				and C.address = #{address,jdbcType=VARCHAR}
+			</if>
+			<if test="birthday != null">
+				and C.birthday = #{birthday,jdbcType=BIGINT}
+			</if>
+		</where>
+		</where>
+	</select>
+	 -->
+	 
+	 
 	<select id="selectFullOrderByPrimaryKey" resultMap="Order_BaseResultMap"
 		parameterType="java.lang.Long">
 		select
