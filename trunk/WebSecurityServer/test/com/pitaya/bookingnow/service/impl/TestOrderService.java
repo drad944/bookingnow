@@ -4,7 +4,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -126,6 +125,36 @@ public class TestOrderService {
 		
 
 		MyResult result = orderService.addNewOrder(order);
+		if (result.isResult()) {
+			
+			System.out.println("add new order successfully!");
+		} else {
+			
+			System.out.println("add new order failed!");
+		}
+	}
+
+	@Test
+	public void testCalculateOrder() {
+		Order order = new Order();
+		order.setId((long) 2);
+
+		MyResult result = orderService.calculateOrder(order);
+		if (result.isResult()) {
+			
+			System.out.println("add new order successfully!");
+		} else {
+			
+			System.out.println("add new order failed!");
+		}
+	}
+	
+	@Test
+	public void testUpdateOrderToFinished() {
+		
+		Order order = orderService.searchOrderById((long) 2);
+
+		MyResult result = orderService.updateOrderToFinished(order);
 		if (result.isResult()) {
 			
 			System.out.println("add new order successfully!");

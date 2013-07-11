@@ -18,8 +18,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_order_table_detail
-			left outer join pitaya_table on pitaya_order_table_detail.table_id = pitaya_table.id
-		where pitaya_table.id = #{id,jdbcType=BIGINT}
+		where table_id = #{id,jdbcType=BIGINT}
 	</select>
 	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"

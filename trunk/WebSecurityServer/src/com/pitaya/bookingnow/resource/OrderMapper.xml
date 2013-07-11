@@ -70,6 +70,7 @@
 				<result column="T_seatCount" property="seatCount" jdbcType="INTEGER" />
 				<result column="T_maxCustomerCount" property="maxCustomerCount" jdbcType="INTEGER" />
 				<result column="T_address" property="address" jdbcType="VARCHAR" />
+				<result column="T_indoorPrice" property="indoorPrice" jdbcType="DOUBLE" />
 			</association> 
 		</collection>
 		
@@ -140,7 +141,8 @@
 		T.id as T_id, 
 		T.status as T_status, 
 		T.seatCount as T_seatCount, 
-		T.address as T_address
+		T.address as T_address,
+		T.indoorPrice as T_indoorPrice
 	</sql>
 	
 	<sql id="Food_Detail_Base_Column_List">
