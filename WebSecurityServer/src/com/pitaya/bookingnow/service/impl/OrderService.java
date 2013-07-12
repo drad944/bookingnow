@@ -131,14 +131,14 @@ public class OrderService implements IOrderService{
 		MyResult result = new MyResult();
 		
 		//check user existed in client data and DB data
-		if (order.getUser() != null && order.getUser().getId() != null) {
-			User tempUser = userDao.selectByPrimaryKey(order.getUser().getId());
-			if (tempUser != null && tempUser.getId() != null) {
-				order.setUser_id(tempUser.getId());
+		if (order != null && order.getUser() != null && order.getUser().getId() != null) {
+			User realUser = userDao.selectByPrimaryKey(order.getUser().getId());
+			if (realUser != null && realUser.getId() != null) {
+				order.setUser_id(realUser.getId());
 				
-				List<Order_Table_Detail> table_Details = order.getTable_details();
+				List<Order_Table_Detail> tempTable_Details = order.getTable_details();
 				
-				if (table_Details != null && table_Details.size() > 0) {
+				if (tempTable_Details != null && tempTable_Details.size() > 0) {
 					
 					//insert order in DB
 					order.setStatus(Constants.ORDER_NEW);
@@ -150,18 +150,18 @@ public class OrderService implements IOrderService{
 						throw new RuntimeException("-------- failed to insert order in DB.");
 					}
 					
-					for (int i = 0; i < table_Details.size(); i++) {
-						Order_Table_Detail tempTable_Detail = table_Details.get(i);
+					for (int i = 0; i < tempTable_Details.size(); i++) {
+						Order_Table_Detail tempTable_Detail = tempTable_Details.get(i);
 						
 						//check table existed in client data and DB data
 						if (tempTable_Detail.getTable() != null && tempTable_Detail.getTable().getId() != null) {
-							Table tempTable = tableDao.selectByPrimaryKey(tempTable_Detail.getTable().getId());
-							if(tempTable != null && tempTable.getId() != null){
+							Table realTable = tableDao.selectByPrimaryKey(tempTable_Detail.getTable().getId());
+							if(realTable != null && realTable.getId() != null){
 								
 								//update table status in DB
-								tempTable.setStatus(Constants.TABLE_USING);
+								realTable.setStatus(Constants.TABLE_USING);
 								
-								if(tableDao.updateByPrimaryKeySelective(tempTable) == 1) {
+								if(tableDao.updateByPrimaryKeySelective(realTable) == 1) {
 									
 								}else {
 									throw new RuntimeException("-------- failed to update table in DB.");
@@ -169,7 +169,7 @@ public class OrderService implements IOrderService{
 							
 								//insert table_Detail in DB
 								tempTable_Detail.setOrder_id(order.getId());
-								tempTable_Detail.setTable_id(tempTable.getId());
+								tempTable_Detail.setTable_id(realTable.getId());
 								tempTable_Detail.setEnabled(true);
 								if (table_detailDao.insertSelective(tempTable_Detail) == 1) {
 									
@@ -190,7 +190,7 @@ public class OrderService implements IOrderService{
 						}
 						
 					}
-					if (table_Details.size() == result.getSubTrueCount()) {
+					if (tempTable_Details.size() == result.getSubTrueCount()) {
 						result.setResult(true);
 					}else {
 						//do nothing
@@ -222,7 +222,6 @@ public class OrderService implements IOrderService{
 		 */
 		
 		MyResult result = new MyResult();
-		double totalPrice = 0;
 		//check user existed in client data and DB data
 		if (order.getUser() != null && order.getUser().getId() != null) {
 			User realUser = userDao.selectByPrimaryKey(order.getUser().getId());
@@ -239,12 +238,12 @@ public class OrderService implements IOrderService{
 							//notice client need to set customer count
 							result.getResultDetails().put("customer_count", "customer count is 0.");
 						}else {
-							List<Order_Food_Detail> food_Details = order.getFood_details();
-							if (food_Details != null && food_Details.size() > 0) {
+							List<Order_Food_Detail> tempFood_Details = order.getFood_details();
+							if (tempFood_Details != null && tempFood_Details.size() > 0) {
 								
 								//check food list existed in client data
-								for (int i = 0; i < food_Details.size(); i++) {
-									Order_Food_Detail tempFood_Detail = food_Details.get(i);
+								for (int i = 0; i < tempFood_Details.size(); i++) {
+									Order_Food_Detail tempFood_Detail = tempFood_Details.get(i);
 									
 									//validate food count is not 0
 									if (tempFood_Detail.getCount() != null && tempFood_Detail.getCount() > 0) {
@@ -265,7 +264,6 @@ public class OrderService implements IOrderService{
 														
 														if(food_detailDao.insertSelective(tempFood_Detail) == 1) {
 															//total price increase and get success info of insert into DB table.
-															totalPrice = totalPrice + realFood.getPrice() * tempFood_Detail.getCount();
 															result.setSubTrueCount(result.getSubTrueCount() + 1);
 														}else {
 															//do nothing
@@ -297,15 +295,15 @@ public class OrderService implements IOrderService{
 								}
 								
 								//update order status in DB
-								if(food_Details.size() == result.getSubTrueCount()) {
+								if(tempFood_Details.size() == result.getSubTrueCount()) {
 										order.setModifyTime(new Date().getTime());
 										order.setStatus(Constants.ORDER_CONFIRMED);
-										order.setTotal_price(totalPrice);
+										if (realOrder.getAllowance() == null && order.getAllowance() == null) {
+											order.setAllowance(1.0);
+										}
 										if (orderDao.updateByPrimaryKeySelective(order) == 1) {
 											result.setResult(true);
 										}
-										
-										//do we need to add food price in result.
 									
 								}else {
 									result.getResultDetails().put("order_status", "can not update all food in DB");
@@ -345,70 +343,59 @@ public class OrderService implements IOrderService{
 		MyResult result = new MyResult();
 		try {
 			if (order != null && order.getId() != null) {
-				Order realOrder = orderDao.selectByPrimaryKey(order.getId());
+				Order realOrder = orderDao.selectFullOrderByPrimaryKey(order.getId());
 				
 				if (order.getUser() != null && order.getUser().getId() != null) {
 					
 					
-					List<Order_Food_Detail> tempFood_Details = order.getFood_details();
-					if (tempFood_Details != null && tempFood_Details.size() > 0) {
-						for (int i = 0; i < tempFood_Details.size(); i++) {
-							Order_Food_Detail tempFood_Detail = tempFood_Details.get(i);
-							if (tempFood_Detail != null && tempFood_Detail.getFood() != null && tempFood_Detail.getFood().getId() != null) {
-								Order_Food_Detail realFood_Detail = food_detailDao.selectByFoodId(tempFood_Detail.getFood().getId());
+					List<Order_Food_Detail> realFood_Details = realOrder.getFood_details();
+					if (realFood_Details != null && realFood_Details.size() > 0) {
+						for (int i = 0; i < realFood_Details.size(); i++) {
+							Order_Food_Detail realFood_Detail = realFood_Details.get(i);
 								
-								if (realFood_Detail != null && realFood_Detail.getId() != null) {
-									Food realFood = foodDao.selectByPrimaryKey(tempFood_Detail.getFood().getId());
-									if (realFood != null && realFood.getId() != null) {
-										
-										realFood_Detail.setEnabled(false);
-										realFood_Detail.setLast_modify_time(new Date().getTime());
-										realFood_Detail.setStatus(Constants.FOOD_FINISHED);
-										if (food_detailDao.updateByPrimaryKeySelective(realFood_Detail) == 1) {
-											result.setSubTrueCount(result.getSubTrueCount() + 1);
-											
-										}else {
-											throw new RuntimeException("can not update food detail.");
-										}
+							if (realFood_Detail != null && realFood_Detail.getId() != null) {
+								Food realFood = realFood_Detail.getFood();
+								if (realFood != null && realFood.getId() != null) {
+									
+									realFood_Detail.setEnabled(false);
+									realFood_Detail.setLast_modify_time(new Date().getTime());
+									realFood_Detail.setStatus(Constants.FOOD_FINISHED);
+									if (food_detailDao.updateByPrimaryKeySelective(realFood_Detail) == 1) {
+										result.setSubTrueCount(result.getSubTrueCount() + 1);
 										
 									}else {
-										result.getResultDetails().put("food_exist", "can not find food in DB data");
-										break;
+										throw new RuntimeException("can not update food detail.");
 									}
+									
 								}else {
-									result.getResultDetails().put("food_detail_exist", "can not find food detail in DB data");
+									result.getResultDetails().put("food_exist", "can not find food in DB data");
 									break;
 								}
-								
-								
 							}else {
-								result.getResultDetails().put("food_exist", "can not find food in client data");
+								result.getResultDetails().put("food_detail_exist", "can not find food detail in DB data");
 								break;
 							}
+					
 						}
-						if (result.getSubTrueCount() < tempFood_Details.size()) {
+						if (result.getSubTrueCount() < realFood_Details.size()) {
 							throw new RuntimeException("can not update all food detail");
 						}else {
 							result.setSubTrueCount(0);
 						}
 						
-						
 					}else {
 						result.getResultDetails().put("food_detail_exist", "can not find food detail in client data");
 					}
 					
-					List<Order_Table_Detail> tempTable_Details = order.getTable_details();
-					if (tempTable_Details != null && tempTable_Details.size() > 0) {
-						for (int i = 0; i < tempTable_Details.size(); i++) {
-							Order_Table_Detail tempTable_Detail = tempTable_Details.get(i);
-							if (tempTable_Detail != null && tempTable_Detail.getTable() != null && tempTable_Detail.getTable().getId() != null) {
-								Order_Table_Detail realTable_Detail = table_detailDao.selectByTableId(tempTable_Detail.getTable().getId());
-								if (realTable_Detail != null && realTable_Detail.getId() != null) {
-									Table realTable = tableDao.selectByPrimaryKey(tempTable_Detail.getTable().getId());
-									if (realTable != null && realTable.getId() != null) {
-										
+					List<Order_Table_Detail> realTable_Details = realOrder.getTable_details();
+					if (realTable_Details != null && realTable_Details.size() > 0) {
+						for (int i = 0; i < realTable_Details.size(); i++) {
+							Order_Table_Detail realTable_Detail = realTable_Details.get(i);
+							if (realTable_Detail != null && realTable_Detail.getId() != null) {
+								Table realTable = realTable_Detail.getTable();
+								if (realTable != null && realTable.getId() != null) {
+									if (realTable.getStatus() == Constants.TABLE_USING) {
 										realTable.setStatus(Constants.TABLE_EMPTY);
-										
 										if (tableDao.updateByPrimaryKeySelective(realTable) == 1) {
 											
 											realTable_Detail.setEnabled(false);
@@ -421,21 +408,18 @@ public class OrderService implements IOrderService{
 										}else {
 											throw new RuntimeException("failed to update table status");
 										}
-										
-									}else {
-										result.getResultDetails().put("table_exist", "can not find table or it's id in DB.");
 									}
 									
 								}else {
-									result.getResultDetails().put("table_detail_exist", "can not find table or it's id in DB.");
+									result.getResultDetails().put("table_exist", "can not find table or it's id in DB.");
 								}
 								
 							}else {
-								result.getResultDetails().put("table_detail_exist", "can not find table or it's id in client data");
+								result.getResultDetails().put("table_detail_exist", "can not find table or it's id in DB.");
 							}
 						}
 						
-						if (result.getSubTrueCount() < tempTable_Details.size()) {
+						if (result.getSubTrueCount() < realTable_Details.size()) {
 							throw new RuntimeException("can not update all table detail");
 						}else {
 							result.setSubTrueCount(0);
@@ -446,7 +430,6 @@ public class OrderService implements IOrderService{
 						realOrder.setStatus(Constants.ORDER_FINISHED);
 						if (orderDao.updateByPrimaryKeySelective(realOrder) == 1) {
 							result.setResult(true);
-							return result;
 						}else {
 							throw new RuntimeException("can not update order status.");
 						}
@@ -454,8 +437,6 @@ public class OrderService implements IOrderService{
 					}else {
 						result.getResultDetails().put("table_detail_exist", "can not find table detail in client data");
 					}
-					
-					
 				}else {
 					result.getResultDetails().put("user_exist", "can not find user or user's id in client data");
 				}
@@ -550,80 +531,72 @@ public class OrderService implements IOrderService{
 		 * 
 		 */
 		MyResult result = new MyResult();
+		//check order existed in client data and DB data
+		if(order != null && order.getId() != null) {
+			Order realOrder = orderDao.selectByPrimaryKey(order.getId());
+			if(realOrder != null && realOrder.getId() != null){
 		
-		double totalPrice = 0;
-		//check user existed in client data and DB data
-		if (order.getUser() != null && order.getUser().getId() != null) {
-			User realUser = userDao.selectByPrimaryKey(order.getUser().getId());
-			if (realUser != null && realUser.getId() != null) {
+				//check user existed in client data and DB data
+				if (order.getUser() != null && order.getUser().getId() != null) {
+					User realUser = userDao.selectByPrimaryKey(order.getUser().getId());
+					if (realUser != null && realUser.getId() != null) {
 				
-				//check order existed in client data and DB data
-				if(order.getId() != null) {
-					Order realOrder = orderDao.selectByPrimaryKey(order.getId());
-					if(realOrder != null && realOrder.getId() != null){
-						
-						List<Order_Food_Detail> food_Details = order.getFood_details();
-						if (food_Details != null && food_Details.size() > 0) {
+						List<Order_Food_Detail> tempFood_Details = order.getFood_details();
+						if (tempFood_Details != null && tempFood_Details.size() > 0) {
 							
 							//check food list existed in client data
-							for (int i = 0; i < food_Details.size(); i++) {
-								Order_Food_Detail tempFood_Detail = food_Details.get(i);
+							for (int i = 0; i < tempFood_Details.size(); i++) {
+								Order_Food_Detail tempFood_Detail = tempFood_Details.get(i);
 								
 								//validate food count is not 0
-								if (tempFood_Detail.getCount() != null && tempFood_Detail.getCount() > 0) {
-									Food tempFood = tempFood_Detail.getFood();
-									
-									//check food existed in client data and DB data
-									if (tempFood != null && tempFood.getId() != null) {
-										Food realFood = foodDao.selectByPrimaryKey(tempFood.getId());
-										if (realFood != null) {
-											if(realFood.getPrice() != null && tempFood.getPrice() != null) {
-												if(realFood.getPrice().equals(tempFood.getPrice()) && tempFood.getPrice() > 0) {
-													//update food status and insert in DB
-													tempFood_Detail.setFood_id(tempFood.getId());
-													tempFood_Detail.setEnabled(true);
-													tempFood_Detail.setStatus(Constants.FOOD_NEW);
-													tempFood_Detail.setOrder_id(order.getId());
-													tempFood_Detail.setLast_modify_time(new Date().getTime());
-													
-													if(food_detailDao.insertSelective(tempFood_Detail) == 1) {
-														//total price increase and get success info of insert into DB table.
-														totalPrice = totalPrice + realFood.getPrice() * tempFood_Detail.getCount();
-														result.setSubTrueCount(result.getSubTrueCount() + 1);
-													}else {
-														//do nothing
-													}
-													
-													
-												}else if(tempFood.getPrice() == 0 || realFood.getPrice() == 0) {
-													//notice user to check food price is 0 in client and in database.
-													result.getResultDetails().put("food_price", "food price is 0 in client or DB");
-												}else {
-													//notice user to update food list for food price.
-													result.getResultDetails().put("food_price", "food price is negative number in client or DB");
-												}
-											}else {
-												result.getResultDetails().put("food_price", "food price is null in client or DB");
-											}
-											
+								if (tempFood_Detail.getCount() == null) {
+									tempFood_Detail.setCount(1);
+								}
+								Food tempFood = tempFood_Detail.getFood();
+								
+								//check food existed in client data and DB data
+								if (tempFood != null && tempFood.getId() != null) {
+									Food realFood = foodDao.selectByPrimaryKey(tempFood.getId());
+									if (realFood != null) {
+										if(realFood.getPrice() != null && tempFood.getPrice() != null) {
+											if(realFood.getPrice().equals(tempFood.getPrice()) && tempFood.getPrice() > 0) {
+												//update food status and insert in DB
+												tempFood_Detail.setFood_id(tempFood.getId());
+												tempFood_Detail.setEnabled(true);
+												tempFood_Detail.setStatus(Constants.FOOD_NEW);
+												tempFood_Detail.setOrder_id(order.getId());
+												tempFood_Detail.setLast_modify_time(new Date().getTime());
 												
-											
+												if(food_detailDao.insertSelective(tempFood_Detail) == 1) {
+													//total price increase and get success info of insert into DB table.
+													result.setSubTrueCount(result.getSubTrueCount() + 1);
+												}else {
+													//do nothing
+												}
+												
+											}else if(tempFood.getPrice() == 0 || realFood.getPrice() == 0) {
+												//notice user to check food price is 0 in client and in database.
+												result.getResultDetails().put("food_price", "food price is 0 in client or DB");
+											}else {
+												//notice user to update food list for food price.
+												result.getResultDetails().put("food_price", "food price is negative number in client or DB");
+											}
 										}else {
-											result.getResultDetails().put("food_exist", "can not find food in DB.");
+											result.getResultDetails().put("food_price", "food price is null in client or DB");
 										}
+										
 									}else {
-										result.getResultDetails().put("food_exist", "can not find food in client data");
+										result.getResultDetails().put("food_exist", "can not find food in DB.");
 									}
 								}else {
-									result.getResultDetails().put("food_count", "food count is 0");
+									result.getResultDetails().put("food_exist", "can not find food in client data");
 								}
 							}
 							
 							//update order status in DB
-							if(food_Details.size() == result.getSubTrueCount()) {
+							if(tempFood_Details.size() == result.getSubTrueCount()) {
 									order.setModifyTime(new Date().getTime());
 									order.setStatus(Constants.ORDER_WAITING);
-									order.setTotal_price(totalPrice);
 									if (orderDao.updateByPrimaryKeySelective(order) == 1) {
 										result.setResult(true);
 									}
@@ -638,17 +611,16 @@ public class OrderService implements IOrderService{
 						}
 						
 					}else {
-						result.getResultDetails().put("order_exist", "can not find order in DB.");
+						result.getResultDetails().put("user_exist", "can not find user in DB.");
 					}
 				}else {
-					result.getResultDetails().put("order_exist", "can not find order in client data");
+					result.getResultDetails().put("user_exist", "can not find user in client data");
 				}
-				
 			}else {
-				result.getResultDetails().put("user_exist", "can not find user in DB.");
+				result.getResultDetails().put("order_exist", "can not find order in DB.");
 			}
 		}else {
-			result.getResultDetails().put("user_exist", "can not find user in client data");
+			result.getResultDetails().put("order_exist", "can not find order in client data");
 		}
 		
 		return result;
@@ -667,7 +639,7 @@ public class OrderService implements IOrderService{
 		MyResult result = new MyResult();
 		// check order existed in client data and DB data.
 		if (order != null && order.getId() != null) {
-			Order realOrder = orderDao.selectByPrimaryKey(order.getId());
+			Order realOrder = orderDao.selectFullOrderByPrimaryKey(order.getId());
 			
 			if (realOrder != null && realOrder.getId() != null) {
 				//check user existed in client data and DB data
@@ -693,7 +665,6 @@ public class OrderService implements IOrderService{
 										}else {
 											throw new RuntimeException("-------- failed to update table status,table is not empty now.");
 										}
-										
 										
 										if(tableDao.updateByPrimaryKeySelective(realTable) == 1) {
 											
@@ -725,16 +696,33 @@ public class OrderService implements IOrderService{
 								
 							}
 							if (table_Details.size() == result.getSubTrueCount()) {
+								//update food status in DB.
+								if (realOrder.getFood_details() != null && realOrder.getFood_details().size() > 0) {
+									for (int i = 0; i < realOrder.getFood_details().size(); i++) {
+										Order_Food_Detail realFood_Detail = realOrder.getFood_details().get(i);
+										if (realFood_Detail.getStatus() == Constants.FOOD_NEW) {
+											realFood_Detail.setStatus(Constants.FOOD_CONFIRMED);
+											if (food_detailDao.updateByPrimaryKeySelective(realFood_Detail) == 1) {
+												
+											}else {
+												throw new RuntimeException("-------- can not update food status in DB.");
+											}
+										}
+									}
+								}else {
+									throw new RuntimeException("-------- can not find food in DB.");
+								}
+								
+								
 								//update order in DB
 								realOrder.setStatus(Constants.ORDER_CONFIRMED);
 								realOrder.setModifyTime(new Date().getTime());
 								if (orderDao.updateByPrimaryKeySelective(realOrder) == 1) {
-									
+									result.setResult(true);
 								}else {
 									throw new RuntimeException("-------- failed to insert order in DB.");
 								}
 								
-								result.setResult(true);
 							}else {
 								//do nothing
 							}
@@ -761,13 +749,128 @@ public class OrderService implements IOrderService{
 	}
 	
 	@Override
-	public MyResult updateFoodInConfirmedOrder(Order order) {
+	public MyResult updateFoodsInConfirmedOrder(Order order) {
 		/*
 		 * waiter update order to update food list after customer seat in table and want to modify food list.
 		 * in:order_id,user_id,order status:confirmed,food status:confirmed
 		 * 
 		 */
 		MyResult result = new MyResult();
+		if(order != null && order.getId() != null) {
+			Order realOrder = orderDao.selectFullOrderByPrimaryKey(order.getId());
+			if(realOrder != null && realOrder.getId() != null){
+				
+				if (order.getUser() != null && order.getUser().getId() != null) {
+					User realUser = userDao.selectByPrimaryKey(order.getUser().getId());
+					if (realUser != null && realUser.getId() != null) {
+						
+						//check order existed in client data and DB data
+								
+						List<Order_Food_Detail> tempFood_Details = order.getFood_details();
+						List<Order_Food_Detail> realFood_Details = realOrder.getFood_details();
+						
+						if (tempFood_Details != null && tempFood_Details.size() > 0) {
+							
+							//check food list existed in client data
+							for (int i = 0; i < tempFood_Details.size(); i++) {
+								Order_Food_Detail tempFood_Detail = tempFood_Details.get(i);
+								
+								//validate food count is not 0
+								if (tempFood_Detail.getStatus() != null && tempFood_Detail.getStatus() == Constants.FOOD_NEW) {
+									//add new food
+									Food tempFood = tempFood_Detail.getFood();
+									
+									//check food existed in client data and DB data
+									if (tempFood != null && tempFood.getId() != null) {
+										Food realFood = foodDao.selectByPrimaryKey(tempFood.getId());
+										if (realFood != null) {
+											if(realFood.getPrice() != null && tempFood.getPrice() != null) {
+												if(realFood.getPrice().equals(tempFood.getPrice()) && tempFood.getPrice() > 0) {
+													//update food status and insert in DB
+													tempFood_Detail.setFood_id(tempFood.getId());
+													tempFood_Detail.setEnabled(true);
+													tempFood_Detail.setOrder_id(order.getId());
+													tempFood_Detail.setStatus(Constants.FOOD_CONFIRMED);
+													tempFood_Detail.setCount(1);
+													tempFood_Detail.setLast_modify_time(new Date().getTime());
+													
+													if(food_detailDao.insertSelective(tempFood_Detail) == 1) {
+														//total price increase and get success info of insert into DB table.
+														result.setSubTrueCount(result.getSubTrueCount() + 1);
+													}else {
+														//do nothing
+													}
+													
+												}else if(tempFood.getPrice() == 0 || realFood.getPrice() == 0) {
+													//notice user to check food price is 0 in client and in database.
+													result.getResultDetails().put("food_price", "food price is 0 in client or DB");
+												}else {
+													//notice user to update food list for food price.
+													result.getResultDetails().put("food_price", "food price is negative number in client or DB");
+												}
+											}else {
+												result.getResultDetails().put("food_price", "food price is null in client or DB");
+											}
+											
+												
+											
+										}else {
+											result.getResultDetails().put("food_exist", "can not find food in DB.");
+										}
+									}else {
+										result.getResultDetails().put("food_exist", "can not find food in client data");
+									}
+								}else if(tempFood_Detail.getStatus() != null && tempFood_Detail.getStatus() == Constants.FOOD_UNAVAILABLE){
+									//remove food which have been booked.
+									
+									if (realFood_Details != null && realFood_Details.size() > 0) {
+										int realFoodSize = realFood_Details.size();
+										for (int j = 0; j < realFoodSize; j++) {
+											if (tempFood_Detail.getFood() != null && tempFood_Detail.getFood().getId()!= null && tempFood_Detail.getFood().getId().equals(realFood_Details.get(j).getFood().getId())) {
+												if (food_detailDao.deleteByPrimaryKey(realFood_Details.get(j).getId()) == 1) {
+													realFood_Details.remove(j);
+													result.setSubTrueCount(result.getSubTrueCount() + 1);
+													break;
+												}else {
+													throw new RuntimeException("failed to delete food in DB.");
+												}
+												
+											}
+										}
+										if (realFoodSize == (realFood_Details.size() + 1 )) {
+											
+										}else {
+											throw new RuntimeException("the delete food is not exsited in DB.");
+										}
+									}else {
+										throw new RuntimeException("can not find food list in DB.");
+									}
+								}else {
+									result.getResultDetails().put("food_count", "food count is 0");
+								}
+							}
+							if (tempFood_Details.size() == result.getSubTrueCount()) {
+								result.setResult(true);
+							}else {
+								throw new RuntimeException("can not find food list in DB.");
+							}
+							
+						}else {
+							result.getResultDetails().put("food_detail", "food detail is empty");
+						}
+						
+					}else {
+						result.getResultDetails().put("user_exist", "can not find user in DB.");
+					}
+				}else {
+					result.getResultDetails().put("user_exist", "can not find user in client data");
+				}	
+			}else {
+				result.getResultDetails().put("order_exist", "can not find order in DB.");
+			}
+		}else {
+			result.getResultDetails().put("order_exist", "can not find order in client data");
+		}
 		
 		return result;
 	}
@@ -874,6 +977,10 @@ public class OrderService implements IOrderService{
 					if (realOrder.getAllowance() != null && realOrder.getAllowance() >= 0 && realOrder.getAllowance() <= 1) {
 						result.setTotalPriceOfOrder(result.getTotalPriceOfOrder() * realOrder.getAllowance());
 						result.setResult(true);
+						
+						order.setTotal_price(result.getTotalPriceOfOrder());
+						orderDao.updateByPrimaryKeySelective(order);
+						
 						return result;
 					}else {
 						result.setTotalPriceOfOrder(-1);

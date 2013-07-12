@@ -32,7 +32,7 @@ public interface IOrderService {
 	
 	MyResult updateNewOrderToConfirmed(Order order);
 	
-	MyResult updateFoodInConfirmedOrder(Order order);
+	MyResult updateFoodsInConfirmedOrder(Order order);
 	
 	
 	MyResult cancelFoods(Order order);

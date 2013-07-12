@@ -162,6 +162,7 @@ public class TestOrderService {
 		}
 		order.setUser(user);
 		order.setFood_details(food_Details);
+		order.setAllowance(1.0);
 
 		MyResult result = orderService.updateNewOrderToWaiting(order);
 		if (result.isResult()) {
@@ -207,9 +208,53 @@ public class TestOrderService {
 	}
 	
 	@Test
+	public void testUpdateFoodsInConfirmedOrder() {
+		
+		Order order = new Order();
+		order.setId((long) 8);
+		User user = new User();
+		user.setId((long) 3);
+		order.setUser(user);
+		
+		List<Order_Food_Detail> food_Details = new ArrayList<Order_Food_Detail>();
+		for (int i = 0; i < 2; i++) {
+			Order_Food_Detail tempFood_Detail = new Order_Food_Detail();
+			tempFood_Detail.setStatus(Constants.FOOD_NEW);
+			tempFood_Detail.setIsFree(false);
+			tempFood_Detail.setCount(1);
+			
+			Food tempFood = new Food();
+			tempFood.setId((long) (i + 1));
+			tempFood.setPrice(i + 11.0);
+			tempFood_Detail.setFood(tempFood);
+			food_Details.add(tempFood_Detail);
+		}
+		
+		Order_Food_Detail tempFood_Detail = new Order_Food_Detail();
+		tempFood_Detail.setStatus(Constants.FOOD_UNAVAILABLE);
+		tempFood_Detail.setCount(1);
+		
+		Food tempFood = new Food();
+		tempFood.setId((long)3);
+		tempFood_Detail.setFood(tempFood);
+		food_Details.add(tempFood_Detail);
+		order.setFood_details(food_Details);
+
+		MyResult result = orderService.updateFoodsInConfirmedOrder(order);
+		if (result.isResult()) {
+			
+			System.out.println("add new order successfully!");
+		} else {
+			
+			System.out.println("add new order failed!");
+		}
+	}
+	
+	
+	@Test
 	public void testCalculateOrder() {
 		Order order = new Order();
-		order.setId((long) 2);
+		order.setId((long) 8);
 
 		MyResult result = orderService.calculateOrder(order);
 		if (result.isResult()) {
