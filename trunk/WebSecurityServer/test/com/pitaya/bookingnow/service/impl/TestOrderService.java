@@ -350,7 +350,7 @@ public class TestOrderService {
 			Map<String, String> falseResults = result.getResultDetails();
 			Iterator iter = falseResults.entrySet().iterator(); 
 			while (iter.hasNext()) { 
-			    Map.Entry entry = (Map.Entry) iter.next();
+			    Map.Entry<String,String> entry = (Map.Entry<String,String>) iter.next();
 			    System.out.println(entry.getKey().toString() + " : " + entry.getValue().toString());
 			} 
 			

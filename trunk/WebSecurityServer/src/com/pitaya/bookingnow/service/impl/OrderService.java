@@ -826,7 +826,8 @@ public class OrderService implements IOrderService{
 									if (realFood_Details != null && realFood_Details.size() > 0) {
 										int realFoodSize = realFood_Details.size();
 										for (int j = 0; j < realFoodSize; j++) {
-											if (tempFood_Detail.getFood() != null && tempFood_Detail.getFood().getId()!= null && tempFood_Detail.getFood().getId().equals(realFood_Details.get(j).getFood().getId())) {
+											if (tempFood_Detail.getFood() != null && tempFood_Detail.getFood().getId()!= null && tempFood_Detail.getFood().getId().equals(realFood_Details.get(j).getFood().getId())
+													&& realFood_Details.get(j).getStatus() == Constants.FOOD_NEW) {
 												if (food_detailDao.deleteByPrimaryKey(realFood_Details.get(j).getId()) == 1) {
 													realFood_Details.remove(j);
 													result.setSubTrueCount(result.getSubTrueCount() + 1);
@@ -840,7 +841,7 @@ public class OrderService implements IOrderService{
 										if (realFoodSize == (realFood_Details.size() + 1 )) {
 											
 										}else {
-											throw new RuntimeException("the delete food is not exsited in DB.");
+											result.getResultDetails().put("food_status", "some food is cooking,can not delete it");
 										}
 									}else {
 										throw new RuntimeException("can not find food list in DB.");
