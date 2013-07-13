@@ -15,6 +15,7 @@
 		<result column="description" property="description" jdbcType="VARCHAR" />
 		<result column="department" property="department" jdbcType="INTEGER" />
 		<result column="sub_system" property="sub_system" jdbcType="INTEGER" />
+		<result column="enabled" property="enabled" jdbcType="BIT" />
 	</resultMap>
 	
 	<resultMap id="User_BaseResultMap" type="com.pitaya.bookingnow.entity.security.User">
@@ -31,6 +32,7 @@
 		<result column="U_description" property="description" jdbcType="VARCHAR" />
 		<result column="U_department" property="department" jdbcType="INTEGER" />
 		<result column="U_sub_system" property="sub_system" jdbcType="INTEGER" />
+		<result column="U_enabled" property="enabled" jdbcType="BIT" />
 		
 		<collection property="role_Details" ofType="User_Role_Detail">
 			<id column="UR_id" property="id" jdbcType="BIGINT" />
@@ -52,7 +54,7 @@
 	<sql id="Base_Column_List">
 		id, picture_id, account, name, password, phone, sex, email, address,
 		birthday, description,
-		department, sub_system
+		department, sub_system, enabled
 	</sql>
 	
 	<sql id="User_Base_Column_List">
@@ -68,7 +70,8 @@
 		U.birthday as U_birthday, 
 		U.description as U_description,
 		U.department as U_department, 
-		U.sub_system as U_sub_system
+		U.sub_system as U_sub_system,
+		U.enabled as U_enabled
 	</sql>
 	
 	<sql id="Role_Detail_Base_Column_List">
@@ -144,6 +147,9 @@
 			<if test="sub_system != null">
 				and sub_system = #{sub_system,jdbcType=INTEGER}
 			</if>
+			<if test="enabled != null">
+				and enabled = #{enabled,jdbcType=BIT}
+			</if>
 		</where>
 		
 	</select>
@@ -169,14 +175,14 @@
 		insert into pitaya_user (picture_id, account, name,
 		password, phone, sex,
 		email, address, birthday,
-		description, department, sub_system
+		description, department, sub_system, enabled
 		)
 		values (#{picture_id,jdbcType=BIGINT}, #{account,jdbcType=VARCHAR},
 		#{name,jdbcType=VARCHAR},
 		#{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER},
 		#{email,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
 		#{birthday,jdbcType=BIGINT},
-		#{description,jdbcType=VARCHAR}, #{department,jdbcType=INTEGER}, #{sub_system,jdbcType=INTEGER}
+		#{description,jdbcType=VARCHAR}, #{department,jdbcType=INTEGER}, #{sub_system,jdbcType=INTEGER}, #{enabled,jdbcType=BIT}
 		)
 	</insert>
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.security.User">
@@ -222,6 +228,10 @@
 			<if test="sub_system != null">
 				sub_system,
 			</if>
+			<if test="enabled != null">
+				enabled,
+			</if>
+			
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="picture_id != null">
@@ -260,6 +270,10 @@
 			<if test="sub_system != null">
 				#{sub_system,jdbcType=INTEGER},
 			</if>
+			<if test="enabled != null">
+				#{enabled,jdbcType=BIT},
+			</if>
+			
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.security.User">
@@ -301,6 +315,10 @@
 			<if test="sub_system != null">
 				sub_system = #{sub_system,jdbcType=INTEGER},
 			</if>
+			<if test="enabled != null">
+				enabled = #{enabled,jdbcType=BIT},
+			</if>
+			
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
@@ -317,7 +335,8 @@
 		birthday = #{birthday,jdbcType=BIGINT},
 		description = #{description,jdbcType=VARCHAR},
 		department = #{department,jdbcType=INTEGER},
-		sub_system = #{sub_system,jdbcType=INTEGER}
+		sub_system = #{sub_system,jdbcType=INTEGER},
+		enabled = #{enabled,jdbcType=BIT}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 </mapper>

@@ -21,10 +21,19 @@ public class Customer {
 
     private Long birthday;
     
-    private Customer_Picture picture;
+    private Boolean enabled;
     
+    private Customer_Picture picture;
 
-    public Customer_Picture getPicture() {
+    public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public Customer_Picture getPicture() {
 		return picture;
 	}
 

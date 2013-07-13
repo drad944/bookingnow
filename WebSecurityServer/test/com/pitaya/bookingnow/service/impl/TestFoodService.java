@@ -2,7 +2,6 @@ package com.pitaya.bookingnow.service.impl;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 import org.junit.Before;
@@ -12,19 +11,29 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Food_Picture;
+import com.pitaya.bookingnow.service.IFoodService;
 
 
 public class TestFoodService {
-	private FoodService foodService;
+	private IFoodService foodService;
 		
-	 @Before
-	 public void init() {
-	  
-	  ApplicationContext aCtx = new FileSystemXmlApplicationContext("src/applicationContext.xml");
-	  FoodService foodService = (FoodService) aCtx.getBean("foodService");
-	  assertNotNull(foodService);
-	  this.foodService = foodService;
-	 }
+	public IFoodService getFoodService() {
+		return foodService;
+	}
+
+	public void setFoodService(IFoodService foodService) {
+		this.foodService = foodService;
+	}
+
+	@Before
+	public void init() {
+
+		ApplicationContext aCtx = new FileSystemXmlApplicationContext(
+				"src/applicationContext.xml");
+		IFoodService foodService = aCtx.getBean(IFoodService.class);
+		assertNotNull(foodService);
+		this.foodService = foodService;
+	}
 	 
 	 @Test
 	 public void testAdd() {

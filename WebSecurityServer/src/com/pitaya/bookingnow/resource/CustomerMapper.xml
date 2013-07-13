@@ -12,6 +12,7 @@
 		<result column="email" property="email" jdbcType="VARCHAR" />
 		<result column="address" property="address" jdbcType="VARCHAR" />
 		<result column="birthday" property="birthday" jdbcType="BIGINT" />
+		<result column="enabled" property="enabled" jdbcType="BIT" />
 	</resultMap>
     
 	<resultMap id="Customer_BaseResultMap" type="com.pitaya.bookingnow.entity.Customer">
@@ -25,6 +26,7 @@
 		<result column="A_email" property="email" jdbcType="VARCHAR" />
 		<result column="A_address" property="address" jdbcType="VARCHAR" />
 		<result column="A_birthday" property="birthday" jdbcType="BIGINT" />
+		<result column="A_enabled" property="enabled" jdbcType="BIT" />
 		
 		<association property="picture" javaType="com.pitaya.bookingnow.entity.Customer_Picture">
 			<id column="B_id" property="id" jdbcType="BIGINT" />
@@ -38,7 +40,7 @@
 	
 	<sql id="Base_Column_List">
 		id, picture_id, name, account, password, phone, sex, email, address,
-		birthday
+		birthday,enabled
 	</sql>
 	
 	<sql id="Customer_Base_Column_List">
@@ -51,7 +53,8 @@
 		A.sex A_sex, 
 		A.email A_email, 
 		A.address A_address,
-		A.birthday A_birthday
+		A.birthday A_birthday,
+		A.enabled A_enabled
 	</sql>
 	
 	<sql id="Customer_Picture_Base_Column_List">
@@ -112,6 +115,9 @@
 			<if test="birthday != null">
 				and A.birthday = #{birthday,jdbcType=BIGINT}
 			</if>
+			<if test="enabled != null">
+				and A.enabled = #{enabled,jdbcType=BIT}
+			</if>
 		</where>
 	</select>
 	
@@ -136,13 +142,13 @@
 		</selectKey>
 		insert into pitaya_customer (picture_id, name, account,
 		password, phone, sex,
-		email, address, birthday
+		email, address, birthday, enabled
 		)
 		values (#{picture_id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR},
 		#{account,jdbcType=VARCHAR},
 		#{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER},
 		#{email,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
-		#{birthday,jdbcType=BIGINT}
+		#{birthday,jdbcType=BIGINT}, #{enabled,jdbcType=BIT}
 		)
 	</insert>
 	
@@ -180,6 +186,10 @@
 			<if test="birthday != null">
 				birthday,
 			</if>
+			<if test="enabled != null">
+				enabled,
+			</if>
+			
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="picture_id != null">
@@ -209,6 +219,10 @@
 			<if test="birthday != null">
 				#{birthday,jdbcType=BIGINT},
 			</if>
+			<if test="enabled != null">
+				#{enabled,jdbcType=BIT},
+			</if>
+			
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Customer">
@@ -241,6 +255,10 @@
 			<if test="birthday != null">
 				birthday = #{birthday,jdbcType=BIGINT},
 			</if>
+			<if test="enabled != null">
+				enabled = #{enabled,jdbcType=BIT},
+			</if>
+			
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
@@ -254,7 +272,8 @@
 		sex = #{sex,jdbcType=INTEGER},
 		email = #{email,jdbcType=VARCHAR},
 		address = #{address,jdbcType=VARCHAR},
-		birthday = #{birthday,jdbcType=BIGINT}
+		birthday = #{birthday,jdbcType=BIGINT},
+		enabled = #{enabled,jdbcType=BIT}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 </mapper>

@@ -3,7 +3,6 @@ package com.pitaya.bookingnow.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -14,23 +13,24 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.pitaya.bookingnow.entity.Food_Picture;
+import com.pitaya.bookingnow.service.IFood_PictureService;
 
 public class TestFood_PictureService {
-	private Food_PictureService food_pictureService;
+	private IFood_PictureService food_pictureService;
 
-	public Food_PictureService getFood_pictureService() {
+	 public IFood_PictureService getFood_pictureService() {
 		return food_pictureService;
 	}
 
-	public void setFood_pictureService(Food_PictureService food_pictureService) {
+	public void setFood_pictureService(IFood_PictureService food_pictureService) {
 		this.food_pictureService = food_pictureService;
 	}
-	
-	 @Before
+
+	@Before
 	 public void init() {
 	  
 	  ApplicationContext aCtx = new FileSystemXmlApplicationContext("src/applicationContext.xml");
-	  Food_PictureService food_pictureService = (Food_PictureService) aCtx.getBean("food_pictureService");
+	  IFood_PictureService food_pictureService = aCtx.getBean(IFood_PictureService.class);
 	  this.food_pictureService = food_pictureService;
 	 }
 	

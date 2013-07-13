@@ -11,18 +11,19 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.pitaya.bookingnow.entity.security.User;
+import com.pitaya.bookingnow.service.security.IUserService;
 
 public class TestUserService {
 	Logger logger = Logger.getLogger("TestUserService");
 
-	UserService service = null;
+	IUserService service = null;
 
 	@Before
 	public void init() {
 
 		ApplicationContext aCtx = new FileSystemXmlApplicationContext(
 				"src/applicationContext.xml");
-		UserService service = (UserService) aCtx.getBean("userService");
+		IUserService service = aCtx.getBean(IUserService.class);
 		assertNotNull(service);
 		this.service = service;
 	}

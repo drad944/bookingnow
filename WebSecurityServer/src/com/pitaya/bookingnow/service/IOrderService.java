@@ -44,4 +44,7 @@ public interface IOrderService {
 	MyResult updateOrder(Order order);
 	
 	MyResult calculateOrder(Order order);
+	
+	MyResult deleteOrder(Order order);
+	
 }
