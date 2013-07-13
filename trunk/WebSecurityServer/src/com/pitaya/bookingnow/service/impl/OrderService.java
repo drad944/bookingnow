@@ -827,7 +827,7 @@ public class OrderService implements IOrderService{
 										int realFoodSize = realFood_Details.size();
 										for (int j = 0; j < realFoodSize; j++) {
 											if (tempFood_Detail.getFood() != null && tempFood_Detail.getFood().getId()!= null && tempFood_Detail.getFood().getId().equals(realFood_Details.get(j).getFood().getId())
-													&& realFood_Details.get(j).getStatus() == Constants.FOOD_NEW) {
+													&& realFood_Details.get(j).getStatus() == Constants.FOOD_CONFIRMED) {
 												if (food_detailDao.deleteByPrimaryKey(realFood_Details.get(j).getId()) == 1) {
 													realFood_Details.remove(j);
 													result.setSubTrueCount(result.getSubTrueCount() + 1);
