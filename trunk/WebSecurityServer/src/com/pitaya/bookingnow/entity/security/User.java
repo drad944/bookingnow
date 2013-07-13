@@ -38,7 +38,17 @@ public class User {
 
     private Integer sub_system;
     
+    private Boolean enabled;
+    
     List<User_Role_Detail> role_Details;
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
 
 	public List<User_Role_Detail> getRole_Details() {
 		return role_Details;

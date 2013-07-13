@@ -3,7 +3,9 @@ package com.pitaya.bookingnow.service.impl;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -65,10 +67,15 @@ public class TestOrderService {
 		MyResult result = orderService.addWaitingOrder(order);
 		if (result.isResult()) {
 			
-			System.out.println("add waiting order successfully!");
+			System.out.println("add new order successfully!");
 		} else {
-			
-			System.out.println("add waiting order failed!");
+			System.out.println("add new order failed!");
+			Map<String, String> falseResults = result.getResultDetails();
+			Iterator iter = falseResults.entrySet().iterator(); 
+			while (iter.hasNext()) { 
+			    Map.Entry entry = (Map.Entry) iter.next();
+			    System.out.println(entry.getKey().toString() + " : " + entry.getValue().toString());
+			} 
 		}
 	}
 	
@@ -102,10 +109,16 @@ public class TestOrderService {
 		MyResult result = orderService.updateWaitingOrderToConfirmed(order);
 		if (result.isResult()) {
 			
-			System.out.println("add waiting order successfully!");
+			System.out.println("add new order successfully!");
 		} else {
+			System.out.println("add new order failed!");
+			Map<String, String> falseResults = result.getResultDetails();
+			Iterator iter = falseResults.entrySet().iterator(); 
+			while (iter.hasNext()) { 
+			    Map.Entry entry = (Map.Entry) iter.next();
+			    System.out.println(entry.getKey().toString() + " : " + entry.getValue().toString());
+			} 
 			
-			System.out.println("add waiting order failed!");
 		}
 		
 	}
@@ -123,14 +136,19 @@ public class TestOrderService {
 		order.setCustomer_count(6);
 		
 		
-
 		MyResult result = orderService.addNewOrder(order);
 		if (result.isResult()) {
 			
 			System.out.println("add new order successfully!");
 		} else {
-			
 			System.out.println("add new order failed!");
+			Map<String, String> falseResults = result.getResultDetails();
+			Iterator iter = falseResults.entrySet().iterator(); 
+			while (iter.hasNext()) { 
+			    Map.Entry entry = (Map.Entry) iter.next();
+			    System.out.println(entry.getKey().toString() + " : " + entry.getValue().toString());
+			} 
+			
 		}
 	}
 	
@@ -142,19 +160,66 @@ public class TestOrderService {
 		customer.setName("zhan");
 		customer.setPhone("13546768131");
 		customer.setSex(Constants.CUSTOMER_MALE);
+		customer.setEnabled(true);
 		
-		Order order = orderService.searchOrdersByCustomer(customer).get(0);
-		
-		
-
-		MyResult result = orderService.cancelOrder(order);
-		if (result.isResult()) {
+		List<Order> orders = orderService.searchOrdersByCustomer(customer);
+		if (orders != null && orders.size() > 0) {
+			for (int i = 0; i < orders.size(); i++) {
+				Order order = orders.get(i);
+				MyResult result = orderService.cancelOrder(order);
+				if (result.isResult()) {
+					
+					System.out.println("add new order successfully!");
+				} else {
+					System.out.println("add new order failed!");
+					Map<String, String> falseResults = result.getResultDetails();
+					Iterator iter = falseResults.entrySet().iterator(); 
+					while (iter.hasNext()) { 
+					    Map.Entry entry = (Map.Entry) iter.next();
+					    System.out.println(entry.getKey().toString() + " : " + entry.getValue().toString());
+					} 
+					
+				}
+			}
 			
-			System.out.println("add new order successfully!");
-		} else {
-			
-			System.out.println("add new order failed!");
+		}else {
+			System.out.println("orders is empty!.");
 		}
+	}
+	
+	@Test
+	public void testDeleteOrder() {
+		
+		Customer customer = new Customer();
+		customer.setName("zhan");
+		customer.setPhone("13546768131");
+		customer.setSex(Constants.CUSTOMER_MALE);
+		customer.setEnabled(false);
+		
+		List<Order> orders = orderService.searchOrdersByCustomer(customer);
+		if (orders != null && orders.size() > 0) {
+			for (int i = 0; i < orders.size(); i++) {
+				Order order = orders.get(i);
+				MyResult result = orderService.deleteOrder(order);
+				if (result.isResult()) {
+					
+					System.out.println("add new order successfully!");
+				} else {
+					System.out.println("add new order failed!");
+					Map<String, String> falseResults = result.getResultDetails();
+					Iterator iter = falseResults.entrySet().iterator(); 
+					while (iter.hasNext()) { 
+					    Map.Entry entry = (Map.Entry) iter.next();
+					    System.out.println(entry.getKey().toString() + " : " + entry.getValue().toString());
+					} 
+					
+				}
+			}
+			
+		}else {
+			System.out.println("orders is empty!.");
+		}
+		
 	}
 
 	@Test
@@ -168,6 +233,7 @@ public class TestOrderService {
 		customer.setName("zhan");
 		customer.setPhone("13546768131");
 		customer.setSex(Constants.CUSTOMER_MALE);
+		customer.setEnabled(true);
 		User user = new User();
 		user.setId((long) 3);
 		
@@ -192,8 +258,14 @@ public class TestOrderService {
 			
 			System.out.println("add new order successfully!");
 		} else {
-			
 			System.out.println("add new order failed!");
+			Map<String, String> falseResults = result.getResultDetails();
+			Iterator iter = falseResults.entrySet().iterator(); 
+			while (iter.hasNext()) { 
+			    Map.Entry entry = (Map.Entry) iter.next();
+			    System.out.println(entry.getKey().toString() + " : " + entry.getValue().toString());
+			} 
+			
 		}
 	}
 	
@@ -225,8 +297,14 @@ public class TestOrderService {
 			
 			System.out.println("add new order successfully!");
 		} else {
-			
 			System.out.println("add new order failed!");
+			Map<String, String> falseResults = result.getResultDetails();
+			Iterator iter = falseResults.entrySet().iterator(); 
+			while (iter.hasNext()) { 
+			    Map.Entry entry = (Map.Entry) iter.next();
+			    System.out.println(entry.getKey().toString() + " : " + entry.getValue().toString());
+			} 
+			
 		}
 	}
 	
@@ -268,8 +346,14 @@ public class TestOrderService {
 			
 			System.out.println("add new order successfully!");
 		} else {
-			
 			System.out.println("add new order failed!");
+			Map<String, String> falseResults = result.getResultDetails();
+			Iterator iter = falseResults.entrySet().iterator(); 
+			while (iter.hasNext()) { 
+			    Map.Entry entry = (Map.Entry) iter.next();
+			    System.out.println(entry.getKey().toString() + " : " + entry.getValue().toString());
+			} 
+			
 		}
 	}
 	
@@ -281,11 +365,17 @@ public class TestOrderService {
 
 		MyResult result = orderService.calculateOrder(order);
 		if (result.isResult()) {
-			System.out.println("total price : " + result.getTotalPriceOfOrder());
+			
 			System.out.println("add new order successfully!");
 		} else {
-			
 			System.out.println("add new order failed!");
+			Map<String, String> falseResults = result.getResultDetails();
+			Iterator iter = falseResults.entrySet().iterator(); 
+			while (iter.hasNext()) { 
+			    Map.Entry entry = (Map.Entry) iter.next();
+			    System.out.println(entry.getKey().toString() + " : " + entry.getValue().toString());
+			} 
+			
 		}
 	}
 	
@@ -299,8 +389,14 @@ public class TestOrderService {
 			
 			System.out.println("add new order successfully!");
 		} else {
-			
 			System.out.println("add new order failed!");
+			Map<String, String> falseResults = result.getResultDetails();
+			Iterator iter = falseResults.entrySet().iterator(); 
+			while (iter.hasNext()) { 
+			    Map.Entry entry = (Map.Entry) iter.next();
+			    System.out.println(entry.getKey().toString() + " : " + entry.getValue().toString());
+			} 
+			
 		}
 	}
 	

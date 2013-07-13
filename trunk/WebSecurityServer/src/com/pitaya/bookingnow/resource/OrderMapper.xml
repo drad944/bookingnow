@@ -42,6 +42,7 @@
 			<result column="U_description" property="description" jdbcType="VARCHAR" />
 			<result column="U_department" property="department" jdbcType="INTEGER" />
 			<result column="U_sub_system" property="sub_system" jdbcType="INTEGER" />
+			<result column="U_enabled" property="enabled" jdbcType="BIT" />
 		</association>
 		
 		<association property="customer" javaType="com.pitaya.bookingnow.entity.Customer">
@@ -55,6 +56,7 @@
 			<result column="C_email" property="email" jdbcType="VARCHAR" />
 			<result column="C_address" property="address" jdbcType="VARCHAR" />
 			<result column="C_birthday" property="birthday" jdbcType="BIGINT" />
+			<result column="C_enabled" property="enabled" jdbcType="BIT" />
 		</association>
 		
 		<collection property="table_details" ofType="Order_Table_Detail">
@@ -120,14 +122,16 @@
 		U.picture_id as U_picture_id, 
 		U.name as U_name, 
 		U.sex as U_sex, 
-		U.department as U_department
+		U.department as U_department,
+		U.enabled as U_enabled
 	</sql>
 	
 	<sql id="Customer_Base_Column_List">
 		C.id as C_id, 
 		C.picture_id as C_picture_id, 
 		C.name as C_name, 
-		C.sex as C_sex 
+		C.sex as C_sex,
+		C.enabled as C_enabled
 	</sql>
 	
 	<sql id="Table_Detail_Base_Column_List">
@@ -223,6 +227,10 @@
 			<if test="birthday != null">
 				and C.birthday = #{birthday,jdbcType=BIGINT}
 			</if>
+			<if test="enabled != null">
+				and C.enabled = #{enabled,jdbcType=BIT}
+			</if>
+			
 		</where>
 	</select>
 	 
