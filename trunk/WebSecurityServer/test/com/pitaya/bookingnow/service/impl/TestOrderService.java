@@ -133,6 +133,29 @@ public class TestOrderService {
 			System.out.println("add new order failed!");
 		}
 	}
+	
+	
+	@Test
+	public void testCancelOrder() {
+		
+		Customer customer = new Customer();
+		customer.setName("zhan");
+		customer.setPhone("13546768131");
+		customer.setSex(Constants.CUSTOMER_MALE);
+		
+		Order order = orderService.searchOrdersByCustomer(customer).get(0);
+		
+		
+
+		MyResult result = orderService.cancelOrder(order);
+		if (result.isResult()) {
+			
+			System.out.println("add new order successfully!");
+		} else {
+			
+			System.out.println("add new order failed!");
+		}
+	}
 
 	@Test
 	public void testUpdateNewOrderToWaiting() {
