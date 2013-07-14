@@ -1185,6 +1185,8 @@ public class OrderService implements IOrderService{
 					
 					if (realOrder.getAllowance() != null && realOrder.getAllowance() >= 0 && realOrder.getAllowance() <= 1) {
 						result.setTotalPriceOfOrder(result.getTotalPriceOfOrder() * realOrder.getAllowance());
+						realOrder.setTotal_price(result.getTotalPriceOfOrder());
+						result.setOrder(realOrder);
 						result.setResult(true);
 						
 						order.setTotal_price(result.getTotalPriceOfOrder());

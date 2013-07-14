@@ -16,4 +16,7 @@ public interface Order_Food_DetailMapper {
     int updateByPrimaryKey(Order_Food_Detail food_detail);
     
     Order_Food_Detail selectByFoodId(Long id);
+    
+    Order_Food_Detail selectFullByFoodId(Long id);
+    
 }
