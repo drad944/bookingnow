@@ -13,12 +13,82 @@
 		<result column="order_id" property="order_id" jdbcType="BIGINT" />
 	</resultMap>
 	
+	<resultMap id="Food_Detail_BaseResultMap" type="com.pitaya.bookingnow.entity.Order_Food_Detail">
+		<id column="FD_id" property="id" jdbcType="BIGINT" />
+		<result column="FD_status" property="status" jdbcType="INTEGER" />
+		<result column="FD_count" property="count" jdbcType="INTEGER" />
+		<result column="FD_preference" property="preference" jdbcType="INTEGER" />
+		<result column="FD_last_modify_time" property="last_modify_time" jdbcType="BIGINT" />
+		<result column="FD_enabled" property="enabled" jdbcType="BIT" />
+		<result column="FD_isFree" property="isFree" jdbcType="BIT" />
+		<result column="FD_food_id" property="food_id" jdbcType="BIGINT" />
+		<result column="FD_order_id" property="order_id" jdbcType="BIGINT" />
+		
+		<association property="food" javaType="com.pitaya.bookingnow.entity.Food">
+		    <id column="F_id" property="id" jdbcType="BIGINT" />
+			<result column="F_recommendation" property="recommendation" jdbcType="INTEGER" />
+			<result column="F_status" property="status" jdbcType="INTEGER" />
+			<result column="F_picture_id" property="picture_id" jdbcType="BIGINT" />
+			<result column="F_name" property="name" jdbcType="VARCHAR" />
+			<result column="F_version" property="version" jdbcType="BIGINT" />
+			<result column="F_period" property="period" jdbcType="BIGINT" />
+			<result column="F_price" property="price" jdbcType="DOUBLE" />
+			<result column="F_category" property="category" jdbcType="VARCHAR" />
+			<result column="F_description" property="description" jdbcType="VARCHAR" />
+		</association> 
+	</resultMap>
+	
 	<sql id="Base_Column_List">
 		id, status, count, preference, last_modify_time, enabled, isFree, food_id,
 		order_id
 	</sql>
 	
+	<sql id="Food_Detail_Base_Column_List">
+		FD.id as FD_id, 
+		FD.status as FD_status, 
+		FD.count as FD_count, 
+		FD.preference as FD_preference, 
+		FD.last_modify_time as FD_last_modify_time, 
+		FD.enabled as FD_enabled, 
+		FD.isFree as FD_isFree, 
+		FD.food_id as FD_food_id,
+		FD.order_id as FD_order_id
+	</sql>
 	
+	<sql id="Food_Without_Image_Column_List">
+		F.id as F_id, 
+		F.recommendation as F_recommendation, 
+		F.status as F_status, 
+		F.picture_id as F_picture_id, 
+		F.name as F_name, 
+		F.version as F_version, 
+		F.period as F_period, 
+		F.price as F_price,
+		F.category as F_category, 
+		F.description as F_description
+	</sql>
+	
+	<select id="selectFullByFoodId" resultMap="Food_Detail_BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Food_Detail_Base_Column_List" />
+		,
+		<include refid="Food_Without_Image_Column_List" />
+		from pitaya_order_food_detail FD
+			left outer join pitaya_food F on FD.food_id = F.id
+		where F.id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<!-- 
+	<select id="selectFullByFoodStatus" resultMap="Food_Detail_BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Food_Detail_Base_Column_List" />
+		,
+		<include refid="Food_Without_Image_Column_List" />
+		from pitaya_order_food_detail FD
+			left outer join pitaya_food F on FD.food_id = F.id
+		where F.id = #{id,jdbcType=BIGINT}
+	</select>
+	 -->
 	<select id="selectByFoodId" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
 		<include refid="Base_Column_List" />

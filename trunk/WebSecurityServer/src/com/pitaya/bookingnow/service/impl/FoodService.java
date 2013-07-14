@@ -11,6 +11,7 @@ import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Food_Picture;
 import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.service.IFoodService;
+import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
 
 public class FoodService implements IFoodService{
@@ -196,21 +197,6 @@ public class FoodService implements IFoodService{
 	@Override
 	public List<Food> searchALLFoodsWithoutImage() {
 		return foodDao.selectAllFoodsWithoutImage();
-	}
-
-	@Override
-	public MyResult updateFoodStatus(Order order) {
-		/*
-		 * chef update confirmed food status to cooking,ready,finished
-		 * in:food_id,food status
-		 */
-		
-		MyResult result = new MyResult();
-		if (order.getId() != null) {
-			
-		}
-		// TODO Auto-generated method stub
-		return result;
 	}
 
 }

@@ -26,5 +26,4 @@ public interface IFoodService {
 	
 	public Map<String, List<Food>> updateMenuFoods(List<Food> clientFoods);
 	
-	public MyResult updateFoodStatus(Order order);
 }

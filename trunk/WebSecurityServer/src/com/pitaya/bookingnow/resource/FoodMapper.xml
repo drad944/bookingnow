@@ -49,8 +49,8 @@
     ,
     <include refid="Food_Picture_Column_List" />
     from pitaya_food A 
-    	,pitaya_food_picture B
-    where A.picture_id = B.id and A.id = #{id,jdbcType=BIGINT}
+    	left outer join pitaya_food_picture B on A.picture_id = B.id
+    where A.id = #{id,jdbcType=BIGINT}
   </select>
   
   

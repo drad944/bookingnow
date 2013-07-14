@@ -3,6 +3,8 @@ package com.pitaya.bookingnow.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.pitaya.bookingnow.entity.Order;
+
 public class MyResult {
 	int resultType = 0;
 	
@@ -13,6 +15,18 @@ public class MyResult {
 	int subFalseCount = 0;
 	
 	double totalPriceOfOrder = 0d;
+	
+	Map<String, String> resultDetails = new HashMap<String, String>();
+	
+	Order order = new Order();
+
+	public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
+	}
 
 	public double getTotalPriceOfOrder() {
 		return totalPriceOfOrder;
@@ -21,8 +35,6 @@ public class MyResult {
 	public void setTotalPriceOfOrder(double totalPriceOfOrder) {
 		this.totalPriceOfOrder = totalPriceOfOrder;
 	}
-
-	Map<String, String> resultDetails = new HashMap<String, String>();
 
 	public int getSubTrueCount() {
 		return subTrueCount;
