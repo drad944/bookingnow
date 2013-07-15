@@ -21,16 +21,16 @@ public interface IOrderService {
 	
 	Order searchOrderById(Long id);
 	
-	MyResult addWaitingOrder(Order order);
-	
-	MyResult updateWaitingOrderToConfirmed(Order order);
-	
-	
 	MyResult addNewOrder(Order order);
 	
-	MyResult updateNewOrderToWaiting(Order order);
-	
 	MyResult updateNewOrderToConfirmed(Order order);
+	
+	
+	MyResult addWaitingOrder(Order order);
+	
+	MyResult updateWaitingOrderToWaiting(Order order);
+	
+	MyResult updateWaitingOrderToConfirmed(Order order);
 	
 	MyResult updateFoodsInConfirmedOrder(Order order);
 	

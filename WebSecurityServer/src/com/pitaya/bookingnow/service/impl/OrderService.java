@@ -213,8 +213,8 @@ public class OrderService implements IOrderService{
 
 
 
-	@Override
-	public MyResult updateWaitingOrderToConfirmed(Order order) {
+	@Override		
+	public MyResult updateNewOrderToConfirmed(Order order) {
 		/*
 		 * waiter update order to confirm  food list with customer which in table.
 		 * in: food list,order_id,user_id,customer count,order status:confirmed,food status:confirmed
@@ -524,7 +524,7 @@ public class OrderService implements IOrderService{
 	}
 	
 	@Override
-	public MyResult updateNewOrderToWaiting(Order order){
+	public MyResult updateWaitingOrderToWaiting(Order order){
 		/*
 		 * welcomer update order with food list when customer is waiting table and choose food
 		 * in:order_id,customer_id,food list,order status:waiting,food status:new
@@ -631,7 +631,7 @@ public class OrderService implements IOrderService{
 
 	
 	@Override
-	public MyResult updateNewOrderToConfirmed(Order order) {
+	public MyResult updateWaitingOrderToConfirmed(Order order) {
 		/*
 		 * waiter update order to take customer to table to seat
 		 * in:table_id,order_id,user_id,order status:confirmed,food status:confirmed

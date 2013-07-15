@@ -103,7 +103,7 @@ public class OrderAction extends BaseAction{
 			
 			if (result.isResult()) {
 				this.setResult(Constants.SUCCESS);
-				return "commitSuccess";
+				return "submitWaitingSuccess";
 			}
 		}
 		this.setResult(Constants.FAIL);
@@ -119,7 +119,7 @@ public class OrderAction extends BaseAction{
 			MyResult result = orderService.addNewOrder(order);
 			if (result.isResult()) {
 				this.setResult(Constants.SUCCESS);
-				return "commitSuccess";
+				return "submitNewSuccess";
 			}
 		}
 		this.setResult(Constants.FAIL);

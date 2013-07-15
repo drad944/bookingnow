@@ -137,7 +137,12 @@
 				<param name="root">matchedOrders</param>
 	        </result>
 	        
-	        <result name="commitSuccess" type="json">
+	        <result name="submitWaitingSuccess" type="json">
+	        	<param name="excludeNullProperties">true</param>  
+				<param name="includeProperties">result</param>
+	        </result>
+	        
+	        <result name="submitNewSuccess" type="json">
 	        	<param name="excludeNullProperties">true</param>  
 				<param name="includeProperties">result</param>
 	        </result>
