@@ -96,7 +96,36 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			this.getActivity().getLoaderManager().initLoader(HomeActivity.MENU_LOADER, null, (LoaderCallbacks<Cursor>) this);
 			
 			TextView showOrderBtn = (TextView)mFoodMenuContentView.findViewById(R.id.showOrder);
+			
 			if(this.mContentContainer.getOrder() != null){
+				
+				final ListView orderPreview = new ListView(getActivity());
+				OrderDetailPreviewAdapter orderAdapter;
+				try {
+					orderAdapter = new OrderDetailPreviewAdapter(getActivity(), orderPreview, mContentContainer.getOrder());
+					orderPreview.setAdapter(orderAdapter);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				final PopupWindow popupWindow =  new PopupWindow(orderPreview, 700,  
+						LayoutParams.WRAP_CONTENT, true);
+				popupWindow.setFocusable(true);
+		        popupWindow.setOutsideTouchable(false);
+		        popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+		        popupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+		        popupWindow.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.common_background));
+		        popupWindow.setAnimationStyle(R.style.AnimBottom);
+		        popupWindow.setOnDismissListener(new OnDismissListener(){
+
+					@Override
+					public void onDismiss() {
+						refreshAllPages();
+					}
+		        	
+		        });
+				
 				showOrderBtn.setOnClickListener(new OnClickListener(){
 					
 					@Override
@@ -107,32 +136,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 //						Intent intent = new Intent(FoodMenuContentFragment.this.getActivity(), OrderDetailPreviewActivity.class);
 //						intent.putExtras(bundle);
 //						startActivity(intent);
-						final ListView orderPreview = new ListView(getActivity());
-						OrderDetailPreviewAdapter orderAdapter;
-						try {
-							orderAdapter = new OrderDetailPreviewAdapter(getActivity(), orderPreview, mContentContainer.getOrder());
-							orderPreview.setAdapter(orderAdapter);
-						} catch (IllegalArgumentException e) {
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
-						}
-						final PopupWindow popupWindow =  new PopupWindow(orderPreview, 700,  
-								LayoutParams.WRAP_CONTENT , true);
-						popupWindow.setFocusable(true);
-				        popupWindow.setOutsideTouchable(false);
-				        popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
-				        popupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-				        popupWindow.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.common_background));
-				        popupWindow.setAnimationStyle(R.style.AnimBottom);
-				        popupWindow.setOnDismissListener(new OnDismissListener(){
-
-							@Override
-							public void onDismiss() {
-								refreshAllPages();
-							}
-				        	
-				        });
+						
 				        popupWindow.showAtLocation(mFoodMenuContentView, 
 				        		Gravity.CENTER_HORIZONTAL|Gravity.CENTER_HORIZONTAL, 0, 0);
 					}

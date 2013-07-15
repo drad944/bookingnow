@@ -4,11 +4,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import com.pitaya.bookingnow.app.HomeActivity;
 import com.pitaya.bookingnow.app.R;
+import com.pitaya.bookingnow.app.data.HttpHandler;
 import com.pitaya.bookingnow.app.model.Order;
+import com.pitaya.bookingnow.app.model.Table;
 import com.pitaya.bookingnow.app.service.DataService;
+import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.service.OrderTable;
+import com.pitaya.bookinnow.app.util.Constants;
 
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -19,12 +26,19 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 public class WaiterOrderListView extends FrameLayout implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -63,6 +77,7 @@ public class WaiterOrderListView extends FrameLayout implements LoaderManager.Lo
     	switch(mListType){
     		case WaiterOrderLeftView.MYORDERS:
     			//TODO get my orders from server
+    			
     			mParentView.getActivity().getLoaderManager().initLoader(HomeActivity.ORDER_LIST_LOADER, null, (LoaderCallbacks<Cursor>) this);
     			break;
     		case WaiterOrderLeftView.WAITING_ORDERS:
@@ -73,7 +88,7 @@ public class WaiterOrderListView extends FrameLayout implements LoaderManager.Lo
     
     @Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-		return DataService.getOrderListByStatus(mParentView.getActivity(), Order.ALL);
+		return DataService.getOrderListByStatus(mParentView.getActivity(), Constants.ALL);
 	}
 
 	@Override
@@ -157,6 +172,69 @@ public class WaiterOrderListView extends FrameLayout implements LoaderManager.Lo
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		
 	}
+	
+	private class TablesAdapter extends BaseAdapter{
+
+		private ArrayList<Table> tables;
+		private ArrayList<Long> selectedTables;
+		private Context mContext;
+		
+		public TablesAdapter(Context context, ArrayList<Table> tableids) throws IllegalArgumentException, IllegalAccessException{  
+			tables = tableids;
+			mContext = context;
+			selectedTables = new ArrayList<Long>();
+        }
+		
+		public ArrayList<Long> getSelectedTables(){
+			return this.selectedTables;
+		}
+		
+		@Override
+		public int getCount() {
+			return tables.size();
+		}
+
+		@Override
+		public Object getItem(int arg0) {
+			return arg0;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View view = convertView;
+			final int index = position;
+			if(view == null){
+				view = new CheckBox(mContext);
+				((CheckBox)view).setText(this.tables.get(position).getLabel());
+				((CheckBox)view).setOnCheckedChangeListener(new OnCheckedChangeListener(){
+
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						if(isChecked){
+							selectedTables.add(tables.get(index).getId());
+						} else {
+							int i = 0;
+							while(!selectedTables.get(i).equals(tables.get(index).getId())){
+								i++;
+							}
+							if(i < selectedTables.size()){
+								selectedTables.remove(i);
+							}
+						}
+					}
+					
+				});
+			}
+			return view;
+		}
+		
+	}
     
 	private class OrderListAdapter extends BaseAdapter{
 
@@ -215,13 +293,59 @@ public class WaiterOrderListView extends FrameLayout implements LoaderManager.Lo
 					view = View.inflate(parent.getContext(), R.layout.orderlistheader, null);
 				}
 				((TextView)view.findViewById(R.id.title2)).setVisibility(View.GONE);
-				Button newOrderBtn = (Button)view.findViewById(R.id.neworder);
+
+				View tablesview = View.inflate(mContext, R.layout.tablesview, null);
+				final GridView tablegridview = (GridView)tablesview.findViewById(R.id.tablegridview);
+				Button confirmBtn =  (Button)tablesview.findViewById(R.id.confirm);
+				confirmBtn.setOnClickListener(new OnClickListener(){
+
+					@Override
+					public void onClick(View v) {
+						ArrayList<Long> tableids = ((TablesAdapter)tablegridview.getAdapter()).getSelectedTables();
+					}
+					
+				});
+				
+				final PopupWindow popupWindow =  new PopupWindow(tablesview, 400, 400, true);
+				popupWindow.setFocusable(true);
+		        popupWindow.setOutsideTouchable(false);
+		        popupWindow.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.common_background));
+		        popupWindow.setAnimationStyle(R.style.AnimBottom);
+				final Button newOrderBtn = (Button)view.findViewById(R.id.neworder);
+				
 				newOrderBtn.setOnClickListener(new OnClickListener(){
 					@Override
 					public void onClick(View v) {
 						//TODO send order to server
-						Order order = new Order("A1", "rmzhang");
-						DataService.saveNewOrder(mContext, order);
+						OrderService.getAvailableTables(Constants.TABLE_EMPTY, new HttpHandler(){
+							
+							public void onSuccess(String action, String response){
+								try {
+									JSONArray jresp = new JSONArray(response);
+									ArrayList<Table> tables = new ArrayList<Table>();
+									for(int i=0; i < jresp.length(); i++){
+										tables.add(new Table(jresp.getJSONObject(i).getLong("id"), jresp.getJSONObject(i).getString("address")));
+									}
+									try {
+										tablegridview.setAdapter(new TablesAdapter(mContext, tables));
+									} catch (IllegalArgumentException e) {
+										e.printStackTrace();
+									} catch (IllegalAccessException e) {
+										e.printStackTrace();
+									}
+									popupWindow.showAsDropDown(newOrderBtn);
+								} catch (JSONException e) {
+									e.printStackTrace();
+								}
+							}
+							
+							public void onFail(String action, int statuscode){
+							}
+							
+						});
+						
+//						Order order = new Order("A1", "rmzhang");
+//						DataService.saveNewOrder(mContext, order);
 					}
 					
 				});
@@ -241,7 +365,7 @@ public class WaiterOrderListView extends FrameLayout implements LoaderManager.Lo
 				((TextView)view.findViewById(R.id.status)).setText(Order.getOrderStatusString(order.getStatus()));
 				SimpleDateFormat dateFm = new SimpleDateFormat("MM月dd日 HH:mm:ss"); 
 				Date date = new Date();
-				if( order.getStatus() == Order.NEW){
+				if( order.getStatus() == Constants.ORDER_NEW){
 					date.setTime(order.getModificationTime());
 					((TextView)view.findViewById(R.id.committime)).setText(dateFm.format(date));
 				} else if(order.getCommitTime() != null){

@@ -145,7 +145,7 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 				}
 				if(mCurrentFood != null){
 					Order.Food bookingfood = mOrder.new Food(mCurrentFood.getKey(), mCurrentFood.getName(), mCurrentFood.getPrice());
-					if(mOrder.getStatus() == Order.NEW){
+					if(mOrder.getStatus() == Constants.ORDER_NEW){
 						DataService.updateOrderDetails(FoodBookActivity.this, mOrder, bookingfood, quantity);
 					}
 				}

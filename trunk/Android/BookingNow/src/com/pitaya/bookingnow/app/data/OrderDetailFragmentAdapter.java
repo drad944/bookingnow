@@ -22,6 +22,7 @@ import com.pitaya.bookingnow.app.service.HttpService;
 import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.views.OrderDetailFragment;
 import com.pitaya.bookingnow.message.ResultMessage;
+import com.pitaya.bookinnow.app.util.Constants;
 import com.pitaya.bookinnow.app.util.ToastUtil;
 
 public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
@@ -47,7 +48,7 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 		final Button actBtn3 = (Button)itemView.findViewById(R.id.action3);
 		TextView hinttext = ((TextView)itemView.findViewById(R.id.hint));
 		switch(this.mOrder.getStatus()){
-			case Order.NEW:
+			case Constants.ORDER_NEW:
 				this.mOrder.setOnDirtyChangedListener(null);
 				actBtn1.setText(R.string.commit);
 				actBtn2.setText(R.string.modification);
@@ -65,7 +66,7 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 								Log.i(TAG, response);
 								//DataService.removeOrder(mContext, mOrder.getOrderKey());
 								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
-								mOrder.setStatus(Order.COMMITED);
+								mOrder.setStatus(Constants.ORDER_COMMITED);
 						    }
 							
 							@Override
@@ -96,7 +97,7 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 					
 				});
 				break;
-			case Order.COMMITED:
+			case Constants.ORDER_COMMITED:
 				hinttext.setVisibility(View.GONE);
 				mOrder.setOnDirtyChangedListener(new Order.OnDirtyChangedListener(){
 
@@ -139,7 +140,7 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 						@Override
 						public void onClick(View v) {
 							//TODO request to pay for the order
-							mOrder.setStatus(Order.PAYING);
+							mOrder.setStatus(Constants.ORDER_PAYING);
 						}
     					
     				});
@@ -162,14 +163,14 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
     				});
 				}
 				break;
-			case Order.PAYING:
+			case Constants.ORDER_PAYING:
 				actBtn1.setVisibility(View.GONE);
 				actBtn2.setVisibility(View.GONE);
 				actBtn3.setVisibility(View.GONE);
 				((TextView)itemView.findViewById(R.id.hint)).setVisibility(View.VISIBLE);
 				((TextView)itemView.findViewById(R.id.hint)).setText(R.string.paying);
 				break;
-			case Order.FINISHED:
+			case Constants.ORDER_FINISHED:
 				actBtn1.setVisibility(View.GONE);
 				actBtn2.setVisibility(View.GONE);
 				actBtn3.setVisibility(View.GONE);

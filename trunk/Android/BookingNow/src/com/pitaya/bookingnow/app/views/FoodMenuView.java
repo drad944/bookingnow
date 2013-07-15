@@ -36,6 +36,7 @@ import com.pitaya.bookingnow.app.data.AsyncImageTask;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.DataService;
+import com.pitaya.bookinnow.app.util.Constants;
 import com.pitaya.bookinnow.app.util.FileUtil;
 
 import java.io.File;
@@ -220,7 +221,7 @@ public class FoodMenuView extends FrameLayout{
 								return;
 							}
 							Order.Food bookingfood = order.new Food(food.getKey(), food.getName(), food.getPrice());
-							if(order.getStatus() == Order.NEW){
+							if(order.getStatus() == Constants.ORDER_NEW){
 								DataService.updateOrderDetails(mContext, order, bookingfood, quantity);
 							}
 						}

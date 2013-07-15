@@ -174,7 +174,7 @@ public class HomeActivity extends FragmentActivity {
 				public void onClick(View view) {
 					if(homecontent.getCurrentContentViewKey().equals("menu")){
 						Order currentOrder =  ((FoodMenuContentView)homecontent.getContentView("menu")).getOrder();
-						if(currentOrder != null && currentOrder.isDirty() && currentOrder.getStatus() != Order.NEW){
+						if(currentOrder != null && currentOrder.isDirty() && currentOrder.getStatus() != Constants.ORDER_NEW){
 							showConfirmDialog("order");
 						} else {
 							homecontent.selectItem("order");
