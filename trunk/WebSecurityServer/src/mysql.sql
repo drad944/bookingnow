@@ -318,7 +318,7 @@ create table pitaya_role(
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 insert into pitaya_role values (1,1301,'ROLE_ANONYMOUS','Anonymous',false,1101);	
-insert into pitaya_role values (2,1302,'ROLE_CUSTOMER','customer',false,1101);
+insert into pitaya_role values (2,1307,'ROLE_WAITER','waiter',false,1101);
 insert into pitaya_role values (3,1303,'ROLE_CUSTOMER_VIP1','customer',false,1101);
 insert into pitaya_role values (4,1304,'ROLE_CUSTOMER_VIP2','customer',false,1101);
 insert into pitaya_role values (5,1305,'ROLE_WELCOME','welcome',false,1101);
