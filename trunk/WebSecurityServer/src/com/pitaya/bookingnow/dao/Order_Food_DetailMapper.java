@@ -1,5 +1,7 @@
 package com.pitaya.bookingnow.dao;
 
+import java.util.List;
+
 import com.pitaya.bookingnow.entity.Order_Food_Detail;
 
 public interface Order_Food_DetailMapper {
@@ -17,6 +19,10 @@ public interface Order_Food_DetailMapper {
     
     Order_Food_Detail selectByFoodId(Long id);
     
-    Order_Food_Detail selectFullByFoodId(Long id);
+    List<Order_Food_Detail> selectFullByFoodId(Long id);
+    
+    Order_Food_Detail selectFullByPrimaryKey(Long id);
+    
+    List<Order_Food_Detail> selectFullBySelective(Order_Food_Detail food_detail);
     
 }
