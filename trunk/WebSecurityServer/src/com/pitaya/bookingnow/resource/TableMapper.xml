@@ -4,13 +4,13 @@
 	<resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.Table">
 		<id column="id" property="id" jdbcType="BIGINT" />
 		<result column="status" property="status" jdbcType="INTEGER" />
-		<result column="seatCount" property="seatCount" jdbcType="INTEGER" />
+		<result column="minCustomerCount" property="minCustomerCount" jdbcType="INTEGER" />
 		<result column="maxCustomerCount" property="maxCustomerCount" jdbcType="INTEGER" />
 		<result column="address" property="address" jdbcType="VARCHAR" />
 		<result column="indoorPrice" property="indoorPrice" jdbcType="DOUBLE" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, status, seatCount, maxCustomerCount, address,indoorPrice
+		id, status, minCustomerCount, maxCustomerCount, address,indoorPrice
 	</sql>
 	
 	
@@ -30,8 +30,8 @@
 			<if test="status != null">
 				status = #{status,jdbcType=INTEGER}
 			</if>
-			<if test="seatCount != null">
-				and seatCount = #{seatCount,jdbcType=INTEGER}
+			<if test="minCustomerCount != null">
+				and minCustomerCount = #{minCustomerCount,jdbcType=INTEGER}
 			</if>
 			<if test="maxCustomerCount != null">
 				and maxCustomerCount = #{maxCustomerCount,jdbcType=INTEGER}
@@ -65,9 +65,9 @@
 			order="AFTER">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
-		insert into pitaya_table (status, seatCount, maxCustomerCount,
+		insert into pitaya_table (status, minCustomerCount, maxCustomerCount,
 		address,indoorPrice)
-		values (#{status,jdbcType=INTEGER}, #{seatCount,jdbcType=INTEGER},
+		values (#{status,jdbcType=INTEGER}, #{minCustomerCount,jdbcType=INTEGER},
 		#{maxCustomerCount,jdbcType=INTEGER},
 		#{address,jdbcType=VARCHAR}),#{indoorPrice,jdbcType=DOUBLE})
 	</insert>
@@ -82,8 +82,8 @@
 			<if test="status != null">
 				status,
 			</if>
-			<if test="seatCount != null">
-				seatCount,
+			<if test="minCustomerCount != null">
+				minCustomerCount,
 			</if>
 			<if test="maxCustomerCount != null">
 				maxCustomerCount,
@@ -99,8 +99,8 @@
 			<if test="status != null">
 				#{status,jdbcType=INTEGER},
 			</if>
-			<if test="seatCount != null">
-				#{seatCount,jdbcType=INTEGER},
+			<if test="minCustomerCount != null">
+				#{minCustomerCount,jdbcType=INTEGER},
 			</if>
 			<if test="maxCustomerCount != null">
 				#{maxCustomerCount,jdbcType=INTEGER},
@@ -120,8 +120,8 @@
 			<if test="status != null">
 				status = #{status,jdbcType=INTEGER},
 			</if>
-			<if test="seatCount != null">
-				seatCount = #{seatCount,jdbcType=INTEGER},
+			<if test="minCustomerCount != null">
+				minCustomerCount = #{minCustomerCount,jdbcType=INTEGER},
 			</if>
 			<if test="maxCustomerCount != null">
 				maxCustomerCount = #{maxCustomerCount,jdbcType=INTEGER},
@@ -139,7 +139,7 @@
 	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Table">
 		update pitaya_table
 		set status = #{status,jdbcType=INTEGER},
-		seatCount = #{seatCount,jdbcType=INTEGER},
+		minCustomerCount = #{minCustomerCount,jdbcType=INTEGER},
 		maxCustomerCount = #{maxCustomerCount,jdbcType=INTEGER},
 		address = #{address,jdbcType=VARCHAR},
 		indoorPrice = #{indoorPrice,jdbcType=DOUBLE}

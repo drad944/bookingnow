@@ -44,11 +44,10 @@ public class TableAction extends ActionSupport{
 		if (table != null) {
 			
 			matchedTables = tableService.searchTables(table);
-			
 			return "searchSuccess";
 		}
 		
-		return "findFail";
+		return "searchFail";
 	}
 	
 	public String addTable() {
