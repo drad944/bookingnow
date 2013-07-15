@@ -297,7 +297,7 @@ public class OrderService implements IOrderService{
 								//update order status in DB
 								if(tempFood_Details.size() == result.getSubTrueCount()) {
 										order.setModifyTime(new Date().getTime());
-										order.setStatus(Constants.ORDER_CONFIRMED);
+										order.setStatus(Constants.ORDER_COMMITED);
 										if (realOrder.getAllowance() == null && order.getAllowance() == null) {
 											order.setAllowance(1.0);
 										}
@@ -717,7 +717,7 @@ public class OrderService implements IOrderService{
 								
 								
 								//update order in DB
-								realOrder.setStatus(Constants.ORDER_CONFIRMED);
+								realOrder.setStatus(Constants.ORDER_COMMITED);
 								realOrder.setModifyTime(new Date().getTime());
 								if (orderDao.updateByPrimaryKeySelective(realOrder) == 1) {
 									result.setResult(true);
