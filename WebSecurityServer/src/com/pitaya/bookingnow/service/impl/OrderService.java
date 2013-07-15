@@ -121,7 +121,7 @@ public class OrderService implements IOrderService{
 	}
 
 	@Override
-	public MyResult addWaitingOrder(Order order) {
+	public MyResult addNewOrder(Order order) {
 		/*
 		 * waiter add a order for customers in table
 		 * in:table_id,user_id,order status:new
@@ -453,7 +453,7 @@ public class OrderService implements IOrderService{
 
 
 	@Override
-	public MyResult addNewOrder(Order order) {
+	public MyResult addWaitingOrder(Order order) {
 		/*
 		 * welcomer add a new order for waiting customer outside
 		 * in:name,phone,customer count,order status:new
