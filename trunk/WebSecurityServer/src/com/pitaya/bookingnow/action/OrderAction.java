@@ -95,7 +95,7 @@ public class OrderAction extends BaseAction{
 	}
 	
 	/*		
-	 * 		submit a new created order which contains user id and table id
+	 * 		waiter submit a new waiting order which contains customer info
 	 */
 	public String submitWaitingOrder(){
 		if (order != null) {
@@ -112,14 +112,80 @@ public class OrderAction extends BaseAction{
 	}
 	
 	/*		
-	 * 		submit a new created order which contains food list
+	 * 		waiter update a waiting order with food list
 	 */
+	public String updateWaitingOfWaitingOrder(){
+		if (order != null) {
+			MyResult result = orderService.updateWaitingOrderToWaiting(order);
+			
+			if (result.isResult()) {
+				this.setResult(Constants.SUCCESS);
+				return "updateWaitingOfWaitingSuccess";
+			}
+		}
+		this.setResult(Constants.FAIL);
+		this.setDetail("Some reason cause the operation fail");
+		return "Fail";
+	}
+	
+	/*		
+	 * 		waiter update a waiting order with food list
+	 */
+	public String updateConfirmedOfWaitingOrder(){
+		if (order != null) {
+			MyResult result = orderService.updateWaitingOrderToConfirmed(order);
+			
+			if (result.isResult()) {
+				this.setResult(Constants.SUCCESS);
+				return "updateConfirmedOfWaitingSuccess";
+			}
+		}
+		this.setResult(Constants.FAIL);
+		this.setDetail("Some reason cause the operation fail");
+		return "Fail";
+	}
+	
+	public String updateFoodsOfConfirmedOrder(){
+		if (order != null) {
+			MyResult result = orderService.updateFoodsInConfirmedOrder(order);
+			
+			if (result.isResult()) {
+				this.setResult(Constants.SUCCESS);
+				return "updateFoodsOfConfirmedSuccess";
+			}
+		}
+		this.setResult(Constants.FAIL);
+		this.setDetail("Some reason cause the operation fail");
+		return "Fail";
+	}
+	
+	/*		
+	 * 		submit a new created order which contains user id and table id
+	 */
+	
 	public String submitNewOrder(){
 		if (order != null) {
 			MyResult result = orderService.addNewOrder(order);
 			if (result.isResult()) {
 				this.setResult(Constants.SUCCESS);
 				return "submitNewSuccess";
+			}
+		}
+		this.setResult(Constants.FAIL);
+		this.setDetail("Some reason cause the operation fail");
+		return "Fail";
+	}
+	
+	/*		
+	 * 		update a new order which contains food list
+	 */
+	public String updateConfirmedOfNewOrder(){
+		if (order != null) {
+			MyResult result = orderService.updateNewOrderToConfirmed(order);
+			
+			if (result.isResult()) {
+				this.setResult(Constants.SUCCESS);
+				return "updateConfirmedOfNewSuccess";
 			}
 		}
 		this.setResult(Constants.FAIL);

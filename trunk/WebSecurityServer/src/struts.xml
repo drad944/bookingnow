@@ -147,6 +147,11 @@
 				<param name="includeProperties">result</param>
 	        </result>
 	        
+	        <result name="updateConfirmedNewSuccess" type="json">
+	        	<param name="excludeNullProperties">true</param>  
+				<param name="includeProperties">result</param>
+	        </result>
+	        
 	        <result name="Success" type="json">
 				<param name="includeProperties">result, detail</param>  
 	        </result>
