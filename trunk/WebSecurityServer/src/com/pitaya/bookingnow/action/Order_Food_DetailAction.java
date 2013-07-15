@@ -19,7 +19,17 @@ public class Order_Food_DetailAction extends BaseAction{
 	
 	private Map<String, List<Order_Food_Detail>> changeFoods;
 	
+	private Long orderId;
+	
 	private Order_Food_Detail food_detail;
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
 
 	public Order_Food_Detail getFood_detail() {
 		return food_detail;
@@ -59,9 +69,9 @@ public class Order_Food_DetailAction extends BaseAction{
 		return "Fail";
 	}
 	
-	public String updateFoodOfFood_Detail() {
-		if (food_detail != null) {
-			MyResult result = food_detailService.updateFoodStatus(food_detail);
+	public String updateFoodsOfFood_Detail() {
+		if (changeFoods != null) {
+			MyResult result = food_detailService.updateFoods(changeFoods, orderId);
 			
 			if (result.isResult()) {
 				this.setResult(Constants.SUCCESS);
