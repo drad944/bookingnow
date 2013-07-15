@@ -87,11 +87,11 @@ public class OrderDetailAdapter extends BaseAdapter {
 	
 	private void updateFoodStatus(int index, Order.Food food, int status, int old_status){
 		View view = ((ListView)mView).getChildAt(index);
-		if(status == Order.UNAVAILABLE){
+		if(status == Constants.FOOD_UNAVAILABLE){
 			if(view != null && view.findViewById(R.id.totalprice) != null){
 				((TextView) view.findViewById(R.id.totalprice)).setText("0元");
 			}
-		} else if(old_status == Order.UNAVAILABLE){
+		} else if(old_status == Constants.FOOD_UNAVAILABLE){
 			if(view != null && view.findViewById(R.id.totalprice) != null){
 				((TextView) view.findViewById(R.id.totalprice)).setText(food.getPrice()*mOrder.getFoods().get(food) + "元");
 			}
@@ -108,44 +108,44 @@ public class OrderDetailAdapter extends BaseAdapter {
 	private void setupFoodStatusButton(final Button changeStatusBtn, final Order.Food food){
 		changeStatusBtn.setVisibility(View.VISIBLE);
 		switch(food.getStatus()){
-			case Order.NEW:
+			case Constants.FOOD_NEW:
 				changeStatusBtn.setText("开始");
 				changeStatusBtn.setOnClickListener(new OnClickListener(){
 
 					@Override
 					public void onClick(View v) {
-						food.setStatus(Order.WAITING);
+						food.setStatus(Constants.FOOD_WAITING);
 						setupFoodStatusButton(changeStatusBtn, food);
 					}
 					
 				});
 				break;
-			case Order.UNAVAILABLE:
-			case Order.WAITING:
+			case Constants.FOOD_UNAVAILABLE:
+			case Constants.FOOD_WAITING:
 				changeStatusBtn.setText("开始加工");
 				changeStatusBtn.setOnClickListener(new OnClickListener(){
 
 					@Override
 					public void onClick(View v) {
-						food.setStatus(Order.COOKING);
+						food.setStatus(Constants.FOOD_COOKING);
 						setupFoodStatusButton(changeStatusBtn, food);
 					}
 					
 				});
 				break;
-			case Order.COOKING:
+			case Constants.FOOD_COOKING:
 				changeStatusBtn.setText("完成");
 				changeStatusBtn.setOnClickListener(new OnClickListener(){
 
 					@Override
 					public void onClick(View v) {
-						food.setStatus(Order.FINISHED);
+						food.setStatus(Constants.FOOD_FINISHED);
 						setupFoodStatusButton(changeStatusBtn, food);
 					}
 					
 				});
 				break;
-			case Order.FINISHED:
+			case Constants.FOOD_FINISHED:
 				changeStatusBtn.setVisibility(View.INVISIBLE);
 				break;
 		}
@@ -169,14 +169,14 @@ public class OrderDetailAdapter extends BaseAdapter {
 
 			@Override
 			public void onClick(View v) {
-				food.setStatus(Order.UNAVAILABLE);
+				food.setStatus(Constants.FOOD_UNAVAILABLE);
 			}
         	
         });
         
         final TextView timerText = (TextView) fooditemRL.findViewById(R.id.timer);
 
-        if(food.getStatus() != Order.FINISHED){
+        if(food.getStatus() != Constants.FOOD_FINISHED){
         	//TODO use this to instead later final long beginTime = this.mOrder.getCommitTime();
 	        final long beginTime = this.mOrder.getModificationTime();
 	        final Handler handler = new Handler(); 
@@ -212,11 +212,11 @@ public class OrderDetailAdapter extends BaseAdapter {
 				@Override
 				public void onFoodStatusChanged(Order.Food food, int status, int old_status) {
 					updateFoodStatus(index, food, status, old_status);
-					if(status == Order.FINISHED){
+					if(status == Constants.FOOD_FINISHED){
 						handler.removeCallbacks(timer);
 						timerText.setVisibility(View.INVISIBLE);
 						unavailableBtn.setVisibility(View.INVISIBLE);
-					} else if(status == Order.UNAVAILABLE) {
+					} else if(status == Constants.FOOD_UNAVAILABLE) {
 						timerText.setVisibility(View.INVISIBLE);
 					} else {
 						timerText.setVisibility(View.VISIBLE);
@@ -246,7 +246,7 @@ public class OrderDetailAdapter extends BaseAdapter {
         	totalPriceText.setText(String.valueOf(food.getPrice() * quantity) + "元");
         }
         final TextView statusText = (TextView) fooditemRL.findViewById(R.id.foodstatus);
-        if(mOrder.getStatus() != Order.NEW){
+        if(mOrder.getStatus() != Constants.ORDER_NEW){
         	statusText.setText(Order.getFoodStatusString(food.getStatus()));
         }
         TextView freeStatusText = (TextView) fooditemRL.findViewById(R.id.freestatus);
@@ -272,7 +272,7 @@ public class OrderDetailAdapter extends BaseAdapter {
 						freeBtn.setText(R.string.cancelfreebtn);
 						totalPriceText.setText("0元");
 					}
-					if(mOrder.getStatus() == Order.NEW){
+					if(mOrder.getStatus() == Constants.ORDER_NEW){
 						DataService.updateFoodFreeStatus(mContext, mOrder, food);
 					}
 					if(mView.findViewById(R.id.orderbottom) != null){
@@ -335,7 +335,7 @@ public class OrderDetailAdapter extends BaseAdapter {
 					return;
 				}
 				
-				if(mOrder.getStatus() == Order.NEW){
+				if(mOrder.getStatus() == Constants.ORDER_NEW){
 					//store to local data base
 					if(DataService.updateOrderDetails(mContext, mOrder, food, quantity) == Order.REMOVED){
 						OrderDetailAdapter.this.notifyDataSetChanged();
@@ -347,7 +347,7 @@ public class OrderDetailAdapter extends BaseAdapter {
 					return;
 				}
 				
-				if(food.getStatus() != Order.UNAVAILABLE && !food.isFree()){
+				if(food.getStatus() != Constants.FOOD_UNAVAILABLE && !food.isFree()){
 					totalPriceText.setText(String.valueOf(food.getPrice() * quantity) + "元");
 					OrderDetailAdapter.this.updateSummaryPrice();
 				}

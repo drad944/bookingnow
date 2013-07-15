@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.model.Food;
+import com.pitaya.bookinnow.app.util.Constants;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -66,7 +67,7 @@ public class DataService {
 				OrderTable.COLUMN_COMMIT_DATE,
 				OrderTable.COLUMN_STATUS
 		};
-		if(status == Order.ALL){
+		if(status == Constants.ALL){
 			return new CursorLoader(context, OrderContentProvider.CONTENT_URI, 
 					projection, null, null, OrderTable.COLUMN_LAST_MODIFACTION_DATE);
 		} else {

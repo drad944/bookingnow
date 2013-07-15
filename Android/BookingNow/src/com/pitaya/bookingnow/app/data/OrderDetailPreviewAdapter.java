@@ -13,6 +13,7 @@ import com.pitaya.bookingnow.app.OrderDetailPreviewActivity;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.model.Order.OnDirtyChangedListener;
 import com.pitaya.bookingnow.app.service.DataService;
+import com.pitaya.bookinnow.app.util.Constants;
 import com.pitaya.bookinnow.app.util.ToastUtil;
 
 public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
@@ -39,7 +40,7 @@ public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
 		final Button confirmBtn = (Button)itemView.findViewById(R.id.action1);
 		final Button resetBtn = (Button)itemView.findViewById(R.id.action2);
 		switch(mOrder.getStatus()){
-			case Order.NEW:
+			case Constants.ORDER_NEW:
 				confirmBtn.setText(R.string.commit);
 				resetBtn.setText(R.string.reset);
 
@@ -50,7 +51,7 @@ public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
 						//TODO commit to server
 						//remove from local database
 						//DataService.removeOrder(mContext, mOrder.getOrderKey());
-						mOrder.setStatus(Order.COMMITED);
+						mOrder.setStatus(Constants.ORDER_COMMITED);
 						mOrder.markDirty(false);
 						ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
 						setViewByOrderStatus(itemView);
@@ -69,7 +70,7 @@ public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
 					
 				});
 				break;
-			case Order.COMMITED:
+			case Constants.ORDER_COMMITED:
 				confirmBtn.setText(R.string.commitupdate);
 				resetBtn.setText(R.string.cancelupdate);
 				mOrder.setOnDirtyChangedListener(new Order.OnDirtyChangedListener(){

@@ -8,19 +8,21 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import com.pitaya.bookinnow.app.util.Constants;
+
 public class Order implements Serializable{
 	
-	public static final int ALL = -1;
-	
-	//order and food status	
-	public static final int NEW = 0;
-	public static final int COMMITED = NEW + 1;
-	public static final int PAYING = COMMITED + 1;
-	public static final int FINISHED = PAYING + 1;
-	public static final int WAITING = FINISHED + 1;
-	public static final int COOKING = WAITING + 1;
-	public static final int UNAVAILABLE = COOKING + 1;
-	public static final int AVAILABLE = UNAVAILABLE + 1;
+//	public static final int ALL = -1;
+//	
+//	//order and food status	
+//	public static final int NEW = 0;
+//	public static final int COMMITED = NEW + 1;
+//	public static final int PAYING = COMMITED + 1;
+//	public static final int FINISHED = PAYING + 1;
+//	public static final int WAITING = FINISHED + 1;
+//	public static final int COOKING = WAITING + 1;
+//	public static final int UNAVAILABLE = COOKING + 1;
+//	public static final int AVAILABLE = UNAVAILABLE + 1;
 	
 	//results
 	public static final int ADDED = 0;
@@ -61,7 +63,7 @@ public class Order implements Serializable{
 		this.customername = name;
 		this.tableNum = null;
 		this.submitter = null;
-		this.status = Order.NEW;
+		this.status = Constants.ORDER_NEW;
 		this.orderkey = UUID.randomUUID().toString();
 		this.modification_ts = System.currentTimeMillis();
 		this.markDirty(false);
@@ -73,19 +75,19 @@ public class Order implements Serializable{
 		this.submitter = submitter;
 		this.orderkey = UUID.randomUUID().toString();
 		this.modification_ts = System.currentTimeMillis();
-		this.status = Order.NEW;
+		this.status =Constants.ORDER_NEW;
 		this.markDirty(false);
 	}
 	
 	public static String getOrderStatusString(int status){
 		switch(status){
-			case Order.NEW:
+			case Constants.ORDER_NEW:
 				return "新建";
-			case Order.COMMITED:
+			case Constants.ORDER_COMMITED:
 				return "已提交";
-			case Order.PAYING:
+			case Constants.ORDER_PAYING:
 				return "结帐中";
-			case Order.FINISHED:
+			case Constants.ORDER_FINISHED:
 				return "完成";
 		}
 		return "未知状态";
@@ -93,15 +95,15 @@ public class Order implements Serializable{
 	
 	public static String getFoodStatusString(int status){
 		switch(status){
-			case Order.NEW:
+			case Constants.FOOD_NEW:
 				return "新提交";
-			case Order.WAITING:
+			case Constants.FOOD_WAITING:
 				return "等待加工";
-			case Order.COOKING:
+			case Constants.FOOD_COOKING:
 				return "加工中";
-			case Order.FINISHED:
+			case Constants.FOOD_FINISHED:
 				return "出菜";
-			case Order.UNAVAILABLE:
+			case Constants.FOOD_UNAVAILABLE:
 				return "售完";
 		}
 		return "未知状态";
@@ -162,7 +164,7 @@ public class Order implements Serializable{
 	public float getTotalPrice(){
 		float summary = 0f;
 		for(Entry<Food, Integer> entry : this.foods.entrySet()){
-			if(entry.getKey().getStatus() == Order.UNAVAILABLE || entry.getKey().isFree()){
+			if(entry.getKey().getStatus() == Constants.FOOD_UNAVAILABLE || entry.getKey().isFree()){
 				continue;
 			}
 			summary += entry.getKey().getPrice()*entry.getValue();
@@ -223,9 +225,9 @@ public class Order implements Serializable{
 	public void setStatus(int status){
 		if(this.status != status){
 			this.status = status;
-			if(this.status == Order.COMMITED){
+			if(this.status == Constants.ORDER_COMMITED){
 				for(Entry<Food, Integer> entry : this.getFoods().entrySet()){
-					entry.getKey().setStatus(Order.WAITING);
+					entry.getKey().setStatus(Constants.FOOD_WAITING);
 				}
 			}
 			if(this.mOnStatusChangedListener != null){
@@ -256,12 +258,8 @@ public class Order implements Serializable{
 	public synchronized int addFood(Food food, int quantity){
 		if(quantity <= 0){
 			if(this.foods.get(food) != null){
-				if(this.getStatus() == NEW){
-					
-				} else {
-					markDirty(true);
-				}
 				this.foods.remove(food);
+				markDirty(true);
 				return REMOVED;
 			} else {
 				return IGNORED;
@@ -306,7 +304,7 @@ public class Order implements Serializable{
 			this.key = key;
 			this.name = name;
 			this.price = price;
-			this.status = NEW;
+			this.status = Constants.FOOD_NEW;
 			this.isFree = false;
 		}
 		
