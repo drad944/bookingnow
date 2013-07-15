@@ -1,13 +1,17 @@
 package com.pitaya.bookingnow.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.pitaya.bookingnow.dao.FoodMapper;
 import com.pitaya.bookingnow.dao.Order_Food_DetailMapper;
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Order_Food_Detail;
 import com.pitaya.bookingnow.service.IOrder_Food_DetailService;
+import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
 
 public class Order_Food_DetailService implements IOrder_Food_DetailService{
@@ -100,4 +104,62 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 		return result;
 	}
 	
+	@Override
+	public MyResult updateFoods(Map<String, List<Order_Food_Detail>> changeFoods,Long orderId) {
+		/*
+		 * chef update food status to cooking,ready which is confirmed.
+		 * in: food status,food_detail id 
+		 */
+		MyResult result = new MyResult();
+		
+		Map<String, List<Order_Food_Detail>> resultFoods = new HashMap<String, List<Order_Food_Detail>>();
+				
+		List<Order_Food_Detail> newFood_Details = null;
+		List<Order_Food_Detail> deleteFood_Details = null;
+		List<Order_Food_Detail> updateFood_Details = null;
+
+		if (changeFoods != null && changeFoods.size() > 0 && orderId != null) {
+			newFood_Details = changeFoods.get("newFoods");
+			if (newFood_Details != null && newFood_Details.size() > 0) {
+				for (int i = 0; i < newFood_Details.size(); i++) {
+					Order_Food_Detail tempNewFood_Detail = newFood_Details.get(i);
+					if (tempNewFood_Detail != null && tempNewFood_Detail.getFood() != null) {
+						Food tempNewFood = tempNewFood_Detail.getFood();
+						if (tempNewFood != null && tempNewFood.getId() != null) {
+							Food realFood = foodDao.selectByPrimaryKey(tempNewFood.getId());
+							if (realFood != null) {
+								tempNewFood_Detail.setFood_id(tempNewFood.getId());
+								tempNewFood_Detail.setLast_modify_time(new Date().getTime());
+								tempNewFood_Detail.setOrder_id(orderId);
+								
+								if (food_detailDao.insertSelective(tempNewFood_Detail) == 1) {
+									
+								}else {
+									throw new RuntimeException("failed to insert food detail in DB.");
+								}
+								
+							}else {
+								result.getResultDetails().put("newFood_exist", "can not find new food in DB data.");
+							}
+							
+						}else {
+							result.getResultDetails().put("newFood_exist", "can not find new food in client data.");
+						}
+						
+					}else {
+						result.getResultDetails().put("newFood_Detail_exist", "can not find new food detail in client data.");
+					}
+					
+				}
+				
+			}
+			
+			deleteFood_Details = changeFoods.get("deleteFoods");
+			// TODO Auto-generated method stub
+		}else {
+			result.getResultDetails().put("changeFoods_exist", "can not find changeFoods in client data.");
+		}
+		
+		return result;
+	}
 }
