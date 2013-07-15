@@ -14,9 +14,25 @@ public class UserAction extends BaseAction{
 	
 	private IUserService userService;
 	
+	private String j_username;
+	
+	private String j_password;
+	
 	private User user;
 	private User loginUser;
 	
+	public String getJ_username() {
+		return j_username;
+	}
+	public void setJ_username(String j_username) {
+		this.j_username = j_username;
+	}
+	public String getJ_password() {
+		return j_password;
+	}
+	public void setJ_password(String j_password) {
+		this.j_password = j_password;
+	}
 	public User getLoginUser() {
 		return loginUser;
 	}
@@ -35,6 +51,17 @@ public class UserAction extends BaseAction{
 	}
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	public String spring_security_loginUser() {
+		if (j_username != null && j_password != null) {
+			user = new User();
+			user.setAccount(j_username);
+			user.setPassword(j_password);
+			return loginUser();
+		}
+		return "loginFail";
+		
 	}
 	
 	public String loginUser() {
