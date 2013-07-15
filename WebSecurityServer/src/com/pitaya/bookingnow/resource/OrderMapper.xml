@@ -69,7 +69,7 @@
 			<association property="table" javaType="com.pitaya.bookingnow.entity.Table">
 				<id column="T_id" property="id" jdbcType="BIGINT" />
 				<result column="T_status" property="status" jdbcType="INTEGER" />
-				<result column="T_seatCount" property="seatCount" jdbcType="INTEGER" />
+				<result column="T_minCustomerCount" property="minCustomerCount" jdbcType="INTEGER" />
 				<result column="T_maxCustomerCount" property="maxCustomerCount" jdbcType="INTEGER" />
 				<result column="T_address" property="address" jdbcType="VARCHAR" />
 				<result column="T_indoorPrice" property="indoorPrice" jdbcType="DOUBLE" />
@@ -145,7 +145,7 @@
 	<sql id="Table_Base_Column_List">
 		T.id as T_id, 
 		T.status as T_status, 
-		T.seatCount as T_seatCount, 
+		T.minCustomerCount as T_minCustomerCount, 
 		T.address as T_address,
 		T.indoorPrice as T_indoorPrice
 	</sql>

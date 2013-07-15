@@ -5,7 +5,7 @@ public class Table {
 
     private Integer status;
 
-    private Integer seatCount;
+    private Integer minCustomerCount;
 
     private Integer maxCustomerCount;
 
@@ -13,7 +13,15 @@ public class Table {
     
     private Double indoorPrice;
 
-    public Double getIndoorPrice() {
+    public Integer getMinCustomerCount() {
+		return minCustomerCount;
+	}
+
+	public void setMinCustomerCount(Integer minCustomerCount) {
+		this.minCustomerCount = minCustomerCount;
+	}
+
+	public Double getIndoorPrice() {
 		return indoorPrice;
 	}
 
@@ -37,13 +45,6 @@ public class Table {
         this.status = status;
     }
 
-    public Integer getSeatCount() {
-        return seatCount;
-    }
-
-    public void setSeatCount(Integer seatCount) {
-        this.seatCount = seatCount;
-    }
 
     public Integer getMaxCustomerCount() {
         return maxCustomerCount;

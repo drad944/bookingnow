@@ -72,7 +72,7 @@ public class TestOrderMapper {
 						if (table != null) {
 							System.out.println("    " + "table id: " + table.getId());
 							System.out.println("    " + "table status: " + table.getStatus());
-							System.out.println("    " + "table seat count: " + table.getSeatCount());
+							System.out.println("    " + "table min customer count: " + table.getMinCustomerCount());
 							System.out.println("    " + "table address: " + table.getAddress());
 							
 						}
@@ -162,7 +162,7 @@ public class TestOrderMapper {
 							if (table != null) {
 								System.out.println("    " + "table id: " + table.getId());
 								System.out.println("    " + "table status: " + table.getStatus());
-								System.out.println("    " + "table seat count: " + table.getSeatCount());
+								System.out.println("    " + "table min customer count: " + table.getMinCustomerCount());
 								System.out.println("    " + "table address: " + table.getAddress());
 								
 							}

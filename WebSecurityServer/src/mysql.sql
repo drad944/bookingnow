@@ -13,22 +13,22 @@ flush privileges;
 create table pitaya_table(
 	id bigint not null auto_increment primary key,
 	status integer,
-	seatCount integer,
+	minCustomerCount integer,
 	maxCustomerCount integer,
 	address varchar(50),
 	indoorPrice double
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_table values (1,201,4,6,'in the first floor',0);	
-insert into pitaya_table values (2,201,4,6,'in the second floor',50);
-insert into pitaya_table values (3,201,6,8,'in the first floor',0);
-insert into pitaya_table values (4,201,6,8,'in the second floor',50);
-insert into pitaya_table values (5,201,8,8,'in the first floor',0);
-insert into pitaya_table values (6,201,8,8,'in the second floor',60);
-insert into pitaya_table values (7,201,10,6,'in the first floor',0);
-insert into pitaya_table values (8,201,10,6,'in the second floor',80);
-insert into pitaya_table values (9,201,4,6,'in the second floor',0);
-insert into pitaya_table values (10,201,4,6,'in the first floor',0);
+insert into pitaya_table values (1,201,1,2,'in the first floor',0);	
+insert into pitaya_table values (2,201,1,2,'in the second floor',50);
+insert into pitaya_table values (3,201,2,5,'in the first floor',0);
+insert into pitaya_table values (4,201,2,5,'in the second floor',50);
+insert into pitaya_table values (5,201,4,7,'in the first floor',0);
+insert into pitaya_table values (6,201,4,7,'in the second floor',60);
+insert into pitaya_table values (7,201,6,9,'in the first floor',0);
+insert into pitaya_table values (8,201,6,9,'in the second floor',80);
+insert into pitaya_table values (9,201,8,11,'in the second floor',0);
+insert into pitaya_table values (10,201,8,11,'in the first floor',0);
 
 
 create table pitaya_order(
