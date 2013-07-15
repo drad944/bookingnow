@@ -533,16 +533,16 @@ public class OrderService implements IOrderService{
 		MyResult result = new MyResult();
 		//check order existed in client data and DB data
 		if(order != null && order.getId() != null) {
-			Order realOrder = orderDao.selectByPrimaryKey(order.getId());
-			if(realOrder != null && realOrder.getId() != null){
-		
-				//check user existed in client data and DB data
-				if (order.getUser() != null && order.getUser().getId() != null) {
-					User realUser = userDao.selectByPrimaryKey(order.getUser().getId());
-					if (realUser != null && realUser.getId() != null) {
+			//check user existed in client data and DB data
+			if (order.getUser() != null && order.getUser().getId() != null) {
+				List<Order_Food_Detail> tempFood_Details = order.getFood_details();
+				if (tempFood_Details != null && tempFood_Details.size() > 0) {
 				
-						List<Order_Food_Detail> tempFood_Details = order.getFood_details();
-						if (tempFood_Details != null && tempFood_Details.size() > 0) {
+					Order realOrder = orderDao.selectByPrimaryKey(order.getId());
+					if(realOrder != null && realOrder.getId() != null){
+				
+						User realUser = userDao.selectByPrimaryKey(order.getUser().getId());
+						if (realUser != null && realUser.getId() != null) {
 							
 							//check food list existed in client data
 							for (int i = 0; i < tempFood_Details.size(); i++) {
@@ -607,17 +607,19 @@ public class OrderService implements IOrderService{
 								result.getResultDetails().put("order_status", "can not update all food in DB");
 							}
 						}else {
-							result.getResultDetails().put("food_detail", "food detail is empty");
+							//result.getResultDetails().put("food_detail", "food detail is empty");
+							result.getResultDetails().put("user_exist", "can not find user in DB data");
 						}
 						
 					}else {
-						result.getResultDetails().put("user_exist", "can not find user in DB.");
+						result.getResultDetails().put("order_exist", "can not find order in DB data");
 					}
 				}else {
-					result.getResultDetails().put("user_exist", "can not find user in client data");
+					result.getResultDetails().put("food_detail", "food detail is empty");
+					
 				}
 			}else {
-				result.getResultDetails().put("order_exist", "can not find order in DB.");
+				result.getResultDetails().put("user_exist", "can not find user in client data");
 			}
 		}else {
 			result.getResultDetails().put("order_exist", "can not find order in client data");
