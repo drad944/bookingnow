@@ -76,6 +76,15 @@
 				</result>
 					
 	        </action>
+	    <action name="j_spring_security_check" class="com.pitaya.bookingnow.action.UserAction" method="spring_security_loginUser">
+			<result name="loginSuccess" type="json">
+				<param name="root">loginUser</param>
+	        </result>
+	        
+			<result name="loginFail" type="json">
+				/Page/Common/error.jsp
+	        </result>
+	    </action>
 
 		<action name="*User" class="com.pitaya.bookingnow.action.UserAction" method="{1}User">
 			<result name="loginSuccess" type="json">
