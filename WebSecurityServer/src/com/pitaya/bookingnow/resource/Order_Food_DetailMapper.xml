@@ -68,6 +68,72 @@
 		F.description as F_description
 	</sql>
 	
+	<select id="selectFullBySelective" resultMap="Food_Detail_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Order_Food_Detail">
+           
+	    select
+		<include refid="Food_Detail_Base_Column_List" />
+		,
+		<include refid="Food_Without_Image_Column_List" />
+		from pitaya_order_food_detail FD
+			left outer join pitaya_food F on FD.food_id = F.id
+		<where>
+		    <if test="status != null">
+				FD.status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="count != null">
+				and FD.count = #{count,jdbcType=INTEGER}
+			</if>
+			<if test="preference != null">
+				and FD.preference = #{preference,jdbcType=INTEGER}
+			</if>
+			<if test="last_modify_time != null">
+				and FD.last_modify_time = #{last_modify_time,jdbcType=BIGINT}
+			</if>
+			<if test="enabled != null">
+				and FD.enabled = #{enabled,jdbcType=BIT}
+			</if>
+			<if test="isFree != null">
+				and FD.isFree = #{isFree,jdbcType=BIT}
+			</if>
+			<if test="food_id != null">
+				and FD.food_id = #{food_id,jdbcType=BIGINT}
+			</if>
+			<if test="order_id != null">
+				and FD.order_id = #{order_id,jdbcType=BIGINT}
+			</if>
+		    
+				<if test="food.recommendation != null">
+					and F.recommendation = #{food.recommendation,jdbcType=INTEGER}
+				</if>
+				<if test="food.status != null">
+					and F.status = #{food.status,jdbcType=INTEGER}
+				</if>
+				<if test="food.picture_id != null">
+					and F.picture_id = #{food.picture_id,jdbcType=BIGINT}
+				</if>
+				<if test="food.name != null">
+					and F.name = #{food.name,jdbcType=VARCHAR}
+				</if>
+				<if test="food.version != null">
+					and F.version = #{food.version,jdbcType=BIGINT}
+				</if>
+				<if test="food.period != null">
+					and F.period = #{food.period,jdbcType=BIGINT}
+				</if>
+				<if test="food.price != null">
+					and F.price = #{food.price,jdbcType=DOUBLE}
+				</if>
+				<if test="food.category != null">
+					and F.category = #{food.category,jdbcType=VARCHAR}
+				</if>
+				<if test="food.description != null">
+					and F.description = #{food.description,jdbcType=VARCHAR}
+				</if>
+			
+		</where>
+		
+	</select>
+	
 	<select id="selectFullByFoodId" resultMap="Food_Detail_BaseResultMap" parameterType="java.lang.Long">
 		select
 		<include refid="Food_Detail_Base_Column_List" />
@@ -76,6 +142,16 @@
 		from pitaya_order_food_detail FD
 			left outer join pitaya_food F on FD.food_id = F.id
 		where F.id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="selectFullByPrimaryKey" resultMap="Food_Detail_BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Food_Detail_Base_Column_List" />
+		,
+		<include refid="Food_Without_Image_Column_List" />
+		from pitaya_order_food_detail FD
+			left outer join pitaya_food F on FD.food_id = F.id
+		where FD.id = #{id,jdbcType=BIGINT}
 	</select>
 	
 	<!-- 
