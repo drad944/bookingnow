@@ -19,16 +19,16 @@ create table pitaya_table(
 	indoorPrice double
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_table values (1,201,1,2,'in the first floor',0);	
-insert into pitaya_table values (2,201,1,2,'in the second floor',50);
-insert into pitaya_table values (3,201,2,5,'in the first floor',0);
-insert into pitaya_table values (4,201,2,5,'in the second floor',50);
-insert into pitaya_table values (5,201,4,7,'in the first floor',0);
-insert into pitaya_table values (6,201,4,7,'in the second floor',60);
-insert into pitaya_table values (7,201,6,9,'in the first floor',0);
-insert into pitaya_table values (8,201,6,9,'in the second floor',80);
-insert into pitaya_table values (9,201,8,11,'in the second floor',0);
-insert into pitaya_table values (10,201,8,11,'in the first floor',0);
+insert into pitaya_table values (1,2,1,2,'in the first floor',0);	
+insert into pitaya_table values (2,2,1,2,'in the second floor',50);
+insert into pitaya_table values (3,2,2,5,'in the first floor',0);
+insert into pitaya_table values (4,3,2,5,'in the second floor',50);
+insert into pitaya_table values (5,3,4,7,'in the first floor',0);
+insert into pitaya_table values (6,3,4,7,'in the second floor',60);
+insert into pitaya_table values (7,4,6,9,'in the first floor',0);
+insert into pitaya_table values (8,4,6,9,'in the second floor',80);
+insert into pitaya_table values (9,4,8,11,'in the second floor',0);
+insert into pitaya_table values (10,2,8,11,'in the first floor',0);
 
 
 create table pitaya_order(
