@@ -17,20 +17,12 @@ public class OrderAction extends BaseAction{
 	
 	private List<Order> matchedOrders;
 	
-	private Double allowance;
-	
 	
 	public Order getResultOrder() {
 		return resultOrder;
 	}
 	public void setResultOrder(Order resultOrder) {
 		this.resultOrder = resultOrder;
-	}
-	public Double getAllowance() {
-		return allowance;
-	}
-	public void setAllowance(Double allowance) {
-		this.allowance = allowance;
 	}
 	public List<Order> getMatchedOrders() {
 		return matchedOrders;
@@ -52,28 +44,19 @@ public class OrderAction extends BaseAction{
 	}
 	
 	public String searchOrder() {
-		if (allowance != null) {
-			order = new Order();
-			order.setAllowance(allowance);
-		}
 		
 		if (order != null) {
 			
-			matchedOrders = orderService.searchOrders(order);
-			
-			this.setResult(Constants.SUCCESS);
-			this.setDetail("123123");
-			//return "searchSuccess";
-			return "SUCCESS";
+			matchedOrders = orderService.searchFullOrdersByFullOrder(order);
+			return "searchOrderSuccess";
 		}
-		
-		
-		if (order != null) {
-			orderService.searchOrders(order);
-			return "findSuccess";
+		if (result == null) {
+			result = new MyResult();
 		}
-		
-		return "findFail";
+		result.setErrorType(Constants.FAIL);
+		result.setExecuteResult(false);
+		result.getErrorDetails().put("order_exist", "can not find order info in client data");
+		return "searchOrderFail";
 	}
 	
 	public String addOrder() {
@@ -108,15 +91,14 @@ public class OrderAction extends BaseAction{
 	 */
 	public String submitWaitingOrder(){
 		if (order != null) {
-			MyResult result = orderService.addWaitingOrder(order);
+			result = orderService.addWaitingOrder(order);
 			
-			if (result.isResult()) {
-				this.setResult(Constants.SUCCESS);
+			if (result.isExecuteResult()) {
 				return "submitWaitingSuccess";
 			}
 		}
-		this.setResult(Constants.FAIL);
-		this.setDetail("Some reason cause the operation fail");
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
 		return "Fail";
 	}
 	
@@ -125,15 +107,14 @@ public class OrderAction extends BaseAction{
 	 */
 	public String updateWaitingOfWaitingOrder(){
 		if (order != null) {
-			MyResult result = orderService.updateWaitingOrderToWaiting(order);
+			result = orderService.updateWaitingOrderToWaiting(order);
 			
-			if (result.isResult()) {
-				this.setResult(Constants.SUCCESS);
+			if (result.isExecuteResult()) {
 				return "updateWaitingOfWaitingSuccess";
 			}
 		}
-		this.setResult(Constants.FAIL);
-		this.setDetail("Some reason cause the operation fail");
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
 		return "Fail";
 	}
 	
@@ -142,29 +123,27 @@ public class OrderAction extends BaseAction{
 	 */
 	public String updateConfirmedOfWaitingOrder(){
 		if (order != null) {
-			MyResult result = orderService.updateWaitingOrderToConfirmed(order);
+			result = orderService.updateWaitingOrderToConfirmed(order);
 			
-			if (result.isResult()) {
-				this.setResult(Constants.SUCCESS);
+			if (result.isExecuteResult()) {
 				return "updateConfirmedOfWaitingSuccess";
 			}
 		}
-		this.setResult(Constants.FAIL);
-		this.setDetail("Some reason cause the operation fail");
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
 		return "Fail";
 	}
 	
 	public String updateFoodsOfConfirmedOrder(){
 		if (order != null) {
-			MyResult result = orderService.updateFoodsInConfirmedOrder(order);
+			result = orderService.updateFoodsInConfirmedOrder(order);
 			
-			if (result.isResult()) {
-				this.setResult(Constants.SUCCESS);
+			if (result.isExecuteResult()) {
 				return "updateFoodsOfConfirmedSuccess";
 			}
 		}
-		this.setResult(Constants.FAIL);
-		this.setDetail("Some reason cause the operation fail");
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
 		return "Fail";
 	}
 	
@@ -174,15 +153,14 @@ public class OrderAction extends BaseAction{
 	
 	public String submitNewOrder(){
 		if (order != null) {
-			MyResult result = orderService.addNewOrder(order);
-			if (result.isResult()) {
+			result = orderService.addNewOrder(order);
+			if (result.isExecuteResult()) {
 				resultOrder = result.getOrder();
-				this.setResult(Constants.SUCCESS);
 				return "submitNewSuccess";
 			}
 		}
-		this.setResult(Constants.FAIL);
-		this.setDetail("Some reason cause the operation fail");
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
 		return "Fail";
 	}
 	
@@ -191,15 +169,14 @@ public class OrderAction extends BaseAction{
 	 */
 	public String updateConfirmedOfNewOrder(){
 		if (order != null) {
-			MyResult result = orderService.updateNewOrderToConfirmed(order);
+			result = orderService.updateNewOrderToConfirmed(order);
 			
-			if (result.isResult()) {
-				this.setResult(Constants.SUCCESS);
+			if (result.isExecuteResult()) {
 				return "updateConfirmedOfNewSuccess";
 			}
 		}
-		this.setResult(Constants.FAIL);
-		this.setDetail("Some reason cause the operation fail");
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
 		return "Fail";
 	}
 	

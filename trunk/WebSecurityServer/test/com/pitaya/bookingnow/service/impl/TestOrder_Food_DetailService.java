@@ -88,12 +88,12 @@ public class TestOrder_Food_DetailService {
 		 tempFood_Detail.setStatus(Constants.FOOD_COOKING);
 		 
 		 MyResult result = food_detailService.updateFoodStatus(tempFood_Detail);
-		 if (result.isResult()) {
+		 if (result.isExecuteResult()) {
 				
 				System.out.println("add new order successfully!");
 		 } else {
 			System.out.println("add new order failed!");
-			Map<String, String> falseResults = result.getResultDetails();
+			Map<String, String> falseResults = result.getErrorDetails();
 			Iterator iter = falseResults.entrySet().iterator(); 
 			while (iter.hasNext()) { 
 			    Map.Entry<String,String> entry = (Map.Entry<String,String>) iter.next();

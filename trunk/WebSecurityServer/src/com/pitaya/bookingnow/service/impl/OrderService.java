@@ -180,18 +180,18 @@ public class OrderService implements IOrderService{
 								//store the count of true result in for loop
 								result.setSubTrueCount(result.getSubTrueCount() + 1);
 							}else {
-								result.getResultDetails().put("table_exist", "can not find table in DB");
+								result.getErrorDetails().put("table_exist", "can not find table in DB");
 								break;
 							}
 							
 						}else {
-							result.getResultDetails().put("table_exist", "can not find table in client data");
+							result.getErrorDetails().put("table_exist", "can not find table in client data");
 							break;
 						}
 						
 					}
 					if (tempTable_Details.size() == result.getSubTrueCount()) {
-						result.setResult(true);
+						result.setExecuteResult(true);
 						result.setOrder(orderDao.selectFullOrderByPrimaryKey(order.getId()));
 					}else {
 						//do nothing
@@ -199,14 +199,14 @@ public class OrderService implements IOrderService{
 					
 					
 				}else {
-					result.getResultDetails().put("food_exist", "can not find detail in client data");
+					result.getErrorDetails().put("food_exist", "can not find detail in client data");
 				}
 				
 			}else {
-				result.getResultDetails().put("user_exist", "can not find in DB.");
+				result.getErrorDetails().put("user_exist", "can not find in DB.");
 			}
 		}else{
-			result.getResultDetails().put("user_exist", "can not find in client data");
+			result.getErrorDetails().put("user_exist", "can not find in client data");
 		}
 	
 		return result;
@@ -237,7 +237,7 @@ public class OrderService implements IOrderService{
 						if((order.getCustomer_count() != null && order.getCustomer_count() <= 0)
 								|| (realOrder.getCustomer_count() != null && realOrder.getCustomer_count() <= 0)) {
 							//notice client need to set customer count
-							result.getResultDetails().put("customer_count", "customer count is 0.");
+							result.getErrorDetails().put("customer_count", "customer count is 0.");
 						}else {
 							List<Order_Food_Detail> tempFood_Details = order.getFood_details();
 							if (tempFood_Details != null && tempFood_Details.size() > 0) {
@@ -273,25 +273,25 @@ public class OrderService implements IOrderService{
 														
 													}else if(tempFood.getPrice() == 0 || realFood.getPrice() == 0) {
 														//notice user to check food price is 0 in client and in database.
-														result.getResultDetails().put("food_price", "food price is 0 in client or DB");
+														result.getErrorDetails().put("food_price", "food price is 0 in client or DB");
 													}else {
 														//notice user to update food list for food price.
-														result.getResultDetails().put("food_price", "food price is negative number in client or DB");
+														result.getErrorDetails().put("food_price", "food price is negative number in client or DB");
 													}
 												}else {
-													result.getResultDetails().put("food_price", "food price is null in client or DB");
+													result.getErrorDetails().put("food_price", "food price is null in client or DB");
 												}
 												
 													
 												
 											}else {
-												result.getResultDetails().put("food_exist", "can not find food in DB.");
+												result.getErrorDetails().put("food_exist", "can not find food in DB.");
 											}
 										}else {
-											result.getResultDetails().put("food_exist", "can not find food in client data");
+											result.getErrorDetails().put("food_exist", "can not find food in client data");
 										}
 									}else {
-										result.getResultDetails().put("food_count", "food count is 0");
+										result.getErrorDetails().put("food_count", "food count is 0");
 									}
 								}
 								
@@ -303,29 +303,29 @@ public class OrderService implements IOrderService{
 											order.setAllowance(1.0);
 										}
 										if (orderDao.updateByPrimaryKeySelective(order) == 1) {
-											result.setResult(true);
+											result.setExecuteResult(true);
 										}
 									
 								}else {
-									result.getResultDetails().put("order_status", "can not update all food in DB");
+									result.getErrorDetails().put("order_status", "can not update all food in DB");
 								}
 							}else {
-								result.getResultDetails().put("food_detail", "food detail is empty");
+								result.getErrorDetails().put("food_detail", "food detail is empty");
 							}
 						}
 						
 					}else {
-						result.getResultDetails().put("order_exist", "can not find order in DB.");
+						result.getErrorDetails().put("order_exist", "can not find order in DB.");
 					}
 				}else {
-					result.getResultDetails().put("order_exist", "can not find order in client data");
+					result.getErrorDetails().put("order_exist", "can not find order in client data");
 				}
 				
 			}else {
-				result.getResultDetails().put("user_exist", "can not find user in DB.");
+				result.getErrorDetails().put("user_exist", "can not find user in DB.");
 			}
 		}else {
-			result.getResultDetails().put("user_exist", "can not find user in client data");
+			result.getErrorDetails().put("user_exist", "can not find user in client data");
 		}
 		
 		return result;
@@ -369,11 +369,11 @@ public class OrderService implements IOrderService{
 									}
 									
 								}else {
-									result.getResultDetails().put("food_exist", "can not find food in DB data");
+									result.getErrorDetails().put("food_exist", "can not find food in DB data");
 									break;
 								}
 							}else {
-								result.getResultDetails().put("food_detail_exist", "can not find food detail in DB data");
+								result.getErrorDetails().put("food_detail_exist", "can not find food detail in DB data");
 								break;
 							}
 					
@@ -385,7 +385,7 @@ public class OrderService implements IOrderService{
 						}
 						
 					}else {
-						result.getResultDetails().put("food_detail_exist", "can not find food detail in client data");
+						result.getErrorDetails().put("food_detail_exist", "can not find food detail in client data");
 					}
 					
 					List<Order_Table_Detail> realTable_Details = realOrder.getTable_details();
@@ -412,11 +412,11 @@ public class OrderService implements IOrderService{
 									}
 									
 								}else {
-									result.getResultDetails().put("table_exist", "can not find table or it's id in DB.");
+									result.getErrorDetails().put("table_exist", "can not find table or it's id in DB.");
 								}
 								
 							}else {
-								result.getResultDetails().put("table_detail_exist", "can not find table or it's id in DB.");
+								result.getErrorDetails().put("table_detail_exist", "can not find table or it's id in DB.");
 							}
 						}
 						
@@ -430,19 +430,19 @@ public class OrderService implements IOrderService{
 						realOrder.setModifyTime(new Date().getTime());
 						realOrder.setStatus(Constants.ORDER_FINISHED);
 						if (orderDao.updateByPrimaryKeySelective(realOrder) == 1) {
-							result.setResult(true);
+							result.setExecuteResult(true);
 						}else {
 							throw new RuntimeException("can not update order status.");
 						}
 						
 					}else {
-						result.getResultDetails().put("table_detail_exist", "can not find table detail in client data");
+						result.getErrorDetails().put("table_detail_exist", "can not find table detail in client data");
 					}
 				}else {
-					result.getResultDetails().put("user_exist", "can not find user or user's id in client data");
+					result.getErrorDetails().put("user_exist", "can not find user or user's id in client data");
 				}
 			}else {
-				result.getResultDetails().put("order_exist", "can not find order or order's id in client data");
+				result.getErrorDetails().put("order_exist", "can not find order or order's id in client data");
 			}
 			
 		} catch (Exception e) {
@@ -474,16 +474,16 @@ public class OrderService implements IOrderService{
 					order.setStatus(Constants.ORDER_NEW);
 					
 					if(orderDao.insert(order) == 1) {
-						result.setResult(true);
+						result.setExecuteResult(true);
 					}else {
 						throw new RuntimeException("failed to exec method updateWaitingOrderToConfirmed in OrderService.java");
 					}
 					
 				}else {
-					result.getResultDetails().put("customer_count", "customer count is 0 in client data");
+					result.getErrorDetails().put("customer_count", "customer count is 0 in client data");
 				}
 			}else {
-				result.getResultDetails().put("customer_exist", "can not find customer in DB.");
+				result.getErrorDetails().put("customer_exist", "can not find customer in DB.");
 			}
 			
 		}else {
@@ -504,20 +504,20 @@ public class OrderService implements IOrderService{
 					
 					
 					if (orderDao.insert(order) == 1) {
-						result.setResult(true);
+						result.setExecuteResult(true);
 						
 					}else {
 						throw new RuntimeException("failed to insert order in DB");
 					}
 					
 				}else {
-					result.getResultDetails().put("customer_count", "customer count is 0 in client data");
+					result.getErrorDetails().put("customer_count", "customer count is 0 in client data");
 				}
 				
 			}else if (tempCustomer != null && tempCustomer.getName() == null) {
-				result.getResultDetails().put("customer_exist", "can not find customer name in client data");
+				result.getErrorDetails().put("customer_exist", "can not find customer name in client data");
 			}else {
-				result.getResultDetails().put("customer_exist", "can not find customer phone in client data");
+				result.getErrorDetails().put("customer_exist", "can not find customer phone in client data");
 			}
 		}
 			
@@ -577,20 +577,20 @@ public class OrderService implements IOrderService{
 												
 											}else if(tempFood.getPrice() == 0 || realFood.getPrice() == 0) {
 												//notice user to check food price is 0 in client and in database.
-												result.getResultDetails().put("food_price", "food price is 0 in client or DB");
+												result.getErrorDetails().put("food_price", "food price is 0 in client or DB");
 											}else {
 												//notice user to update food list for food price.
-												result.getResultDetails().put("food_price", "food price is negative number in client or DB");
+												result.getErrorDetails().put("food_price", "food price is negative number in client or DB");
 											}
 										}else {
-											result.getResultDetails().put("food_price", "food price is null in client or DB");
+											result.getErrorDetails().put("food_price", "food price is null in client or DB");
 										}
 										
 									}else {
-										result.getResultDetails().put("food_exist", "can not find food in DB.");
+										result.getErrorDetails().put("food_exist", "can not find food in DB.");
 									}
 								}else {
-									result.getResultDetails().put("food_exist", "can not find food in client data");
+									result.getErrorDetails().put("food_exist", "can not find food in client data");
 								}
 							}
 							
@@ -599,31 +599,31 @@ public class OrderService implements IOrderService{
 									order.setModifyTime(new Date().getTime());
 									order.setStatus(Constants.ORDER_WAITING);
 									if (orderDao.updateByPrimaryKeySelective(order) == 1) {
-										result.setResult(true);
+										result.setExecuteResult(true);
 									}
 									
 									//do we need to add food price in result.
 								
 							}else {
-								result.getResultDetails().put("order_status", "can not update all food in DB");
+								result.getErrorDetails().put("order_status", "can not update all food in DB");
 							}
 						}else {
-							//result.getResultDetails().put("food_detail", "food detail is empty");
-							result.getResultDetails().put("user_exist", "can not find user in DB data");
+							//result.getErrorDetails().put("food_detail", "food detail is empty");
+							result.getErrorDetails().put("user_exist", "can not find user in DB data");
 						}
 						
 					}else {
-						result.getResultDetails().put("order_exist", "can not find order in DB data");
+						result.getErrorDetails().put("order_exist", "can not find order in DB data");
 					}
 				}else {
-					result.getResultDetails().put("food_detail", "food detail is empty");
+					result.getErrorDetails().put("food_detail", "food detail is empty");
 					
 				}
 			}else {
-				result.getResultDetails().put("user_exist", "can not find user in client data");
+				result.getErrorDetails().put("user_exist", "can not find user in client data");
 			}
 		}else {
-			result.getResultDetails().put("order_exist", "can not find order in client data");
+			result.getErrorDetails().put("order_exist", "can not find order in client data");
 		}
 		
 		return result;
@@ -688,12 +688,12 @@ public class OrderService implements IOrderService{
 										//store the count of true result in for loop
 										result.setSubTrueCount(result.getSubTrueCount() + 1);
 									}else {
-										result.getResultDetails().put("table_exist", "can not find table in DB");
+										result.getErrorDetails().put("table_exist", "can not find table in DB");
 										break;
 									}
 									
 								}else {
-									result.getResultDetails().put("table_exist", "can not find table in client data");
+									result.getErrorDetails().put("table_exist", "can not find table in client data");
 									break;
 								}
 								
@@ -721,7 +721,7 @@ public class OrderService implements IOrderService{
 								realOrder.setStatus(Constants.ORDER_COMMITED);
 								realOrder.setModifyTime(new Date().getTime());
 								if (orderDao.updateByPrimaryKeySelective(realOrder) == 1) {
-									result.setResult(true);
+									result.setExecuteResult(true);
 								}else {
 									throw new RuntimeException("-------- failed to insert order in DB.");
 								}
@@ -731,21 +731,21 @@ public class OrderService implements IOrderService{
 							}
 							
 						}else {
-							result.getResultDetails().put("table_exist", "can not find table detail in client data");
+							result.getErrorDetails().put("table_exist", "can not find table detail in client data");
 						}
 						
 					}else {
-						result.getResultDetails().put("user_exist", "can not find in DB.");
+						result.getErrorDetails().put("user_exist", "can not find in DB.");
 					}
 				}else{
-					result.getResultDetails().put("user_exist", "can not find in client data");
+					result.getErrorDetails().put("user_exist", "can not find in client data");
 				}
 			}else {
-				result.getResultDetails().put("order_exist", "can not find order or order id in DB data");
+				result.getErrorDetails().put("order_exist", "can not find order or order id in DB data");
 			}
 			
 		}else {
-			result.getResultDetails().put("order_exist", "can not find order or order id in client data");
+			result.getErrorDetails().put("order_exist", "can not find order or order id in client data");
 		}
 		
 		return result;
@@ -806,22 +806,22 @@ public class OrderService implements IOrderService{
 													
 												}else if(tempFood.getPrice() == 0 || realFood.getPrice() == 0) {
 													//notice user to check food price is 0 in client and in database.
-													result.getResultDetails().put("food_price", "food price is 0 in client or DB");
+													result.getErrorDetails().put("food_price", "food price is 0 in client or DB");
 												}else {
 													//notice user to update food list for food price.
-													result.getResultDetails().put("food_price", "food price is negative number in client or DB");
+													result.getErrorDetails().put("food_price", "food price is negative number in client or DB");
 												}
 											}else {
-												result.getResultDetails().put("food_price", "food price is null in client or DB");
+												result.getErrorDetails().put("food_price", "food price is null in client or DB");
 											}
 											
 												
 											
 										}else {
-											result.getResultDetails().put("food_exist", "can not find food in DB.");
+											result.getErrorDetails().put("food_exist", "can not find food in DB.");
 										}
 									}else {
-										result.getResultDetails().put("food_exist", "can not find food in client data");
+										result.getErrorDetails().put("food_exist", "can not find food in client data");
 									}
 								}else if(tempFood_Detail.getStatus() != null && tempFood_Detail.getStatus() == Constants.FOOD_UNAVAILABLE){
 									//remove food which have been booked.
@@ -844,36 +844,36 @@ public class OrderService implements IOrderService{
 										if (realFoodSize == (realFood_Details.size() + 1 )) {
 											
 										}else {
-											result.getResultDetails().put("food_status", "some food is cooking,can not delete it");
+											result.getErrorDetails().put("food_status", "some food is cooking,can not delete it");
 										}
 									}else {
 										throw new RuntimeException("can not find food list in DB.");
 									}
 								}else {
-									result.getResultDetails().put("food_count", "food count is 0");
+									result.getErrorDetails().put("food_count", "food count is 0");
 								}
 							}
 							if (tempFood_Details.size() == result.getSubTrueCount()) {
-								result.setResult(true);
+								result.setExecuteResult(true);
 							}else {
 								throw new RuntimeException("can not find food list in DB.");
 							}
 							
 						}else {
-							result.getResultDetails().put("food_detail", "food detail is empty");
+							result.getErrorDetails().put("food_detail", "food detail is empty");
 						}
 						
 					}else {
-						result.getResultDetails().put("user_exist", "can not find user in DB.");
+						result.getErrorDetails().put("user_exist", "can not find user in DB.");
 					}
 				}else {
-					result.getResultDetails().put("user_exist", "can not find user in client data");
+					result.getErrorDetails().put("user_exist", "can not find user in client data");
 				}	
 			}else {
-				result.getResultDetails().put("order_exist", "can not find order in DB.");
+				result.getErrorDetails().put("order_exist", "can not find order in DB.");
 			}
 		}else {
-			result.getResultDetails().put("order_exist", "can not find order in client data");
+			result.getErrorDetails().put("order_exist", "can not find order in client data");
 		}
 		
 		return result;
@@ -918,14 +918,14 @@ public class OrderService implements IOrderService{
 										throw new RuntimeException("failed to delete food detail in DB.");
 									}
 								}else {
-									result.getResultDetails().put("food_exist", "can not find food in client data");
+									result.getErrorDetails().put("food_exist", "can not find food in client data");
 								}
 							}else {
-								result.getResultDetails().put("food_detail_exist", "can not find food detail or id in DB.");
+								result.getErrorDetails().put("food_detail_exist", "can not find food detail or id in DB.");
 							}
 						}
 					}else {
-						result.getResultDetails().put("food_details_exist", "can not find food details in DB.");
+						result.getErrorDetails().put("food_details_exist", "can not find food details in DB.");
 					}
 					
 					List<Order_Table_Detail> realTable_Details = realOrder.getTable_details();
@@ -948,17 +948,17 @@ public class OrderService implements IOrderService{
 										throw new RuntimeException("failed to update table to empty status in DB.");
 									}
 								}else {
-									result.getResultDetails().put("table_exist", "can not find table in DB data");
+									result.getErrorDetails().put("table_exist", "can not find table in DB data");
 								}
 								
 							} else {
-								result.getResultDetails().put("table_detail_exist", "can not find table detail or id in DB.");
+								result.getErrorDetails().put("table_detail_exist", "can not find table detail or id in DB.");
 							}
 						}
 						
 						
 					}else {
-						result.getResultDetails().put("table_details_exist", "can not find table details in DB.");
+						result.getErrorDetails().put("table_details_exist", "can not find table details in DB.");
 					}
 					
 					Customer realCustomer = realOrder.getCustomer();
@@ -970,24 +970,24 @@ public class OrderService implements IOrderService{
 							throw new RuntimeException("failed to update customer to unavailable in DB.");
 						}
 					}else {
-						result.getResultDetails().put("customer_exist", "can not find customer in DB.");
+						result.getErrorDetails().put("customer_exist", "can not find customer in DB.");
 					}
 					
 					order.setEnabled(false);
 					order.setStatus(Constants.ORDER_UNAVAILABLE);
 					if (orderDao.updateByPrimaryKeySelective(order) == 1) {
-						result.setResult(true);
+						result.setExecuteResult(true);
 					}else {
 						throw new RuntimeException("can not delete order in DB.");
 					}
 				}else {
-					result.getResultDetails().put("order_status", "can not cancel order in DB because order status is not new or waiting.");
+					result.getErrorDetails().put("order_status", "can not cancel order in DB because order status is not new or waiting.");
 				}
 			}else {
-				result.getResultDetails().put("order_exist", "can not find order in DB.");
+				result.getErrorDetails().put("order_exist", "can not find order in DB.");
 			}
 		}else {
-			result.getResultDetails().put("order_exist", "can not find order in client data");
+			result.getErrorDetails().put("order_exist", "can not find order in client data");
 		}
 		return result;
 	}
@@ -1029,14 +1029,14 @@ public class OrderService implements IOrderService{
 										throw new RuntimeException("failed to delete food detail in DB.");
 									}
 								}else {
-									result.getResultDetails().put("food_exist", "can not find food in client data");
+									result.getErrorDetails().put("food_exist", "can not find food in client data");
 								}
 							}else {
-								result.getResultDetails().put("food_detail_exist", "can not find food detail or id in DB.");
+								result.getErrorDetails().put("food_detail_exist", "can not find food detail or id in DB.");
 							}
 						}
 					}else {
-						result.getResultDetails().put("food_details_exist", "can not find food details in DB.");
+						result.getErrorDetails().put("food_details_exist", "can not find food details in DB.");
 					}
 					
 					List<Order_Table_Detail> realTable_Details = realOrder.getTable_details();
@@ -1058,17 +1058,17 @@ public class OrderService implements IOrderService{
 										throw new RuntimeException("failed to update table to empty status in DB.");
 									}
 								}else {
-									result.getResultDetails().put("table_exist", "can not find table in DB data");
+									result.getErrorDetails().put("table_exist", "can not find table in DB data");
 								}
 								
 							} else {
-								result.getResultDetails().put("table_detail_exist", "can not find table detail or id in DB.");
+								result.getErrorDetails().put("table_detail_exist", "can not find table detail or id in DB.");
 							}
 						}
 						
 						
 					}else {
-						result.getResultDetails().put("table_details_exist", "can not find table details in DB.");
+						result.getErrorDetails().put("table_details_exist", "can not find table details in DB.");
 					}
 					
 					Customer realCustomer = realOrder.getCustomer();
@@ -1079,22 +1079,22 @@ public class OrderService implements IOrderService{
 							throw new RuntimeException("failed to update customer to unavailable in DB.");
 						}
 					}else {
-						result.getResultDetails().put("customer_exist", "can not find customer in DB.");
+						result.getErrorDetails().put("customer_exist", "can not find customer in DB.");
 					}
 					
 					if (orderDao.deleteByPrimaryKey(order.getId()) == 1) {
-						result.setResult(true);
+						result.setExecuteResult(true);
 					}else {
 						throw new RuntimeException("can not delete order in DB.");
 					}
 				}else {
-					result.getResultDetails().put("order_status", "can not cancel order in DB because order status is not new or waiting.");
+					result.getErrorDetails().put("order_status", "can not cancel order in DB because order status is not new or waiting.");
 				}
 			}else {
-				result.getResultDetails().put("order_exist", "can not find order in DB.");
+				result.getErrorDetails().put("order_exist", "can not find order in DB.");
 			}
 		}else {
-			result.getResultDetails().put("order_exist", "can not find order in client data");
+			result.getErrorDetails().put("order_exist", "can not find order in client data");
 		}
 		return result;
 	}
@@ -1144,14 +1144,14 @@ public class OrderService implements IOrderService{
 								result.setTotalPriceOfOrder(result.getTotalPriceOfOrder() + realTable_Detail.getTable().getIndoorPrice());
 							}else {
 								result.setTotalPriceOfOrder(-1);
-								result.getResultDetails().put("indoor_price_exist", "can not find indoor price in DB data");
+								result.getErrorDetails().put("indoor_price_exist", "can not find indoor price in DB data");
 								return result;
 							}
 						}
 						
 					}else {
 						result.setTotalPriceOfOrder(-1);
-						result.getResultDetails().put("table_detail_exist", "can not find table detail in DB data");
+						result.getErrorDetails().put("table_detail_exist", "can not find table detail in DB data");
 						return result;
 					}
 					
@@ -1169,12 +1169,12 @@ public class OrderService implements IOrderService{
 										result.setSubTrueCount(result.getSubTrueCount() + 1);
 									}else {
 										result.setTotalPriceOfOrder(-1);
-										result.getResultDetails().put("food_count_negative", "food count or price is a negative number in DB data");
+										result.getErrorDetails().put("food_count_negative", "food count or price is a negative number in DB data");
 										return result;
 									}
 								}else {
 									result.setTotalPriceOfOrder(-1);
-									result.getResultDetails().put("food_price_exist", "can not find food price in DB data");
+									result.getErrorDetails().put("food_price_exist", "can not find food price in DB data");
 									return result;
 								}
 							}
@@ -1182,7 +1182,7 @@ public class OrderService implements IOrderService{
 						
 					}else {
 						result.setTotalPriceOfOrder(-1);
-						result.getResultDetails().put("food_detail_exist", "can not find food detail in DB data");
+						result.getErrorDetails().put("food_detail_exist", "can not find food detail in DB data");
 						return result;
 					}
 					
@@ -1190,7 +1190,7 @@ public class OrderService implements IOrderService{
 						result.setTotalPriceOfOrder(result.getTotalPriceOfOrder() * realOrder.getAllowance());
 						realOrder.setTotal_price(result.getTotalPriceOfOrder());
 						result.setOrder(realOrder);
-						result.setResult(true);
+						result.setExecuteResult(true);
 						
 						order.setTotal_price(result.getTotalPriceOfOrder());
 						orderDao.updateByPrimaryKeySelective(order);
@@ -1198,23 +1198,23 @@ public class OrderService implements IOrderService{
 						return result;
 					}else {
 						result.setTotalPriceOfOrder(-1);
-						result.getResultDetails().put("order_allowance", "order allowance is a invalid number a in DB data");
+						result.getErrorDetails().put("order_allowance", "order allowance is a invalid number a in DB data");
 						return result;
 					}
 				}else {
 					result.setTotalPriceOfOrder(-1);
-					result.getResultDetails().put("customer_count", "can not find customer count id in DB data");
+					result.getErrorDetails().put("customer_count", "can not find customer count id in DB data");
 					return result;
 				}
 			}else {
 				result.setTotalPriceOfOrder(-1);
-				result.getResultDetails().put("order_exist", "can not find order or order id in DB data");
+				result.getErrorDetails().put("order_exist", "can not find order or order id in DB data");
 				return result;
 			}
 			
 		}else {
 			result.setTotalPriceOfOrder(-1);
-			result.getResultDetails().put("order_exist", "can not find order or order id in client data");
+			result.getErrorDetails().put("order_exist", "can not find order or order id in client data");
 			return result;
 		}
 	}
@@ -1226,11 +1226,15 @@ public class OrderService implements IOrderService{
 	}
 
 	@Override
-	public List<Order> searchOrdersByCustomer(Customer customer) {
-		if (customer != null) {
-			return orderDao.searchOrdersByCustomer(customer);
-		}
-		return null;
+	public List<Order> searchFullOrdersByFullOrder(Order order) {
+		return orderDao.searchFullOrdersByFullOrderInfo(order);
 	}
+
+	@Override
+	public List<Order> searchOrdersByFullOrder(Order order) {
+		return orderDao.searchOrdersByFullOrderInfo(order);
+	}
+
+
 
 }

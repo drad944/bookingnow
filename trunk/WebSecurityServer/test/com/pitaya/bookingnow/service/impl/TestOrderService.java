@@ -42,6 +42,115 @@ public class TestOrderService {
 		assertNotNull(orderService);
 		this.orderService = orderService;
 	}
+	
+	public void showFullOrderInfo(Order realOrder) {
+		String space = "    ";
+		User realUser = realOrder.getUser();
+		if (realUser != null) {
+			System.out.println("Id : " + realUser.getId());
+			System.out.println("Account : " + realUser.getAccount());
+			System.out.println("Address : " + realUser.getAddress());
+			System.out.println("Description : " + realUser.getDescription());
+			System.out.println("Email : " + realUser.getEmail());
+			System.out.println("Name : " + realUser.getName());
+			System.out.println("Password : " + realUser.getPassword());
+			System.out.println("Phone : " + realUser.getPhone());
+			System.out.println("Birthday : " + realUser.getBirthday());
+			System.out.println("Department : " + realUser.getDepartment());
+			System.out.println("Picture_id : " + realUser.getPicture_id());
+			System.out.println("Sex : " + realUser.getSex());
+			System.out.println("Sub_system : " + realUser.getSub_system());
+			System.out.println("Enabled : " + realUser.getEnabled());
+		}
+		
+		Customer realCustomer = realOrder.getCustomer();
+		if (realCustomer != null) {
+			System.out.println("Id : " + realCustomer.getId());
+			System.out.println("Account : " + realCustomer.getAccount());
+			System.out.println("Address : " + realCustomer.getAddress());
+			System.out.println("Email : " + realCustomer.getEmail());
+			System.out.println("Name : " + realCustomer.getName());
+			System.out.println("Password : " + realCustomer.getPassword());
+			System.out.println("Phone : " + realCustomer.getPhone());
+			System.out.println("Birthday : " + realCustomer.getBirthday());
+			System.out.println("Picture_id : " + realCustomer.getPicture_id());
+			System.out.println("Sex : " + realCustomer.getSex());
+			System.out.println("Enabled : " + realCustomer.getEnabled());
+		}
+		
+		
+		List<Order_Food_Detail> realFood_Details = realOrder.getFood_details();
+		 for (int j = 0; j < realFood_Details.size(); j++) {
+			 Order_Food_Detail realFood_Detail = realFood_Details.get(j);
+			 if (realFood_Detail != null) {
+				System.out.println("Id : " + realFood_Detail.getId());
+				System.out.println("Count : " + realFood_Detail.getCount());
+				System.out.println("Food_id : " + realFood_Detail.getFood_id());
+				System.out.println("Last_modify_time : " + realFood_Detail.getLast_modify_time());
+				System.out.println("Order_id : " + realFood_Detail.getOrder_id());
+				System.out.println("Preference : " + realFood_Detail.getPreference());
+				System.out.println("Status : " + realFood_Detail.getStatus());
+				System.out.println("Enabled : " + realFood_Detail.getEnabled());
+				System.out.println("IsFree : " + realFood_Detail.getIsFree());
+				if (realFood_Detail.getFood() != null) {
+					Food realFood = realFood_Detail.getFood();
+					System.out.println(space + "id : " + realFood.getId());
+					System.out.println(space + "Category : " + realFood.getCategory());
+					System.out.println(space + "Description : " + realFood.getDescription());
+					System.out.println(space + "Name : " + realFood.getName());
+					System.out.println(space + "Period : " + realFood.getPeriod());
+					System.out.println(space + "Picture_id : " + realFood.getPicture_id());
+					System.out.println(space + "Price : " + realFood.getPrice());
+					System.out.println(space + "Recommendation : " + realFood.getRecommendation());
+					System.out.println(space + "Status : " + realFood.getStatus());
+					System.out.println(space + "Version : " + realFood.getVersion());
+				}
+				System.out.println();
+			}
+		}
+		 
+		 List<Order_Table_Detail> realTable_Details = realOrder.getTable_details();
+		 for (int j = 0; j < realTable_Details.size(); j++) {
+			 Order_Table_Detail realTable_Detail = realTable_Details.get(j);
+			 if (realTable_Detail != null) {
+				System.out.println("Id : " + realTable_Detail.getId());
+				System.out.println("Order_id : " + realTable_Detail.getOrder_id());
+				System.out.println("RealCustomerCount : " + realTable_Detail.getRealCustomerCount());
+				System.out.println("Table_id : " + realTable_Detail.getTable_id());
+				System.out.println("Enabled : " + realTable_Detail.getEnabled());
+				if (realTable_Detail.getTable() != null) {
+					Table realTable = realTable_Detail.getTable();
+					System.out.println(space + "id : " + realTable.getId());
+					System.out.println(space + "Address : " + realTable.getAddress());
+					System.out.println(space + "IndoorPrice : " + realTable.getIndoorPrice());
+					System.out.println(space + "MaxCustomerCount : " + realTable.getMaxCustomerCount());
+					System.out.println(space + "MinCustomerCount : " + realTable.getMinCustomerCount());
+					System.out.println(space + "Status : " + realTable.getStatus());
+				}
+				System.out.println();
+			}
+		}
+
+	}
+	
+	@Test
+	public void testSearchFullOrdersByFullOrder() {
+		Order order = new Order();
+		User user = new User();
+		user.setId((long) 2);
+		order.setUser(user);
+		
+		List<Order> realOrders = orderService.searchFullOrdersByFullOrder(order);
+		
+		if (realOrders != null) {
+			
+			for (int i = 0; i < realOrders.size(); i++) {
+				Order realOrder = realOrders.get(i);
+				showFullOrderInfo(realOrder);
+			}
+		}
+		
+	}
 
 	@Test
 	public void testAddNewOrder() {
@@ -65,12 +174,12 @@ public class TestOrderService {
 		
 
 		MyResult result = orderService.addNewOrder(order);
-		if (result.isResult()) {
+		if (result.isExecuteResult()) {
 			
 			System.out.println("add new order successfully!");
 		} else {
 			System.out.println("add new order failed!");
-			Map<String, String> falseResults = result.getResultDetails();
+			Map<String, String> falseResults = result.getErrorDetails();
 			Iterator iter = falseResults.entrySet().iterator(); 
 			while (iter.hasNext()) { 
 			    Map.Entry entry = (Map.Entry) iter.next();
@@ -107,12 +216,12 @@ public class TestOrderService {
 		
 		
 		MyResult result = orderService.updateNewOrderToConfirmed(order);
-		if (result.isResult()) {
+		if (result.isExecuteResult()) {
 			
 			System.out.println("add new order successfully!");
 		} else {
 			System.out.println("add new order failed!");
-			Map<String, String> falseResults = result.getResultDetails();
+			Map<String, String> falseResults = result.getErrorDetails();
 			Iterator iter = falseResults.entrySet().iterator(); 
 			while (iter.hasNext()) { 
 			    Map.Entry entry = (Map.Entry) iter.next();
@@ -137,12 +246,12 @@ public class TestOrderService {
 		
 		
 		MyResult result = orderService.addWaitingOrder(order);
-		if (result.isResult()) {
+		if (result.isExecuteResult()) {
 			
 			System.out.println("add new order successfully!");
 		} else {
 			System.out.println("add new order failed!");
-			Map<String, String> falseResults = result.getResultDetails();
+			Map<String, String> falseResults = result.getErrorDetails();
 			Iterator iter = falseResults.entrySet().iterator(); 
 			while (iter.hasNext()) { 
 			    Map.Entry entry = (Map.Entry) iter.next();
@@ -162,17 +271,20 @@ public class TestOrderService {
 		customer.setSex(Constants.CUSTOMER_MALE);
 		customer.setEnabled(true);
 		
-		List<Order> orders = orderService.searchOrdersByCustomer(customer);
+		Order tempOrder = new Order();
+		tempOrder.setCustomer(customer);
+		
+		List<Order> orders = orderService.searchFullOrdersByFullOrder(tempOrder);
 		if (orders != null && orders.size() > 0) {
 			for (int i = 0; i < orders.size(); i++) {
 				Order order = orders.get(i);
 				MyResult result = orderService.cancelOrder(order);
-				if (result.isResult()) {
+				if (result.isExecuteResult()) {
 					
 					System.out.println("add new order successfully!");
 				} else {
 					System.out.println("add new order failed!");
-					Map<String, String> falseResults = result.getResultDetails();
+					Map<String, String> falseResults = result.getErrorDetails();
 					Iterator iter = falseResults.entrySet().iterator(); 
 					while (iter.hasNext()) { 
 					    Map.Entry entry = (Map.Entry) iter.next();
@@ -196,17 +308,20 @@ public class TestOrderService {
 		customer.setSex(Constants.CUSTOMER_MALE);
 		customer.setEnabled(false);
 		
-		List<Order> orders = orderService.searchOrdersByCustomer(customer);
+		Order tempOrder = new Order();
+		tempOrder.setCustomer(customer);
+		
+		List<Order> orders = orderService.searchFullOrdersByFullOrder(tempOrder);
 		if (orders != null && orders.size() > 0) {
 			for (int i = 0; i < orders.size(); i++) {
 				Order order = orders.get(i);
 				MyResult result = orderService.deleteOrder(order);
-				if (result.isResult()) {
+				if (result.isExecuteResult()) {
 					
 					System.out.println("add new order successfully!");
 				} else {
 					System.out.println("add new order failed!");
-					Map<String, String> falseResults = result.getResultDetails();
+					Map<String, String> falseResults = result.getErrorDetails();
 					Iterator iter = falseResults.entrySet().iterator(); 
 					while (iter.hasNext()) { 
 					    Map.Entry entry = (Map.Entry) iter.next();
@@ -237,7 +352,10 @@ public class TestOrderService {
 		User user = new User();
 		user.setId((long) 3);
 		
-		Order order = orderService.searchOrdersByCustomer(customer).get(0);
+		Order tempOrder = new Order();
+		tempOrder.setCustomer(customer);
+		
+		Order order = orderService.searchFullOrdersByFullOrder(tempOrder).get(0);
 		List<Order_Food_Detail> food_Details = new ArrayList<Order_Food_Detail>();
 		for (int i = 0; i < 5; i++) {
 			Order_Food_Detail tempFood_Detail = new Order_Food_Detail();
@@ -254,12 +372,12 @@ public class TestOrderService {
 		order.setAllowance(1.0);
 
 		MyResult result = orderService.updateWaitingOrderToWaiting(order);
-		if (result.isResult()) {
+		if (result.isExecuteResult()) {
 			
 			System.out.println("add new order successfully!");
 		} else {
 			System.out.println("add new order failed!");
-			Map<String, String> falseResults = result.getResultDetails();
+			Map<String, String> falseResults = result.getErrorDetails();
 			Iterator iter = falseResults.entrySet().iterator(); 
 			while (iter.hasNext()) { 
 			    Map.Entry entry = (Map.Entry) iter.next();
@@ -277,7 +395,10 @@ public class TestOrderService {
 		customer.setPhone("13546768131");
 		customer.setSex(Constants.CUSTOMER_MALE);
 		
-		Order order = orderService.searchOrdersByCustomer(customer).get(0);
+		Order tempOrder = new Order();
+		tempOrder.setCustomer(customer);
+		
+		Order order = orderService.searchFullOrdersByFullOrder(tempOrder).get(0);
 		User user = new User();
 		user.setId((long) 3);
 		order.setUser(user);
@@ -293,12 +414,12 @@ public class TestOrderService {
 		order.setTable_details(table_Details);
 		
 		MyResult result = orderService.updateWaitingOrderToConfirmed(order);
-		if (result.isResult()) {
+		if (result.isExecuteResult()) {
 			
 			System.out.println("add new order successfully!");
 		} else {
 			System.out.println("add new order failed!");
-			Map<String, String> falseResults = result.getResultDetails();
+			Map<String, String> falseResults = result.getErrorDetails();
 			Iterator iter = falseResults.entrySet().iterator(); 
 			while (iter.hasNext()) { 
 			    Map.Entry entry = (Map.Entry) iter.next();
@@ -342,12 +463,12 @@ public class TestOrderService {
 		order.setFood_details(food_Details);
 
 		MyResult result = orderService.updateFoodsInConfirmedOrder(order);
-		if (result.isResult()) {
+		if (result.isExecuteResult()) {
 			
 			System.out.println("add new order successfully!");
 		} else {
 			System.out.println("add new order failed!");
-			Map<String, String> falseResults = result.getResultDetails();
+			Map<String, String> falseResults = result.getErrorDetails();
 			Iterator iter = falseResults.entrySet().iterator(); 
 			while (iter.hasNext()) { 
 			    Map.Entry<String,String> entry = (Map.Entry<String,String>) iter.next();
@@ -364,12 +485,12 @@ public class TestOrderService {
 		order.setId((long) 8);
 
 		MyResult result = orderService.calculateOrder(order);
-		if (result.isResult()) {
+		if (result.isExecuteResult()) {
 			
 			System.out.println("add new order successfully!");
 		} else {
 			System.out.println("add new order failed!");
-			Map<String, String> falseResults = result.getResultDetails();
+			Map<String, String> falseResults = result.getErrorDetails();
 			Iterator iter = falseResults.entrySet().iterator(); 
 			while (iter.hasNext()) { 
 			    Map.Entry entry = (Map.Entry) iter.next();
@@ -385,12 +506,12 @@ public class TestOrderService {
 		Order order = orderService.searchOrderById((long) 2);
 
 		MyResult result = orderService.updateOrderToFinished(order);
-		if (result.isResult()) {
+		if (result.isExecuteResult()) {
 			
 			System.out.println("add new order successfully!");
 		} else {
 			System.out.println("add new order failed!");
-			Map<String, String> falseResults = result.getResultDetails();
+			Map<String, String> falseResults = result.getErrorDetails();
 			Iterator iter = falseResults.entrySet().iterator(); 
 			while (iter.hasNext()) { 
 			    Map.Entry entry = (Map.Entry) iter.next();

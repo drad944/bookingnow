@@ -133,7 +133,7 @@
 
 		<action name="*Order" class="com.pitaya.bookingnow.action.OrderAction" method="{1}Order">
 
-			<result name="searchSuccess" type="json">
+			<result name="searchOrderSuccess" type="json">
 				<param name="root">matchedOrders</param>
 	        </result>
 	        
@@ -144,8 +144,6 @@
 	        
 	        <result name="submitNewSuccess" type="json">
 	            <param name="root">resultOrder</param>
-	        	<param name="excludeNullProperties">true</param>  
-				<param name="includeProperties">result</param>
 	        </result>
 	        
 	        <result name="updateConfirmedNewSuccess" type="json">
@@ -158,7 +156,7 @@
 	        </result>
 	        
 	        <result name="Fail" type="json">
-				<param name="includeProperties">result, detail</param>  
+				<param name="root">result</param>
 	        </result>
 	        
 		</action>

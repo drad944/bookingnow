@@ -6,7 +6,6 @@ import java.util.Map;
 import com.pitaya.bookingnow.entity.Order_Food_Detail;
 import com.pitaya.bookingnow.service.IOrder_Food_DetailService;
 import com.pitaya.bookingnow.util.Constants;
-import com.pitaya.bookingnow.util.MyResult;
 
 public class Order_Food_DetailAction extends BaseAction{
 
@@ -57,29 +56,27 @@ public class Order_Food_DetailAction extends BaseAction{
 	
 	public String updateStatusOfFood_Detail() {
 		if (food_detail != null) {
-			MyResult result = food_detailService.updateFoodStatus(food_detail);
+			result = food_detailService.updateFoodStatus(food_detail);
 			
-			if (result.isResult()) {
-				this.setResult(Constants.SUCCESS);
+			if (result.isExecuteResult()) {
 				return "updateStatusOfFood_Detail";
 			}
 		}
-		this.setResult(Constants.FAIL);
-		this.setDetail("Some reason cause the operation fail");
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
 		return "Fail";
 	}
 	
 	public String updateFoodsOfFood_Detail() {
 		if (changeFoods != null) {
-			MyResult result = food_detailService.updateFoods(changeFoods, orderId);
+			result = food_detailService.updateFoods(changeFoods, orderId);
 			
-			if (result.isResult()) {
-				this.setResult(Constants.SUCCESS);
+			if (result.isExecuteResult()) {
 				return "updateStatusOfFood_Detail";
 			}
 		}
-		this.setResult(Constants.FAIL);
-		this.setDetail("Some reason cause the operation fail");
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
 		return "Fail";
 	}
 }

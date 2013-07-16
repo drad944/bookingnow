@@ -87,19 +87,19 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 					realFood_Detail.setLast_modify_time(new Date().getTime());
 						
 					if (food_detailDao.updateByPrimaryKeySelective(realFood_Detail) == 1) {
-						result.setResult(true);
+						result.setExecuteResult(true);
 					}else {
 						throw new RuntimeException("failed to update food detail status in DB");
 					}
 					
 				}else {
-					result.getResultDetails().put("food_status", "can not find food status in DB data");
+					result.getErrorDetails().put("food_status", "can not find food status in DB data");
 				}
 			}else {
-				result.getResultDetails().put("food_status", "can not find food status in client data");
+				result.getErrorDetails().put("food_status", "can not find food status in client data");
 			}
 		}else {
-			result.getResultDetails().put("food_detail_exist", "can not find food in client data");
+			result.getErrorDetails().put("food_detail_exist", "can not find food in client data");
 		}
 		return result;
 	}
@@ -139,15 +139,15 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 								}
 								
 							}else {
-								result.getResultDetails().put("newFood_exist", "can not find new food in DB data.");
+								result.getErrorDetails().put("newFood_exist", "can not find new food in DB data.");
 							}
 							
 						}else {
-							result.getResultDetails().put("newFood_exist", "can not find new food in client data.");
+							result.getErrorDetails().put("newFood_exist", "can not find new food in client data.");
 						}
 						
 					}else {
-						result.getResultDetails().put("newFood_Detail_exist", "can not find new food detail in client data.");
+						result.getErrorDetails().put("newFood_Detail_exist", "can not find new food detail in client data.");
 					}
 					
 				}
@@ -157,7 +157,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 			deleteFood_Details = changeFoods.get("deleteFoods");
 			// TODO Auto-generated method stub
 		}else {
-			result.getResultDetails().put("changeFoods_exist", "can not find changeFoods in client data.");
+			result.getErrorDetails().put("changeFoods_exist", "can not find changeFoods in client data.");
 		}
 		
 		return result;

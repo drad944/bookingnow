@@ -85,8 +85,8 @@ public class FoodAction extends BaseAction{
 			newMenuFood = foodService.updateMenuFoods(clientMenuFoods);
 			return "updateMenuSuccess";
 		}
-		this.setResult(Constants.FAIL);
-		this.setDetail("updateMenuFood: Can't get menu foods parameters");
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
 		return "Fail";
 	}
 	

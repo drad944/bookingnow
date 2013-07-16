@@ -2,7 +2,6 @@ package com.pitaya.bookingnow.dao;
 
 import java.util.List;
 
-import com.pitaya.bookingnow.entity.Customer;
 import com.pitaya.bookingnow.entity.Order;
 
 public interface OrderMapper {
@@ -22,7 +21,8 @@ public interface OrderMapper {
     
     Order selectFullOrderByPrimaryKey(Long id);
     
-    List<Order> selectFullOrders(Order order);
+    List<Order> searchFullOrdersByFullOrderInfo(Order order);
     
-    List<Order> searchOrdersByCustomer(Customer customer);
+    List<Order> searchOrdersByFullOrderInfo(Order order);
+    
 }
