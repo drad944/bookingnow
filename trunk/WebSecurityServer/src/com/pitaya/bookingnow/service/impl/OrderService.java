@@ -192,6 +192,7 @@ public class OrderService implements IOrderService{
 					}
 					if (tempTable_Details.size() == result.getSubTrueCount()) {
 						result.setResult(true);
+						result.setOrder(orderDao.selectFullOrderByPrimaryKey(order.getId()));
 					}else {
 						//do nothing
 					}
