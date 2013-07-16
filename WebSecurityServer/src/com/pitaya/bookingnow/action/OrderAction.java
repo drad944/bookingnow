@@ -12,11 +12,20 @@ public class OrderAction extends BaseAction{
 	private static final long serialVersionUID = 6767573103054031438L;
 	private IOrderService orderService;
 	private Order order;
+	
+	private Order resultOrder;
+	
 	private List<Order> matchedOrders;
 	
 	private Double allowance;
 	
 	
+	public Order getResultOrder() {
+		return resultOrder;
+	}
+	public void setResultOrder(Order resultOrder) {
+		this.resultOrder = resultOrder;
+	}
 	public Double getAllowance() {
 		return allowance;
 	}
@@ -167,6 +176,7 @@ public class OrderAction extends BaseAction{
 		if (order != null) {
 			MyResult result = orderService.addNewOrder(order);
 			if (result.isResult()) {
+				resultOrder = result.getOrder();
 				this.setResult(Constants.SUCCESS);
 				return "submitNewSuccess";
 			}

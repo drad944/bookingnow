@@ -143,6 +143,7 @@
 	        </result>
 	        
 	        <result name="submitNewSuccess" type="json">
+	            <param name="root">resultOrder</param>
 	        	<param name="excludeNullProperties">true</param>  
 				<param name="includeProperties">result</param>
 	        </result>

@@ -44,7 +44,7 @@ public class TestOrderService {
 	}
 
 	@Test
-	public void testAddWaitingOrder() {
+	public void testAddNewOrder() {
 		Order order = new Order();
 		
 		User user = new User();
@@ -64,7 +64,7 @@ public class TestOrderService {
 		order.setUser(user);
 		
 
-		MyResult result = orderService.addWaitingOrder(order);
+		MyResult result = orderService.addNewOrder(order);
 		if (result.isResult()) {
 			
 			System.out.println("add new order successfully!");
@@ -80,7 +80,7 @@ public class TestOrderService {
 	}
 	
 	@Test
-	public void testUpdateWaitingOrderToConfirmed() {
+	public void testUpdateNewOrderToConfirmed() {
 		Order order = new Order();
 		order.setId((long) 8);
 		order.setTotal_price(105.0);
@@ -106,7 +106,7 @@ public class TestOrderService {
 		order.setFood_details(food_Details);
 		
 		
-		MyResult result = orderService.updateWaitingOrderToConfirmed(order);
+		MyResult result = orderService.updateNewOrderToConfirmed(order);
 		if (result.isResult()) {
 			
 			System.out.println("add new order successfully!");
@@ -124,7 +124,7 @@ public class TestOrderService {
 	}
 	
 	@Test
-	public void testAddNewOrder() {
+	public void testAddWaitingOrder() {
 		Order order = new Order();
 		
 		Customer customer = new Customer();
@@ -136,7 +136,7 @@ public class TestOrderService {
 		order.setCustomer_count(6);
 		
 		
-		MyResult result = orderService.addNewOrder(order);
+		MyResult result = orderService.addWaitingOrder(order);
 		if (result.isResult()) {
 			
 			System.out.println("add new order successfully!");
@@ -223,7 +223,7 @@ public class TestOrderService {
 	}
 
 	@Test
-	public void testUpdateNewOrderToWaiting() {
+	public void testUpdateWaitingOrderToWaiting() {
 		/*
 		 * welcomer update order with food list when customer is waiting table and choose food
 		 * in:order_id,customer_id,food list(food id,count,isFree),order status:waiting,food status:new
@@ -270,7 +270,7 @@ public class TestOrderService {
 	}
 	
 	@Test
-	public void testUpdateNewOrderToConfirmed() {
+	public void testUpdateWaitingOrderToConfirmed() {
 		
 		Customer customer = new Customer();
 		customer.setName("zhan");
@@ -292,7 +292,7 @@ public class TestOrderService {
 		}
 		order.setTable_details(table_Details);
 		
-		MyResult result = orderService.updateNewOrderToConfirmed(order);
+		MyResult result = orderService.updateWaitingOrderToConfirmed(order);
 		if (result.isResult()) {
 			
 			System.out.println("add new order successfully!");
