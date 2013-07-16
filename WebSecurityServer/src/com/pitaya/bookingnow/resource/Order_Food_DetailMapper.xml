@@ -101,7 +101,10 @@
 			<if test="order_id != null">
 				and FD.order_id = #{order_id,jdbcType=BIGINT}
 			</if>
-		    
+		    	
+				<if test="food.id != null">
+					and F.id = #{food.id,jdbcType=INTEGER}
+				</if>
 				<if test="food.recommendation != null">
 					and F.recommendation = #{food.recommendation,jdbcType=INTEGER}
 				</if>

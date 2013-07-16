@@ -17,7 +17,7 @@ public class CustomerAction extends BaseAction{
 	private Customer customer;
 	
 	private Customer loginCustomer;
-	
+		
 	public ICustomerService getCustomerService() {
 		return customerService;
 	}

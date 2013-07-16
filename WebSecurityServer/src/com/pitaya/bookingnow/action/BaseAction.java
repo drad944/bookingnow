@@ -1,27 +1,16 @@
 package com.pitaya.bookingnow.action;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.pitaya.bookingnow.util.MyResult;
 
 public class BaseAction extends ActionSupport{
-
-	protected int result;
+	MyResult result;
 	
-	protected String detail;
+	public MyResult getResult() {
+		return result;
+	}
 	
-	public void setResult(int result){
+	public void setResult(MyResult result) {
 		this.result = result;
 	}
-	
-	public int getResult(){
-		return this.result;
-	}
-	
-	public void setDetail(String detail){
-		this.detail = detail;
-	}
-	
-	public String getDetail(){
-		return this.detail;
-	}
-
 }

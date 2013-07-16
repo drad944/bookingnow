@@ -119,7 +119,7 @@ public class TestOrderMapper {
 			Order newOrder = new Order();
 			newOrder.setAllowance(0.95);
 
-			List<Order> orders = orderMapper.selectFullOrders(newOrder);
+			List<Order> orders = orderMapper.searchFullOrdersByFullOrderInfo(newOrder);
 			
 			if (orders != null && orders.size() > 0) {
 				for (int j = 0; j < orders.size(); j++) {

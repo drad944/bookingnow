@@ -6,9 +6,11 @@ import java.util.Map;
 import com.pitaya.bookingnow.entity.Order;
 
 public class MyResult {
-	int resultType = 0;
+	int errorType = 0;
 	
-	boolean result = false;
+	boolean executeResult = false;
+	
+	Map<String, String> errorDetails = new HashMap<String, String>();
 	
 	int subTrueCount = 0;
 	
@@ -16,9 +18,31 @@ public class MyResult {
 	
 	double totalPriceOfOrder = 0d;
 	
-	Map<String, String> resultDetails = new HashMap<String, String>();
-	
 	Order order = new Order();
+
+	public int getErrorType() {
+		return errorType;
+	}
+
+	public void setErrorType(int errorType) {
+		this.errorType = errorType;
+	}
+
+	public boolean isExecuteResult() {
+		return executeResult;
+	}
+
+	public void setExecuteResult(boolean executeResult) {
+		this.executeResult = executeResult;
+	}
+
+	public Map<String, String> getErrorDetails() {
+		return errorDetails;
+	}
+
+	public void setErrorDetails(Map<String, String> errorDetails) {
+		this.errorDetails = errorDetails;
+	}
 
 	public Order getOrder() {
 		return order;
@@ -51,30 +75,5 @@ public class MyResult {
 	public void setSubFalseCount(int subFalseCount) {
 		this.subFalseCount = subFalseCount;
 	}
-	
-	public int getResultType() {
-		return resultType;
-	}
-
-	public void setResultType(int resultType) {
-		this.resultType = resultType;
-	}
-
-	public boolean isResult() {
-		return result;
-	}
-
-	public void setResult(boolean result) {
-		this.result = result;
-	}
-
-	public Map<String, String> getResultDetails() {
-		return resultDetails;
-	}
-
-	public void setResultDetails(Map<String, String> resultDetails) {
-		this.resultDetails = resultDetails;
-	}
-	
 	
 }
