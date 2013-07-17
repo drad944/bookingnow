@@ -219,115 +219,95 @@ public class OrderService implements IOrderService{
 	public MyResult updateNewOrderToConfirmed(Order order) {
 		/*
 		 * waiter update order to confirm  food list with customer which in table.
-		 * in: food list,order_id,user_id,customer count,order status:confirmed,food status:confirmed
+		 * in: food list,order_id,order status:confirmed,food status:confirmed
 		 * 
 		 */
 		
 		MyResult result = new MyResult();
-		//check user existed in client data and DB data
-		if (order.getUser() != null && order.getUser().getId() != null) {
-			User realUser = userDao.selectByPrimaryKey(order.getUser().getId());
-			if (realUser != null && realUser.getId() != null) {
 				
-				//check order existed in client data and DB data
-				if(order.getId() != null) {
-					Order realOrder = orderDao.selectByPrimaryKey(order.getId());
-					if(realOrder != null && realOrder.getId() != null){
+		//check order existed in client data and DB data
+		if(order.getId() != null) {
+			Order realOrder = orderDao.selectByPrimaryKey(order.getId());
+			if(realOrder != null && realOrder.getId() != null){
+				
+				List<Order_Food_Detail> tempFood_Details = order.getFood_details();
+				if (tempFood_Details != null && tempFood_Details.size() > 0) {
+					
+					//check food list existed in client data
+					for (int i = 0; i < tempFood_Details.size(); i++) {
+						Order_Food_Detail tempFood_Detail = tempFood_Details.get(i);
 						
-						//check customer existed in client data and DB data
-						if((order.getCustomer_count() != null && order.getCustomer_count() <= 0)
-								|| (realOrder.getCustomer_count() != null && realOrder.getCustomer_count() <= 0)) {
-							//notice client need to set customer count
-							result.getErrorDetails().put("customer_count", "customer count is 0.");
-						}else {
-							List<Order_Food_Detail> tempFood_Details = order.getFood_details();
-							if (tempFood_Details != null && tempFood_Details.size() > 0) {
-								
-								//check food list existed in client data
-								for (int i = 0; i < tempFood_Details.size(); i++) {
-									Order_Food_Detail tempFood_Detail = tempFood_Details.get(i);
-									
-									//validate food count is not 0
-									if (tempFood_Detail.getCount() != null && tempFood_Detail.getCount() > 0) {
-										Food tempFood = tempFood_Detail.getFood();
-										
-										//check food existed in client data and DB data
-										if (tempFood != null && tempFood.getId() != null) {
-											Food realFood = foodDao.selectByPrimaryKey(tempFood.getId());
-											if (realFood != null) {
-												if(realFood.getPrice() != null && tempFood.getPrice() != null) {
-													if(realFood.getPrice().equals(tempFood.getPrice()) && tempFood.getPrice() > 0) {
-														//update food status and insert in DB
-														tempFood_Detail.setFood_id(tempFood.getId());
-														tempFood_Detail.setEnabled(true);
-														tempFood_Detail.setStatus(Constants.FOOD_CONFIRMED);
-														tempFood_Detail.setOrder_id(order.getId());
-														tempFood_Detail.setLast_modify_time(new Date().getTime());
-														
-														if(food_detailDao.insertSelective(tempFood_Detail) == 1) {
-															//total price increase and get success info of insert into DB table.
-															result.setSubTrueCount(result.getSubTrueCount() + 1);
-														}else {
-															//do nothing
-														}
-														
-														
-													}else if(tempFood.getPrice() == 0 || realFood.getPrice() == 0) {
-														//notice user to check food price is 0 in client and in database.
-														result.getErrorDetails().put("food_price", "food price is 0 in client or DB");
-													}else {
-														//notice user to update food list for food price.
-														result.getErrorDetails().put("food_price", "food price is negative number in client or DB");
-													}
-												}else {
-													result.getErrorDetails().put("food_price", "food price is null in client or DB");
-												}
-												
-													
-												
+						//validate food count is not 0
+						if (tempFood_Detail.getCount() != null && tempFood_Detail.getCount() > 0) {
+							Food tempFood = tempFood_Detail.getFood();
+							
+							//check food existed in client data and DB data
+							if (tempFood != null && tempFood.getId() != null) {
+								Food realFood = foodDao.selectByPrimaryKey(tempFood.getId());
+								if (realFood != null) {
+									if(realFood.getPrice() != null && tempFood.getPrice() != null) {
+										if(realFood.getPrice().equals(tempFood.getPrice()) && tempFood.getPrice() > 0) {
+											//update food status and insert in DB
+											tempFood_Detail.setFood_id(tempFood.getId());
+											tempFood_Detail.setEnabled(true);
+											tempFood_Detail.setStatus(Constants.FOOD_CONFIRMED);
+											tempFood_Detail.setOrder_id(order.getId());
+											tempFood_Detail.setLast_modify_time(new Date().getTime());
+											
+											if(food_detailDao.insertSelective(tempFood_Detail) == 1) {
+												//total price increase and get success info of insert into DB table.
+												result.setSubTrueCount(result.getSubTrueCount() + 1);
 											}else {
-												result.getErrorDetails().put("food_exist", "can not find food in DB.");
+												//do nothing
 											}
+											
+											
+										}else if(tempFood.getPrice() == 0 || realFood.getPrice() == 0) {
+											//notice user to check food price is 0 in client and in database.
+											result.getErrorDetails().put("food_price", "food price is 0 in client or DB");
 										}else {
-											result.getErrorDetails().put("food_exist", "can not find food in client data");
+											//notice user to update food list for food price.
+											result.getErrorDetails().put("food_price", "food price is negative number in client or DB");
 										}
 									}else {
-										result.getErrorDetails().put("food_count", "food count is 0");
+										result.getErrorDetails().put("food_price", "food price is null in client or DB");
 									}
-								}
-								
-								//update order status in DB
-								if(tempFood_Details.size() == result.getSubTrueCount()) {
-										order.setModifyTime(new Date().getTime());
-										order.setStatus(Constants.ORDER_COMMITED);
-										if (realOrder.getAllowance() == null && order.getAllowance() == null) {
-											order.setAllowance(1.0);
-										}
-										if (orderDao.updateByPrimaryKeySelective(order) == 1) {
-											result.setExecuteResult(true);
-										}
 									
 								}else {
-									result.getErrorDetails().put("order_status", "can not update all food in DB");
+									result.getErrorDetails().put("food_exist", "can not find food in DB.");
 								}
 							}else {
-								result.getErrorDetails().put("food_detail", "food detail is empty");
+								result.getErrorDetails().put("food_exist", "can not find food in client data");
 							}
+						}else {
+							result.getErrorDetails().put("food_count", "food count is 0");
 						}
+					}
+					
+					//update order status in DB
+					if(tempFood_Details.size() == result.getSubTrueCount()) {
+							order.setModifyTime(new Date().getTime());
+							order.setStatus(Constants.ORDER_COMMITED);
+							if (realOrder.getAllowance() == null && order.getAllowance() == null) {
+								order.setAllowance(1.0);
+							}
+							if (orderDao.updateByPrimaryKeySelective(order) == 1) {
+								result.setExecuteResult(true);
+							}
 						
 					}else {
-						result.getErrorDetails().put("order_exist", "can not find order in DB.");
+						result.getErrorDetails().put("order_status", "can not update all food in DB");
 					}
 				}else {
-					result.getErrorDetails().put("order_exist", "can not find order in client data");
+					result.getErrorDetails().put("food_detail", "food detail is empty");
 				}
-				
 			}else {
-				result.getErrorDetails().put("user_exist", "can not find user in DB.");
+				result.getErrorDetails().put("order_exist", "can not find order in DB.");
 			}
 		}else {
-			result.getErrorDetails().put("user_exist", "can not find user in client data");
+			result.getErrorDetails().put("order_exist", "can not find order in client data");
 		}
+				
 		
 		return result;
 	}
