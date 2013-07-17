@@ -75,7 +75,7 @@ public class OrderAction extends BaseAction{
 		if (order != null) {
 			
 			List<Order> orders = orderService.searchFullOrdersByFullOrder(order);
-			
+			matchedOrders = new HashMap<String, List<Order>>();
 			matchedOrders.put("result", orders);
 			return "searchOrderSuccess";
 		}
