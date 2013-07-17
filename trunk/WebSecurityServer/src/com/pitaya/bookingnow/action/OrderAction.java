@@ -14,41 +14,24 @@ public class OrderAction extends BaseAction{
 	private static final long serialVersionUID = 6767573103054031438L;
 	private IOrderService orderService;
 	private Order order;
-	private List<Integer> orderStatusList;
 	
-	private Long user_id;
-	
-	private Long order_id;
+	private SearchParams params;
 	
 	private Order resultOrder;
 	
-	
 	private Map<String, List<Order>> matchedOrders;
 	
-	
+	public SearchParams getParams() {
+		return params;
+	}
+	public void setParams(SearchParams params) {
+		this.params = params;
+	}
 	public Map<String, List<Order>> getMatchedOrders() {
 		return matchedOrders;
 	}
 	public void setMatchedOrders(Map<String, List<Order>> matchedOrders) {
 		this.matchedOrders = matchedOrders;
-	}
-	public Long getUser_id() {
-		return user_id;
-	}
-	public void setUser_id(Long user_id) {
-		this.user_id = user_id;
-	}
-	public Long getOrder_id() {
-		return order_id;
-	}
-	public void setOrder_id(Long order_id) {
-		this.order_id = order_id;
-	}
-	public List<Integer> getOrderStatusList() {
-		return orderStatusList;
-	}
-	public void setOrderStatusList(List<Integer> orderStatusList) {
-		this.orderStatusList = orderStatusList;
 	}
 	
 	public Order getResultOrder() {
@@ -72,10 +55,7 @@ public class OrderAction extends BaseAction{
 	}
 	
 	public String searchByStatusOfOrder() {
-		if (user_id != null || orderStatusList != null) {
-			SearchParams params = new SearchParams();
-			params.setUser_id(user_id);
-			params.setOrderStatusList(orderStatusList);
+		if (params != null && (params.getUser_id() != null || params.getOrderStatusList() != null)) {
 			
 			List<Order> orders = orderService.searchFullOrders(params);
 			matchedOrders.put("result", orders);
