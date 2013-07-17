@@ -146,35 +146,6 @@ public class OrderAction extends BaseAction{
 	}
 	
 	/*		
-	 * 		waiter update a waiting order with food list
-	 */
-	public String updateConfirmedOfWaitingOrder(){
-		if (order != null) {
-			result = orderService.updateWaitingOrderToConfirmed(order);
-			
-			if (result.isExecuteResult()) {
-				return "updateConfirmedOfWaitingSuccess";
-			}
-		}
-		this.getResult().setExecuteResult(false);
-		this.getResult().setErrorType(Constants.FAIL);
-		return "Fail";
-	}
-	
-	public String updateFoodsOfConfirmedOrder(){
-		if (order != null) {
-			result = orderService.updateFoodsInConfirmedOrder(order);
-			
-			if (result.isExecuteResult()) {
-				return "updateFoodsOfConfirmedSuccess";
-			}
-		}
-		this.getResult().setExecuteResult(false);
-		this.getResult().setErrorType(Constants.FAIL);
-		return "Fail";
-	}
-	
-	/*		
 	 * 		submit a new created order which contains user id and table id
 	 */
 	
@@ -227,6 +198,19 @@ public class OrderAction extends BaseAction{
 			return "Fail";
 		}
 
+	}
+	
+	public String updateFoodsOfConfirmedOrder(){
+		if (order != null) {
+			result = orderService.updateFoodsInConfirmedOrder(order);
+			
+			if (result.isExecuteResult()) {
+				return "updateFoodsOfConfirmedSuccess";
+			}
+		}
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
+		return "Fail";
 	}
 	
 }
