@@ -165,19 +165,41 @@ public class OrderAction extends BaseAction{
 	}
 	
 	/*		
-	 * 		update a new order which contains food list
+	 * 		update a new or waiting order to committed
 	 */
-	public String updateConfirmedOfNewOrder(){
+	public String commitOrder(){
 		if (order != null) {
-			result = orderService.updateNewOrderToConfirmed(order);
-			
-			if (result.isExecuteResult()) {
-				return "updateConfirmedOfNewSuccess";
+			if(order.getFood_details() != null){
+				result = orderService.updateNewOrderToConfirmed(order);
+				if (result.isExecuteResult()) {
+					this.getResult().setExecuteResult(true);
+					return "commitNewOrderSuccess";
+				} else {
+					this.getResult().setExecuteResult(false);
+					this.getResult().setShortDetail(null);
+					return "Fail";
+				}
+			} else if(order.getTable_details() != null){
+				result = orderService.updateWaitingOrderToConfirmed(order);
+				if (result.isExecuteResult()) {
+					this.getResult().setExecuteResult(true);
+					return "commitWaitingOrderSuccess";
+				} else {
+					this.getResult().setExecuteResult(false);
+					this.getResult().setShortDetail(null);
+					return "Fail";
+				}
+			} else {
+				this.getResult().setExecuteResult(false);
+				this.getResult().setShortDetail("To commit order, it must contain food list or table details");
+				return "Fail";
 			}
+		} else {
+			this.getResult().setExecuteResult(false);
+			this.getResult().setShortDetail("Parameter order is missing");
+			return "Fail";
 		}
-		this.getResult().setExecuteResult(false);
-		this.getResult().setErrorType(Constants.FAIL);
-		return "Fail";
+
 	}
 	
 }
