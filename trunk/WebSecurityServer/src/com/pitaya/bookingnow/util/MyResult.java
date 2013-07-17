@@ -10,6 +10,7 @@ public class MyResult {
 	
 	boolean executeResult = false;
 	
+	String shortDetail = "";
 	Map<String, String> errorDetails = new HashMap<String, String>();
 	
 	int subTrueCount = 0;
@@ -75,5 +76,14 @@ public class MyResult {
 	public void setSubFalseCount(int subFalseCount) {
 		this.subFalseCount = subFalseCount;
 	}
+	
+	public void setShortDetail(String detail){
+		this.shortDetail = detail;
+	}
+	
+	public String getShortDetail(){
+		return this.shortDetail;
+	}
+	
 	
 }

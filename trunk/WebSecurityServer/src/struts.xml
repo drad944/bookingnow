@@ -146,16 +146,23 @@
 	            <param name="root">resultOrder</param>
 	        </result>
 	        
-	        <result name="updateConfirmedNewSuccess" type="json">
+	        <result name="commitNewOrderSuccess" type="json">
 	        	<param name="excludeNullProperties">true</param>  
-				<param name="includeProperties">result</param>
+				<param name="root">result</param>
 	        </result>
+			
+	        <result name="commitWaitingOrderSuccess" type="json">
+	        	<param name="excludeNullProperties">true</param>  
+				<param name="root">result</param>
+	        </result>
+
 	        
 	        <result name="Success" type="json">
 				<param name="includeProperties">result, detail</param>  
 	        </result>
 	        
 	        <result name="Fail" type="json">
+				<param name="excludeNullProperties">true</param>
 				<param name="root">result</param>
 	        </result>
 	        
