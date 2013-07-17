@@ -292,6 +292,7 @@ public class OrderService implements IOrderService{
 								order.setAllowance(1.0);
 							}
 							if (orderDao.updateByPrimaryKeySelective(order) == 1) {
+								result.setOrder(orderDao.selectFullOrderByPrimaryKey(order.getId()));
 								result.setExecuteResult(true);
 							}
 						
@@ -835,6 +836,7 @@ public class OrderService implements IOrderService{
 								}
 							}
 							if (tempFood_Details.size() == result.getSubTrueCount()) {
+								result.setOrder(orderDao.selectFullOrderByPrimaryKey(order.getId()));
 								result.setExecuteResult(true);
 							}else {
 								throw new RuntimeException("can not find food list in DB.");
