@@ -3,9 +3,11 @@ package com.pitaya.bookingnow.util;
 import java.util.List;
 
 public class SearchParams {
+	
 	private Long user_id;
 	private Long customer_id;
 	private List<Integer> orderStatusList;
+	
 	public Long getUser_id() {
 		return user_id;
 	}
