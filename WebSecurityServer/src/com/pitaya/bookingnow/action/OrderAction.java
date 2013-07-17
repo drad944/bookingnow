@@ -1,5 +1,6 @@
 package com.pitaya.bookingnow.action;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +59,7 @@ public class OrderAction extends BaseAction{
 		if (params != null && (params.getUser_id() != null || params.getOrderStatusList() != null)) {
 			
 			List<Order> orders = orderService.searchFullOrders(params);
+			matchedOrders = new HashMap<String, List<Order>>();
 			matchedOrders.put("result", orders);
 			return "searchOrderSuccess";
 		}
