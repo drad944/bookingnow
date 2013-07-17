@@ -1,22 +1,55 @@
 package com.pitaya.bookingnow.action;
 
 import java.util.List;
+import java.util.Map;
 
 import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.service.IOrderService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
+import com.pitaya.bookingnow.util.SearchParams;
 
 public class OrderAction extends BaseAction{
 	
 	private static final long serialVersionUID = 6767573103054031438L;
 	private IOrderService orderService;
 	private Order order;
+	private List<Integer> orderStatusList;
+	
+	private Long user_id;
+	
+	private Long order_id;
 	
 	private Order resultOrder;
 	
-	private List<Order> matchedOrders;
 	
+	private Map<String, List<Order>> matchedOrders;
+	
+	
+	public Map<String, List<Order>> getMatchedOrders() {
+		return matchedOrders;
+	}
+	public void setMatchedOrders(Map<String, List<Order>> matchedOrders) {
+		this.matchedOrders = matchedOrders;
+	}
+	public Long getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Long user_id) {
+		this.user_id = user_id;
+	}
+	public Long getOrder_id() {
+		return order_id;
+	}
+	public void setOrder_id(Long order_id) {
+		this.order_id = order_id;
+	}
+	public List<Integer> getOrderStatusList() {
+		return orderStatusList;
+	}
+	public void setOrderStatusList(List<Integer> orderStatusList) {
+		this.orderStatusList = orderStatusList;
+	}
 	
 	public Order getResultOrder() {
 		return resultOrder;
@@ -24,12 +57,7 @@ public class OrderAction extends BaseAction{
 	public void setResultOrder(Order resultOrder) {
 		this.resultOrder = resultOrder;
 	}
-	public List<Order> getMatchedOrders() {
-		return matchedOrders;
-	}
-	public void setMatchedOrders(List<Order> matchedOrders) {
-		this.matchedOrders = matchedOrders;
-	}
+	
 	public IOrderService getOrderService() {
 		return orderService;
 	}
@@ -43,11 +71,30 @@ public class OrderAction extends BaseAction{
 		this.order = order;
 	}
 	
+	public String searchByStatusOfOrder() {
+		if (user_id != null || orderStatusList != null) {
+			SearchParams params = new SearchParams();
+			params.setUser_id(user_id);
+			params.setOrderStatusList(orderStatusList);
+			
+			List<Order> orders = orderService.searchFullOrders(params);
+			matchedOrders.put("result", orders);
+			return "searchOrderSuccess";
+		}
+		
+		result.setErrorType(Constants.FAIL);
+		result.setExecuteResult(false);
+		result.getErrorDetails().put("order_exist", "can not find order info in client data");
+		return "searchOrderFail";
+	}
+	
 	public String searchOrder() {
 		
 		if (order != null) {
 			
-			matchedOrders = orderService.searchFullOrdersByFullOrder(order);
+			List<Order> orders = orderService.searchFullOrdersByFullOrder(order);
+			
+			matchedOrders.put("result", orders);
 			return "searchOrderSuccess";
 		}
 		if (result == null) {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.util.MyResult;
+import com.pitaya.bookingnow.util.SearchParams;
 
 public interface IOrderService {
 	boolean add(Order order);
@@ -15,6 +16,8 @@ public interface IOrderService {
 	boolean modify(Order order);
 	
 	List<Order> searchOrders(Order order);
+	
+	List<Order> searchFullOrders(SearchParams params);
 	
 	List<Order> searchFullOrdersByFullOrder(Order order);
 	

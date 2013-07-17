@@ -3,6 +3,7 @@ package com.pitaya.bookingnow.dao;
 import java.util.List;
 
 import com.pitaya.bookingnow.entity.Order;
+import com.pitaya.bookingnow.util.SearchParams;
 
 public interface OrderMapper {
     int deleteByPrimaryKey(Long id);
@@ -24,5 +25,7 @@ public interface OrderMapper {
     List<Order> searchFullOrdersByFullOrderInfo(Order order);
     
     List<Order> searchOrdersByFullOrderInfo(Order order);
+    
+    List<Order> searchFullOrders(SearchParams params);
     
 }
