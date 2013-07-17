@@ -20,6 +20,7 @@ import com.pitaya.bookingnow.entity.security.User;
 import com.pitaya.bookingnow.service.IOrderService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
+import com.pitaya.bookingnow.util.SearchParams;
 
 public class OrderService implements IOrderService{
 
@@ -1233,6 +1234,11 @@ public class OrderService implements IOrderService{
 	@Override
 	public List<Order> searchOrdersByFullOrder(Order order) {
 		return orderDao.searchOrdersByFullOrderInfo(order);
+	}
+
+	@Override
+	public List<Order> searchFullOrders(SearchParams params) {
+		return orderDao.searchFullOrders(params);
 	}
 
 
