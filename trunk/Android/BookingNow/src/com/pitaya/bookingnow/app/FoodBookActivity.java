@@ -145,6 +145,7 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 				}
 				if(mCurrentFood != null){
 					Order.Food bookingfood = mOrder.new Food(mCurrentFood.getKey(), mCurrentFood.getName(), mCurrentFood.getPrice());
+					bookingfood.setVersion(mCurrentFood.getVersion());
 					if(mOrder.getStatus() == Constants.ORDER_NEW){
 						DataService.updateOrderDetails(FoodBookActivity.this, mOrder, bookingfood, quantity);
 					}
@@ -242,7 +243,8 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 						FoodMenuTable.COLUMN_PRICE,
 						FoodMenuTable.COLUMN_RECOMMENDATION,
 						FoodMenuTable.COLUMN_DESCRIPTION,
-						FoodMenuTable.COLUMN_CATEGORY
+						FoodMenuTable.COLUMN_CATEGORY,
+						FoodMenuTable.COLUMN_REVISION
 				});
 				for(cursor.moveToFirst(); ! cursor.isAfterLast(); cursor.moveToNext()){
 					String key = cursor.getString(indexs[0]);
@@ -251,7 +253,8 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 					boolean isRecmd = Boolean.parseBoolean(cursor.getString(indexs[3]));
 					String desc = cursor.getString(indexs[4]);
 					String category = cursor.getString(indexs[5]);
-					mFoodsList.add(new Food(key, name, price, desc, category, isRecmd));
+					Food food = new Food(key, name, price, desc, category, isRecmd);
+					mFoodsList.add(food);
 				}
 				
 				//Update flip view

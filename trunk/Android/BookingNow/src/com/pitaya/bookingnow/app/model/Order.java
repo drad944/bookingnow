@@ -11,26 +11,11 @@ import java.util.UUID;
 import com.pitaya.bookinnow.app.util.Constants;
 
 public class Order implements Serializable{
-	
-//	public static final int ALL = -1;
-//	
-//	//order and food status	
-//	public static final int NEW = 0;
-//	public static final int COMMITED = NEW + 1;
-//	public static final int PAYING = COMMITED + 1;
-//	public static final int FINISHED = PAYING + 1;
-//	public static final int WAITING = FINISHED + 1;
-//	public static final int COOKING = WAITING + 1;
-//	public static final int UNAVAILABLE = COOKING + 1;
-//	public static final int AVAILABLE = UNAVAILABLE + 1;
-	
-	//results
+		
 	public static final int ADDED = 0;
 	public static final int REMOVED = ADDED + 1;
 	public static final int UPDATED = REMOVED + 1;
-	public static final int IGNORED = -1;
-	
-	//food status
+	public static final int IGNORED = UPDATED + 1;
 
 	private static final long serialVersionUID = -7178941729755818383L;
 	
@@ -39,43 +24,49 @@ public class Order implements Serializable{
 	private String submitter;
 	private String orderkey;
 	private Long modification_ts;
-	private Long commit_ts;
+	private Long submit_ts;
 	private String phoneNumber;
 	private String customername;
 	private Long customer_id;
 	private Long user_id;
-	private List<Long> table_ids;
+	private List<Table> tables;
 	private int peoplecount;
 	private int status;
 	private volatile boolean isDirty;
 	private transient OnDirtyChangedListener mOnDirtyChangedListener;
-	private transient OnOrderStatusChangedListener mOnStatusChangedListener;
+	private transient ArrayList<OnOrderStatusChangedListener> mOnStatusChangedListeners;
 	
 	public Order(){
 		this.foods = new LinkedHashMap<Order.Food, Integer>();
 		this.markDirty(false);
 	}
 	
-	public Order(String phone, String name, int count){
+	public Order(Long orderid, Long user_id, String username, String phone, String name, int count){
 		this.foods = new LinkedHashMap<Order.Food, Integer>();
 		this.peoplecount = count;
 		this.phoneNumber = phone;
 		this.customername = name;
-		this.tableNum = null;
-		this.submitter = null;
+		this.submitter = username;
+		this.user_id = user_id;
+		this.orderkey = String.valueOf(orderid);
 		this.status = Constants.ORDER_NEW;
-		this.orderkey = UUID.randomUUID().toString();
 		this.modification_ts = System.currentTimeMillis();
 		this.markDirty(false);
 	}
 	
-	public Order(String tn, String submitter){
+	public Order(List<Table> tables, Long orderid, Long user_id, String username, Long timestamp){
 		this.foods = new LinkedHashMap<Order.Food, Integer>();
-		this.tableNum = tn;
-		this.submitter = submitter;
-		this.orderkey = UUID.randomUUID().toString();
-		this.modification_ts = System.currentTimeMillis();
-		this.status =Constants.ORDER_NEW;
+		this.tables = tables;
+		this.tableNum = "";
+		for(int i=0; i < tables.size(); i++){
+			this.tableNum += tables.get(i).getLabel() + ",";
+		}
+		this.tableNum = this.tableNum.substring(0, this.tableNum.length() - 1);
+		this.submitter = username;
+		this.user_id = user_id;
+		this.orderkey = String.valueOf(orderid);
+		this.submit_ts = timestamp;
+		this.status = Constants.ORDER_NEW;
 		this.markDirty(false);
 	}
 	
@@ -87,6 +78,8 @@ public class Order implements Serializable{
 				return "已提交";
 			case Constants.ORDER_PAYING:
 				return "结帐中";
+			case Constants.ORDER_WAITING:
+				return "等候中";
 			case Constants.ORDER_FINISHED:
 				return "完成";
 		}
@@ -129,8 +122,8 @@ public class Order implements Serializable{
 		return this.modification_ts;
 	}
 	
-	public Long getCommitTime(){
-		return this.commit_ts;
+	public Long getSubmitTime(){
+		return this.submit_ts;
 	}
 	
 	public String getPhoneNumber(){
@@ -153,8 +146,8 @@ public class Order implements Serializable{
 		return this.user_id;
 	}
 	
-	public List<Long> getTableIds(){
-		return this.table_ids;
+	public List<Table> getTables(){
+		return this.tables;
 	}
 	
 	public int getStatus(){
@@ -199,8 +192,8 @@ public class Order implements Serializable{
 		this.tableNum = number;
 	}
 	
-	public void setCommitTime(Long ts){
-		this.commit_ts = ts;
+	public void setSubmitTime(Long ts){
+		this.submit_ts = ts;
 	}
 	
 	public void setLastModifyTime(Long ts){
@@ -215,11 +208,11 @@ public class Order implements Serializable{
 		this.user_id = id;
 	}
 	
-	public void addTable(Long id){
-		if(this.table_ids == null){
-			this.table_ids = new ArrayList<Long>();
+	public void addTable(Table table){
+		if(this.tables == null){
+			this.tables = new ArrayList<Table>();
 		}
-		this.table_ids .add(id);
+		this.tables .add(table);
 	}
 	
 	public void setStatus(int status){
@@ -230,8 +223,12 @@ public class Order implements Serializable{
 					entry.getKey().setStatus(Constants.FOOD_WAITING);
 				}
 			}
-			if(this.mOnStatusChangedListener != null){
-				this.mOnStatusChangedListener.onOrderStatusChanged(this, this.getStatus());
+			if(this.mOnStatusChangedListeners != null){
+				for(OnOrderStatusChangedListener listener : this.mOnStatusChangedListeners){
+					if(listener != null){
+						listener.onOrderStatusChanged(this, this.getStatus());
+					}
+				}
 			}
 		}
 	}
@@ -240,8 +237,15 @@ public class Order implements Serializable{
 		this.mOnDirtyChangedListener = listener;
 	}
 	
-	public void setOnStatusChangedListener(OnOrderStatusChangedListener listener){
-		this.mOnStatusChangedListener = listener;
+	public void addOnStatusChangedListener(OnOrderStatusChangedListener listener){
+		if(this.mOnStatusChangedListeners == null){
+			this.mOnStatusChangedListeners = new ArrayList<OnOrderStatusChangedListener>();
+		}
+		this.mOnStatusChangedListeners.add(listener);
+	}
+	
+	public void removeOnStatusChangedListeners(){
+		this.mOnStatusChangedListeners = null;
 	}
 	
 	public void removeAllFood(){
@@ -254,6 +258,15 @@ public class Order implements Serializable{
 //		food.setFree(isFree);
 //		return addFood(food, quantity);
 //	}
+	
+	public Order.Food searchFood(String food_key){
+		for(Entry<Food, Integer> entry : this.getFoods().entrySet()){
+			if(entry.getKey().getKey().equals(food_key)){
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
 	
 	public synchronized int addFood(Food food, int quantity){
 		if(quantity <= 0){
@@ -288,9 +301,6 @@ public class Order implements Serializable{
 	}
 	
 	public class Food implements Serializable{
-		/**
-		 * 
-		 */
 		
 		private static final long serialVersionUID = -8964367536151118314L;
 		private String key;
@@ -298,6 +308,8 @@ public class Order implements Serializable{
 		private double price;
 		private int status;
 		private boolean isFree;
+		private Long id;
+		private Long version;
 		private transient OnFoodStatusChangedListener listener;
 		
 		public Food(String key, String name, double price){
@@ -306,6 +318,14 @@ public class Order implements Serializable{
 			this.price = price;
 			this.status = Constants.FOOD_NEW;
 			this.isFree = false;
+		}
+		
+		public void setId(Long id){
+			this.id = id;
+		}
+		
+		public Long getId(){
+			return this.id;
 		}
 		
 		public String getKey(){
@@ -322,6 +342,14 @@ public class Order implements Serializable{
 		
 		public int getStatus(){
 			return this.status;
+		}
+		
+		public Long getVersion(){
+			return this.version;
+		}
+		
+		public void setVersion(Long v){
+			this.version = v;
 		}
 		
 		public boolean isFree(){

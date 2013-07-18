@@ -132,6 +132,10 @@ public class Food implements Serializable, IJSONTransition{
 		return this.orderindex;
 	}
 	
+	public void setVersion(Long v){
+		this.version = v;
+	}
+	
 	@Override
 	public boolean equals(Object obj){
 		if(this == obj)
