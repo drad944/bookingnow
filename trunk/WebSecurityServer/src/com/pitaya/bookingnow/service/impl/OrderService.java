@@ -245,8 +245,8 @@ public class OrderService implements IOrderService{
 							if (tempFood != null && tempFood.getId() != null) {
 								Food realFood = foodDao.selectByPrimaryKey(tempFood.getId());
 								if (realFood != null) {
-									if(realFood.getPrice() != null && tempFood.getPrice() != null) {
-										if(realFood.getPrice().equals(tempFood.getPrice()) && tempFood.getPrice() > 0) {
+									if(realFood.getVersion() != null && tempFood.getVersion() != null) {
+										if(realFood.getVersion().equals(tempFood.getVersion())) {
 											//update food status and insert in DB
 											tempFood_Detail.setFood_id(tempFood.getId());
 											tempFood_Detail.setEnabled(true);
@@ -262,15 +262,12 @@ public class OrderService implements IOrderService{
 											}
 											
 											
-										}else if(tempFood.getPrice() == 0 || realFood.getPrice() == 0) {
-											//notice user to check food price is 0 in client and in database.
-											result.getErrorDetails().put("food_price", "food price is 0 in client or DB");
 										}else {
 											//notice user to update food list for food price.
-											result.getErrorDetails().put("food_price", "food price is negative number in client or DB");
+											result.getErrorDetails().put("food_version", "food version is not the same between client and DB");
 										}
 									}else {
-										result.getErrorDetails().put("food_price", "food price is null in client or DB");
+										result.getErrorDetails().put("food_version", "food version is null in client or DB");
 									}
 									
 								}else {
@@ -543,8 +540,8 @@ public class OrderService implements IOrderService{
 								if (tempFood != null && tempFood.getId() != null) {
 									Food realFood = foodDao.selectByPrimaryKey(tempFood.getId());
 									if (realFood != null) {
-										if(realFood.getPrice() != null && tempFood.getPrice() != null) {
-											if(realFood.getPrice().equals(tempFood.getPrice()) && tempFood.getPrice() > 0) {
+										if(realFood.getVersion() != null && tempFood.getVersion() != null) {
+											if(realFood.getVersion().equals(tempFood.getVersion()) && tempFood.getVersion() > 0) {
 												//update food status and insert in DB
 												tempFood_Detail.setFood_id(tempFood.getId());
 												tempFood_Detail.setEnabled(true);
@@ -559,12 +556,9 @@ public class OrderService implements IOrderService{
 													//do nothing
 												}
 												
-											}else if(tempFood.getPrice() == 0 || realFood.getPrice() == 0) {
-												//notice user to check food price is 0 in client and in database.
-												result.getErrorDetails().put("food_price", "food price is 0 in client or DB");
 											}else {
 												//notice user to update food list for food price.
-												result.getErrorDetails().put("food_price", "food price is negative number in client or DB");
+												result.getErrorDetails().put("food_version", "food version is not the same between client and DB");
 											}
 										}else {
 											result.getErrorDetails().put("food_price", "food price is null in client or DB");
@@ -772,8 +766,8 @@ public class OrderService implements IOrderService{
 									if (tempFood != null && tempFood.getId() != null) {
 										Food realFood = foodDao.selectByPrimaryKey(tempFood.getId());
 										if (realFood != null) {
-											if(realFood.getPrice() != null && tempFood.getPrice() != null) {
-												if(realFood.getPrice().equals(tempFood.getPrice()) && tempFood.getPrice() > 0) {
+											if(realFood.getVersion() != null && tempFood.getVersion() != null) {
+												if(realFood.getVersion().equals(tempFood.getVersion())) {
 													//update food status and insert in DB
 													tempFood_Detail.setFood_id(tempFood.getId());
 													tempFood_Detail.setEnabled(true);
@@ -789,15 +783,12 @@ public class OrderService implements IOrderService{
 														//do nothing
 													}
 													
-												}else if(tempFood.getPrice() == 0 || realFood.getPrice() == 0) {
+												}else{
 													//notice user to check food price is 0 in client and in database.
-													result.getErrorDetails().put("food_price", "food price is 0 in client or DB");
-												}else {
-													//notice user to update food list for food price.
-													result.getErrorDetails().put("food_price", "food price is negative number in client or DB");
+													result.getErrorDetails().put("food_version", "food version is not the same between client and DB");
 												}
 											}else {
-												result.getErrorDetails().put("food_price", "food price is null in client or DB");
+												result.getErrorDetails().put("food_version", "food version is null in client or DB");
 											}
 											
 												
@@ -1116,82 +1107,75 @@ public class OrderService implements IOrderService{
 		if (order != null && order.getId() != null) {
 			realOrder = orderDao.selectFullOrderByPrimaryKey(order.getId());
 			if (realOrder != null && realOrder.getId() != null) {
-				if (realOrder.getCustomer_count() != null) {
-					//plus tableware * customer count
-					result.setTotalPriceOfOrder(result.getTotalPriceOfOrder() + realOrder.getCustomer_count() * 5);
 					
-					List<Order_Table_Detail> realTable_Details = realOrder.getTable_details();
+				List<Order_Table_Detail> realTable_Details = realOrder.getTable_details();
+				
+				if (realTable_Details != null && realTable_Details.size() > 0) {
+					for (int i = 0; i < realTable_Details.size(); i++) {
+						Order_Table_Detail realTable_Detail = realTable_Details.get(i);
+						if (realTable_Detail.getTable() != null && realTable_Detail.getTable().getIndoorPrice() != null) {
+							//plus indoor price
+							result.setTotalPriceOfOrder(result.getTotalPriceOfOrder() + realTable_Detail.getTable().getIndoorPrice());
+						}else {
+							result.setTotalPriceOfOrder(-1);
+							result.getErrorDetails().put("indoor_price_exist", "can not find indoor price in DB data");
+							return result;
+						}
+					}
 					
-					if (realTable_Details != null && realTable_Details.size() > 0) {
-						for (int i = 0; i < realTable_Details.size(); i++) {
-							Order_Table_Detail realTable_Detail = realTable_Details.get(i);
-							if (realTable_Detail.getTable() != null && realTable_Detail.getTable().getIndoorPrice() != null) {
-								//plus indoor price
-								result.setTotalPriceOfOrder(result.getTotalPriceOfOrder() + realTable_Detail.getTable().getIndoorPrice());
+				}else {
+					result.setTotalPriceOfOrder(-1);
+					result.getErrorDetails().put("table_detail_exist", "can not find table detail in DB data");
+					return result;
+				}
+				
+				List<Order_Food_Detail> realFood_Details = realOrder.getFood_details();
+				if (realFood_Details != null && realFood_Details.size() > 0) {
+					for (int i = 0; i < realFood_Details.size(); i++) {
+						Order_Food_Detail realFood_Detail = realFood_Details.get(i);
+						if (realFood_Detail.getIsFree() != null && realFood_Detail.getIsFree() == true) {
+							result.setSubTrueCount(result.getSubTrueCount() + 1);
+						}else {
+							if (realFood_Detail.getCount() != null && realFood_Detail.getFood() != null && realFood_Detail.getFood().getPrice() != null) {
+								if (realFood_Detail.getCount() > 0 && realFood_Detail.getFood().getPrice() > 0) {
+									//plus food price * food count
+									result.setTotalPriceOfOrder(result.getTotalPriceOfOrder() + realFood_Detail.getCount() * realFood_Detail.getFood().getPrice());
+									result.setSubTrueCount(result.getSubTrueCount() + 1);
+								}else {
+									result.setTotalPriceOfOrder(-1);
+									result.getErrorDetails().put("food_count_negative", "food count or price is a negative number in DB data");
+									return result;
+								}
 							}else {
 								result.setTotalPriceOfOrder(-1);
-								result.getErrorDetails().put("indoor_price_exist", "can not find indoor price in DB data");
+								result.getErrorDetails().put("food_price_exist", "can not find food price in DB data");
 								return result;
 							}
 						}
-						
-					}else {
-						result.setTotalPriceOfOrder(-1);
-						result.getErrorDetails().put("table_detail_exist", "can not find table detail in DB data");
-						return result;
 					}
 					
-					List<Order_Food_Detail> realFood_Details = realOrder.getFood_details();
-					if (realFood_Details != null && realFood_Details.size() > 0) {
-						for (int i = 0; i < realFood_Details.size(); i++) {
-							Order_Food_Detail realFood_Detail = realFood_Details.get(i);
-							if (realFood_Detail.getIsFree() != null && realFood_Detail.getIsFree() == true) {
-								result.setSubTrueCount(result.getSubTrueCount() + 1);
-							}else {
-								if (realFood_Detail.getCount() != null && realFood_Detail.getFood() != null && realFood_Detail.getFood().getPrice() != null) {
-									if (realFood_Detail.getCount() > 0 && realFood_Detail.getFood().getPrice() > 0) {
-										//plus food price * food count
-										result.setTotalPriceOfOrder(result.getTotalPriceOfOrder() + realFood_Detail.getCount() * realFood_Detail.getFood().getPrice());
-										result.setSubTrueCount(result.getSubTrueCount() + 1);
-									}else {
-										result.setTotalPriceOfOrder(-1);
-										result.getErrorDetails().put("food_count_negative", "food count or price is a negative number in DB data");
-										return result;
-									}
-								}else {
-									result.setTotalPriceOfOrder(-1);
-									result.getErrorDetails().put("food_price_exist", "can not find food price in DB data");
-									return result;
-								}
-							}
-						}
-						
-					}else {
-						result.setTotalPriceOfOrder(-1);
-						result.getErrorDetails().put("food_detail_exist", "can not find food detail in DB data");
-						return result;
-					}
-					
-					if (realOrder.getAllowance() != null && realOrder.getAllowance() >= 0 && realOrder.getAllowance() <= 1) {
-						result.setTotalPriceOfOrder(result.getTotalPriceOfOrder() * realOrder.getAllowance());
-						realOrder.setTotal_price(result.getTotalPriceOfOrder());
-						result.setOrder(realOrder);
-						result.setExecuteResult(true);
-						
-						order.setTotal_price(result.getTotalPriceOfOrder());
-						orderDao.updateByPrimaryKeySelective(order);
-						
-						return result;
-					}else {
-						result.setTotalPriceOfOrder(-1);
-						result.getErrorDetails().put("order_allowance", "order allowance is a invalid number a in DB data");
-						return result;
-					}
 				}else {
 					result.setTotalPriceOfOrder(-1);
-					result.getErrorDetails().put("customer_count", "can not find customer count id in DB data");
+					result.getErrorDetails().put("food_detail_exist", "can not find food detail in DB data");
 					return result;
 				}
+				
+				if (realOrder.getAllowance() != null && realOrder.getAllowance() >= 0 && realOrder.getAllowance() <= 1) {
+					result.setTotalPriceOfOrder(result.getTotalPriceOfOrder() * realOrder.getAllowance());
+					realOrder.setTotal_price(result.getTotalPriceOfOrder());
+					result.setOrder(realOrder);
+					result.setExecuteResult(true);
+					
+					order.setTotal_price(result.getTotalPriceOfOrder());
+					orderDao.updateByPrimaryKeySelective(order);
+					
+					return result;
+				}else {
+					result.setTotalPriceOfOrder(-1);
+					result.getErrorDetails().put("order_allowance", "order allowance is a invalid number a in DB data");
+					return result;
+				}
+				
 			}else {
 				result.setTotalPriceOfOrder(-1);
 				result.getErrorDetails().put("order_exist", "can not find order or order id in DB data");

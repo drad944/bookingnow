@@ -23,7 +23,11 @@ public class Food {
     
     private Food_Picture picture;
     
-    public Food_Picture getPicture() {
+    public Double getPrice() {
+		return price;
+	}
+
+	public Food_Picture getPicture() {
 		return picture;
 	}
 
@@ -87,9 +91,6 @@ public class Food {
         this.period = period;
     }
 
-    public Double getPrice() {
-        return price;
-    }
 
     public void setPrice(Double price) {
         this.price = price;
