@@ -193,7 +193,7 @@ public class OrderService implements IOrderService{
 					}
 					if (tempTable_Details.size() == result.getSubTrueCount()) {
 						result.setExecuteResult(true);
-						result.setOrder(orderDao.selectFullOrderByPrimaryKey(order.getId()));
+						result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(order.getId()));
 					}else {
 						//do nothing
 					}
@@ -292,7 +292,7 @@ public class OrderService implements IOrderService{
 								order.setAllowance(1.0);
 							}
 							if (orderDao.updateByPrimaryKeySelective(order) == 1) {
-								result.setOrder(orderDao.selectFullOrderByPrimaryKey(order.getId()));
+								result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(order.getId()));
 								result.setExecuteResult(true);
 							}
 						
@@ -412,6 +412,7 @@ public class OrderService implements IOrderService{
 						realOrder.setModifyTime(new Date().getTime());
 						realOrder.setStatus(Constants.ORDER_FINISHED);
 						if (orderDao.updateByPrimaryKeySelective(realOrder) == 1) {
+							result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(realOrder.getId()));
 							result.setExecuteResult(true);
 						}else {
 							throw new RuntimeException("can not update order status.");
@@ -486,6 +487,7 @@ public class OrderService implements IOrderService{
 					
 					
 					if (orderDao.insert(order) == 1) {
+						result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(order.getId()));
 						result.setExecuteResult(true);
 						
 					}else {
@@ -581,6 +583,7 @@ public class OrderService implements IOrderService{
 									order.setModifyTime(new Date().getTime());
 									order.setStatus(Constants.ORDER_WAITING);
 									if (orderDao.updateByPrimaryKeySelective(order) == 1) {
+										result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(order.getId()));
 										result.setExecuteResult(true);
 									}
 									
