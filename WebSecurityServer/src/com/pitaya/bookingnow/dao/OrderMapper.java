@@ -28,4 +28,13 @@ public interface OrderMapper {
     
     List<Order> searchFullOrders(SearchParams params);
     
+    
+    
+    Order selectMinFullOrderByPrimaryKey(Long id);
+    
+    List<Order> searchMinFullOrdersByFullOrderInfo(Order order);
+    
+    List<Order> searchMinFullOrders(SearchParams params);
+    
+    
 }
