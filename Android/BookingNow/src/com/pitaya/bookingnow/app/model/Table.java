@@ -5,6 +5,9 @@ public class Table {
 	private String label;
 	private Long id;
 	
+	public Table(){
+	}
+	
 	public Table(Long id, String label){
 		this.id = id;
 		this.label = label;
@@ -16,6 +19,14 @@ public class Table {
 	
 	public String getLabel(){
 		return this.label;
+	}
+	
+	public void setId(Long id){
+		this.id = id;
+	}
+	
+	public void setLabel(String label){
+		this.label = label;
 	}
 	
 }

@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-public class HttpHandler extends Handler{
+public class HttpHandler extends Handler implements AsyncCallBack{
 	
 	public final static String RESULT = "result";
 	public final static String ACTION_TYPE = "action_type";
@@ -15,12 +15,6 @@ public class HttpHandler extends Handler{
 	public final static String RESPONSE = "response";
 	
 	private final static String TAG= "HttpHandler";
-
-	public void onSuccess(String action, String response){
-	}
-	
-	public void onFail(String action, int statuscode){
-	}
 
 	protected void afterHandlerMessage(Bundle bundle){
         int result =bundle.getInt(RESULT);
@@ -37,5 +31,15 @@ public class HttpHandler extends Handler{
         super.handleMessage(msg);
         afterHandlerMessage(msg.getData());
     }
+
+	@Override
+	public void onSuccess(String action, String response) {
+		
+	}
+
+	@Override
+	public void onFail(String action, int statuscode) {
+		
+	}
 	
 }

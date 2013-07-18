@@ -6,11 +6,13 @@ import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.pitaya.bookingnow.app.HomeActivity;
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.data.HttpHandler;
 import com.pitaya.bookingnow.app.model.Order;
+import com.pitaya.bookingnow.app.model.Order.OnOrderStatusChangedListener;
 import com.pitaya.bookingnow.app.model.Table;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.OrderService;
@@ -24,6 +26,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -41,8 +44,9 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-public class WaiterOrderListView extends FrameLayout implements LoaderManager.LoaderCallbacks<Cursor>{
+public class WaiterOrderListView extends FrameLayout{
 	
+	private static String TAG = "Order";
 	private static int HEADER = 0;
 	private static int ITEM = HEADER +1 ;
 	
@@ -64,7 +68,7 @@ public class WaiterOrderListView extends FrameLayout implements LoaderManager.Lo
     public void recycle(int position){
     	if(this.mOrderList != null && position < this.mOrderList.size()){
 	    	this.mOrderList.get(position).setOnDirtyChangedListener(null);
-	    	this.mOrderList.get(position).setOnStatusChangedListener(null);
+	    	this.mOrderList.get(position).removeOnStatusChangedListeners();
     	}
     }
     
@@ -77,8 +81,33 @@ public class WaiterOrderListView extends FrameLayout implements LoaderManager.Lo
     	switch(mListType){
     		case WaiterOrderLeftView.MYORDERS:
     			//TODO get my orders from server
-    			
-    			mParentView.getActivity().getLoaderManager().initLoader(HomeActivity.ORDER_LIST_LOADER, null, (LoaderCallbacks<Cursor>) this);
+    			ArrayList<Integer> orderStatus = new ArrayList<Integer>();
+    			orderStatus.add(Constants.ORDER_NEW);
+    			orderStatus.add(Constants.ORDER_COMMITED);
+    			orderStatus.add(Constants.ORDER_PAYING);
+    			OrderService.getOrderByStatus(orderStatus, new HttpHandler(){
+    				@Override
+					public void onSuccess(String action, String response) {
+						try {
+							JSONObject jresp = new JSONObject(response);
+							if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
+								//TODO handle fail
+
+							} else {
+								WaiterOrderListView.this.onGetOrders(jresp);
+							}
+							
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+
+					@Override
+					public void onFail(String action, int statuscode) {
+						Log.e(TAG, "[OrderService.getOrderByStatus] Network error:" + statuscode);
+					}
+    			});
+    			//mParentView.getActivity().getLoaderManager().initLoader(HomeActivity.ORDER_LIST_LOADER, null, (LoaderCallbacks<Cursor>) this);
     			break;
     		case WaiterOrderLeftView.WAITING_ORDERS:
     			//TODO get my orders from server
@@ -86,106 +115,95 @@ public class WaiterOrderListView extends FrameLayout implements LoaderManager.Lo
     	}
     }
     
-    @Override
-	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-		return DataService.getOrderListByStatus(mParentView.getActivity(), Constants.ALL);
-	}
-
-	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-		if(cursor != null){
-			mOrderList = new ArrayList<Order>();
-			int [] indexs = DataService.getColumnIndexs(cursor, new String[]{
-					OrderTable.COLUMN_ORDER_KEY,
-					OrderTable.COLUMN_TABLE_NUMBER,
-					OrderTable.COLUMN_SUBMITTER,
-					OrderTable.COLUMN_LAST_MODIFACTION_DATE,
-					OrderTable.COLUMN_STATUS
-			});
-			for(cursor.moveToFirst(); ! cursor.isAfterLast(); cursor.moveToNext()){
-				String key = cursor.getString(indexs[0]);
-				String tablenumber = cursor.getString(indexs[1]);
-				String submitter = cursor.getString(indexs[2]);
-				long lastdate = cursor.getLong(indexs[3]);
-				int status = cursor.getInt(indexs[4]);
+    private void onGetOrders(JSONObject jresp){
+    	mOrderList = new ArrayList<Order>();
+    	JSONArray jorders;
+		try {
+			jorders = jresp.getJSONArray("result");
+			for(int i=0; i < jorders.length(); i++){
+				JSONObject jorder = jorders.getJSONObject(i);
 				Order order = new Order();
-				order.setKey(key);
-				order.setTableNumber(tablenumber);
-				order.setSubmitter(submitter);
-				order.setStatus(status);
-				order.setLastModifyTime(lastdate);
+				order.setKey(String.valueOf(jorder.getLong("id")));
+				JSONArray jtables = jorder.getJSONArray("table_details");
+				String tablelabel = "";
+				for(int j=0; j < jtables.length(); j++){
+					tablelabel += jtables.getJSONObject(j).getJSONObject("table").getString("address") + ",";
+				}
+				tablelabel = tablelabel.substring(0, tablelabel.length() - 1);
+				order.setTableNumber(tablelabel);
+				order.setSubmitter(jorder.getJSONObject("user").getString("name"));
+				order.setStatus(jorder.getInt("status"));
+				order.setLastModifyTime(jorder.getLong("modifyTime"));
+				order.setSubmitTime(jorder.getLong("submit_time"));
 				mOrderList.add(order);
 			}
-			
-	        this.mListView = new ListView(this.getContext());
-			try {
-				mAdapter = new OrderListAdapter(getContext(), mListView);
-				mAdapter.setOrderList(this.mOrderList);
-				if(mAdapter.orderlist.size() > 0){
-					int index = 0;
-					boolean hasFound = false;
-					if(((WaiterOrderLeftView)mParentView).getLastItem() != null){
-						String lastSelectKey = ((WaiterOrderLeftView)mParentView).getLastItem();
-						for(Order order : mAdapter.orderlist){
-							if(order.getOrderKey().equals(lastSelectKey)){
-								hasFound = true;
-								break;
-							}
-							index++;
-						}
-					}
-					if(!hasFound){
-						index = 0;
-					}
-					mAdapter.setSelectItem(index + 1);
-					((WaiterOrderLeftView)mParentView).showOrderDetail(mAdapter.orderlist.get(index), true);
-				}
-				
-				mListView.setAdapter(mAdapter);
-				
-		        this.mListView.setOnItemClickListener(new OnItemClickListener(){
-
-					@Override
-					public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-							long arg3) {
-						if(position > 0){
-							((WaiterOrderLeftView)mParentView).showOrderDetail(mAdapter.orderlist.get(position - 1), false);
-							((WaiterOrderLeftView)mParentView).setLastItem(mAdapter.orderlist.get(position - 1).getOrderKey());
-							mAdapter.setSelectItem(position);
-							mAdapter.notifyDataSetInvalidated();
-						}
-						
-					}
-		        	
-		        });
-	        } catch (IllegalArgumentException e) {
-	            e.printStackTrace();
-	        } catch (IllegalAccessException e) {
-	            e.printStackTrace();  
-	        }
-	        addView(mListView);
-	        
+		} catch (JSONException e) {
+			e.printStackTrace();
+			Log.e(TAG, "[onGetOrders] Fail to read the results");
+			return;
 		}
-	}
+        this.mListView = new ListView(this.getContext());
+		try {
+			mAdapter = new OrderListAdapter(getContext(), mListView);
+			mAdapter.setOrderList(this.mOrderList);
+			if(mAdapter.orderlist.size() > 0){
+				int index = 0;
+				boolean hasFound = false;
+				if(((WaiterOrderLeftView)mParentView).getLastItem() != null){
+					String lastSelectKey = ((WaiterOrderLeftView)mParentView).getLastItem();
+					for(Order order : mAdapter.orderlist){
+						if(order.getOrderKey().equals(lastSelectKey)){
+							hasFound = true;
+							break;
+						}
+						index++;
+					}
+				}
+				if(!hasFound){
+					index = 0;
+				}
+				mAdapter.setSelectItem(index + 1);
+				((WaiterOrderLeftView)mParentView).showOrderDetail(mAdapter.orderlist.get(index), true);
+			}
+			
+			mListView.setAdapter(mAdapter);
+			
+	        this.mListView.setOnItemClickListener(new OnItemClickListener(){
 
-	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
-		
-	}
-	
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+						long arg3) {
+					if(position > 0){
+						((WaiterOrderLeftView)mParentView).showOrderDetail(mAdapter.orderlist.get(position - 1), false);
+						((WaiterOrderLeftView)mParentView).setLastItem(mAdapter.orderlist.get(position - 1).getOrderKey());
+						mAdapter.setSelectItem(position);
+						mAdapter.notifyDataSetInvalidated();
+					}
+					
+				}
+	        	
+	        });
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();  
+        }
+        addView(mListView);
+    }
+    
 	private class TablesAdapter extends BaseAdapter{
 
 		private ArrayList<Table> tables;
-		private ArrayList<Long> selectedTables;
+		private ArrayList<Table> selectedTables;
 		private Context mContext;
 		
 		public TablesAdapter(Context context, ArrayList<Table> tableids) throws IllegalArgumentException, IllegalAccessException{  
 			tables = tableids;
 			mContext = context;
-			selectedTables = new ArrayList<Long>();
+			selectedTables = new ArrayList<Table>();
         }
 		
-		public ArrayList<Long> getSelectedTables(){
+		public ArrayList<Table> getSelectedTables(){
 			return this.selectedTables;
 		}
 		
@@ -217,7 +235,7 @@ public class WaiterOrderListView extends FrameLayout implements LoaderManager.Lo
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
 						if(isChecked){
-							selectedTables.add(tables.get(index).getId());
+							selectedTables.add(tables.get(index));
 						} else {
 							int i = 0;
 							while(!selectedTables.get(i).equals(tables.get(index).getId())){
@@ -247,6 +265,13 @@ public class WaiterOrderListView extends FrameLayout implements LoaderManager.Lo
             mContext = c;
             mView = view;
         }
+		
+		private void updateStatusText(int position, int status){
+			View view = ((ListView)mView).getChildAt(position);
+			if(view != null && (TextView)view.findViewById(R.id.status) != null){
+				((TextView)view.findViewById(R.id.status)).setText(Order.getOrderStatusString(status));
+			}
+		}
 		
 		@Override
 		public int getCount() {
@@ -301,7 +326,37 @@ public class WaiterOrderListView extends FrameLayout implements LoaderManager.Lo
 
 					@Override
 					public void onClick(View v) {
-						ArrayList<Long> tableids = ((TablesAdapter)tablegridview.getAdapter()).getSelectedTables();
+						final ArrayList<Table> tableids = ((TablesAdapter)tablegridview.getAdapter()).getSelectedTables();
+						OrderService.submitOrder(tableids, new HttpHandler(){
+							
+							@Override
+							public void onSuccess(String action, String response) {
+								try {
+									JSONObject jresp = new JSONObject(response);
+									if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
+										//TODO handle fail
+										return;
+									}
+									Long user_id = jresp.getJSONObject("user").getLong("id");
+									String username = jresp.getJSONObject("user").getString("name");
+									Long order_id = jresp.getLong("id");
+									Long timestamp = jresp.getLong("submit_time");
+									int status = jresp.getInt("status");
+									Order order = new Order(tableids, order_id, user_id, username, timestamp);
+									order.setStatus(status);
+									DataService.saveNewOrder(mContext, order);
+									OrderListAdapter.this.orderlist.add(order);
+									OrderListAdapter.this.notifyDataSetChanged();
+								} catch (JSONException e) {
+									e.printStackTrace();
+								}
+							}
+
+							@Override
+							public void onFail(String action, int statuscode) {
+								Log.e(TAG, "[OrderService.submitOrder] Network error:" + statuscode);
+							}
+						});
 					}
 					
 				});
@@ -316,7 +371,6 @@ public class WaiterOrderListView extends FrameLayout implements LoaderManager.Lo
 				newOrderBtn.setOnClickListener(new OnClickListener(){
 					@Override
 					public void onClick(View v) {
-						//TODO send order to server
 						OrderService.getAvailableTables(Constants.TABLE_EMPTY, new HttpHandler(){
 							
 							public void onSuccess(String action, String response){
@@ -340,17 +394,16 @@ public class WaiterOrderListView extends FrameLayout implements LoaderManager.Lo
 							}
 							
 							public void onFail(String action, int statuscode){
+								Log.e(TAG, "[OrderService.getAvailableTables] Network error:" + statuscode);
 							}
 							
 						});
-						
-//						Order order = new Order("A1", "rmzhang");
-//						DataService.saveNewOrder(mContext, order);
 					}
 					
 				});
 				return view;
 			} else {
+				final int index = position;
 				Order order = orderlist.get(position-1);
 				if(view == null){
 					view = View.inflate(parent.getContext(), R.layout.orderinfo_waiter_mine, null);
@@ -363,13 +416,21 @@ public class WaiterOrderListView extends FrameLayout implements LoaderManager.Lo
 
 				((TextView)view.findViewById(R.id.table_number)).setText(order.getTableNum());
 				((TextView)view.findViewById(R.id.status)).setText(Order.getOrderStatusString(order.getStatus()));
+				order.addOnStatusChangedListener(new OnOrderStatusChangedListener(){
+
+					@Override
+					public void onOrderStatusChanged(Order order, int status) {
+						 updateStatusText(index, status);
+					}
+					
+				});
 				SimpleDateFormat dateFm = new SimpleDateFormat("MM月dd日 HH:mm:ss"); 
 				Date date = new Date();
 				if( order.getStatus() == Constants.ORDER_NEW){
-					date.setTime(order.getModificationTime());
+					date.setTime(order.getSubmitTime());
 					((TextView)view.findViewById(R.id.committime)).setText(dateFm.format(date));
-				} else if(order.getCommitTime() != null){
-					date.setTime(order.getCommitTime());
+				} else if(order.getModificationTime() != null){
+					date.setTime(order.getModificationTime());
 					((TextView)view.findViewById(R.id.committime)).setText(dateFm.format(date));
 				}
 				return view;

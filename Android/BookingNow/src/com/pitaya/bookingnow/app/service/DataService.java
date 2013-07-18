@@ -1,6 +1,7 @@
 package com.pitaya.bookingnow.app.service;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import com.pitaya.bookingnow.app.model.Order;
@@ -34,6 +35,7 @@ public class DataService {
 	    		FoodMenuTable.COLUMN_NAME,
 	    		FoodMenuTable.COLUMN_PRICE,
 	    		FoodMenuTable.COLUMN_RECOMMENDATION,
+	    		FoodMenuTable.COLUMN_REVISION,
 	    		FoodMenuTable.COLUMN_STATUS };
 		CursorLoader cursorLoader = new CursorLoader(context, FoodMenuContentProvider.CONTENT_URI, 
 				projection, null, null, null);
@@ -49,6 +51,7 @@ public class DataService {
 	    		FoodMenuTable.COLUMN_PRICE,
 	    		FoodMenuTable.COLUMN_RECOMMENDATION,
 	    		FoodMenuTable.COLUMN_ORDERINDEX,
+	    		FoodMenuTable.COLUMN_REVISION,
 	    		FoodMenuTable.COLUMN_STATUS };
 		  CursorLoader cursorLoader = new CursorLoader(context, FoodMenuContentProvider.CONTENT_URI, 
 				projection, FoodMenuTable.COLUMN_CATEGORY + "=?",  new String[]{category}, null);
@@ -74,6 +77,31 @@ public class DataService {
 			return new CursorLoader(context, OrderContentProvider.CONTENT_URI, 
 					projection, OrderTable.COLUMN_STATUS + "=?", 
 					new String[]{String.valueOf(status)},OrderTable.COLUMN_LAST_MODIFACTION_DATE);
+		}
+	}
+	
+	public static void getFoodVersions(Context context, Map<String, Long> foodVersions){
+		String[] projection = {
+				FoodMenuTable.COLUMN_FOOD_KEY,
+	    		FoodMenuTable.COLUMN_REVISION
+	    };
+		String where = "";
+		String[] values = new String[foodVersions.size()];
+		int i=0;
+		for(Entry<String, Long> entry : foodVersions.entrySet()){
+			where += FoodMenuTable.COLUMN_FOOD_KEY + "=? or ";
+			values[i++] = entry.getKey();
+		}
+		where = where.substring(0, where.lastIndexOf(" or"));
+		Cursor cursor = context.getContentResolver().query(FoodMenuContentProvider.CONTENT_URI, projection, 
+				where, values, null);
+		if(cursor != null){
+			int indexes[] = getColumnIndexs(cursor, projection);
+			for(cursor.moveToFirst(); ! cursor.isAfterLast(); cursor.moveToNext()){
+				String food_key = cursor.getString(indexes[0]);
+				Long version = Long.parseLong(cursor.getString(indexes[1]));
+				foodVersions.put(food_key, version);
+			}
 		}
 	}
 	
@@ -175,6 +203,7 @@ public class DataService {
 				food.setFree(isFree);
 				order.addFood(food, quantity);
 			}
+			order.markDirty(false);
 			cursor.close();
 		}
 	}

@@ -68,7 +68,7 @@ public class OrderDetailFragment extends Fragment {
 		super.onDestroy();
 		if(this.mOrder != null){
 			this.mOrder.setOnDirtyChangedListener(null);
-			this.mOrder.setOnStatusChangedListener(null);
+			this.mOrder.removeOnStatusChangedListeners();
 			for(Entry<Food, Integer> entry : mOrder.getFoods().entrySet()){
 				entry.getKey().setOnFoodStatusChangedListener(null);
 			}

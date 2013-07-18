@@ -97,7 +97,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			
 			TextView showOrderBtn = (TextView)mFoodMenuContentView.findViewById(R.id.showOrder);
 			
-			if(this.mContentContainer.getOrder() != null){
+			if(this.mContentContainer != null && this.mContentContainer.getOrder() != null){
 				
 				final ListView orderPreview = new ListView(getActivity());
 				OrderDetailPreviewAdapter orderAdapter;
@@ -192,7 +192,8 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 						FoodMenuTable.COLUMN_PRICE,
 						FoodMenuTable.COLUMN_RECOMMENDATION,
 						FoodMenuTable.COLUMN_DESCRIPTION,
-						FoodMenuTable.COLUMN_CATEGORY
+						FoodMenuTable.COLUMN_CATEGORY,
+						FoodMenuTable.COLUMN_REVISION
 				});
 				for(cursor.moveToFirst(); ! cursor.isAfterLast(); cursor.moveToNext()){
 					String key = cursor.getString(indexs[0]);
@@ -206,7 +207,8 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 						foodsByCategory = new ArrayList<Food>();
 						foods.put(category, foodsByCategory);
 					}
-					foodsByCategory.add(new Food(key, name, price, desc, category, isRecmd));
+					Food food = new Food(key, name, price, desc, category, isRecmd);
+					foodsByCategory.add(food);
 				}
 				ArrayList<Food> allCategory = null;
 				for(Entry<String, ArrayList<Food>> entry : foods.entrySet()){
