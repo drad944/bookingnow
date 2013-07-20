@@ -107,8 +107,8 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 	@Override
 	public MyResult updateFoods(Map<String, List<Order_Food_Detail>> changeFoods,Long orderId) {
 		/*
-		 * chef update food status to cooking,ready which is confirmed.
-		 * in: food status,food_detail id 
+		 * waiter update food list which customer want.
+		 * in: food list,orderId 
 		 */
 		MyResult result = new MyResult();
 		
@@ -119,8 +119,10 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 		List<Order_Food_Detail> updateFood_Details = null;
 
 		if (changeFoods != null && changeFoods.size() > 0 && orderId != null) {
+			
 			newFood_Details = changeFoods.get("newFoods");
 			if (newFood_Details != null && newFood_Details.size() > 0) {
+				result.setSubFalseCount(result.getSubFalseCount() + newFood_Details.size());
 				for (int i = 0; i < newFood_Details.size(); i++) {
 					Order_Food_Detail tempNewFood_Detail = newFood_Details.get(i);
 					if (tempNewFood_Detail != null && tempNewFood_Detail.getFood() != null) {
@@ -133,7 +135,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 								tempNewFood_Detail.setOrder_id(orderId);
 								
 								if (food_detailDao.insertSelective(tempNewFood_Detail) == 1) {
-									
+									result.setSubTrueCount(result.getSubTrueCount() + 1);
 								}else {
 									throw new RuntimeException("failed to insert food detail in DB.");
 								}
@@ -155,11 +157,86 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 			}
 			
 			deleteFood_Details = changeFoods.get("deleteFoods");
-			// TODO Auto-generated method stub
+			if (deleteFood_Details != null && deleteFood_Details.size() > 0) {
+				result.setSubFalseCount(result.getSubFalseCount() + deleteFood_Details.size());
+				for (int i = 0; i < deleteFood_Details.size(); i++) {
+					Order_Food_Detail tempDeleteFood_Detail = deleteFood_Details.get(i);
+					if (tempDeleteFood_Detail != null && tempDeleteFood_Detail.getId() != null) {
+						
+						Food tempDeleteFood = tempDeleteFood_Detail.getFood();
+						if (tempDeleteFood != null && tempDeleteFood.getId() != null) {
+							Order_Food_Detail realFood_Detail = food_detailDao.selectFullByPrimaryKey(tempDeleteFood_Detail.getId());
+							if (realFood_Detail != null) {
+								Food realFood = realFood_Detail.getFood();
+								if (realFood != null && realFood.getId() == tempDeleteFood.getId()) {
+									
+									if (food_detailDao.deleteByPrimaryKey(tempDeleteFood_Detail.getId()) == 1) {
+										result.setSubTrueCount(result.getSubTrueCount() + 1);
+									}else {
+										throw new RuntimeException("failed to delete food detail in DB.");
+									}
+									
+								}else {
+									result.getErrorDetails().put("deleteFood_exist", "can not find delete food in DB data.");
+								}
+							}else {
+								result.getErrorDetails().put("deleteFood_Detail_exist", "can not find delete food detail in DB data.");
+							}
+							
+						}else {
+							result.getErrorDetails().put("deleteFood_exist", "can not find delete food in client data.");
+						}
+						
+					}else {
+						result.getErrorDetails().put("deleteFood_Detail_exist", "can not find delete food detail in client data.");
+					}
+					
+				}
+			}
+			
+			updateFood_Details = changeFoods.get("updateFoods");
+			if (updateFood_Details != null && updateFood_Details.size() > 0) {
+				result.setSubFalseCount(result.getSubFalseCount() + updateFood_Details.size());
+				for (int i = 0; i < updateFood_Details.size(); i++) {
+					Order_Food_Detail tempUpdateFood_Detail = updateFood_Details.get(i);
+					if (tempUpdateFood_Detail != null && tempUpdateFood_Detail.getId() != null) {
+						
+						Food tempUpdateFood = tempUpdateFood_Detail.getFood();
+						if (tempUpdateFood != null && tempUpdateFood.getId() != null) {
+							Order_Food_Detail realFood_Detail = food_detailDao.selectFullByPrimaryKey(tempUpdateFood_Detail.getId());
+							if (realFood_Detail != null) {
+								Food realFood = realFood_Detail.getFood();
+								if (realFood != null && realFood.getId() == tempUpdateFood.getId()) {
+									
+									if (food_detailDao.updateByPrimaryKeySelective(tempUpdateFood_Detail) == 1) {
+										result.setSubTrueCount(result.getSubTrueCount() + 1);
+									}else {
+										throw new RuntimeException("failed to update food detail in DB.");
+									}
+									
+								}else {
+									result.getErrorDetails().put("updateFood_exist", "can not find update food in DB data.");
+								}
+							}else {
+								result.getErrorDetails().put("updateFood_Detail_exist", "can not find update food detail in DB data.");
+							}
+							
+						}else {
+							result.getErrorDetails().put("updateFood_exist", "can not find update food in client data.");
+						}
+						
+					}else {
+						result.getErrorDetails().put("updateFood_Detail_exist", "can not find update food detail in client data.");
+					}
+					
+				}
+			}
 		}else {
 			result.getErrorDetails().put("changeFoods_exist", "can not find changeFoods in client data.");
 		}
-		
+		if (result.getSubTrueCount() == result.getSubFalseCount()) {
+			result.setExecuteResult(true);
+		}
 		return result;
 	}
 }
