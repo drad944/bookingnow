@@ -197,7 +197,9 @@
 	</sql>
 	
 	<sql id="Min_Table_Base_Column_List">
-		T.id as T_id
+		T.id as T_id,
+		T.status as T_status, 
+		T.address as T_address
 	</sql>
 	
 	<sql id="Min_Food_Detail_Base_Column_List">
