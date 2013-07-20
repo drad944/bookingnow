@@ -2,6 +2,8 @@ package com.pitaya.bookingnow.service.impl;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +39,35 @@ public class TestOrder_Food_DetailService {
 		assertNotNull(food_detailService);
 		this.food_detailService = food_detailService;
 	}
+	
+	public void showFood_Detail(Order_Food_Detail food_Detail) {
+		if (food_Detail != null) {
+			System.out.println("Id : " + food_Detail.getId());
+			System.out.println("Count : " + food_Detail.getCount());
+			System.out.println("Food_id : " + food_Detail.getFood_id());
+			System.out.println("Last_modify_time : " + food_Detail.getLast_modify_time());
+			System.out.println("Order_id : " + food_Detail.getOrder_id());
+			System.out.println("Preference : " + food_Detail.getPreference());
+			System.out.println("Status : " + food_Detail.getStatus());
+			System.out.println("Enabled : " + food_Detail.getEnabled());
+			System.out.println("IsFree : " + food_Detail.getIsFree());
+			if (food_Detail.getFood() != null) {
+				Food realFood = food_Detail.getFood();
+				String space = "    ";
+				System.out.println(space + "id : " + realFood.getId());
+				System.out.println(space + "Category : " + realFood.getCategory());
+				System.out.println(space + "Description : " + realFood.getDescription());
+				System.out.println(space + "Name : " + realFood.getName());
+				System.out.println(space + "Period : " + realFood.getPeriod());
+				System.out.println(space + "Picture_id : " + realFood.getPicture_id());
+				System.out.println(space + "Price : " + realFood.getPrice());
+				System.out.println(space + "Recommendation : " + realFood.getRecommendation());
+				System.out.println(space + "Status : " + realFood.getStatus());
+				System.out.println(space + "Version : " + realFood.getVersion());
+			}
+			System.out.println();
+		}
+	}
 	 
 	
 	@Test
@@ -51,32 +82,7 @@ public class TestOrder_Food_DetailService {
 		 List<Order_Food_Detail> realFood_Details = food_detailService.searchOrder_Food_Details(tempFood_Detail);
 		 for (int i = 0; i < realFood_Details.size(); i++) {
 			 Order_Food_Detail realFood_Detail = realFood_Details.get(i);
-			 if (realFood_Detail != null) {
-				System.out.println("Id : " + realFood_Detail.getId());
-				System.out.println("Count : " + realFood_Detail.getCount());
-				System.out.println("Food_id : " + realFood_Detail.getFood_id());
-				System.out.println("Last_modify_time : " + realFood_Detail.getLast_modify_time());
-				System.out.println("Order_id : " + realFood_Detail.getOrder_id());
-				System.out.println("Preference : " + realFood_Detail.getPreference());
-				System.out.println("Status : " + realFood_Detail.getStatus());
-				System.out.println("Enabled : " + realFood_Detail.getEnabled());
-				System.out.println("IsFree : " + realFood_Detail.getIsFree());
-				if (realFood_Detail.getFood() != null) {
-					Food realFood = realFood_Detail.getFood();
-					String space = "    ";
-					System.out.println(space + "id : " + realFood.getId());
-					System.out.println(space + "Category : " + realFood.getCategory());
-					System.out.println(space + "Description : " + realFood.getDescription());
-					System.out.println(space + "Name : " + realFood.getName());
-					System.out.println(space + "Period : " + realFood.getPeriod());
-					System.out.println(space + "Picture_id : " + realFood.getPicture_id());
-					System.out.println(space + "Price : " + realFood.getPrice());
-					System.out.println(space + "Recommendation : " + realFood.getRecommendation());
-					System.out.println(space + "Status : " + realFood.getStatus());
-					System.out.println(space + "Version : " + realFood.getVersion());
-				}
-				System.out.println();
-			}
+			 showFood_Detail(realFood_Detail);
 		}
 	 }
 	 
@@ -103,5 +109,65 @@ public class TestOrder_Food_DetailService {
 		}
 		 
 	 }
+	 
+	@Test
+	public void testUpdateFoods() {
+		Map<String, List<Order_Food_Detail>> changeFoods = new HashMap<String, List<Order_Food_Detail>>();
+		Long orderId = 1L;
+		List<Order_Food_Detail> newFood_Details = new ArrayList<Order_Food_Detail>();
+		List<Order_Food_Detail> deleteFood_Details = new ArrayList<Order_Food_Detail>();
+		List<Order_Food_Detail> updateFood_Details = new ArrayList<Order_Food_Detail>();
+
+		for (int i = 0; i < 2; i++) {
+			Order_Food_Detail newFood_Detail = new Order_Food_Detail();
+			Food newFood = new Food();
+			newFood.setId((long) (i + 4));
+			newFood_Detail.setFood(newFood);
+
+			newFood_Details.add(newFood_Detail);
+		}
+
+		for (int i = 0; i < 2; i++) {
+			Order_Food_Detail deleteFood_Detail = new Order_Food_Detail();
+			
+			Food deleteFood = new Food();
+			deleteFood.setId((long) (i + 2));
+			deleteFood_Detail.setFood(deleteFood);
+			deleteFood_Detail.setId((long) (i + 2));
+
+			deleteFood_Details.add(deleteFood_Detail);
+		}
+
+		Order_Food_Detail updateFood_Detail = new Order_Food_Detail();
+		Food updateFood = new Food();
+		updateFood.setId((long) 1);
+		updateFood_Detail.setId((long) 1);
+		updateFood_Detail.setCount(10);
+		updateFood_Detail.setFood(updateFood);
+		updateFood_Details.add(updateFood_Detail);
+
+		changeFoods.put("newFoods", newFood_Details);
+		changeFoods.put("deleteFoods", deleteFood_Details);
+		changeFoods.put("updateFoods", updateFood_Details);
+
+		MyResult result = food_detailService.updateFoods(changeFoods, orderId);
+		if (result.isExecuteResult()) {
+			for (int i = 0; i < newFood_Details.size(); i++) {
+				showFood_Detail(newFood_Details.get(i));
+			}
+		} else {
+			System.out.println("add new order failed!");
+			Map<String, String> falseResults = result.getErrorDetails();
+			Iterator iter = falseResults.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry<String, String> entry = (Map.Entry<String, String>) iter
+						.next();
+				System.out.println(entry.getKey().toString() + " : "
+						+ entry.getValue().toString());
+			}
+
+		}
+
+	}
 	 
 }
