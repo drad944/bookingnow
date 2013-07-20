@@ -181,7 +181,7 @@
 	        
 		</action>
 		
-		<action name="*Food_DetailAction" class="com.pitaya.bookingnow.action.Order_Food_DetailAction" method="{1}Food_Detail">
+		<action name="*Food_Detail" class="com.pitaya.bookingnow.action.Order_Food_DetailAction" method="{1}Food_Detail">
 	        <result name="updateStatusOfFood_DetailSuccess" type="json">
 				<param name="root">result</param>
 	        </result>
