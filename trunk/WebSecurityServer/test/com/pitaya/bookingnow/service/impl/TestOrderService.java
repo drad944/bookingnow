@@ -245,6 +245,8 @@ public class TestOrderService {
 			
 			Food food = new Food();
 			food.setId((long) i+1);
+			food.setVersion((long) 1351232321);
+			
 			food.setPrice(i + 11.0);
 			food_Detail.setFood(food);
 			food_Detail.setCount(2);
