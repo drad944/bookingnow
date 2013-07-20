@@ -176,7 +176,22 @@
 	        </result>
 	        
 	        <result name="Fail" type="json">
-				<param name="includeProperties">result, detail</param>  
+				<param name="root">result</param>
+	        </result>
+	        
+		</action>
+		
+		<action name="*Food_DetailAction" class="com.pitaya.bookingnow.action.Order_Food_DetailAction" method="{1}Food_Detail">
+	        <result name="updateStatusOfFood_DetailSuccess" type="json">
+				<param name="root">result</param>
+	        </result>
+	        
+	        <result name="updateFoodsOfFood_DetailSuccess" type="json">
+				<param name="root">changeFoods</param>
+	        </result>
+	        
+	        <result name="Fail" type="json">
+				<param name="root">result</param>
 	        </result>
 	        
 		</action>
@@ -189,7 +204,7 @@
 	        </result>
 	        
 	        <result name="searchFail" type="json">
-				<param name="includeProperties">result, detail</param>  
+				<param name="root">result</param>
 	        </result>
 	        
 		</action>

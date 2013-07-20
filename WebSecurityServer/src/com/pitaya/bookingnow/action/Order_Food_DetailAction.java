@@ -59,7 +59,7 @@ public class Order_Food_DetailAction extends BaseAction{
 			result = food_detailService.updateFoodStatus(food_detail);
 			
 			if (result.isExecuteResult()) {
-				return "updateStatusOfFood_Detail";
+				return "updateStatusOfFood_DetailSuccess";
 			}
 		}
 		this.getResult().setExecuteResult(false);
@@ -72,7 +72,7 @@ public class Order_Food_DetailAction extends BaseAction{
 			result = food_detailService.updateFoods(changeFoods, orderId);
 			
 			if (result.isExecuteResult()) {
-				return "updateStatusOfFood_Detail";
+				return "updateFoodsOfFood_DetailSuccess";
 			}
 		}
 		this.getResult().setExecuteResult(false);
