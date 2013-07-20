@@ -173,33 +173,33 @@
 	<sql id="Min_Order_Base_Column_List">
 		O.id as O_id, 
 		O.status as O_status, 
-		O.allowance as O_allowance,
+		O.allowance as O_allowance
 	</sql>
 	
 	<sql id="Min_User_Base_Column_List">
 		U.id as U_id, 
-		U.name as U_name, 
+		U.name as U_name
 	</sql>
 	
 	<sql id="Min_Customer_Base_Column_List">
 		C.id as C_id, 
-		C.name as C_name, 
+		C.name as C_name
 	</sql>
 	
 	<sql id="Min_Table_Detail_Base_Column_List">
-		TD.id as TD_id, 
+		TD.id as TD_id
 	</sql>
 	
 	<sql id="Min_Table_Base_Column_List">
-		T.id as T_id, 
+		T.id as T_id
 	</sql>
 	
 	<sql id="Min_Food_Detail_Base_Column_List">
-		FD.id as FD_id, 
+		FD.id as FD_id
 	</sql>
 	
 	<sql id="Min_Food_Base_Column_List">
-		F.id as F_id, 
+		F.id as F_id
 	</sql>
 	
 	
