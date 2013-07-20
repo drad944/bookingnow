@@ -1,6 +1,5 @@
 package com.pitaya.bookingnow.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -9,9 +8,9 @@ import java.util.Map;
 import com.pitaya.bookingnow.dao.FoodMapper;
 import com.pitaya.bookingnow.dao.Order_Food_DetailMapper;
 import com.pitaya.bookingnow.entity.Food;
+import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.entity.Order_Food_Detail;
 import com.pitaya.bookingnow.service.IOrder_Food_DetailService;
-import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
 
 public class Order_Food_DetailService implements IOrder_Food_DetailService{
@@ -117,6 +116,8 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 		List<Order_Food_Detail> newFood_Details = null;
 		List<Order_Food_Detail> deleteFood_Details = null;
 		List<Order_Food_Detail> updateFood_Details = null;
+		
+		Order resultOrder = new Order();
 
 		if (changeFoods != null && changeFoods.size() > 0 && orderId != null) {
 			
@@ -135,6 +136,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 								tempNewFood_Detail.setOrder_id(orderId);
 								
 								if (food_detailDao.insertSelective(tempNewFood_Detail) == 1) {
+									
 									result.setSubTrueCount(result.getSubTrueCount() + 1);
 								}else {
 									throw new RuntimeException("failed to insert food detail in DB.");
@@ -155,6 +157,9 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 				}
 				
 			}
+			
+			resultOrder.setFood_details(newFood_Details);
+			result.setOrder(resultOrder);
 			
 			deleteFood_Details = changeFoods.get("deleteFoods");
 			if (deleteFood_Details != null && deleteFood_Details.size() > 0) {
