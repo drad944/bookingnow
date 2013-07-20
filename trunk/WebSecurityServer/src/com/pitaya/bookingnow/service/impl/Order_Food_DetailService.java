@@ -8,7 +8,6 @@ import java.util.Map;
 import com.pitaya.bookingnow.dao.FoodMapper;
 import com.pitaya.bookingnow.dao.Order_Food_DetailMapper;
 import com.pitaya.bookingnow.entity.Food;
-import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.entity.Order_Food_Detail;
 import com.pitaya.bookingnow.service.IOrder_Food_DetailService;
 import com.pitaya.bookingnow.util.MyResult;
@@ -117,8 +116,8 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 		List<Order_Food_Detail> deleteFood_Details = null;
 		List<Order_Food_Detail> updateFood_Details = null;
 		
-		Order resultOrder = new Order();
-		resultOrder.setId(orderId);
+//		Order resultOrder = new Order();
+//		resultOrder.setId(orderId);
 
 		if (changeFoods != null && changeFoods.size() > 0 && orderId != null) {
 			
@@ -159,8 +158,8 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 				
 			}
 			
-			resultOrder.setFood_details(newFood_Details);
-			result.setOrder(resultOrder);
+//			resultOrder.setFood_details(newFood_Details);
+//			result.setOrder(resultOrder);
 			
 			deleteFood_Details = changeFoods.get("deleteFoods");
 			if (deleteFood_Details != null && deleteFood_Details.size() > 0) {
