@@ -118,6 +118,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 		List<Order_Food_Detail> updateFood_Details = null;
 		
 		Order resultOrder = new Order();
+		resultOrder.setId(orderId);
 
 		if (changeFoods != null && changeFoods.size() > 0 && orderId != null) {
 			
