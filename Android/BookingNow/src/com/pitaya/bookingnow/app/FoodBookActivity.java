@@ -146,9 +146,16 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 				if(mCurrentFood != null){
 					Order.Food bookingfood = mOrder.new Food(mCurrentFood.getKey(), mCurrentFood.getName(), mCurrentFood.getPrice());
 					bookingfood.setVersion(mCurrentFood.getVersion());
-					if(mOrder.getStatus() == Constants.ORDER_NEW){
-						DataService.updateOrderDetails(FoodBookActivity.this, mOrder, bookingfood, quantity);
+					
+					
+					if(mOrder.getStatus() == Constants.ORDER_NEW || mOrder.getStatus() == Constants.ORDER_COMMITED){
+						int result = DataService.updateOrderDetails(FoodBookActivity.this, mOrder, bookingfood, quantity);
+						if(result != Order.IGNORED && mOrder.getStatus() == Constants.ORDER_COMMITED){
+							mOrder.addUpdateFoods(FoodBookActivity.this, result, bookingfood, quantity);
+							mOrder.markDirty(FoodBookActivity.this, true);
+						}
 					}
+
 				}
 			}
 
@@ -253,7 +260,9 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 					boolean isRecmd = Boolean.parseBoolean(cursor.getString(indexs[3]));
 					String desc = cursor.getString(indexs[4]);
 					String category = cursor.getString(indexs[5]);
+					Long version = cursor.getLong(indexs[6]);
 					Food food = new Food(key, name, price, desc, category, isRecmd);
+					food.setVersion(version);
 					mFoodsList.add(food);
 				}
 				

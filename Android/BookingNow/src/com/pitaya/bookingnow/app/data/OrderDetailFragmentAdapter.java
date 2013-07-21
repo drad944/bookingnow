@@ -64,7 +64,6 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 
 					@Override
 					public void onClick(View v) {
-						//TODO commit the order and remove it from local database
 						OrderService.commitNewOrder(mContext, mOrder, new HttpHandler(){
 						    
 							@Override  
@@ -83,6 +82,7 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 											Order.Food food = mOrder.searchFood(food_id);
 											if(food != null){
 												food.setId(jorder_food.getLong("id"));
+												DataService.saveFoodId(mContext, mOrder, food);
 											} else {
 												Log.e(TAG, "Can not find food in order");
 											}
@@ -91,9 +91,10 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 								} catch (JSONException e) {
 									e.printStackTrace();
 								}
-								//DataService.removeOrder(mContext, mOrder.getOrderKey());
-								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
+								
 								mOrder.setStatus(Constants.ORDER_COMMITED);
+								mOrder.markDirty(mContext, false);
+								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
 						    }
 							
 							@Override
@@ -143,8 +144,45 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 						@Override
 						public void onClick(View v) {
 							//TODO update the order to server
-							ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
-							mOrder.markDirty(false);
+							OrderService.updateFoodsOfOrder(mOrder, new HttpHandler(){
+								
+								@Override  
+							    public void onSuccess(String action, String response) {
+									try {
+										JSONObject jresp = new JSONObject(response);
+										if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
+											//TODO handle fail
+										} else {
+											if(jresp.has("new")){
+												JSONArray jnew_foods = jresp.getJSONArray("new");
+												for(int i=0; i < jnew_foods.length(); i++){
+													JSONObject jorder_food = jnew_foods.getJSONObject(i);
+													JSONObject jfood = jorder_food.getJSONObject("food");
+													String food_id = String.valueOf(jfood.getLong("id"));
+													Order.Food food = mOrder.searchFood(food_id);
+													if(food != null){
+														food.setId(jorder_food.getLong("id"));
+														DataService.saveFoodId(mContext, mOrder, food);
+													} else {
+														Log.e(TAG, "Can not find food in order");
+													}
+												}
+											}
+										}
+									} catch (JSONException e) {
+										e.printStackTrace();
+									}
+									mOrder.markDirty(mContext, false);
+									mOrder.resetUpdateFoods(mContext);
+									ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
+							    }
+								
+								@Override
+								public void onFail(String action, int statusCode){
+									ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitfail), Toast.LENGTH_SHORT);
+								}
+							});
+							
 						}
     					
     				});

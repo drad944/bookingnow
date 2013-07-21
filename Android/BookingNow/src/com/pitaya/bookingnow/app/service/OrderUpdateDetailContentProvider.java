@@ -13,42 +13,41 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
-public class OrderContentProvider extends ContentProvider {
-
-	private OrderDataBaseHelper dbhelper;
+public class OrderUpdateDetailContentProvider  extends ContentProvider {
+	private OrderUpdateDetailDataBaseHelper dbhelper;
 	
-	private static final int ORDERS = 10;
-	private static final int ORDER_ID = 20;
+	private static final int ORDER_UPDATE_DETAILS = 10;
+	private static final int ORDER_UPDATE_DETAIL_ID = 20;
 	
-	private static final String AUTHORITY = "com.pitaya.bookingnow.order.contentprovider";
-	private static final String BASE_PATH = "orders";
+	private static final String AUTHORITY = "com.pitaya.bookingnow.orderupdatedetail.contentprovider";
+	private static final String BASE_PATH = "orderupdatedetails";
 	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH);
 	public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE  + "/" + BASE_PATH;
-	public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE  + "/order";
+	public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE  + "/orderupdatedetail";
 	
 	static {
-	    sURIMatcher.addURI(AUTHORITY, BASE_PATH, ORDERS);
-	    sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", ORDER_ID);
+	    sURIMatcher.addURI(AUTHORITY, BASE_PATH, ORDER_UPDATE_DETAILS);
+	    sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", ORDER_UPDATE_DETAIL_ID);
 	}
-	
+
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
 		int uriType = sURIMatcher.match(uri);
 	    SQLiteDatabase sqlDB = dbhelper.getWritableDatabase();
 	    int rowsDeleted = 0;
 	    switch (uriType) {
-		    case ORDERS:
-			      rowsDeleted = sqlDB.delete(OrderTable.TABLE_ORDER, selection, selectionArgs);
+		    case ORDER_UPDATE_DETAILS:
+			      rowsDeleted = sqlDB.delete(OrderUpdateDetailTable.TABLE_ORDER_UPDATE_DETIALS, selection, selectionArgs);
 			      break;
-		    case ORDER_ID:
+		    case ORDER_UPDATE_DETAIL_ID:
 			      String id = uri.getLastPathSegment();
 			      if (TextUtils.isEmpty(selection)) {
-			    	  rowsDeleted = sqlDB.delete(OrderTable.TABLE_ORDER,  OrderTable.COLUMN_ID + "=" + id, 
+			    	  rowsDeleted = sqlDB.delete(OrderUpdateDetailTable.TABLE_ORDER_UPDATE_DETIALS,  OrderTable.COLUMN_ID + "=" + id, 
 			            null);
 			      } else {
-			    	  rowsDeleted = sqlDB.delete(OrderTable.TABLE_ORDER, OrderTable.COLUMN_ID + "=" + id 
+			    	  rowsDeleted = sqlDB.delete(OrderUpdateDetailTable.TABLE_ORDER_UPDATE_DETIALS, OrderTable.COLUMN_ID + "=" + id 
 			            + " and " + selection, selectionArgs);
 			      }
 			      break;
@@ -61,7 +60,6 @@ public class OrderContentProvider extends ContentProvider {
 
 	@Override
 	public String getType(Uri uri) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -71,8 +69,8 @@ public class OrderContentProvider extends ContentProvider {
 	    SQLiteDatabase sqlDB = dbhelper.getWritableDatabase();
 	    long id = 0;
 	    switch (uriType) {
-		    case ORDERS:
-			      id = sqlDB.insert(OrderTable.TABLE_ORDER, null, values);
+		    case ORDER_UPDATE_DETAILS:
+			      id = sqlDB.insert(OrderUpdateDetailTable.TABLE_ORDER_UPDATE_DETIALS, null, values);
 			      break;
 		    default:
 		    	  throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -83,7 +81,7 @@ public class OrderContentProvider extends ContentProvider {
 
 	@Override
 	public boolean onCreate() {
-		dbhelper = new OrderDataBaseHelper(this.getContext());
+		dbhelper = new OrderUpdateDetailDataBaseHelper(this.getContext());
 		return false;
 	}
 
@@ -97,15 +95,15 @@ public class OrderContentProvider extends ContentProvider {
 	    checkColumns(projection);
 
 	    // Set the table
-	    queryBuilder.setTables(OrderTable.TABLE_ORDER);
+	    queryBuilder.setTables(OrderUpdateDetailTable.TABLE_ORDER_UPDATE_DETIALS);
 
 	    int uriType = sURIMatcher.match(uri);
 	    switch (uriType) {
-	    	case ORDERS:
+	    	case ORDER_UPDATE_DETAILS:
 	    		break;
-	    	case ORDER_ID:
+	    	case ORDER_UPDATE_DETAIL_ID:
 	    		// Adding the ID to the original query
-	    		queryBuilder.appendWhere(OrderTable.COLUMN_ID + "=" + uri.getLastPathSegment());
+	    		queryBuilder.appendWhere(OrderUpdateDetailTable.COLUMN_ID + "=" + uri.getLastPathSegment());
 	    		break;
 	    	default:
 	    		throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -120,20 +118,21 @@ public class OrderContentProvider extends ContentProvider {
 	}
 
 	@Override
-	public int update(Uri uri, ContentValues values, String selection,String[] selectionArgs) {
+	public int update(Uri uri, ContentValues values, String selection,
+			String[] selectionArgs) {
 		int uriType = sURIMatcher.match(uri);
 	    SQLiteDatabase sqlDB = dbhelper.getWritableDatabase();
 	    int rowsUpdated = 0;
 	    switch (uriType) {
-		    case ORDERS:
-			      rowsUpdated = sqlDB.update(OrderTable.TABLE_ORDER, values, selection, selectionArgs);
+		    case ORDER_UPDATE_DETAILS:
+			      rowsUpdated = sqlDB.update(OrderUpdateDetailTable.TABLE_ORDER_UPDATE_DETIALS, values, selection, selectionArgs);
 			      break;
-		    case ORDER_ID:
+		    case ORDER_UPDATE_DETAIL_ID:
 			      String id = uri.getLastPathSegment();
 			      if (TextUtils.isEmpty(selection)) {
-			    	  rowsUpdated = sqlDB.update(OrderTable.TABLE_ORDER, values, OrderTable.COLUMN_ID + "=" + id,  null);
+			    	  rowsUpdated = sqlDB.update(OrderUpdateDetailTable.TABLE_ORDER_UPDATE_DETIALS, values, OrderUpdateDetailTable.COLUMN_ID + "=" + id,  null);
 			      } else {
-			    	  rowsUpdated = sqlDB.update(OrderTable.TABLE_ORDER, values, OrderTable.COLUMN_ID + "=" + id  + " and " 
+			    	  rowsUpdated = sqlDB.update(OrderUpdateDetailTable.TABLE_ORDER_UPDATE_DETIALS, values, OrderUpdateDetailTable.COLUMN_ID + "=" + id  + " and " 
 			            + selection, selectionArgs);
 			      }
 			      break;
@@ -146,17 +145,15 @@ public class OrderContentProvider extends ContentProvider {
 
 	private void checkColumns(String[] projection) {
 	    String[] available = {
-	    		OrderTable.COLUMN_ID, 
-	    		OrderTable.COLUMN_ORDER_KEY,
-	    		OrderTable.COLUMN_TABLE_NUMBER,
-	    		OrderTable.COLUMN_SUBMITTER,
-	    		OrderTable.COLUMN_CUSTOMER,
-	    		OrderTable.COLUMN_PHONE,
-	    		OrderTable.COLUMN_PEOPLE_COUNT,
-	    		OrderTable.COLUMN_LAST_MODIFACTION_DATE,
-	    		OrderTable.COLUMN_COMMIT_DATE,
-	    		OrderTable.COLUMN_STATUS,
-	    		OrderTable.COLUMN_DIRTY};
+	    		OrderUpdateDetailTable.COLUMN_ID, 
+	    		OrderUpdateDetailTable.COLUMN_ORDER_FOOD_REFID,
+	    		OrderUpdateDetailTable.COLUMN_ORDER_KEY,
+	    		OrderUpdateDetailTable.COLUMN_FOOD_KEY,
+	    		OrderUpdateDetailTable.COLUMN_UPDATE_TYPE,
+	    		OrderUpdateDetailTable.COLUMN_QUANTITY,
+	    		OrderUpdateDetailTable.COLUMN_FREE,
+	    		OrderUpdateDetailTable.COLUMN_PREFERENCE,
+	    		OrderUpdateDetailTable.COLUMN_VERSION};
 	    if (projection != null) {
 		      HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
 		      HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(available));
@@ -166,5 +163,5 @@ public class OrderContentProvider extends ContentProvider {
 		      }
 	    }
 	}
-	
+
 }

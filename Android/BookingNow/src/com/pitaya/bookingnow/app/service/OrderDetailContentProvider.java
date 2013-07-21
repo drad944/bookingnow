@@ -146,6 +146,7 @@ public class OrderDetailContentProvider  extends ContentProvider {
 	private void checkColumns(String[] projection) {
 	    String[] available = {
 	    		OrderDetailTable.COLUMN_ID, 
+	    		OrderDetailTable.COLUMN_ORDER_FOOD_REFID,
 	    		OrderDetailTable.COLUMN_ORDER_KEY,
 	    		OrderDetailTable.COLUMN_FOOD_KEY,
 	    		OrderDetailTable.COLUMN_QUANTITY,

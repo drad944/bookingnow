@@ -60,6 +60,93 @@ public class OrderService {
 		}
 	}
 	
+	public static void updateOrder(Order order, HttpHandler callback){
+		
+	}
+	
+	public static void updateFoodsOfOrder(Order order, HttpHandler callback){
+		Map<String, ArrayList<UpdateFood>> foods = order.getUpdateFoods();
+		JSONObject jreq = new JSONObject();
+		JSONObject jupdatefoods = new JSONObject();
+		JSONArray jfoods;
+		if(foods.get(Order.getUpdateType(Order.ADDED)) != null && foods.get(Order.getUpdateType(Order.ADDED)).size() > 0){
+			jfoods = new JSONArray();
+			ArrayList<UpdateFood> newFoods = foods.get(Order.getUpdateType(Order.ADDED));
+			int i = 0;
+			try {
+				for(UpdateFood food : newFoods){
+					JSONObject jorder_food = new JSONObject();
+					JSONObject jfood = new JSONObject();
+					jfood.put("id", Long.parseLong(food.getFoodKey()));
+					jfood.put("version", food.getVersion());
+					jorder_food.put("food", jfood);
+					jorder_food.put("count", food.getQuantity());
+					jorder_food.put("isFree", food.isFree());
+					jfoods.put(i++, jorder_food);
+				}
+				jupdatefoods.put(Order.getUpdateType(Order.ADDED), jfoods);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		if(foods.get(Order.getUpdateType(Order.UPDATED)) != null && foods.get(Order.getUpdateType(Order.UPDATED)).size() > 0){
+			jfoods = new JSONArray();
+			ArrayList<UpdateFood> updateFoods = foods.get(Order.getUpdateType(Order.UPDATED));
+			int i = 0;
+			try {
+				for(UpdateFood food : updateFoods){
+					JSONObject jorder_food = new JSONObject();
+					JSONObject jfood = new JSONObject();
+					jfood.put("id", Long.parseLong(food.getFoodKey()));
+					jfood.put("version", food.getVersion());
+					jorder_food.put("food", jfood);
+					jorder_food.put("id", food.getRefId());
+					jorder_food.put("count", food.getQuantity());
+					jorder_food.put("isFree", food.isFree());
+					jfoods.put(i++, jorder_food);
+				}
+				jupdatefoods.put(Order.getUpdateType(Order.UPDATED), jfoods);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		if(foods.get(Order.getUpdateType(Order.REMOVED)) != null && foods.get(Order.getUpdateType(Order.REMOVED)).size() > 0){
+			jfoods = new JSONArray();
+			ArrayList<UpdateFood> deleteFoods = foods.get(Order.getUpdateType(Order.REMOVED));
+			int i = 0;
+			try {
+				for(UpdateFood food : deleteFoods){
+					JSONObject jorder_food = new JSONObject();
+					JSONObject jfood = new JSONObject();
+					jfood.put("id", Long.parseLong(food.getFoodKey()));
+					jorder_food.put("food", jfood);
+					jorder_food.put("id", food.getRefId());
+					jfoods.put(i++, jorder_food);
+				}
+				jupdatefoods.put(Order.getUpdateType(Order.REMOVED), jfoods);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		try {
+			jreq.put("changeFoods", jupdatefoods);
+			jreq.put("orderId", Long.parseLong(order.getOrderKey()));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		try {
+			HttpService.post("updateFoodsOfFood_Detail.action", new StringEntity(jreq.toString()), callback);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void commitWaitingOrder(Order order, HttpHandler callback){
 		JSONObject orderDetail = new JSONObject();
 		JSONObject orderJson = new JSONObject();
@@ -98,7 +185,6 @@ public class OrderService {
 					JSONObject jorder_food = new JSONObject();
 					JSONObject jfood = new JSONObject();
 					jfood.put("id", Long.parseLong(food_entry.getKey().getKey()));
-					jfood.put("price", food_entry.getKey().getPrice());
 					jfood.put("version", versions.get(food_entry.getKey().getKey()));
 					jorder_food.put("count", food_entry.getValue());
 					jorder_food.put("food", jfood);
