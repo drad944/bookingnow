@@ -202,12 +202,14 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 					boolean isRecmd = Boolean.parseBoolean(cursor.getString(indexs[3]));
 					String desc = cursor.getString(indexs[4]);
 					String category = cursor.getString(indexs[5]);
+					Long version = cursor.getLong(indexs[6]);
 					ArrayList<Food> foodsByCategory = foods.get(category);
 					if(foods.get(category) == null){
 						foodsByCategory = new ArrayList<Food>();
 						foods.put(category, foodsByCategory);
 					}
 					Food food = new Food(key, name, price, desc, category, isRecmd);
+					food.setVersion(version);
 					foodsByCategory.add(food);
 				}
 				ArrayList<Food> allCategory = null;

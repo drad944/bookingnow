@@ -2,12 +2,16 @@ package com.pitaya.bookingnow.app.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import android.content.Context;
+
+import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookinnow.app.util.Constants;
 
 public class Order implements Serializable{
@@ -32,13 +36,15 @@ public class Order implements Serializable{
 	private List<Table> tables;
 	private int peoplecount;
 	private int status;
+	//This is to tell whether a committed order is modified on local
 	private volatile boolean isDirty;
 	private transient OnDirtyChangedListener mOnDirtyChangedListener;
 	private transient ArrayList<OnOrderStatusChangedListener> mOnStatusChangedListeners;
+	private Map<String, ArrayList<UpdateFood>> updateFoods;
 	
 	public Order(){
 		this.foods = new LinkedHashMap<Order.Food, Integer>();
-		this.markDirty(false);
+		this.isDirty = false;
 	}
 	
 	public Order(Long orderid, Long user_id, String username, String phone, String name, int count){
@@ -51,7 +57,7 @@ public class Order implements Serializable{
 		this.orderkey = String.valueOf(orderid);
 		this.status = Constants.ORDER_NEW;
 		this.modification_ts = System.currentTimeMillis();
-		this.markDirty(false);
+		this.isDirty = false;
 	}
 	
 	public Order(List<Table> tables, Long orderid, Long user_id, String username, Long timestamp){
@@ -65,9 +71,9 @@ public class Order implements Serializable{
 		this.submitter = username;
 		this.user_id = user_id;
 		this.orderkey = String.valueOf(orderid);
-		this.submit_ts = timestamp;
+		this.modification_ts = timestamp;
 		this.status = Constants.ORDER_NEW;
-		this.markDirty(false);
+		this.isDirty = false;
 	}
 	
 	public static String getOrderStatusString(int status){
@@ -89,6 +95,7 @@ public class Order implements Serializable{
 	public static String getFoodStatusString(int status){
 		switch(status){
 			case Constants.FOOD_NEW:
+			case Constants.FOOD_CONFIRMED:
 				return "新提交";
 			case Constants.FOOD_WAITING:
 				return "等待加工";
@@ -100,6 +107,18 @@ public class Order implements Serializable{
 				return "售完";
 		}
 		return "未知状态";
+	}
+	
+	public static String getUpdateType(int status){
+		switch(status){
+			case Order.REMOVED:
+				return "delete";
+			case Order.UPDATED:
+				return "update";
+			case Order.ADDED:
+				return "new";
+		}
+		return "unknown";
 	}
 	
 	public Map<Food, Integer> getFoods(){
@@ -169,11 +188,12 @@ public class Order implements Serializable{
 		return this.isDirty;
 	}
 	
-	public void markDirty(boolean flag){
+	public void markDirty(Context context, boolean flag){
 		if(this.isDirty == flag){
 			return;
 		} else {
 			this.isDirty = flag;
+			DataService.setOrderDirty(context, this);
 			if(this.mOnDirtyChangedListener != null){
 				this.mOnDirtyChangedListener.onDirtyChanged(this, this.isDirty);
 			}
@@ -208,6 +228,10 @@ public class Order implements Serializable{
 		this.user_id = id;
 	}
 	
+	public void setDirty(boolean flag){
+		this.isDirty = flag;
+	}
+	
 	public void addTable(Table table){
 		if(this.tables == null){
 			this.tables = new ArrayList<Table>();
@@ -233,6 +257,87 @@ public class Order implements Serializable{
 		}
 	}
 	
+	public void resetUpdateFoods(Context context){
+		this.updateFoods = null;
+		DataService.resetOrderUpdateDetails(context, this);
+	}
+	
+	public Map<String, ArrayList<UpdateFood>> getUpdateFoods(){
+		
+		return this.updateFoods;
+	}
+	
+	private void searchAndRemove(Context context, int type, UpdateFood food){
+		ArrayList<UpdateFood> foods = this.updateFoods.get(getUpdateType(type));
+		int i=0;
+		for(; i < foods.size(); i++){
+			UpdateFood temp = foods.get(i);
+			if(food.getRefId() != null){
+				if(temp.getRefId().equals(food.getRefId())){
+					break;
+				}
+			} else if(temp.getFoodKey().equals(food.getFoodKey())){
+				break;
+			}
+		}
+		if(i != foods.size()){
+			foods.remove(i);
+			DataService.removeOrderUpdateDetail(context, this.getOrderKey(), food.getFoodKey());
+		}
+	}
+	
+	private void searchAndReplace(Context context, int srctype, int desttype, UpdateFood food){
+		this.searchAndRemove(context, srctype, food);
+		ArrayList<UpdateFood> destfoods = this.updateFoods.get(getUpdateType(desttype));
+		destfoods.add(food);
+		DataService.saveOrderUpdateDetail(context, desttype, this.getOrderKey(), food);
+	}
+	
+	public void enrichFoods(Context context){
+		if(this.foods == null || this.foods.size() == 0){
+			DataService.getFoodsOfOrder(context, this);
+		}
+	}
+	
+	public void enrichUpdateFoods(Context context){
+		if(this.updateFoods == null){
+			this.initUpdateFoods();
+			DataService.enrichOrderUpdateDetails(context, this);
+		}
+	}
+	
+	public void addUpdateFoods(Context context, int type, Order.Food food, int quantity){
+		if(this.updateFoods == null){
+			this.initUpdateFoods();
+		}
+		UpdateFood updateFood = new UpdateFood(food.getKey(), food.getId(), food.getVersion(), food.isFree(), quantity);
+		switch(type){
+			case Order.ADDED:
+				//Always add a food item
+				this.updateFoods.get(getUpdateType(Order.ADDED)).add(updateFood);
+				DataService.saveOrderUpdateDetail(context, type, this.getOrderKey(), updateFood);
+				break;
+			case Order.UPDATED:
+				if(updateFood.getRefId() != null){
+					//Update a committed food item
+					this.searchAndReplace(context, Order.UPDATED, Order.UPDATED, updateFood);
+				} else {
+					//To update a new food item, move it to add list
+					this.searchAndReplace(context, Order.ADDED, Order.ADDED, updateFood);
+				}
+				break;
+			case Order.REMOVED:
+				if(updateFood.getRefId() != null){
+					//To remove a committed food item, remove it from the update list firstly if necessary
+					this.searchAndReplace(context, Order.UPDATED, Order.REMOVED, updateFood);
+				} else {
+					//Remove a new food item from add list
+					this.searchAndRemove(context, Order.ADDED, updateFood);
+				}
+				break;
+		}
+	}
+	
 	public void setOnDirtyChangedListener(OnDirtyChangedListener listener){
 		this.mOnDirtyChangedListener = listener;
 	}
@@ -250,14 +355,7 @@ public class Order implements Serializable{
 	
 	public void removeAllFood(){
 		this.foods = new LinkedHashMap<Order.Food, Integer>();
-		this.isDirty = true;
 	}
-	
-//	public synchronized int addFood(String key, String name, float price, int quantity, boolean isFree){
-//		Order.Food food = this.new Food(key, name, price);
-//		food.setFree(isFree);
-//		return addFood(food, quantity);
-//	}
 	
 	public Order.Food searchFood(String food_key){
 		for(Entry<Food, Integer> entry : this.getFoods().entrySet()){
@@ -269,27 +367,27 @@ public class Order implements Serializable{
 	}
 	
 	public synchronized int addFood(Food food, int quantity){
+		Food current_food = searchFood(food.getKey());
 		if(quantity <= 0){
-			if(this.foods.get(food) != null){
+			if(current_food != null){
+				food.setId(current_food.getId());
 				this.foods.remove(food);
-				markDirty(true);
 				return REMOVED;
 			} else {
 				return IGNORED;
 			}
 		} else {
-			Integer current_q = this.foods.get(food);
-			if(current_q != null){
+			if(current_food != null){
+				Integer current_q = this.foods.get(current_food);
 				if(quantity != current_q){
+					food.setId(current_food.getId());
 					this.foods.put(food, quantity);
-					markDirty(true);
 					return UPDATED;
 				} else {
 					return IGNORED;
 				}
 			} else {
 				this.foods.put(food, quantity);
-				markDirty(true);
 				return ADDED;
 			}
 		}
@@ -298,6 +396,13 @@ public class Order implements Serializable{
 	public synchronized int addFood(String key, String name, double price, int quantity){
 		Order.Food food = this.new Food(key, name, price); 
 		return addFood(food, quantity);
+	}
+	
+	private void initUpdateFoods(){
+		this.updateFoods = new HashMap<String, ArrayList<UpdateFood>>();
+		this.updateFoods.put(getUpdateType(Order.UPDATED), new ArrayList<UpdateFood>());
+		this.updateFoods.put(getUpdateType(Order.ADDED), new ArrayList<UpdateFood>());
+		this.updateFoods.put(getUpdateType(Order.REMOVED), new ArrayList<UpdateFood>());
 	}
 	
 	public class Food implements Serializable{

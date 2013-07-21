@@ -11,6 +11,7 @@ import com.pitaya.bookingnow.app.OrderDetailActivity;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.OrderTable;
+import com.pitaya.bookinnow.app.util.Constants;
 
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -87,8 +88,10 @@ public class WaiterOrderLeftView extends OrderLeftView{
         String key = order.getOrderKey();
         OrderDetailFragment details = (OrderDetailFragment)getFragmentManager().findFragmentById(R.id.orderdetail);
         if (details == null || isForce || !details.getShownOrder().getOrderKey().equals(key)) {
-        	//TODO if order is new, get it from database, otherwise get it from server
-        	DataService.getFoodsOfOrder(this.getActivity(), order);
+        	order.enrichFoods(this.getActivity());
+        	if(order.getStatus() == Constants.ORDER_COMMITED && order.isDirty()){
+        		order.enrichUpdateFoods(this.getActivity());
+        	}
         	FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
     		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
     		fragmentTransaction.replace(R.id.orderdetail, OrderDetailFragment.newInstance(order, mContentContainer));

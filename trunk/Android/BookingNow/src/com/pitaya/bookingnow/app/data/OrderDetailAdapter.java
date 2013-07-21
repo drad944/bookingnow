@@ -272,8 +272,10 @@ public class OrderDetailAdapter extends BaseAdapter {
 						freeBtn.setText(R.string.cancelfreebtn);
 						totalPriceText.setText("0元");
 					}
-					if(mOrder.getStatus() == Constants.ORDER_NEW){
-						DataService.updateFoodFreeStatus(mContext, mOrder, food);
+					DataService.updateFoodFreeStatus(mContext, mOrder, food);
+					if(mOrder.getStatus() == Constants.ORDER_COMMITED){
+						mOrder.addUpdateFoods(mContext, Order.UPDATED, food, quantity);
+						mOrder.markDirty(mContext, true);
 					}
 					if(mView.findViewById(R.id.orderbottom) != null){
 						((TextView)mView.findViewById(R.id.orderbottom).findViewById(R.id.summary)).setText("合计"+mOrder.getTotalPrice()+"元");
@@ -334,17 +336,16 @@ public class OrderDetailAdapter extends BaseAdapter {
 					quantity = 0;
 					return;
 				}
-				
-				if(mOrder.getStatus() == Constants.ORDER_NEW){
-					//store to local data base
-					if(DataService.updateOrderDetails(mContext, mOrder, food, quantity) == Order.REMOVED){
+				if(mOrder.getStatus() == Constants.ORDER_NEW || mOrder.getStatus() == Constants.ORDER_COMMITED){
+					int result = DataService.updateOrderDetails(mContext, mOrder, food, quantity);
+					if(result != Order.IGNORED && mOrder.getStatus() == Constants.ORDER_COMMITED){
+						mOrder.addUpdateFoods(mContext, result, food, quantity);
+						mOrder.markDirty(mContext, true);
+					}
+					if(result == Order.REMOVED){
 						OrderDetailAdapter.this.notifyDataSetChanged();
 						return;
-					} 
-				} else if(mOrder.addFood(food, quantity) == Order.REMOVED){
-					//just store in memory
-					OrderDetailAdapter.this.notifyDataSetChanged();
-					return;
+					}
 				}
 				
 				if(food.getStatus() != Constants.FOOD_UNAVAILABLE && !food.isFree()){

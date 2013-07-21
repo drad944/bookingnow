@@ -33,6 +33,7 @@ import com.pitaya.bookingnow.app.FoodBookActivity;
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.data.AsyncDrawable;
 import com.pitaya.bookingnow.app.data.AsyncImageTask;
+import com.pitaya.bookingnow.app.data.OrderDetailAdapter;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.DataService;
@@ -222,8 +223,13 @@ public class FoodMenuView extends FrameLayout{
 							}
 							Order.Food bookingfood = order.new Food(food.getKey(), food.getName(), food.getPrice());
 							bookingfood.setVersion(food.getVersion());
-							if(order.getStatus() == Constants.ORDER_NEW){
-								DataService.updateOrderDetails(mContext, order, bookingfood, quantity);
+							
+							if(order.getStatus() == Constants.ORDER_NEW || order.getStatus() == Constants.ORDER_COMMITED){
+								int result = DataService.updateOrderDetails(mContext, order, bookingfood, quantity);
+								if(result != Order.IGNORED && order.getStatus() == Constants.ORDER_COMMITED){
+									order.addUpdateFoods(mContext, result, bookingfood, quantity);
+									order.markDirty(mContext, true);
+								}
 							}
 						}
 	

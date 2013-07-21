@@ -52,6 +52,10 @@
                 android:name=".service.OrderDetailContentProvider"
                 android:authorities="com.pitaya.bookingnow.orderdetail.contentprovider" >
         </provider>
+         <provider
+                android:name=".service.OrderUpdateDetailContentProvider"
+                android:authorities="com.pitaya.bookingnow.orderupdatedetail.contentprovider" >
+        </provider>
     </application>
 
 </manifest>

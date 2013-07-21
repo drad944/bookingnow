@@ -135,6 +135,7 @@ public class WaiterOrderListView extends FrameLayout{
 				order.setStatus(jorder.getInt("status"));
 				order.setLastModifyTime(jorder.getLong("modifyTime"));
 				order.setSubmitTime(jorder.getLong("submit_time"));
+				DataService.getOrderDirty(this.getContext(), order);
 				mOrderList.add(order);
 			}
 		} catch (JSONException e) {
@@ -426,13 +427,8 @@ public class WaiterOrderListView extends FrameLayout{
 				});
 				SimpleDateFormat dateFm = new SimpleDateFormat("MM月dd日 HH:mm:ss"); 
 				Date date = new Date();
-				if( order.getStatus() == Constants.ORDER_NEW){
-					date.setTime(order.getSubmitTime());
-					((TextView)view.findViewById(R.id.committime)).setText(dateFm.format(date));
-				} else if(order.getModificationTime() != null){
-					date.setTime(order.getModificationTime());
-					((TextView)view.findViewById(R.id.committime)).setText(dateFm.format(date));
-				}
+				date.setTime(order.getModificationTime());
+				((TextView)view.findViewById(R.id.committime)).setText(dateFm.format(date));
 				return view;
 			}
 		}

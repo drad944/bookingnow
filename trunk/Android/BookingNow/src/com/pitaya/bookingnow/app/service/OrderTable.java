@@ -16,6 +16,7 @@ public class OrderTable {
 	 public static final String COLUMN_LAST_MODIFACTION_DATE = "modification_date";
 	 public static final String COLUMN_COMMIT_DATE = "commit_date";
 	 public static final String COLUMN_STATUS = "status";
+	 public static final String COLUMN_DIRTY = "dirty";
 	
 	 private static final String TABLE_CREATE = "create table "
 	      + TABLE_ORDER
@@ -29,7 +30,8 @@ public class OrderTable {
 	      + COLUMN_PEOPLE_COUNT + " text,"
 	      + COLUMN_LAST_MODIFACTION_DATE + " long not null," 
 	      + COLUMN_COMMIT_DATE + " long," 
-	      + COLUMN_STATUS + " integer not null"
+	      + COLUMN_STATUS + " integer not null,"
+	      + COLUMN_DIRTY + " text"
 	      + ");";
 	
 	 public static void onCreate(SQLiteDatabase database) {
