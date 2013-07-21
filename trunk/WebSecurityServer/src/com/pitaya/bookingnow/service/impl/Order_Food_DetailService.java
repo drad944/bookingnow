@@ -158,6 +158,10 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 				
 			}
 			
+			/*
+			 * need add code to check delete and update is belong to order or not?
+			 */
+			
 //			resultOrder.setFood_details(newFood_Details);
 //			result.setOrder(resultOrder);
 			
@@ -237,7 +241,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 				}
 			}
 		}else {
-			result.getErrorDetails().put("changeFoods_exist", "can not find changeFoods in client data.");
+			result.getErrorDetails().put("changeFoods_exist", "can not find changeFoods or order id in client data.");
 		}
 		if (result.getSubTrueCount() == result.getSubFalseCount()) {
 			result.setExecuteResult(true);

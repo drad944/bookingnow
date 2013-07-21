@@ -17,12 +17,19 @@ public interface Order_Food_DetailMapper {
 
     int updateByPrimaryKey(Order_Food_Detail food_detail);
     
-    Order_Food_Detail selectByFoodId(Long id);
+    List<Order_Food_Detail> selectByFoodId(Long id);
     
     List<Order_Food_Detail> selectFullByFoodId(Long id);
     
     Order_Food_Detail selectFullByPrimaryKey(Long id);
     
     List<Order_Food_Detail> selectFullBySelective(Order_Food_Detail food_detail);
+    
+    
+    
+    List<Order_Food_Detail> selectBySelective(Order_Food_Detail food_detail);
+    
+    
+    
     
 }
