@@ -146,9 +146,9 @@ public class TestOrder_Food_DetailService {
 		updateFood_Detail.setFood(updateFood);
 		updateFood_Details.add(updateFood_Detail);
 
-		changeFoods.put("newFoods", newFood_Details);
-		changeFoods.put("deleteFoods", deleteFood_Details);
-		changeFoods.put("updateFoods", updateFood_Details);
+		changeFoods.put("new", newFood_Details);
+		changeFoods.put("delete", deleteFood_Details);
+		changeFoods.put("update", updateFood_Details);
 
 		MyResult result = food_detailService.updateFoods(changeFoods, orderId);
 		if (result.isExecuteResult()) {
