@@ -121,7 +121,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 
 		if (changeFoods != null && changeFoods.size() > 0 && orderId != null) {
 			
-			newFood_Details = changeFoods.get("newFoods");
+			newFood_Details = changeFoods.get("new");
 			if (newFood_Details != null && newFood_Details.size() > 0) {
 				result.setSubFalseCount(result.getSubFalseCount() + newFood_Details.size());
 				for (int i = 0; i < newFood_Details.size(); i++) {
@@ -161,7 +161,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 //			resultOrder.setFood_details(newFood_Details);
 //			result.setOrder(resultOrder);
 			
-			deleteFood_Details = changeFoods.get("deleteFoods");
+			deleteFood_Details = changeFoods.get("delete");
 			if (deleteFood_Details != null && deleteFood_Details.size() > 0) {
 				result.setSubFalseCount(result.getSubFalseCount() + deleteFood_Details.size());
 				for (int i = 0; i < deleteFood_Details.size(); i++) {
@@ -199,7 +199,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 				}
 			}
 			
-			updateFood_Details = changeFoods.get("updateFoods");
+			updateFood_Details = changeFoods.get("update");
 			if (updateFood_Details != null && updateFood_Details.size() > 0) {
 				result.setSubFalseCount(result.getSubFalseCount() + updateFood_Details.size());
 				for (int i = 0; i < updateFood_Details.size(); i++) {
