@@ -488,6 +488,7 @@ public class TestOrderService {
 			Food tempFood = new Food();
 			tempFood.setId((long) (i + 1));
 			tempFood.setPrice(i + 11.0);
+			tempFood.setVersion((long) 1351232321);
 			tempFood_Detail.setFood(tempFood);
 			food_Details.add(tempFood_Detail);
 		}

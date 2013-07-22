@@ -8,6 +8,24 @@ flush privileges;
 
 
 
+drop table pitaya_authority_resource_detail;
+drop table pitaya_role_authority_detail;
+drop table pitaya_user_role_detail;
+drop table pitaya_resource;
+drop table pitaya_authority;
+drop table pitaya_role;
+drop table pitaya_food_material_detail;
+drop table pitaya_material;
+drop table pitaya_user_picture;
+drop table pitaya_user;
+drop table pitaya_customer_picture;
+drop table pitaya_customer;
+drop table pitaya_food_picture;
+drop table pitaya_order_food_detail;
+drop table pitaya_food;
+drop table pitaya_order_table_detail;
+drop table pitaya_order;
+drop table pitaya_table;
 
 
 create table pitaya_table(
