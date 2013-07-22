@@ -22,16 +22,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-		<div id="all">
-			<div id="head">
-		
-			</div>
-			
-			<div id="content">
-		
-			</div>
-		
-		</div>
+	
+
+<div>
+table management,haha.
+</div>
 	
 </body>
 </html>
