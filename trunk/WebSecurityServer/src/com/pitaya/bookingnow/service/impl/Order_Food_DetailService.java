@@ -10,6 +10,7 @@ import com.pitaya.bookingnow.dao.Order_Food_DetailMapper;
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Order_Food_Detail;
 import com.pitaya.bookingnow.service.IOrder_Food_DetailService;
+import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
 
 public class Order_Food_DetailService implements IOrder_Food_DetailService{
@@ -168,7 +169,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 			deleteFood_Details = changeFoods.get("delete");
 			if (deleteFood_Details != null && deleteFood_Details.size() > 0) {
 				result.setSubFalseCount(result.getSubFalseCount() + deleteFood_Details.size());
-				for (int i = 0; i < deleteFood_Details.size(); i++) {
+				for (int i = deleteFood_Details.size() - 1; i >= 0; i--) {
 					Order_Food_Detail tempDeleteFood_Detail = deleteFood_Details.get(i);
 					if (tempDeleteFood_Detail != null && tempDeleteFood_Detail.getId() != null) {
 						
@@ -178,13 +179,18 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 							if (realFood_Detail != null) {
 								Food realFood = realFood_Detail.getFood();
 								if (realFood != null && realFood.getId().equals(tempDeleteFood.getId())) {
-									
-									if (food_detailDao.deleteByPrimaryKey(tempDeleteFood_Detail.getId()) == 1) {
+									if((realFood_Detail.getStatus() == Constants.FOOD_NEW 
+											|| realFood_Detail.getStatus() == Constants.FOOD_CONFIRMED)) {
+										if (food_detailDao.deleteByPrimaryKey(tempDeleteFood_Detail.getId()) == 1) {
+											deleteFood_Details.remove(i);
+											result.setSubTrueCount(result.getSubTrueCount() + 1);
+										}else {
+											throw new RuntimeException("failed to delete food detail in DB.");
+										}
+									} else {
+										deleteFood_Details.set(i, realFood_Detail);
 										result.setSubTrueCount(result.getSubTrueCount() + 1);
-									}else {
-										throw new RuntimeException("failed to delete food detail in DB.");
 									}
-									
 								}else {
 									result.getErrorDetails().put("deleteFood_exist", "can not find delete food in DB data.");
 								}
@@ -206,7 +212,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 			updateFood_Details = changeFoods.get("update");
 			if (updateFood_Details != null && updateFood_Details.size() > 0) {
 				result.setSubFalseCount(result.getSubFalseCount() + updateFood_Details.size());
-				for (int i = 0; i < updateFood_Details.size(); i++) {
+				for (int i = updateFood_Details.size() - 1; i >= 0 ; i--) {
 					Order_Food_Detail tempUpdateFood_Detail = updateFood_Details.get(i);
 					if (tempUpdateFood_Detail != null && tempUpdateFood_Detail.getId() != null) {
 						
@@ -216,13 +222,19 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 							if (realFood_Detail != null) {
 								Food realFood = realFood_Detail.getFood();
 								if (realFood != null && realFood.getId().equals(tempUpdateFood.getId())) {
-									
-									if (food_detailDao.updateByPrimaryKeySelective(tempUpdateFood_Detail) == 1) {
+									if((realFood_Detail.getStatus() == Constants.FOOD_NEW 
+											|| realFood_Detail.getStatus() == Constants.FOOD_CONFIRMED)
+											&& tempUpdateFood_Detail.getCount() >= realFood_Detail.getCount()) {
+										if (food_detailDao.updateByPrimaryKeySelective(tempUpdateFood_Detail) == 1) {
+											result.setSubTrueCount(result.getSubTrueCount() + 1);
+											updateFood_Details.remove(i);
+										} else {
+											throw new RuntimeException("failed to update food detail in DB.");
+										}
+									} else {
+										updateFood_Details.set(i, realFood_Detail);
 										result.setSubTrueCount(result.getSubTrueCount() + 1);
-									}else {
-										throw new RuntimeException("failed to update food detail in DB.");
 									}
-									
 								}else {
 									result.getErrorDetails().put("updateFood_exist", "can not find update food in DB data.");
 								}
