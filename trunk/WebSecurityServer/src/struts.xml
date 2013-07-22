@@ -156,7 +156,10 @@
 				<param name="root">result</param>
 	        </result>
 
-	        
+	        <result name="updateFoodsOfConfirmedSuccess" type="json">
+	        	<param name="excludeNullProperties">true</param>  
+				<param name="root">result</param>
+	        </result>
 	        <result name="Success" type="json">
 				<param name="includeProperties">result, detail</param>  
 	        </result>
