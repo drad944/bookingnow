@@ -9,10 +9,7 @@ import com.pitaya.bookingnow.dao.FoodMapper;
 import com.pitaya.bookingnow.dao.Food_PictureMapper;
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Food_Picture;
-import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.service.IFoodService;
-import com.pitaya.bookingnow.util.Constants;
-import com.pitaya.bookingnow.util.MyResult;
 
 public class FoodService implements IFoodService{
 
