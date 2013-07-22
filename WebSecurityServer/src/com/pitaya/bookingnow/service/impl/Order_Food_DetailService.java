@@ -177,7 +177,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 							Order_Food_Detail realFood_Detail = food_detailDao.selectFullByPrimaryKey(tempDeleteFood_Detail.getId());
 							if (realFood_Detail != null) {
 								Food realFood = realFood_Detail.getFood();
-								if (realFood != null && realFood.getId() == tempDeleteFood.getId()) {
+								if (realFood != null && realFood.getId().equals(tempDeleteFood.getId())) {
 									
 									if (food_detailDao.deleteByPrimaryKey(tempDeleteFood_Detail.getId()) == 1) {
 										result.setSubTrueCount(result.getSubTrueCount() + 1);
@@ -215,7 +215,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 							Order_Food_Detail realFood_Detail = food_detailDao.selectFullByPrimaryKey(tempUpdateFood_Detail.getId());
 							if (realFood_Detail != null) {
 								Food realFood = realFood_Detail.getFood();
-								if (realFood != null && realFood.getId() == tempUpdateFood.getId()) {
+								if (realFood != null && realFood.getId().equals(tempUpdateFood.getId())) {
 									
 									if (food_detailDao.updateByPrimaryKeySelective(tempUpdateFood_Detail) == 1) {
 										result.setSubTrueCount(result.getSubTrueCount() + 1);
