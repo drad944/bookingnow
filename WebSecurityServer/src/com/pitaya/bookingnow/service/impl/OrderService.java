@@ -757,7 +757,6 @@ public class OrderService implements IOrderService{
 							for (int i = 0; i < tempFood_Details.size(); i++) {
 								Order_Food_Detail tempFood_Detail = tempFood_Details.get(i);
 								
-								//validate food count is not 0
 								if (tempFood_Detail.getStatus() != null && tempFood_Detail.getStatus() == Constants.FOOD_NEW) {
 									//add new food
 									Food tempFood = tempFood_Detail.getFood();
