@@ -8,6 +8,12 @@ public class SearchParams {
 	private Long customer_id;
 	private List<Integer> orderStatusList;
 	
+	private Long order_id;
+	
+	private Long food_detail_id;
+	
+	private Long table_id;
+	
 	private Integer customer_count;
 	
 	private Integer status;

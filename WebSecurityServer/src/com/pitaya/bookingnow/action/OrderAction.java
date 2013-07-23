@@ -123,6 +123,7 @@ public class OrderAction extends BaseAction{
 			result = orderService.addWaitingOrder(order);
 			
 			if (result.isExecuteResult()) {
+				order = result.getOrder();
 				return "submitWaitingSuccess";
 			}
 		}
