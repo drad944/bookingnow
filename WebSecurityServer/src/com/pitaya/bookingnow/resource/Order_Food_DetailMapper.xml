@@ -202,6 +202,20 @@
 		where FD.id = #{id,jdbcType=BIGINT}
 	</select>
 	
+	<select id="selectFullByPrimaryKeyAndOrderId" resultMap="Food_Detail_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
+		select
+		<include refid="Food_Detail_Base_Column_List" />
+		,
+		<include refid="Food_Without_Image_Column_List" />
+		from pitaya_order_food_detail FD
+			left outer join pitaya_food F on FD.food_id = F.id
+		<where>
+		    <if test="food_detail_id != null">
+		        FD.id = #{food_detail_id,jdbcType=BIGINT}
+		    </if>
+		</where>
+	</select>
+	
 	<!-- 
 	<select id="selectFullByFoodStatus" resultMap="Food_Detail_BaseResultMap" parameterType="java.lang.Long">
 		select

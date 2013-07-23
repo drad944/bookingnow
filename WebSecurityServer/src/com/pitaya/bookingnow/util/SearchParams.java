@@ -18,6 +18,24 @@ public class SearchParams {
 	
 	private Integer status;
 	
+	public Long getOrder_id() {
+		return order_id;
+	}
+	public void setOrder_id(Long order_id) {
+		this.order_id = order_id;
+	}
+	public Long getFood_detail_id() {
+		return food_detail_id;
+	}
+	public void setFood_detail_id(Long food_detail_id) {
+		this.food_detail_id = food_detail_id;
+	}
+	public Long getTable_id() {
+		return table_id;
+	}
+	public void setTable_id(Long table_id) {
+		this.table_id = table_id;
+	}
 	public Integer getStatus() {
 		return status;
 	}

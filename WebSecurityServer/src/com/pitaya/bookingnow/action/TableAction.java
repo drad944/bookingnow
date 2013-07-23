@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.opensymphony.xwork2.ActionSupport;
 import com.pitaya.bookingnow.entity.Table;
 import com.pitaya.bookingnow.service.impl.TableService;
 import com.pitaya.bookingnow.util.Constants;
@@ -61,6 +60,9 @@ public class TableAction extends BaseAction{
 		if (table != null) {
 			
 			List<Table> tables = tableService.searchTables(table);
+			if (matchedTables == null) {
+				matchedTables = new HashMap<String,List<Table>>();
+			}
 			matchedTables.put("result", tables);
 			
 			return "searchSuccess";
