@@ -5,6 +5,7 @@ import java.util.List;
 import com.pitaya.bookingnow.dao.TableMapper;
 import com.pitaya.bookingnow.entity.Table;
 import com.pitaya.bookingnow.service.ITableService;
+import com.pitaya.bookingnow.util.SearchParams;
 
 public class TableService implements ITableService{
 	
@@ -58,6 +59,22 @@ public class TableService implements ITableService{
 	public List<Table> searchTables(Table table) {
 		
 		return tableDao.searchTables(table);
+	}
+
+	@Override
+	public List<Table> searchAvailableTables(SearchParams params) {
+		if (params != null) {
+			return tableDao.searchAvailableTables(params);
+		}
+		return null;
+	}
+
+	@Override
+	public Table searchByPrimaryKey(Long id) {
+		if (id != null) {
+			return tableDao.selectByPrimaryKey(id);
+		}
+		return null;
 	}
 
 }

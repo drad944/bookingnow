@@ -3,6 +3,7 @@ package com.pitaya.bookingnow.dao;
 import java.util.List;
 
 import com.pitaya.bookingnow.entity.Table;
+import com.pitaya.bookingnow.util.SearchParams;
 
 public interface TableMapper {
     int deleteByPrimaryKey(Long id);
@@ -20,4 +21,6 @@ public interface TableMapper {
     List<Table> searchTables(Table table);
     
     List<Table> searchAllTables();
+    
+    List<Table> searchAvailableTables(SearchParams params);
 }

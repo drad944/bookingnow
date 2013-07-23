@@ -14,7 +14,26 @@
 	</sql>
 	
 	
-	
+	<select id="searchAvailableTables" resultMap="BaseResultMap"
+		parameterType="com.pitaya.bookingnow.util.SearchParams">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_table
+		<where>
+			<if test="customer_count != null">
+				<![CDATA[
+				minCustomerCount <= #{customer_count,jdbcType=INTEGER} and maxCustomerCount >= #{customer_count,jdbcType=INTEGER}
+				]]>
+			</if>
+			<if test="status != null">
+				and status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="status == null">
+				and status = 2
+			</if>
+			
+		</where>
+	</select>
 	<select id="searchAllTables" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />

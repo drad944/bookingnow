@@ -8,6 +8,22 @@ public class SearchParams {
 	private Long customer_id;
 	private List<Integer> orderStatusList;
 	
+	private Integer customer_count;
+	
+	private Integer status;
+	
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	public Integer getCustomer_count() {
+		return customer_count;
+	}
+	public void setCustomer_count(Integer customer_count) {
+		this.customer_count = customer_count;
+	}
 	public Long getUser_id() {
 		return user_id;
 	}

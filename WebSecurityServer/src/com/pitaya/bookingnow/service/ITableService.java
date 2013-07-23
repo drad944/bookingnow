@@ -3,6 +3,7 @@ package com.pitaya.bookingnow.service;
 import java.util.List;
 
 import com.pitaya.bookingnow.entity.Table;
+import com.pitaya.bookingnow.util.SearchParams;
 
 
 public interface ITableService {
@@ -15,7 +16,9 @@ public interface ITableService {
 
 	boolean modify(Table table);
 	
+	Table searchByPrimaryKey(Long id);
+	
 	List<Table> searchTables(Table table);
 	
-	
+	List<Table> searchAvailableTables(SearchParams params);
 }
