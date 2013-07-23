@@ -444,63 +444,80 @@ public class OrderService implements IOrderService{
 		
 		MyResult result = new MyResult();
 		
-		Customer tempCustomer = order.getCustomer();
-		if (tempCustomer != null && tempCustomer.getId() != null) {
-			Customer realCustomer = customerDao.selectByPrimaryKey(order.getCustomer().getId());
-			if (realCustomer != null && realCustomer.getId() != null) {
-				if (order.getCustomer_count() != null && order.getCustomer_count() > 0) {
-					order.setCustomer_id(realCustomer.getId());
-					order.setModifyTime(new Date().getTime());
-					order.setStatus(Constants.ORDER_NEW);
+		if (order != null) {
+			if (order.getUser() != null && order.getUser().getId() != null) {
+				User realUser = userDao.selectByPrimaryKey(order.getUser().getId());
+				if (realUser != null) {
+					order.setUser_id(realUser.getId());
 					
-					if(orderDao.insert(order) == 1) {
-						result.setExecuteResult(true);
+					Customer tempCustomer = order.getCustomer();
+					if (tempCustomer != null && tempCustomer.getId() != null) {
+						Customer realCustomer = customerDao.selectByPrimaryKey(order.getCustomer().getId());
+						if (realCustomer != null && realCustomer.getId() != null) {
+							if (order.getCustomer_count() != null && order.getCustomer_count() > 0) {
+								order.setCustomer_id(realCustomer.getId());
+								order.setModifyTime(new Date().getTime());
+								order.setStatus(Constants.ORDER_NEW);
+								
+								if(orderDao.insert(order) == 1) {
+									result.setExecuteResult(true);
+								}else {
+									throw new RuntimeException("failed to exec method updateWaitingOrderToConfirmed in OrderService.java");
+								}
+								
+							}else {
+								result.getErrorDetails().put("customer_count", "customer count is 0 in client data");
+							}
+						}else {
+							result.getErrorDetails().put("customer_exist", "can not find customer in DB.");
+						}
+						
 					}else {
-						throw new RuntimeException("failed to exec method updateWaitingOrderToConfirmed in OrderService.java");
+						if (tempCustomer != null && tempCustomer.getName() != null && tempCustomer.getPhone() != null) {
+							
+							if (order.getCustomer_count() != null && order.getCustomer_count() > 0) {
+								tempCustomer.setAccount(tempCustomer.getName());
+								tempCustomer.setEnabled(true);
+								if (customerDao.insert(tempCustomer) == 1) {
+									
+								}else {
+									throw new RuntimeException("failed to insert customer in DB");
+								}
+								order.setCustomer_id(tempCustomer.getId());
+								order.setSubmit_time(new Date().getTime());
+								order.setModifyTime(order.getSubmit_time());
+								order.setStatus(Constants.ORDER_NEW);
+								
+								
+								if (orderDao.insert(order) == 1) {
+									result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(order.getId()));
+									result.setExecuteResult(true);
+									
+								}else {
+									throw new RuntimeException("failed to insert order in DB");
+								}
+								
+							}else {
+								result.getErrorDetails().put("customer_count", "customer count is 0 in client data");
+							}
+							
+						}else if (tempCustomer != null && tempCustomer.getName() == null) {
+							result.getErrorDetails().put("customer_exist", "can not find customer name in client data");
+						}else {
+							result.getErrorDetails().put("customer_exist", "can not find customer phone in client data");
+						}
 					}
 					
 				}else {
-					result.getErrorDetails().put("customer_count", "customer count is 0 in client data");
+					result.getErrorDetails().put("user_exist", "can not find user info in DB data");
 				}
 			}else {
-				result.getErrorDetails().put("customer_exist", "can not find customer in DB.");
+				result.getErrorDetails().put("user_exist", "can not find user info in client data");
 			}
-			
 		}else {
-			if (tempCustomer != null && tempCustomer.getName() != null && tempCustomer.getPhone() != null) {
-				
-				if (order.getCustomer_count() != null && order.getCustomer_count() > 0) {
-					tempCustomer.setAccount(tempCustomer.getName());
-					tempCustomer.setEnabled(true);
-					if (customerDao.insert(tempCustomer) == 1) {
-						
-					}else {
-						throw new RuntimeException("failed to insert customer in DB");
-					}
-					order.setCustomer_id(tempCustomer.getId());
-					order.setSubmit_time(new Date().getTime());
-					order.setModifyTime(order.getSubmit_time());
-					order.setStatus(Constants.ORDER_NEW);
-					
-					
-					if (orderDao.insert(order) == 1) {
-						result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(order.getId()));
-						result.setExecuteResult(true);
-						
-					}else {
-						throw new RuntimeException("failed to insert order in DB");
-					}
-					
-				}else {
-					result.getErrorDetails().put("customer_count", "customer count is 0 in client data");
-				}
-				
-			}else if (tempCustomer != null && tempCustomer.getName() == null) {
-				result.getErrorDetails().put("customer_exist", "can not find customer name in client data");
-			}else {
-				result.getErrorDetails().put("customer_exist", "can not find customer phone in client data");
-			}
+			result.getErrorDetails().put("order_exist", "can not find order info in client data");
 		}
+		
 			
 		return result;
 	}

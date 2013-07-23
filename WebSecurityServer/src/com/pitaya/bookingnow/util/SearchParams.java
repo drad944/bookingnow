@@ -67,5 +67,14 @@ public class SearchParams {
 		this.orderStatusList = orderStatusList;
 	}
 	
-	
+	public void cleanup() {
+		this.setCustomer_count(null);
+		this.setCustomer_id(null);
+		this.setFood_detail_id(null);
+		this.setOrder_id(null);
+		this.setOrderStatusList(null);
+		this.setStatus(null);
+		this.setTable_id(null);
+		this.setUser_id(null);
+	}
 }
