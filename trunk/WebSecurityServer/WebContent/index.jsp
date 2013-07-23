@@ -19,19 +19,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link rel="stylesheet" type="text/css" href="CSS/head.css">
 	
 	<script src="${pageContext.request.contextPath}/JS/jquery-1.10.2.js" type="text/javascript"></script>
+	<script>
+	 
+		$(document).ready(function(){
+		    var top = $('#top');
+		     
+		    $.post('Page/Common/top.html',function(data) {
+		        var tmp = $('<div></div>').html(data);
+		 
+		        data = tmp.find('#content').html();
+		        tmp.remove();
+		         
+		        top.html(data);
+		    });
+		});
+	</script>
+  
   </head>
   
   <body>
-		<div id="all">
-			<div id="head">
-		
-			</div>
-			
-			<div id="content">
-		
-			</div>
-		
-		</div>
-	
+	<div id="top" alt="头部div"></div>
+	<div>
+		<hr />
+	</div>
+	<div id="main" alt="页面主体">页面主体</div>
+
 </body>
 </html>
