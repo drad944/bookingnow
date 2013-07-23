@@ -575,7 +575,7 @@ public class OrderService implements IOrderService{
 							//update order status in DB
 							if(tempFood_Details.size() == result.getSubTrueCount()) {
 									order.setModifyTime(new Date().getTime());
-									order.setStatus(Constants.ORDER_WAITING);
+									//order.setStatus(Constants.ORDER_WAITING);
 									if (orderDao.updateByPrimaryKeySelective(order) == 1) {
 										result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(order.getId()));
 										result.setExecuteResult(true);

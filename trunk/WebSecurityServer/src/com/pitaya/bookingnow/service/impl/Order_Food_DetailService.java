@@ -135,6 +135,9 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 								tempNewFood_Detail.setFood_id(tempNewFood.getId());
 								tempNewFood_Detail.setLast_modify_time(new Date().getTime());
 								tempNewFood_Detail.setOrder_id(orderId);
+								if (tempNewFood_Detail.getStatus() == null) {
+									tempNewFood_Detail.setStatus(Constants.FOOD_CONFIRMED);
+								}
 								
 								if (food_detailDao.insertSelective(tempNewFood_Detail) == 1) {
 									
@@ -179,7 +182,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 							if (realFood_Detail != null) {
 								Food realFood = realFood_Detail.getFood();
 								if (realFood != null && realFood.getId().equals(tempDeleteFood.getId())) {
-									if(realFood_Detail.getStatus() == Constants.FOOD_NEW 
+									if(realFood_Detail.getStatus() == Constants.FOOD_NEW || realFood_Detail.getStatus() == Constants.FOOD_WAITING 
 											|| realFood_Detail.getStatus() == Constants.FOOD_CONFIRMED) {
 										if (food_detailDao.deleteByPrimaryKey(tempDeleteFood_Detail.getId()) == 1) {
 											deleteFood_Details.remove(i);
@@ -223,7 +226,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 								Food realFood = realFood_Detail.getFood();
 								if (realFood != null && realFood.getId().equals(tempUpdateFood.getId())) {
 									if(tempUpdateFood_Detail.getCount() >= realFood_Detail.getCount() ||
-											(realFood_Detail.getStatus() == Constants.FOOD_NEW || realFood_Detail.getStatus() == Constants.FOOD_CONFIRMED)) {
+											(realFood_Detail.getStatus() == Constants.FOOD_NEW || realFood_Detail.getStatus() == Constants.FOOD_WAITING || realFood_Detail.getStatus() == Constants.FOOD_CONFIRMED)) {
 										if (food_detailDao.updateByPrimaryKeySelective(tempUpdateFood_Detail) == 1) {
 											result.setSubTrueCount(result.getSubTrueCount() + 1);
 											updateFood_Details.remove(i);
