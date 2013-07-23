@@ -12,6 +12,7 @@ import com.pitaya.bookingnow.entity.Order_Food_Detail;
 import com.pitaya.bookingnow.service.IOrder_Food_DetailService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
+import com.pitaya.bookingnow.util.SearchParams;
 
 public class Order_Food_DetailService implements IOrder_Food_DetailService{
 	private Order_Food_DetailMapper food_detailDao;
@@ -110,6 +111,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 		 * in: food list,orderId 
 		 */
 		MyResult result = new MyResult();
+		SearchParams params = new SearchParams();
 		
 		Map<String, List<Order_Food_Detail>> resultFoods = new HashMap<String, List<Order_Food_Detail>>();
 				
@@ -178,7 +180,10 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 						
 						Food tempDeleteFood = tempDeleteFood_Detail.getFood();
 						if (tempDeleteFood != null && tempDeleteFood.getId() != null) {
-							Order_Food_Detail realFood_Detail = food_detailDao.selectFullByPrimaryKey(tempDeleteFood_Detail.getId());
+							params.setFood_detail_id(tempDeleteFood_Detail.getId());
+							params.setOrder_id(orderId);
+							Order_Food_Detail realFood_Detail = food_detailDao.selectFullByPrimaryKeyAndOrderId(params);
+							params.cleanup();
 							if (realFood_Detail != null) {
 								Food realFood = realFood_Detail.getFood();
 								if (realFood != null && realFood.getId().equals(tempDeleteFood.getId())) {
@@ -221,7 +226,10 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 						
 						Food tempUpdateFood = tempUpdateFood_Detail.getFood();
 						if (tempUpdateFood != null && tempUpdateFood.getId() != null) {
-							Order_Food_Detail realFood_Detail = food_detailDao.selectFullByPrimaryKey(tempUpdateFood_Detail.getId());
+							params.setFood_detail_id(tempUpdateFood_Detail.getId());
+							params.setOrder_id(orderId);
+							Order_Food_Detail realFood_Detail = food_detailDao.selectFullByPrimaryKeyAndOrderId(params);
+							params.cleanup();
 							if (realFood_Detail != null) {
 								Food realFood = realFood_Detail.getFood();
 								if (realFood != null && realFood.getId().equals(tempUpdateFood.getId())) {
@@ -261,5 +269,14 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 			result.setExecuteResult(true);
 		}
 		return result;
+	}
+
+	@Override
+	public Order_Food_Detail searchFullByPrimaryKeyAndOrderId(
+			SearchParams params) {
+		if (params != null) {
+			return food_detailDao.selectFullByPrimaryKeyAndOrderId(params);
+		}
+		return null;
 	}
 }

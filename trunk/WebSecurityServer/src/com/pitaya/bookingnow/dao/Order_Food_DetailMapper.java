@@ -3,6 +3,7 @@ package com.pitaya.bookingnow.dao;
 import java.util.List;
 
 import com.pitaya.bookingnow.entity.Order_Food_Detail;
+import com.pitaya.bookingnow.util.SearchParams;
 
 public interface Order_Food_DetailMapper {
     int deleteByPrimaryKey(Long id);
@@ -29,7 +30,7 @@ public interface Order_Food_DetailMapper {
     
     List<Order_Food_Detail> selectBySelective(Order_Food_Detail food_detail);
     
-    
+    Order_Food_Detail selectFullByPrimaryKeyAndOrderId(SearchParams params);
     
     
 }

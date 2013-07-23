@@ -213,6 +213,9 @@
 		    <if test="food_detail_id != null">
 		        FD.id = #{food_detail_id,jdbcType=BIGINT}
 		    </if>
+		    <if test="order_id != null">
+		        and FD.order_id = #{order_id,jdbcType=BIGINT}
+		    </if>
 		</where>
 	</select>
 	

@@ -18,6 +18,7 @@ import com.pitaya.bookingnow.entity.Order_Food_Detail;
 import com.pitaya.bookingnow.service.IOrder_Food_DetailService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
+import com.pitaya.bookingnow.util.SearchParams;
 
 
 public class TestOrder_Food_DetailService {
@@ -85,8 +86,17 @@ public class TestOrder_Food_DetailService {
 			 showFood_Detail(realFood_Detail);
 		}
 	 }
-	 
-	 
+	
+	@Test
+	 public void testSearchFullByPrimaryKeyAndOrderId() {
+		 SearchParams params = new SearchParams();
+		 params.setOrder_id((long) 1);
+		 params.setFood_detail_id((long) 2);
+		 
+		 Order_Food_Detail realFood_Detail = food_detailService.searchFullByPrimaryKeyAndOrderId(params);
+		 showFood_Detail(realFood_Detail);
+	 }
+	
 	 @Test
 	 public void testUpdateFoodStatus() {
 		 Order_Food_Detail tempFood_Detail = new Order_Food_Detail();
