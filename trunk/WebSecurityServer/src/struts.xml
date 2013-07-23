@@ -138,8 +138,8 @@
 	        </result>
 	        
 	        <result name="submitWaitingSuccess" type="json">
-	        	<param name="excludeNullProperties">true</param>  
-				<param name="includeProperties">result</param>
+				<param name="root">order</param>
+				
 	        </result>
 	        
 	        <result name="submitNewSuccess" type="json">
