@@ -142,6 +142,10 @@
 				
 	        </result>
 	        
+	        <result name="updateFoodsOfWaitingOrderSuccess" type="json">
+				<param name="root">order</param>
+	        </result>
+	        
 	        <result name="submitNewSuccess" type="json">
 	            <param name="root">resultOrder</param>
 	        </result>
