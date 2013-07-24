@@ -411,7 +411,7 @@ public class TestOrderService {
 		order.setFood_details(food_Details);
 		order.setAllowance(1.0);
 
-		MyResult result = orderService.updateWaitingOrderToWaiting(order);
+		MyResult result = orderService.updateFoodsWaitingOrder(order);
 		if (result.isExecuteResult()) {
 			
 			System.out.println("add new order successfully!");
