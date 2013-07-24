@@ -23,5 +23,7 @@ public interface IFood_PictureService {
 	
 	public List<Food_Picture> searchAllFood_PicturesWithoutImage();
 	
+	Food_Picture searchSmallPictureByFoodId(Long id);
 	
+	Food_Picture searchLargePictureByFoodId(Long id);
 }

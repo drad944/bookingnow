@@ -24,11 +24,29 @@ public class Food_PictureAction extends BaseAction{
 	private String uploadContentType;
 	
 	private Food food;
-	
+	private InputStream largeImage;
+	private InputStream smallImage;
 
 	private String downloadFileName;//下载时显示的下载文件名
 	private File realDownloadFile;//下载的真实文件
 	
+	
+	public InputStream getLargeImage() {
+		return largeImage;
+	}
+
+	public void setLargeImage(InputStream largeImage) {
+		this.largeImage = largeImage;
+	}
+
+	public InputStream getSmallImage() {
+		return smallImage;
+	}
+
+	public void setSmallImage(InputStream smallImage) {
+		this.smallImage = smallImage;
+	}
+
 	public Food_PictureService getFood_pictureService() {
 		return food_pictureService;
 	}
@@ -90,7 +108,34 @@ public class Food_PictureAction extends BaseAction{
 	public String getLargeFood_Picture(){
 		return "getLargeImageSuccess";
 	}
+	
+	public String findSmallFood_Picture() {
+		if(this.food != null && food.getId() != null){
+			Food_Picture picture = food_pictureService.searchSmallPictureByFoodId(food.getId());
+			if(picture != null && picture.getSmall_image() != null) {
+				smallImage = new ByteArrayInputStream(picture.getSmall_image());
+				return "findSmallImageSuccess";
+			}
+			
+		}
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
+		return "Fail";
+	}
 
+	public String findLargeFood_Picture(){
+		if(this.food != null && food.getId() != null){
+			Food_Picture picture = food_pictureService.searchLargePictureByFoodId(food.getId());
+			if(picture != null && picture.getBig_image() != null) {
+				smallImage = new ByteArrayInputStream(picture.getBig_image());
+				return "findLargeImageSuccess";
+			}
+			
+		}
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
+		return "Fail";
+	}
 	
 	public InputStream getSmallImageFood_Picture(){
 		if(this.food != null && food.getId() != null){

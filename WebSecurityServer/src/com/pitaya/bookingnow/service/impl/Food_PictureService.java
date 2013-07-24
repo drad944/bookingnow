@@ -77,5 +77,15 @@ public class Food_PictureService implements IFood_PictureService{
 		return food_pictureDao.searchAllFood_PicturesWithoutImage();
 	}
 
+	@Override
+	public Food_Picture searchSmallPictureByFoodId(Long id) {
+		return food_pictureDao.selectSmallImageByFoodId(id);
+	}
+
+	@Override
+	public Food_Picture searchLargePictureByFoodId(Long id) {
+		return food_pictureDao.selectLargeImageByFoodId(id);
+	}
+
 
 }
