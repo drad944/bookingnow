@@ -129,6 +129,7 @@
 		C.id as C_id, 
 		C.picture_id as C_picture_id, 
 		C.name as C_name, 
+		C.phone as C_phone,
 		C.sex as C_sex,
 		C.enabled as C_enabled
 	</sql>
@@ -189,7 +190,8 @@
 	
 	<sql id="Min_Customer_Base_Column_List">
 		C.id as C_id, 
-		C.name as C_name
+		C.name as C_name,
+		C.phone as C_phone
 	</sql>
 	
 	<sql id="Min_Table_Detail_Base_Column_List">
