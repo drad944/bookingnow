@@ -1,11 +1,17 @@
 @CHARSET "UTF-8";
 
-#framework_top {
-	float:left;
-	color:#666;
-	padding:0 16px;
-	margin:0 6px
+#framework_table {
+	 align: center
 }
+
+
+#framework_top {
+	float: left;
+	color: #666;
+	padding:0 16px;
+	margin:0 6px;
+}
+
 
 
 
@@ -24,7 +30,7 @@
 }
 
 .ContentDiv {
-    overflow-x:auto; 
-    overflow-y:auto; 
-    position:absolute
+    overflow-x: auto; 
+    overflow-y: auto; 
+    position: absolute
 }
