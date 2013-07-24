@@ -96,7 +96,7 @@
 	</logger>
 
     <root>   
-        <level value ="ERROR"/>
+        <level value ="info"/>
         <appender-ref ref="consoleAppender"/>
         <appender-ref ref="activeAppender"/>
         <appender-ref ref="fileAppender"/>
