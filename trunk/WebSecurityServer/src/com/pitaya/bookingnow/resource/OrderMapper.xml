@@ -203,7 +203,8 @@
 	</sql>
 	
 	<sql id="Min_Food_Detail_Base_Column_List">
-		FD.id as FD_id
+		FD.id as FD_id,
+		FD.status as FD_status
 	</sql>
 	
 	<sql id="Min_Food_Base_Column_List">

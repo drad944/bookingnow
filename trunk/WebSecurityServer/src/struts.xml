@@ -138,15 +138,18 @@
 	        </result>
 	        
 	        <result name="submitWaitingSuccess" type="json">
+	            <param name="excludeNullProperties">true</param>
 				<param name="root">order</param>
 				
 	        </result>
 	        
 	        <result name="updateFoodsOfWaitingOrderSuccess" type="json">
-				<param name="root">order</param>
+	            <param name="excludeNullProperties">true</param>
+				<param name="root">result</param>
 	        </result>
 	        
 	        <result name="submitNewSuccess" type="json">
+	            <param name="excludeNullProperties">true</param>
 	            <param name="root">resultOrder</param>
 	        </result>
 	        
