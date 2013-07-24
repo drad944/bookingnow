@@ -135,9 +135,9 @@ public class OrderAction extends BaseAction{
 	/*		
 	 * 		waiter update a waiting order with food list
 	 */
-	public String updateWaitingOfWaitingOrder(){
+	public String updateFoodsOfWaitingOrder(){
 		if (order != null) {
-			result = orderService.updateWaitingOrderToWaiting(order);
+			result = orderService.updateFoodsWaitingOrder(order);
 			
 			if (result.isExecuteResult()) {
 				return "updateWaitingOfWaitingSuccess";

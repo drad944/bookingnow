@@ -32,7 +32,7 @@ public interface IOrderService {
 	
 	MyResult addWaitingOrder(Order order);
 	
-	MyResult updateWaitingOrderToWaiting(Order order);
+	MyResult updateFoodsWaitingOrder(Order order);
 	
 	MyResult updateWaitingOrderToConfirmed(Order order);
 	
