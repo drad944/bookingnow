@@ -100,15 +100,6 @@ public class Food_PictureAction extends BaseAction{
 		this.downloadFileName = downloadFileName;
 	}
 
-
-	public String getSmallFood_Picture(){
-		return "getSmallImageSuccess";
-	}
-	
-	public String getLargeFood_Picture(){
-		return "getLargeImageSuccess";
-	}
-	
 	public String findSmallFood_Picture() {
 		if(this.food != null && food.getId() != null){
 			Food_Picture picture = food_pictureService.searchSmallPictureByFoodId(food.getId());
@@ -137,27 +128,6 @@ public class Food_PictureAction extends BaseAction{
 		return "Fail";
 	}
 	
-	public InputStream getSmallImageFood_Picture(){
-		if(this.food != null && food.getId() != null){
-			Food_Picture picture = food_pictureService.searchPictureByFoodId(food.getId());
-			
-			return  new ByteArrayInputStream(picture.getSmall_image());
-		} else {
-			String resultStr = "{ result : "+Constants.FAIL+", detail: \"Can't get food parameter or the id is missing\"}";
-			return new ByteArrayInputStream(resultStr.getBytes());
-		}
-	}
-	
-	public InputStream getLargeImageFood_Picture(){
-		if(this.food != null && food.getId() != null){
-			Food_Picture picture = food_pictureService.searchPictureByFoodId(food.getId());
-			
-			return  new ByteArrayInputStream(picture.getBig_image());
-		} else {
-			String resultStr = "{ result : "+Constants.FAIL+", detail: \"Can't get food parameter or the id is missing\"}";
-			return new ByteArrayInputStream(resultStr.getBytes());
-		}
-	}
 	
 	//上传文件
 	public String uploadFood_Picture() {
