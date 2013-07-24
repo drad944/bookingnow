@@ -24,9 +24,11 @@ import com.pitaya.bookingnow.app.service.FoodMenuTable;
 import com.pitaya.bookingnow.app.service.FoodService;
 import com.pitaya.bookingnow.app.service.MessageService;
 import com.pitaya.bookingnow.app.service.UserManager;
+import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.ToastUtil;
 import com.pitaya.bookingnow.app.views.*;
 import com.pitaya.bookingnow.message.*;
-import com.pitaya.bookinnow.app.util.*;
+import com.pitaya.bookingnow.app.util.*;
 
 import android.app.Activity;
 import android.app.AlertDialog;

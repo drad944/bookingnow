@@ -1,6 +1,6 @@
 package com.pitaya.bookingnow.app.data;
 
-import com.pitaya.bookinnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.Constants;
 
 import android.os.Bundle;
 import android.os.Handler;

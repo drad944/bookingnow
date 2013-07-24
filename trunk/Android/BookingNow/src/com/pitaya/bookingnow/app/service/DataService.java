@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.model.UpdateFood;
-import com.pitaya.bookinnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.Constants;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -416,6 +416,15 @@ public class DataService {
 		context.getContentResolver().update(OrderDetailContentProvider.CONTENT_URI, values, 
 				OrderDetailTable.COLUMN_ORDER_KEY + "=? and " + OrderDetailTable.COLUMN_FOOD_KEY + "=?", 
 				new String[]{order.getOrderKey(), food.getKey()});
+	}
+	
+	public static void updateFoodOfOrder(Context context, Order order, UpdateFood food){
+		ContentValues values = new ContentValues();
+		values.put(OrderDetailTable.COLUMN_QUANTITY, food.getQuantity());
+		values.put(OrderDetailTable.COLUMN_FREE, String.valueOf(food.isFree()));
+		context.getContentResolver().update(OrderDetailContentProvider.CONTENT_URI, values, 
+				OrderDetailTable.COLUMN_ORDER_FOOD_REFID + "=?", 
+				new String[]{String.valueOf(food.getRefId())});
 	}
 	
 	public static int[] getColumnIndexs(Cursor cursor, String[] columns){

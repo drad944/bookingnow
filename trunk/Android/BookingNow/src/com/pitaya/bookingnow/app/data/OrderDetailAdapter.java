@@ -27,7 +27,7 @@ import com.pitaya.bookingnow.app.model.Order.Food;
 import com.pitaya.bookingnow.app.model.Order.OnFoodStatusChangedListener;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.UserManager;
-import com.pitaya.bookinnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.Constants;
 
 public class OrderDetailAdapter extends BaseAdapter {
     
@@ -100,6 +100,7 @@ public class OrderDetailAdapter extends BaseAdapter {
 			TextView statusText = (TextView) view.findViewById(R.id.foodstatus);
 			if(statusText != null){
 				statusText.setText(Order.getFoodStatusString(status));
+				statusText.setVisibility(View.VISIBLE);
 			}
 		}
 		updateSummaryPrice();
@@ -190,7 +191,6 @@ public class OrderDetailAdapter extends BaseAdapter {
 		        		timerText.setText("等待时间 >10小时");
 		        		timerText.setTextColor(mContext.getResources().getColor(R.color.red));
 		        	} else {
-		        		//20 mins
 		        		timerText.setText("等待时间 " + (seconds/3600 < 10 ? "0" + String.valueOf(seconds/3600) : String.valueOf(seconds/3600)) 
 		        				+ ":" + ((seconds%3600)/60 < 10 ? "0" + String.valueOf((seconds%3600)/60) : String.valueOf((seconds%3600)/60))
 		        				+ ":" + ((seconds%3600)%60 < 10 ? "0" + String.valueOf((seconds%3600)%60) : String.valueOf((seconds%3600)%60)));
@@ -246,8 +246,10 @@ public class OrderDetailAdapter extends BaseAdapter {
         	totalPriceText.setText(String.valueOf(food.getPrice() * quantity) + "元");
         }
         final TextView statusText = (TextView) fooditemRL.findViewById(R.id.foodstatus);
-        if(mOrder.getStatus() != Constants.ORDER_NEW){
+        if(mOrder.getStatus() != Constants.ORDER_NEW && mOrder.getStatus() != Constants.ORDER_WAITING){
         	statusText.setText(Order.getFoodStatusString(food.getStatus()));
+        } else {
+        	statusText.setVisibility(View.GONE);
         }
         TextView freeStatusText = (TextView) fooditemRL.findViewById(R.id.freestatus);
         final Button freeBtn = (Button) fooditemRL.findViewById(R.id.freebtn);
@@ -273,7 +275,7 @@ public class OrderDetailAdapter extends BaseAdapter {
 						totalPriceText.setText("0元");
 					}
 					DataService.updateFoodFreeStatus(mContext, mOrder, food);
-					if(mOrder.getStatus() == Constants.ORDER_COMMITED){
+					if(mOrder.getStatus() == Constants.ORDER_COMMITED || mOrder.getStatus() == Constants.ORDER_WAITING){
 						mOrder.addUpdateFoods(mContext, Order.UPDATED, food, quantity);
 						mOrder.markDirty(mContext, true);
 					}
@@ -333,12 +335,12 @@ public class OrderDetailAdapter extends BaseAdapter {
 					quantity = Integer.parseInt(text.toString());
 				} catch(Exception e){
 					Log.e("FoodMenuView", "Fail to parse food quantity");
-					quantity = 0;
 					return;
 				}
-				if(mOrder.getStatus() == Constants.ORDER_NEW || mOrder.getStatus() == Constants.ORDER_COMMITED){
+				if(mOrder.getStatus() != Constants.ORDER_PAYING && mOrder.getStatus() != Constants.ORDER_FINISHED){
 					int result = DataService.updateOrderDetails(mContext, mOrder, food, quantity);
-					if(result != Order.IGNORED && mOrder.getStatus() == Constants.ORDER_COMMITED){
+					if(result != Order.IGNORED && (mOrder.getStatus() == Constants.ORDER_COMMITED
+							|| mOrder.getStatus() == Constants.ORDER_WAITING)){
 						mOrder.addUpdateFoods(mContext, result, food, quantity);
 						mOrder.markDirty(mContext, true);
 					}
@@ -445,6 +447,7 @@ public class OrderDetailAdapter extends BaseAdapter {
 		View itemView = null;
 		switch(UserManager.getUserRole()){
 			case Constants.ROLE_WAITER:
+			case Constants.ROLE_WELCOME:
 				itemView = View.inflate(mContext, R.layout.fooditem_waiter, null);
 				setupWaiterView(itemView, position);
 				break;
@@ -452,13 +455,9 @@ public class OrderDetailAdapter extends BaseAdapter {
 				itemView = View.inflate(mContext, R.layout.fooditem_kitchen, null);
 				setupKitchenView(itemView, position);
 				break;
-			case Constants.ROLE_CASHIER:
-//				itemView = View.inflate(mContext, R.layout.fooditem_waiter, null);
-//				setupWaiterView(itemView, position);
-				break;
-			case Constants.ROLE_WELCOME:
-//				itemView = View.inflate(mContext, R.layout.fooditem_waiter, null);
-//				setupWaiterView(itemView, position);
+			default:
+				itemView = new TextView(parent.getContext());
+				((TextView)itemView).setText("Unsupported role for this view");
 				break;
 		}
 		return itemView;

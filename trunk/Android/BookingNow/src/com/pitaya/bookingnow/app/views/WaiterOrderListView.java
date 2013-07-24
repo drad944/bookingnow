@@ -17,7 +17,7 @@ import com.pitaya.bookingnow.app.model.Table;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.service.OrderTable;
-import com.pitaya.bookinnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.Constants;
 
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -42,15 +42,15 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class WaiterOrderListView extends FrameLayout{
+public class WaiterOrderListView extends RelativeLayout{
 	
 	private static String TAG = "Order";
-	private static int HEADER = 0;
-	private static int ITEM = HEADER +1 ;
 	
 	private ListView mListView;
+	private View mControlbar;
 	private ArrayList<Order> mOrderList;
 	private OrderListAdapter mAdapter;
 	private OrderLeftView mParentView;
@@ -65,12 +65,7 @@ public class WaiterOrderListView extends FrameLayout{
         super(context, attrs);
     }
     
-    public void recycle(int position){
-    	if(this.mOrderList != null && position < this.mOrderList.size()){
-	    	this.mOrderList.get(position).setOnDirtyChangedListener(null);
-	    	this.mOrderList.get(position).removeOnStatusChangedListeners();
-    	}
-    }
+    public void recycle(){}
     
     public void refresh(){
     	this.mAdapter.notifyDataSetInvalidated();
@@ -78,8 +73,28 @@ public class WaiterOrderListView extends FrameLayout{
     
     public void setupViews(int type){
 		mListType = type;
+        
     	switch(mListType){
     		case WaiterOrderLeftView.MYORDERS:
+    			View headerView =View.inflate(this.getContext(), R.layout.orderlistheader, null);
+    			headerView.setId(1);
+    			((TextView)headerView.findViewById(R.id.title1)).setText(R.string.order_list_title_table);
+    			((TextView)headerView.findViewById(R.id.title2)).setText(R.string.order_list_title_status);
+    			((TextView)headerView.findViewById(R.id.title3)).setText(R.string.order_list_title_time);
+    			((TextView)headerView.findViewById(R.id.title4)).setVisibility(View.GONE);
+    			((TextView)headerView.findViewById(R.id.title5)).setVisibility(View.GONE);
+    			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+    			lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+    			addView(headerView, lp);
+    	        this.mListView = new ListView(this.getContext());
+    	        lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+    	        lp.addRule(RelativeLayout.BELOW, headerView.getId());
+    	        addView(mListView, lp);
+    	        lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+    	        this.mControlbar = View.inflate(this.getContext(), R.layout.ordercontrolbar, null);
+    	        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+    	        addView(this.mControlbar, lp);
+    	        
     			//TODO get my orders from server
     			ArrayList<Integer> orderStatus = new ArrayList<Integer>();
     			orderStatus.add(Constants.ORDER_NEW);
@@ -107,7 +122,103 @@ public class WaiterOrderListView extends FrameLayout{
 						Log.e(TAG, "[OrderService.getOrderByStatus] Network error:" + statuscode);
 					}
     			});
-    			//mParentView.getActivity().getLoaderManager().initLoader(HomeActivity.ORDER_LIST_LOADER, null, (LoaderCallbacks<Cursor>) this);
+    			
+    	        View tablesview = View.inflate(this.getContext(), R.layout.tablesview, null);
+    			final GridView tablegridview = (GridView)tablesview.findViewById(R.id.tablegridview);
+    			Button confirmBtn =  (Button)tablesview.findViewById(R.id.confirm);
+    			confirmBtn.setOnClickListener(new OnClickListener(){
+
+    				@Override
+    				public void onClick(View v) {
+    					final ArrayList<Table> tableids = ((TablesAdapter)tablegridview.getAdapter()).getSelectedTables();
+    					OrderService.submitOrder(tableids, new HttpHandler(){
+    						
+    						@Override
+    						public void onSuccess(String action, String response) {
+    							try {
+    								JSONObject jresp = new JSONObject(response);
+    								if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
+    									//TODO handle fail
+    									return;
+    								}
+    								Long user_id = jresp.getJSONObject("user").getLong("id");
+    								String username = jresp.getJSONObject("user").getString("name");
+    								Long order_id = jresp.getLong("id");
+    								Long timestamp = jresp.getLong("submit_time");
+    								int status = jresp.getInt("status");
+    								Order order = new Order(tableids, order_id, user_id, username, timestamp);
+    								order.setStatus(status);
+    								DataService.saveNewOrder(getContext(), order);
+    								if(mAdapter != null){
+    									mAdapter.orderlist.add(order);
+    									int size = mAdapter.orderlist.size();
+    									((WaiterOrderLeftView)mParentView).showOrderDetail(order, false);
+    									((WaiterOrderLeftView)mParentView).setLastItem(order.getOrderKey());
+    									mAdapter.setSelectItem(size - 1);
+    									mAdapter.notifyDataSetChanged();
+    								}
+    							} catch (JSONException e) {
+    								e.printStackTrace();
+    							}
+    						}
+
+    						@Override
+    						public void onFail(String action, int statuscode) {
+    							Log.e(TAG, "[OrderService.submitOrder] Network error:" + statuscode);
+    						}
+    					});
+    				}
+    				
+    			});
+    			
+    			final PopupWindow popupWindow =  new PopupWindow(tablesview, 400, 400, true);
+    			popupWindow.setFocusable(true);
+    	        popupWindow.setOutsideTouchable(false);
+    	        popupWindow.setBackgroundDrawable(this.getContext().getResources().getDrawable(R.drawable.common_background));
+    	        popupWindow.setAnimationStyle(R.style.AnimBottom);
+    			final Button newOrderBtn = (Button)this.mControlbar.findViewById(R.id.optbtn1);
+    			newOrderBtn.setText(R.string.neworderbtn);
+    			
+    			newOrderBtn.setOnClickListener(new OnClickListener(){
+    				@Override
+    				public void onClick(View v) {
+    					OrderService.getAvailableTables(Constants.TABLE_EMPTY, new HttpHandler(){
+    						
+    						public void onSuccess(String action, String response){
+    							try {
+    								JSONObject jresp = new JSONObject(response);
+    								if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
+    									//TODO handle fail
+    								} else {
+    									JSONArray jtables = jresp.getJSONArray("result");
+	    								ArrayList<Table> tables = new ArrayList<Table>();
+	    								for(int i=0; i < jtables.length(); i++){
+	    									tables.add(new Table(jtables.getJSONObject(i).getLong("id"), jtables.getJSONObject(i).getString("address")));
+	    								}
+	    								try {
+	    									tablegridview.setAdapter(new TablesAdapter(getContext(), tables));
+	    								} catch (IllegalArgumentException e) {
+	    									e.printStackTrace();
+	    								} catch (IllegalAccessException e) {
+	    									e.printStackTrace();
+	    								}
+	    								popupWindow.showAsDropDown(newOrderBtn);
+    								}
+    							} catch (JSONException e) {
+    								e.printStackTrace();
+    							}
+    						}
+    						
+    						public void onFail(String action, int statuscode){
+    							Log.e(TAG, "[OrderService.getAvailableTables] Network error:" + statuscode);
+    						}
+    						
+    					});
+    				}
+    				
+    			});
+    			
+    			this.mControlbar.findViewById(R.id.optbtn2).setVisibility(View.GONE);
     			break;
     		case WaiterOrderLeftView.WAITING_ORDERS:
     			//TODO get my orders from server
@@ -143,7 +254,7 @@ public class WaiterOrderListView extends FrameLayout{
 			Log.e(TAG, "[onGetOrders] Fail to read the results");
 			return;
 		}
-        this.mListView = new ListView(this.getContext());
+
 		try {
 			mAdapter = new OrderListAdapter(getContext(), mListView);
 			mAdapter.setOrderList(this.mOrderList);
@@ -161,9 +272,9 @@ public class WaiterOrderListView extends FrameLayout{
 					}
 				}
 				if(!hasFound){
-					index = 0;
+					index = mAdapter.orderlist.size() - 1;
 				}
-				mAdapter.setSelectItem(index + 1);
+				mAdapter.setSelectItem(index);
 				((WaiterOrderLeftView)mParentView).showOrderDetail(mAdapter.orderlist.get(index), true);
 			}
 			
@@ -174,13 +285,10 @@ public class WaiterOrderListView extends FrameLayout{
 				@Override
 				public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 						long arg3) {
-					if(position > 0){
-						((WaiterOrderLeftView)mParentView).showOrderDetail(mAdapter.orderlist.get(position - 1), false);
-						((WaiterOrderLeftView)mParentView).setLastItem(mAdapter.orderlist.get(position - 1).getOrderKey());
-						mAdapter.setSelectItem(position);
-						mAdapter.notifyDataSetInvalidated();
-					}
-					
+					((WaiterOrderLeftView)mParentView).showOrderDetail(mAdapter.orderlist.get(position), false);
+					((WaiterOrderLeftView)mParentView).setLastItem(mAdapter.orderlist.get(position).getOrderKey());
+					mAdapter.setSelectItem(position);
+					mAdapter.notifyDataSetInvalidated();
 				}
 	        	
 	        });
@@ -189,7 +297,6 @@ public class WaiterOrderListView extends FrameLayout{
         } catch (IllegalAccessException e) {
             e.printStackTrace();  
         }
-        addView(mListView);
     }
     
 	private class TablesAdapter extends BaseAdapter{
@@ -269,14 +376,14 @@ public class WaiterOrderListView extends FrameLayout{
 		
 		private void updateStatusText(int position, int status){
 			View view = ((ListView)mView).getChildAt(position);
-			if(view != null && (TextView)view.findViewById(R.id.status) != null){
-				((TextView)view.findViewById(R.id.status)).setText(Order.getOrderStatusString(status));
+			if(view != null && (TextView)view.findViewById(R.id.info2) != null){
+				((TextView)view.findViewById(R.id.info2)).setText(Order.getOrderStatusString(status));
 			}
 		}
 		
 		@Override
 		public int getCount() {
-			return orderlist.size() + 1;
+			return orderlist.size();
 		}
 
 		@Override
@@ -291,16 +398,12 @@ public class WaiterOrderListView extends FrameLayout{
 		
 	    @Override  
 	    public int getViewTypeCount() {
-	        return 2;
+	        return 1;
 	    }
 	    
 	    @Override  
 	    public int getItemViewType(int position) {
-	        if(position > 0) {
-	            return ITEM;  
-	        } else {
-	            return HEADER;  
-	        }
+	    	return 0;
 	    }
 	    
 	    public  void setSelectItem(int selectItem) {  
@@ -314,123 +417,35 @@ public class WaiterOrderListView extends FrameLayout{
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view = convertView;
-			if(getItemViewType(position) == HEADER){
-				if(view == null){
-					view = View.inflate(parent.getContext(), R.layout.orderlistheader, null);
-				}
-				((TextView)view.findViewById(R.id.title2)).setVisibility(View.GONE);
-
-				View tablesview = View.inflate(mContext, R.layout.tablesview, null);
-				final GridView tablegridview = (GridView)tablesview.findViewById(R.id.tablegridview);
-				Button confirmBtn =  (Button)tablesview.findViewById(R.id.confirm);
-				confirmBtn.setOnClickListener(new OnClickListener(){
-
-					@Override
-					public void onClick(View v) {
-						final ArrayList<Table> tableids = ((TablesAdapter)tablegridview.getAdapter()).getSelectedTables();
-						OrderService.submitOrder(tableids, new HttpHandler(){
-							
-							@Override
-							public void onSuccess(String action, String response) {
-								try {
-									JSONObject jresp = new JSONObject(response);
-									if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
-										//TODO handle fail
-										return;
-									}
-									Long user_id = jresp.getJSONObject("user").getLong("id");
-									String username = jresp.getJSONObject("user").getString("name");
-									Long order_id = jresp.getLong("id");
-									Long timestamp = jresp.getLong("submit_time");
-									int status = jresp.getInt("status");
-									Order order = new Order(tableids, order_id, user_id, username, timestamp);
-									order.setStatus(status);
-									DataService.saveNewOrder(mContext, order);
-									OrderListAdapter.this.orderlist.add(order);
-									OrderListAdapter.this.notifyDataSetChanged();
-								} catch (JSONException e) {
-									e.printStackTrace();
-								}
-							}
-
-							@Override
-							public void onFail(String action, int statuscode) {
-								Log.e(TAG, "[OrderService.submitOrder] Network error:" + statuscode);
-							}
-						});
-					}
-					
-				});
-				
-				final PopupWindow popupWindow =  new PopupWindow(tablesview, 400, 400, true);
-				popupWindow.setFocusable(true);
-		        popupWindow.setOutsideTouchable(false);
-		        popupWindow.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.common_background));
-		        popupWindow.setAnimationStyle(R.style.AnimBottom);
-				final Button newOrderBtn = (Button)view.findViewById(R.id.neworder);
-				
-				newOrderBtn.setOnClickListener(new OnClickListener(){
-					@Override
-					public void onClick(View v) {
-						OrderService.getAvailableTables(Constants.TABLE_EMPTY, new HttpHandler(){
-							
-							public void onSuccess(String action, String response){
-								try {
-									JSONArray jresp = new JSONArray(response);
-									ArrayList<Table> tables = new ArrayList<Table>();
-									for(int i=0; i < jresp.length(); i++){
-										tables.add(new Table(jresp.getJSONObject(i).getLong("id"), jresp.getJSONObject(i).getString("address")));
-									}
-									try {
-										tablegridview.setAdapter(new TablesAdapter(mContext, tables));
-									} catch (IllegalArgumentException e) {
-										e.printStackTrace();
-									} catch (IllegalAccessException e) {
-										e.printStackTrace();
-									}
-									popupWindow.showAsDropDown(newOrderBtn);
-								} catch (JSONException e) {
-									e.printStackTrace();
-								}
-							}
-							
-							public void onFail(String action, int statuscode){
-								Log.e(TAG, "[OrderService.getAvailableTables] Network error:" + statuscode);
-							}
-							
-						});
-					}
-					
-				});
-				return view;
-			} else {
-				final int index = position;
-				Order order = orderlist.get(position-1);
-				if(view == null){
-					view = View.inflate(parent.getContext(), R.layout.orderinfo_waiter_mine, null);
-				}
-				if(this.selectItem == position){
-					view.setBackgroundColor(parent.getContext().getResources().getColor(R.color.common_background));
-				} else {
-					view.setBackgroundColor(parent.getContext().getResources().getColor(android.R.color.white));
-				}
-
-				((TextView)view.findViewById(R.id.table_number)).setText(order.getTableNum());
-				((TextView)view.findViewById(R.id.status)).setText(Order.getOrderStatusString(order.getStatus()));
-				order.addOnStatusChangedListener(new OnOrderStatusChangedListener(){
-
-					@Override
-					public void onOrderStatusChanged(Order order, int status) {
-						 updateStatusText(index, status);
-					}
-					
-				});
-				SimpleDateFormat dateFm = new SimpleDateFormat("MM月dd日 HH:mm:ss"); 
-				Date date = new Date();
-				date.setTime(order.getModificationTime());
-				((TextView)view.findViewById(R.id.committime)).setText(dateFm.format(date));
-				return view;
+			final int index = position;
+			Order order = orderlist.get(position);
+			if(view == null){
+				view = View.inflate(parent.getContext(), R.layout.orderinfoview, null);
 			}
+			if(this.selectItem == position){
+				view.setBackgroundColor(parent.getContext().getResources().getColor(R.color.common_background));
+			} else {
+				view.setBackgroundColor(parent.getContext().getResources().getColor(android.R.color.white));
+			}
+
+			((TextView)view.findViewById(R.id.info1)).setText(order.getTableNum());
+			((TextView)view.findViewById(R.id.info2)).setText(Order.getOrderStatusString(order.getStatus()));
+			order.addOnStatusChangedListener(new OnOrderStatusChangedListener(){
+
+				@Override
+				public void onOrderStatusChanged(Order order, int status) {
+					 updateStatusText(index, status);
+				}
+				
+			});
+			SimpleDateFormat dateFm = new SimpleDateFormat("MM月dd日 HH:mm:ss"); 
+			Date date = new Date();
+			date.setTime(order.getModificationTime());
+			((TextView)view.findViewById(R.id.info3)).setText(dateFm.format(date));
+			
+			view.findViewById(R.id.info4).setVisibility(View.GONE);
+			view.findViewById(R.id.info5).setVisibility(View.GONE);
+			return view;
 		}
 		
 	}

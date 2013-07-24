@@ -32,7 +32,7 @@ import com.pitaya.bookingnow.app.data.OrderDetailPreviewAdapter;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
-import com.pitaya.bookinnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.Constants;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -268,8 +268,15 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			    
 			    @Override
 			    public void destroyItem(View container, int position, Object object) {  
-			    	FoodMenuView itemView = (FoodMenuView)object;  
-			        itemView.recycle();
+			    	FoodMenuView itemView = (FoodMenuView)object;
+			    	itemView.recycle();
+//			    	((ViewPager)container).removeView(itemView);
+//			    	for(int i=this.mFoodMenus.size() - 1; i >= 0 ; i--){
+//			    		if(this.mFoodMenus.get(i) == itemView){
+//			    			this.mFoodMenus.remove(i);
+//			    		}
+//			    	}
+//			    	itemView = null;
 			    }
 			    
 			    @Override

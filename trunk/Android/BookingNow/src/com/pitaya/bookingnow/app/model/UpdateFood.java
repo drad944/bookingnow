@@ -1,9 +1,14 @@
 package com.pitaya.bookingnow.app.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class UpdateFood {
+public class UpdateFood implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1891609178790863633L;
 	private String key;
 	private boolean isFree;
 	private Long order_food_refid;

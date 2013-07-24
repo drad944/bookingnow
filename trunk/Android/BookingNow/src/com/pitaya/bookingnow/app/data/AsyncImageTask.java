@@ -8,7 +8,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
-import com.pitaya.bookinnow.app.util.FileUtil;
+import com.pitaya.bookingnow.app.util.FileUtil;
 
 public class AsyncImageTask extends AsyncTask<Void, Void, Bitmap> {
 	  

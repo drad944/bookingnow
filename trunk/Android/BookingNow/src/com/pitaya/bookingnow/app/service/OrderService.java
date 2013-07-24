@@ -16,7 +16,7 @@ import android.content.Context;
 import com.pitaya.bookingnow.app.data.HttpHandler;
 import com.pitaya.bookingnow.app.model.*;
 import com.pitaya.bookingnow.app.model.Order.Food;
-import com.pitaya.bookinnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.Constants;
 
 public class OrderService {
 	
@@ -28,6 +28,27 @@ public class OrderService {
 			jparams.put("user_id", UserManager.getUserId());
 			jreq.put("params", jparams);
 			HttpService.post("searchByStatusOfOrder.action", new StringEntity(jreq.toString()), callback);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void submitWaitingOrder(String customer, String phone, int count, HttpHandler callback){
+		JSONObject jreq = new JSONObject();
+		JSONObject jorder = new JSONObject();
+		try {
+			JSONObject juser = new JSONObject();
+			juser.put("id", UserManager.getUserId());
+			jorder.put("user", juser);
+			JSONObject jcustomer = new JSONObject();
+			jcustomer.put("name", customer);
+			jcustomer.put("phone", phone);
+			jorder.put("customer", jcustomer);
+			jorder.put("customer_count", count);
+			jreq.put("order", jorder);
+			HttpService.post("submitWaitingOrder.action", new StringEntity(jreq.toString()), callback);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
@@ -172,7 +193,9 @@ public class OrderService {
 		JSONObject jreq = new JSONObject();
 		try {
 			jorder.put("id", Long.parseLong(order.getOrderKey()));
-			jorder.put("status", Constants.ORDER_COMMITED);
+			JSONObject juser = new JSONObject();
+			juser.put("id", UserManager.getUserId());
+			jorder.put("user", juser);
 			if(order.getFoods() != null && order.getFoods().size() > 0){
 				Map<String, Long> versions = new HashMap<String, Long>();
 				for(Entry<Food, Integer> food_entry : order.getFoods().entrySet()){
@@ -194,7 +217,14 @@ public class OrderService {
 				jorder.put("food_details", food_details);
 			}
 			jreq.put("order", jorder);
-			HttpService.post("commitOrder.action", new StringEntity(jreq.toString()), callback);
+			if(order.getTableNum() != null){
+				jorder.put("status", Constants.ORDER_COMMITED);
+				HttpService.post("commitOrder.action", new StringEntity(jreq.toString()), callback);
+			} else {
+				jorder.put("status", Constants.ORDER_WAITING);
+				HttpService.post("updateFoodsOfWaitingOrder.action", new StringEntity(jreq.toString()), callback);
+			}
+			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {

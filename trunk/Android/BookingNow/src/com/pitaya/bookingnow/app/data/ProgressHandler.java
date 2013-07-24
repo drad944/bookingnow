@@ -3,7 +3,7 @@ package com.pitaya.bookingnow.app.data;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.pitaya.bookinnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.Constants;
 
 import android.os.Bundle;
 

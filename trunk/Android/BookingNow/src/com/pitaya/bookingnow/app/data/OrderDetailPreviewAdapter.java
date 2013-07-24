@@ -17,10 +17,11 @@ import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.OrderDetailPreviewActivity;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.model.Order.OnDirtyChangedListener;
+import com.pitaya.bookingnow.app.model.Order.OnOrderStatusChangedListener;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.OrderService;
-import com.pitaya.bookinnow.app.util.Constants;
-import com.pitaya.bookinnow.app.util.ToastUtil;
+import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.ToastUtil;
 
 public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
 	
@@ -31,16 +32,8 @@ public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
 		super(c, view, order);
 	}
 	
-	private void setViewByOrderStatus(View view){
-		if(view == null || this.mOrder == null){
-			return;
-		}
-		final View itemView = view;
-		if(mOrder.getFoods().size() == 0){
-			((Button)itemView.findViewById(R.id.action1)).setVisibility(View.GONE);
-			((Button)itemView.findViewById(R.id.action2)).setVisibility(View.GONE);
-			((TextView)itemView.findViewById(R.id.summary)).setVisibility(View.GONE);
-			((TextView)itemView.findViewById(R.id.hint)).setText(R.string.hintinmenu);
+	private void setViewByOrderStatus(final View itemView){
+		if(itemView == null || this.mOrder == null){
 			return;
 		}
 		((TextView)itemView.findViewById(R.id.hint)).setVisibility(View.GONE);
@@ -69,25 +62,26 @@ public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
 										JSONArray jorder_foods = jorder.getJSONArray("food_details");
 										for(int i=0; i < jorder_foods.length(); i++){
 											JSONObject jorder_food = jorder_foods.getJSONObject(i);
+											int status = jorder_food.getInt("status");
 											JSONObject jfood = jorder_food.getJSONObject("food");
 											String food_id = String.valueOf(jfood.getLong("id"));
 											Order.Food food = mOrder.searchFood(food_id);
 											if(food != null){
 												food.setId(jorder_food.getLong("id"));
+												food.setStatus(status);
 												DataService.saveFoodId(mContext, mOrder, food);
 											} else {
 												Log.e(TAG, "Can not find food in order");
 											}
 										}
+										mOrder.setStatus(jorder.getInt("status"));
+										mOrder.markDirty(mContext, false);
+										ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
 									}
 								} catch (JSONException e) {
 									e.printStackTrace();
 								}
 								
-								mOrder.setStatus(Constants.ORDER_COMMITED);
-								mOrder.markDirty(mContext, false);
-								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
-
 						    }
 							
 							@Override
@@ -111,17 +105,10 @@ public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
 					
 				});
 				break;
+			case Constants.ORDER_WAITING:
 			case Constants.ORDER_COMMITED:
 				confirmBtn.setText(R.string.commitupdate);
 				resetBtn.setText(R.string.cancelupdate);
-				mOrder.setOnDirtyChangedListener(new Order.OnDirtyChangedListener(){
-
-					@Override
-					public void onDirtyChanged(Order order, boolean flag) {
-						setViewByOrderStatus(itemView);
-					}
-					
-				});
 				if(mOrder.isDirty()){
 					confirmBtn.setAlpha(1f);
 					resetBtn.setAlpha(1f);
@@ -132,42 +119,7 @@ public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
 						@Override
 						public void onClick(View v) {
 							//TODO update order to server
-							OrderService.updateFoodsOfOrder(mOrder, new HttpHandler(){
-								
-								@Override  
-							    public void onSuccess(String action, String response) {
-									try {
-										JSONObject jresp = new JSONObject(response);
-										if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
-											//TODO handle fail
-										} else {
-											JSONArray jnew_foods = jresp.getJSONArray("new");
-											for(int i=0; i < jnew_foods.length(); i++){
-												JSONObject jorder_food = jnew_foods.getJSONObject(i);
-												JSONObject jfood = jorder_food.getJSONObject("food");
-												String food_id = String.valueOf(jfood.getLong("id"));
-												Order.Food food = mOrder.searchFood(food_id);
-												if(food != null){
-													food.setId(jorder_food.getLong("id"));
-													DataService.saveFoodId(mContext, mOrder, food);
-												} else {
-													Log.e(TAG, "Can not find food in order");
-												}
-											}
-										}
-									} catch (JSONException e) {
-										e.printStackTrace();
-									}
-									mOrder.markDirty(mContext, false);
-									mOrder.resetUpdateFoods(mContext);
-									ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
-							    }
-								
-								@Override
-								public void onFail(String action, int statusCode){
-									ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitfail), Toast.LENGTH_SHORT);
-								}
-							});
+							OrderService.updateFoodsOfOrder(mOrder, new UpdateFoodsHttpHandler(mContext, mOrder, OrderDetailPreviewAdapter.this));
 						}
 						
 					});
@@ -197,9 +149,32 @@ public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
     	if(getItemViewType(position) == FOOD_ITEM){
     		return super.getView(position, convertView, parent);
     	} else if(getItemViewType(position) == OPERATIONS){
-	    	View itemView = View.inflate(mContext, R.layout.orderbottom, null);
+	    	final View itemView = View.inflate(mContext, R.layout.orderbottom, null);
 	    	((Button)itemView.findViewById(R.id.action3)).setVisibility(View.GONE);
-	    	setViewByOrderStatus(itemView);
+			if(mOrder.getFoods().size() == 0){
+				((Button)itemView.findViewById(R.id.action1)).setVisibility(View.GONE);
+				((Button)itemView.findViewById(R.id.action2)).setVisibility(View.GONE);
+				((TextView)itemView.findViewById(R.id.summary)).setVisibility(View.GONE);
+				((TextView)itemView.findViewById(R.id.hint)).setText(R.string.hintinmenu);
+			} else {
+		    	setViewByOrderStatus(itemView);
+				mOrder.addOnStatusChangedListener(new OnOrderStatusChangedListener(){
+
+					@Override
+					public void onOrderStatusChanged(Order tikcet, int status) {
+						setViewByOrderStatus(itemView);
+					}
+					
+				});
+				mOrder.setOnDirtyChangedListener(new Order.OnDirtyChangedListener(){
+
+					@Override
+					public void onDirtyChanged(Order order, boolean flag) {
+						setViewByOrderStatus(mView.findViewById(R.id.orderbottom));
+					}
+					
+				});
+			}
 			return itemView;
     	} else {
     		return null;

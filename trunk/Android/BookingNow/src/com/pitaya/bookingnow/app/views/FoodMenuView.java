@@ -37,8 +37,8 @@ import com.pitaya.bookingnow.app.data.OrderDetailAdapter;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.DataService;
-import com.pitaya.bookinnow.app.util.Constants;
-import com.pitaya.bookinnow.app.util.FileUtil;
+import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.FileUtil;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -95,8 +95,8 @@ public class FoodMenuView extends FrameLayout{
     	mFoodMenuAdapter.notifyDataSetChanged();
     }
     
-    public void recycle(){}  
-    
+    public void recycle(){}
+      
 	private class ImageAdapter extends BaseAdapter{  
         
 		private Context mContext;
@@ -224,9 +224,10 @@ public class FoodMenuView extends FrameLayout{
 							Order.Food bookingfood = order.new Food(food.getKey(), food.getName(), food.getPrice());
 							bookingfood.setVersion(food.getVersion());
 							
-							if(order.getStatus() == Constants.ORDER_NEW || order.getStatus() == Constants.ORDER_COMMITED){
+							if(order.getStatus() != Constants.ORDER_PAYING || order.getStatus() == Constants.ORDER_FINISHED){
 								int result = DataService.updateOrderDetails(mContext, order, bookingfood, quantity);
-								if(result != Order.IGNORED && order.getStatus() == Constants.ORDER_COMMITED){
+								if(result != Order.IGNORED && (order.getStatus() == Constants.ORDER_COMMITED
+										|| order.getStatus() == Constants.ORDER_WAITING)){
 									order.addUpdateFoods(mContext, result, bookingfood, quantity);
 									order.markDirty(mContext, true);
 								}

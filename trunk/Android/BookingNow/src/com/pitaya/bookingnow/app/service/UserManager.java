@@ -11,7 +11,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.pitaya.bookingnow.app.data.HttpHandler;
-import com.pitaya.bookinnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.Constants;
 
 public class UserManager {
 	

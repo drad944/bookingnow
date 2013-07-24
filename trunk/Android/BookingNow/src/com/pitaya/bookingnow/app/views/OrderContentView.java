@@ -8,11 +8,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.LinearLayout;
 
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.model.*;
 import com.pitaya.bookingnow.app.service.UserManager;
-import com.pitaya.bookinnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.Constants;
 
 public class OrderContentView extends BaseContentView{
 	
@@ -32,16 +34,27 @@ public class OrderContentView extends BaseContentView{
 	
 	@Override
 	public void setupView(ViewGroup container){
-		mView = View.inflate(this.mContext, R.layout.ordercontentview, null);
+		if(mView == null){
+			mView = View.inflate(this.mContext, R.layout.ordercontentview, null);
+		}
+		container.addView(mView);
 		FragmentManager fragmentManager = ((FragmentActivity)this.mContext).getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		if(mLeftView == null || currentUserRole != UserManager.getUserRole()){
 			currentUserRole = UserManager.getUserRole();
 			switch(UserManager.getUserRole()){
 				case Constants.ROLE_WAITER:
+					mView.findViewById(R.id.orderlist).setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+							LayoutParams.MATCH_PARENT, 0.6f));
+					mView.findViewById(R.id.orderdetail).setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+							LayoutParams.MATCH_PARENT, 0.4f));
 					mLeftView = new WaiterOrderLeftView();
 					break;
 				case Constants.ROLE_WELCOME:
+					mView.findViewById(R.id.orderlist).setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+							LayoutParams.MATCH_PARENT, 0.55f));
+					mView.findViewById(R.id.orderdetail).setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+							LayoutParams.MATCH_PARENT, 0.45f));
 					mLeftView = new WelcomerOrderLeftView();
 					break;
 			}
@@ -55,7 +68,6 @@ public class OrderContentView extends BaseContentView{
 		fragmentTransaction.replace(R.id.orderlist, mLeftView);
 		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		fragmentTransaction.commit();
-		container.addView(mView);
 	}
 	
 	@Override
