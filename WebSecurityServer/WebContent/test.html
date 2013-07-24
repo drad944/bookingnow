@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="CSS/head.css">
+	
+	<script src="JS/jquery-1.10.2.js" type="text/javascript"></script>
+	<script src="JS/AppUtil.js" type="text/javascript"></script>
+	
+	<script>
+		$(document).ready(function(){
+		    var food = new Object();
+		    food.id = 1;
+			var param = new Object();
+			param.food = food;
+			
+		    	$.post("findSmallFood_Picture.action", 
+		    			{"food":{"id":1}}, 
+		    		    function(data){
+		    				var len = data.length;
+		    				alert("len:" + len);
+		    				
+		    		        $.each(data, function(areaIdx, area) {
+		    		            //alert(area.radius);
+		    		        });
+		    		    },"json");
+		    });
+	</script>
+	
+</head>
+
+<body>
+	<div id="framework_main">welcome to bookingNow management!</div>
+
+</body>
+</html>
