@@ -15,5 +15,5 @@
 	          	android:layout_height="wrap_content"
 	          	android:layout_gravity="top" />
       </com.pitaya.bookingnow.app.views.OrderListsViewPager>
-      
+	  
 </LinearLayout>

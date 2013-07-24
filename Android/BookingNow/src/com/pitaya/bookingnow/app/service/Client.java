@@ -7,8 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import com.pitaya.bookingnow.app.util.Constants;
 import com.pitaya.bookingnow.message.ResultMessage;
-import com.pitaya.bookinnow.app.util.Constants;
 
 
 import android.util.Log;

@@ -11,7 +11,7 @@ import com.pitaya.bookingnow.app.OrderDetailActivity;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.OrderTable;
-import com.pitaya.bookinnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.Constants;
 
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -68,6 +68,7 @@ public class WaiterOrderLeftView extends OrderLeftView{
 		listTypes.add(WAITING_ORDERS);
 		mAdapter = new OrderListsViewPagerAdapter(this.getActivity(), listTypes) ;
 		mOrdersViewPager.setAdapter(mAdapter);
+		
 		return view;
 	}
 	
@@ -136,7 +137,9 @@ public class WaiterOrderLeftView extends OrderLeftView{
 	    @Override  
 	    public void destroyItem(View container, int position, Object object) {  
 	    	WaiterOrderListView itemView = (WaiterOrderListView)object;  
-	        itemView.recycle(position);
+	        itemView.recycle();
+	        ((ViewPager)container).removeView(itemView);
+	        itemView = null;
 	    }
 	    
 	    @Override

@@ -18,8 +18,8 @@ import com.pitaya.bookingnow.app.data.HttpHandler;
 import com.pitaya.bookingnow.app.data.ProgressHandler;
 import com.pitaya.bookingnow.app.data.FileDownloadHandler;
 import com.pitaya.bookingnow.app.model.Food;
-import com.pitaya.bookinnow.app.util.Constants;
-import com.pitaya.bookinnow.app.util.FileUtil;
+import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.FileUtil;
 
 public class FoodService {
 	
@@ -110,15 +110,15 @@ public class FoodService {
 			        bundle.putString(HttpHandler.ACTION_TYPE, action);
 			        bundle.putString("key", food.getKey());
 			        String filename = null;
-			        if(action.equals("getSmallFood_Picture.action")){
+			        if(action.equals("findSmallFood_Picture.action")){
 			        	filename = food.getSmallImageName();
-			        } else if(action.equals("getLargeFood_Picture.action")){
+			        } else if(action.equals("findLargeFood_Picture.action")){
 			        	filename =  food.getLargeImageName();
 			        }
 					if(FileUtil.writeFile(context, filename, this.fileBytes)){
-				        if(action.equals("getSmallFood_Picture.action")){
+				        if(action.equals("findSmallFood_Picture.action")){
 				        	try {
-								HttpService.getFileViaPost("getLargeFood_Picture.action", new StringEntity(jparam.toString()), this);
+								HttpService.getFileViaPost("findLargeFood_Picture.action", new StringEntity(jparam.toString()), this);
 							} catch (UnsupportedEncodingException e) {
 								bundle.putInt(HttpHandler.RESULT, Constants.FAIL);
 								bundle.putInt(HttpHandler.ERROR_CODE, Constants.GET_FOOD_IMAGE_ERROR);
@@ -126,7 +126,7 @@ public class FoodService {
 								e.printStackTrace();
 								this.fileBytes = null;
 							}
-				        } else if(action.equals("getLargeFood_Picture.action")){
+				        } else if(action.equals("findLargeFood_Picture.action")){
 				        	if(type == 0){
 				        		DataService.addNewFood(context, food);
 				        	} else {
@@ -158,7 +158,7 @@ public class FoodService {
 				
 			};
 			
-			HttpService.getFileViaPost("getSmallFood_Picture.action", new StringEntity(jparam.toString()), fileHandler);
+			HttpService.getFileViaPost("findSmallFood_Picture.action", new StringEntity(jparam.toString()), fileHandler);
 			
 		} catch (NumberFormatException e) {
 			error = true;

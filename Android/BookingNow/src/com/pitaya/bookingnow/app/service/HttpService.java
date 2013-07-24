@@ -28,8 +28,8 @@ import org.apache.http.util.EntityUtils;
 import com.pitaya.bookingnow.app.data.FileDownloadHandler;
 import com.pitaya.bookingnow.app.data.HttpHandler;
 import com.pitaya.bookingnow.app.data.ProgressHandler;
-import com.pitaya.bookinnow.app.util.Constants;
-import com.pitaya.bookinnow.app.util.FileUtil;
+import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.FileUtil;
 
 import android.content.Context;
 import android.os.Bundle;

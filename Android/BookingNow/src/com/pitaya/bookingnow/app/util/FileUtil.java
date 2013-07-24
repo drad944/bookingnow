@@ -1,4 +1,4 @@
-package com.pitaya.bookinnow.app.util;
+package com.pitaya.bookingnow.app.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;

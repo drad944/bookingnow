@@ -12,7 +12,7 @@ import java.util.UUID;
 import android.content.Context;
 
 import com.pitaya.bookingnow.app.service.DataService;
-import com.pitaya.bookinnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.Constants;
 
 public class Order implements Serializable{
 		
@@ -40,6 +40,7 @@ public class Order implements Serializable{
 	private volatile boolean isDirty;
 	private transient OnDirtyChangedListener mOnDirtyChangedListener;
 	private transient ArrayList<OnOrderStatusChangedListener> mOnStatusChangedListeners;
+	private transient ArrayList<OnDirtyChangedListener> mOnDirtyChangedListeners;
 	private Map<String, ArrayList<UpdateFood>> updateFoods;
 	
 	public Order(){
@@ -47,7 +48,7 @@ public class Order implements Serializable{
 		this.isDirty = false;
 	}
 	
-	public Order(Long orderid, Long user_id, String username, String phone, String name, int count){
+	public Order(Long orderid, Long user_id, String username, String phone, String name, int count, Long timestamp){
 		this.foods = new LinkedHashMap<Order.Food, Integer>();
 		this.peoplecount = count;
 		this.phoneNumber = phone;
@@ -56,7 +57,7 @@ public class Order implements Serializable{
 		this.user_id = user_id;
 		this.orderkey = String.valueOf(orderid);
 		this.status = Constants.ORDER_NEW;
-		this.modification_ts = System.currentTimeMillis();
+		this.modification_ts = timestamp;
 		this.isDirty = false;
 	}
 	
@@ -95,8 +96,8 @@ public class Order implements Serializable{
 	public static String getFoodStatusString(int status){
 		switch(status){
 			case Constants.FOOD_NEW:
-			case Constants.FOOD_CONFIRMED:
 				return "新提交";
+			case Constants.FOOD_CONFIRMED:
 			case Constants.FOOD_WAITING:
 				return "等待加工";
 			case Constants.FOOD_COOKING:
@@ -197,6 +198,11 @@ public class Order implements Serializable{
 			if(this.mOnDirtyChangedListener != null){
 				this.mOnDirtyChangedListener.onDirtyChanged(this, this.isDirty);
 			}
+			if(this.mOnDirtyChangedListeners != null){
+				for(OnDirtyChangedListener listener : this.mOnDirtyChangedListeners){
+					listener.onDirtyChanged(this, this.isDirty);
+				}
+			}
 		}
 	}
 	
@@ -242,11 +248,6 @@ public class Order implements Serializable{
 	public void setStatus(int status){
 		if(this.status != status){
 			this.status = status;
-			if(this.status == Constants.ORDER_COMMITED){
-				for(Entry<Food, Integer> entry : this.getFoods().entrySet()){
-					entry.getKey().setStatus(Constants.FOOD_WAITING);
-				}
-			}
 			if(this.mOnStatusChangedListeners != null){
 				for(OnOrderStatusChangedListener listener : this.mOnStatusChangedListeners){
 					if(listener != null){
@@ -353,6 +354,17 @@ public class Order implements Serializable{
 		this.mOnStatusChangedListeners = null;
 	}
 	
+	public void addOnDirtyChangedListener(OnDirtyChangedListener listener){
+		if(this.mOnDirtyChangedListeners == null){
+			this.mOnDirtyChangedListeners = new ArrayList<OnDirtyChangedListener>();
+		}
+		this.mOnDirtyChangedListeners.add(listener);
+	}
+	
+	public void removemOnDirtyChangedListeners(){
+		this.mOnDirtyChangedListeners = null;
+	}
+	
 	public void removeAllFood(){
 		this.foods = new LinkedHashMap<Order.Food, Integer>();
 	}
@@ -416,6 +428,9 @@ public class Order implements Serializable{
 		private Long id;
 		private Long version;
 		private transient OnFoodStatusChangedListener listener;
+		
+		public Food(){
+		}
 		
 		public Food(String key, String name, double price){
 			this.key = key;

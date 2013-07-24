@@ -40,10 +40,13 @@
     <string name="commitfail">提交失败</string>
     <string name="rememberme">自动登录</string>
     
-    <string name="order_list_title1">桌号</string>
-    <string name="order_list_title2">提交者</string>
-    <string name="order_list_title3">状态</string>
-    <string name="order_list_title4">提交/更新时间</string>
+    <string name="order_list_title_table">桌号</string>
+    <string name="order_list_title_submitter">提交者</string>
+    <string name="order_list_title_status">状态</string>
+    <string name="order_list_title_time">更新时间</string>
+    <string name="order_list_title_customer">客户姓名</string>
+    <string name="order_list_title_phone">联系电话</string>
+    <string name="order_list_title_count">人数</string>
     <string name="neworderbtn">新建订单</string>
     
     <string name="foodunavailablebtn">缺料</string>
@@ -56,7 +59,7 @@
     <string name="searchbtn">查询</string>
     <string name="bookingbtn">预订</string>
     <string name="cancelfreebtn">取消赠送</string>
-    <string name="seatavailable">找到符合条件的座位</string>
+    <string name="seatavailable">找到符合条件的座位:</string>
     <drawable name="common_background">#4e72b8</drawable>
     <drawable name="menu_background">#494e8f</drawable>
     

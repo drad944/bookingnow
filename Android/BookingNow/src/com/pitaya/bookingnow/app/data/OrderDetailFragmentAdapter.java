@@ -21,13 +21,14 @@ import com.pitaya.bookingnow.app.*;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.model.Order.OnDirtyChangedListener;
 import com.pitaya.bookingnow.app.model.Order.OnOrderStatusChangedListener;
+import com.pitaya.bookingnow.app.model.UpdateFood;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.HttpService;
 import com.pitaya.bookingnow.app.service.OrderService;
+import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.ToastUtil;
 import com.pitaya.bookingnow.app.views.OrderDetailFragment;
 import com.pitaya.bookingnow.message.ResultMessage;
-import com.pitaya.bookinnow.app.util.Constants;
-import com.pitaya.bookinnow.app.util.ToastUtil;
 
 public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 	
@@ -77,24 +78,26 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 										JSONArray jorder_foods = jorder.getJSONArray("food_details");
 										for(int i=0; i < jorder_foods.length(); i++){
 											JSONObject jorder_food = jorder_foods.getJSONObject(i);
+											int status = jorder_food.getInt("status");
 											JSONObject jfood = jorder_food.getJSONObject("food");
 											String food_id = String.valueOf(jfood.getLong("id"));
 											Order.Food food = mOrder.searchFood(food_id);
 											if(food != null){
 												food.setId(jorder_food.getLong("id"));
+												food.setStatus(status);
 												DataService.saveFoodId(mContext, mOrder, food);
 											} else {
 												Log.e(TAG, "Can not find food in order");
 											}
 										}
+										mOrder.setStatus(jorder.getInt("status"));
+										mOrder.markDirty(mContext, false);
+										ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
 									}
 								} catch (JSONException e) {
 									e.printStackTrace();
+									ToastUtil.showToast(mContext,"返回错误", Toast.LENGTH_SHORT);
 								}
-								
-								mOrder.setStatus(Constants.ORDER_COMMITED);
-								mOrder.markDirty(mContext, false);
-								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
 						    }
 							
 							@Override
@@ -125,6 +128,7 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 					
 				});
 				break;
+			case Constants.ORDER_WAITING:	
 			case Constants.ORDER_COMMITED:
 				hinttext.setVisibility(View.GONE);
 				mOrder.setOnDirtyChangedListener(new Order.OnDirtyChangedListener(){
@@ -137,55 +141,16 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 				});
 				if(this.mOrder.isDirty()){
     				actBtn1.setText(R.string.commitupdate);
+    				actBtn1.setVisibility(View.VISIBLE);
     				actBtn2.setText(R.string.cancelupdate);
     				actBtn3.setVisibility(View.GONE);
     				actBtn1.setOnClickListener(new OnClickListener(){
 
 						@Override
 						public void onClick(View v) {
-							//TODO update the order to server
-							OrderService.updateFoodsOfOrder(mOrder, new HttpHandler(){
-								
-								@Override  
-							    public void onSuccess(String action, String response) {
-									try {
-										JSONObject jresp = new JSONObject(response);
-										if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
-											//TODO handle fail
-										} else {
-											if(jresp.has("new")){
-												JSONArray jnew_foods = jresp.getJSONArray("new");
-												for(int i=0; i < jnew_foods.length(); i++){
-													JSONObject jorder_food = jnew_foods.getJSONObject(i);
-													JSONObject jfood = jorder_food.getJSONObject("food");
-													String food_id = String.valueOf(jfood.getLong("id"));
-													Order.Food food = mOrder.searchFood(food_id);
-													if(food != null){
-														food.setId(jorder_food.getLong("id"));
-														DataService.saveFoodId(mContext, mOrder, food);
-													} else {
-														Log.e(TAG, "Can not find food in order");
-													}
-												}
-											}
-										}
-									} catch (JSONException e) {
-										e.printStackTrace();
-									}
-									mOrder.markDirty(mContext, false);
-									mOrder.resetUpdateFoods(mContext);
-									ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
-							    }
-								
-								@Override
-								public void onFail(String action, int statusCode){
-									ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitfail), Toast.LENGTH_SHORT);
-								}
-							});
-							
+							OrderService.updateFoodsOfOrder(mOrder, new UpdateFoodsHttpHandler(mContext, mOrder, OrderDetailFragmentAdapter.this));
 						}
-    					
-    				});
+					});
     				actBtn2.setOnClickListener(new OnClickListener(){
 
 						@Override
@@ -196,19 +161,24 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
     					
     				});
 				} else {
-    				actBtn1.setText(R.string.pay);
+					if(mOrder.getStatus() == Constants.ORDER_COMMITED){
+						actBtn1.setText(R.string.pay);
+						actBtn1.setVisibility(View.VISIBLE);
+	    				actBtn1.setOnClickListener(new OnClickListener(){
+
+							@Override
+							public void onClick(View v) {
+								//TODO request to pay for the order
+								mOrder.setStatus(Constants.ORDER_PAYING);
+							}
+	    					
+	    				});
+					} else {
+						actBtn1.setVisibility(View.GONE);
+					}
     				actBtn2.setText(R.string.modification);
     				actBtn3.setText(R.string.cancelorder);
     				actBtn3.setVisibility(View.VISIBLE);
-    				actBtn1.setOnClickListener(new OnClickListener(){
-
-						@Override
-						public void onClick(View v) {
-							//TODO request to pay for the order
-							mOrder.setStatus(Constants.ORDER_PAYING);
-						}
-    					
-    				});
     				actBtn2.setOnClickListener(new OnClickListener(){
     					
 						@Override
@@ -274,15 +244,23 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 					}
     				
     			});
-    			((Button)itemView.findViewById(R.id.action2)).setVisibility(View.GONE);
+    			Button actBtn2 =((Button)itemView.findViewById(R.id.action2));
+    			actBtn2.setText(R.string.cancelorder);
+				actBtn2.setOnClickListener(new OnClickListener(){
+					
+					@Override
+					public void onClick(View v) {
+					}
+					
+				});
+
 				((Button)itemView.findViewById(R.id.action3)).setVisibility(View.GONE);
 				((TextView)itemView.findViewById(R.id.summary)).setVisibility(View.GONE);
 				((TextView)itemView.findViewById(R.id.hint)).setVisibility(View.GONE);
     		}
     		return itemView;
-    	} else {
-    		return null;
     	}
+		return null;
 	}
     	
 }

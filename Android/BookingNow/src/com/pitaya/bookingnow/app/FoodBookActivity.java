@@ -39,7 +39,7 @@ import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
-import com.pitaya.bookinnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.Constants;
 
 public class FoodBookActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>{
 	
@@ -148,9 +148,10 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 					bookingfood.setVersion(mCurrentFood.getVersion());
 					
 					
-					if(mOrder.getStatus() == Constants.ORDER_NEW || mOrder.getStatus() == Constants.ORDER_COMMITED){
+					if(mOrder.getStatus() != Constants.ORDER_PAYING && mOrder.getStatus() != Constants.ORDER_FINISHED){
 						int result = DataService.updateOrderDetails(FoodBookActivity.this, mOrder, bookingfood, quantity);
-						if(result != Order.IGNORED && mOrder.getStatus() == Constants.ORDER_COMMITED){
+						if(result != Order.IGNORED && (mOrder.getStatus() == Constants.ORDER_COMMITED
+								|| mOrder.getStatus() == Constants.ORDER_WAITING)){
 							mOrder.addUpdateFoods(FoodBookActivity.this, result, bookingfood, quantity);
 							mOrder.markDirty(FoodBookActivity.this, true);
 						}
