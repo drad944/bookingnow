@@ -523,7 +523,7 @@ public class OrderService implements IOrderService{
 	}
 	
 	@Override
-	public MyResult updateWaitingOrderToWaiting(Order order){
+	public MyResult updateFoodsWaitingOrder(Order order){
 		/*
 		 * welcomer update order with food list when customer is waiting table and choose food
 		 * in:order_id,customer_id,food list,order status:waiting,food status:new
