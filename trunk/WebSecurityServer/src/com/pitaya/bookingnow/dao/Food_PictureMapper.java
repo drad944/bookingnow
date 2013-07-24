@@ -27,6 +27,6 @@ public interface Food_PictureMapper {
     List<Food_Picture> searchAllFood_Pictures();
     List<Food_Picture> searchAllFood_PicturesWithoutImage();
     
-    
-    
+    Food_Picture selectLargeImageByFoodId(Long foodId);
+    Food_Picture selectSmallImageByFoodId(Long foodId);
 }

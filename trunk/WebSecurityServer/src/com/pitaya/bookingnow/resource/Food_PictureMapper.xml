@@ -31,6 +31,24 @@
 		from pitaya_food_picture
 	</select>
 	
+	<select id="selectSmallImageByFoodId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+			B.id , B.version, B.small_image
+		from pitaya_food A 
+		    left outer join pitaya_food_picture B on 
+		    A.picture_id = B.id
+		where A.id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="selectLargeImageByFoodId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+			B.id , B.version, B.big_image
+		from pitaya_food A 
+		    left outer join pitaya_food_picture B on 
+		    A.picture_id = B.id
+		where A.id = #{id,jdbcType=BIGINT}
+	</select>
+	
 	<select id="selectByFoodId" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
 		B.id , B.name, B.version, B.enabled, B.big_image, B.small_image
