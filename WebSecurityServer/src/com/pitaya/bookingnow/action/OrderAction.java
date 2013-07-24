@@ -140,7 +140,6 @@ public class OrderAction extends BaseAction{
 			result = orderService.updateFoodsWaitingOrder(order);
 			
 			if (result.isExecuteResult()) {
-				order = result.getOrder();
 				return "updateFoodsOfWaitingOrderSuccess";
 			}
 		}
