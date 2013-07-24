@@ -127,7 +127,7 @@ public class Food_PictureAction extends BaseAction{
 		if(this.food != null && food.getId() != null){
 			Food_Picture picture = food_pictureService.searchLargePictureByFoodId(food.getId());
 			if(picture != null && picture.getBig_image() != null) {
-				smallImage = new ByteArrayInputStream(picture.getBig_image());
+				largeImage = new ByteArrayInputStream(picture.getBig_image());
 				return "findLargeImageSuccess";
 			}
 			
