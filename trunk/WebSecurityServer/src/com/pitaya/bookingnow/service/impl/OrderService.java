@@ -526,7 +526,7 @@ public class OrderService implements IOrderService{
 	public MyResult updateFoodsWaitingOrder(Order order){
 		/*
 		 * welcomer update order with food list when customer is waiting table and choose food
-		 * in:order_id,customer_id,food list,order status:waiting,food status:new
+		 * in:order_id,user_id,customer_id,food list,order status:waiting,food status:new
 		 * 
 		 */
 		MyResult result = new MyResult();
@@ -592,7 +592,7 @@ public class OrderService implements IOrderService{
 							//update order status in DB
 							if(tempFood_Details.size() == result.getSubTrueCount()) {
 									order.setModifyTime(new Date().getTime());
-									//order.setStatus(Constants.ORDER_WAITING);
+									order.setStatus(Constants.ORDER_WAITING);
 									if (orderDao.updateByPrimaryKeySelective(order) == 1) {
 										result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(order.getId()));
 										result.setExecuteResult(true);
