@@ -26,7 +26,6 @@ public class TestFood_PictureMapper {
     		System.out.println("name : " + newFood_Picture.getName());
     		System.out.println("Last_modify_time : " + newFood_Picture.getVersion());
     		System.out.println("Small_image : " + newFood_Picture.getSmall_image());
-    		System.out.println("big image : " + newFood_Picture.getBig_image());
     		
     	}finally { 
             sqlSession.close(); 
@@ -43,7 +42,6 @@ public class TestFood_PictureMapper {
     		System.out.println("name : " + newFood_Picture.getName());
     		System.out.println("Last_modify_time : " + newFood_Picture.getVersion());
     		System.out.println("Small_image : " + newFood_Picture.getSmall_image());
-    		System.out.println("big image : " + newFood_Picture.getBig_image());
     		
     	}finally { 
             sqlSession.close(); 

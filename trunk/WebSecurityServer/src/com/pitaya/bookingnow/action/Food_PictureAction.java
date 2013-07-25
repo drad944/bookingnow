@@ -24,13 +24,29 @@ public class Food_PictureAction extends BaseAction{
 	private String uploadContentType;
 	
 	private Food food;
-	private InputStream largeImage;
-	private InputStream smallImage;
+	private InputStream largeImageStream;
+	private InputStream smallImageStream;
 
 	private String downloadFileName;//下载时显示的下载文件名
 	private File realDownloadFile;//下载的真实文件
 	
 	
+	public InputStream getLargeImageStream() {
+		return largeImageStream;
+	}
+
+	public void setLargeImageStream(InputStream largeImageStream) {
+		this.largeImageStream = largeImageStream;
+	}
+
+	public InputStream getSmallImageStream() {
+		return smallImageStream;
+	}
+
+	public void setSmallImageStream(InputStream smallImageStream) {
+		this.smallImageStream = smallImageStream;
+	}
+
 	public IFood_PictureService getFood_pictureService() {
 		return food_pictureService;
 	}
@@ -38,23 +54,6 @@ public class Food_PictureAction extends BaseAction{
 	public void setFood_pictureService(IFood_PictureService food_pictureService) {
 		this.food_pictureService = food_pictureService;
 	}
-
-	public InputStream getLargeImage() {
-		return largeImage;
-	}
-
-	public void setLargeImage(InputStream largeImage) {
-		this.largeImage = largeImage;
-	}
-
-	public InputStream getSmallImage() {
-		return smallImage;
-	}
-
-	public void setSmallImage(InputStream smallImage) {
-		this.smallImage = smallImage;
-	}
-
 
 	public Food getFood() {
 		return food;
@@ -105,7 +104,7 @@ public class Food_PictureAction extends BaseAction{
 		if(this.food != null && food.getId() != null){
 			Food_Picture picture = food_pictureService.searchSmallPictureByFoodId(food.getId());
 			if(picture != null && picture.getSmall_image() != null) {
-				smallImage = new ByteArrayInputStream(picture.getSmall_image());
+				smallImageStream = new ByteArrayInputStream(picture.getSmall_image());
 				return "findSmallImageSuccess";
 			}
 			
@@ -118,8 +117,8 @@ public class Food_PictureAction extends BaseAction{
 	public String findLargeFood_Picture(){
 		if(this.food != null && food.getId() != null){
 			Food_Picture picture = food_pictureService.searchLargePictureByFoodId(food.getId());
-			if(picture != null && picture.getBig_image() != null) {
-				largeImage = new ByteArrayInputStream(picture.getBig_image());
+			if(picture != null && picture.getLarge_image() != null) {
+				largeImageStream = new ByteArrayInputStream(picture.getLarge_image());
 				return "findLargeImageSuccess";
 			}
 			

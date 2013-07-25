@@ -57,7 +57,7 @@ public class TestFood_PictureService {
 			try {
 				Food_Picture newPicture = pictures.get(i);
 				
-				File file = new File("WebContent/images/Small/" + (i + 1) + ".png");
+				File file = new File("WebContent/images/small/" + (i + 1) + ".png");
 				FileInputStream fis = new FileInputStream(file);
 				
 				byte[] buffer = new byte[1024];
@@ -90,7 +90,7 @@ public class TestFood_PictureService {
 			try {
 				Food_Picture newPicture = pictures.get(i);
 				
-				File file = new File("WebContent/images/Large/" + (i + 1) + ".jpg");
+				File file = new File("WebContent/images/large/" + (i + 1) + ".jpg");
 				FileInputStream fis = new FileInputStream(file);
 				
 				byte[] buffer = new byte[1024];
@@ -105,11 +105,9 @@ public class TestFood_PictureService {
 				}
 				fis.close();
 				
-				newPicture.setBig_image(pictureImage);
 				newPicture.setVersion(new Date().getTime());
 				
 				food_pictureService.modify(newPicture);
-				newPicture.setBig_image(null);
 				
 			}catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -124,5 +122,34 @@ public class TestFood_PictureService {
 		
 	}
 	
+	@Test
+	public void testSearchSmallPictureByFoodId() {
+		
+		Long food_id = 2l;
+		
+		Food_Picture result = food_pictureService.searchSmallPictureByFoodId(food_id);
+		showPicture(result);
+		result = food_pictureService.searchLargePictureByFoodId(food_id);
+		showPicture(result);
+	}
+	
+	public void showPicture(Food_Picture picture) {
+		if (picture != null) {
+			System.out.println("Id : " + picture.getId());
+			System.out.println("Name : " + picture.getName());
+			System.out.println("Large_image_absolute_path : " + picture.getLarge_image_absolute_path());
+			System.out.println("Large_image_relative_path : " + picture.getLarge_image_relative_path());
+			System.out.println("Small_image_absolute_path : " + picture.getSmall_image_absolute_path());
+			System.out.println("Small_image_relative_path : " + picture.getSmall_image_relative_path());
+			System.out.println("Large_image_size : " + picture.getLarge_image_size());
+			System.out.println("Small_image_size : " + picture.getSmall_image_size());
+			System.out.println("Version : " + picture.getVersion());
+			System.out.println("Enabled : " + picture.getEnabled());
+			System.out.println("Large_image length : " + picture.getLarge_image());
+			System.out.println("Small_image length : " + picture.getSmall_image());
+			System.out.println();
+		}
+		
+	}
 	
 }
