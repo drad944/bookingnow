@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.pitaya.bookingnow.entity.Table;
-import com.pitaya.bookingnow.service.impl.TableService;
+import com.pitaya.bookingnow.service.ITableService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.SearchParams;
 
@@ -13,16 +13,22 @@ public class TableAction extends BaseAction{
 
 	private static final long serialVersionUID = 3183091140754786231L;
 	
-	private TableService tableService;
+	private ITableService tableService;
 	
 	private Table table;
 	
 	private SearchParams params;
 	
-	
 	private Map<String,List<Table>> matchedTables;
 
-	
+	public ITableService getTableService() {
+		return tableService;
+	}
+
+	public void setTableService(ITableService tableService) {
+		this.tableService = tableService;
+	}
+
 	public Map<String, List<Table>> getMatchedTables() {
 		return matchedTables;
 	}
@@ -48,13 +54,6 @@ public class TableAction extends BaseAction{
 		this.table = table;
 	}
 
-	public TableService getTableService() {
-		return tableService;
-	}
-
-	public void setTableService(TableService tableService) {
-		this.tableService = tableService;
-	}
 	
 	public String searchTable() {
 		if (table != null) {
