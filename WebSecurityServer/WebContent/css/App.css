@@ -1,0 +1,36 @@
+@CHARSET "UTF-8";
+
+#framework_table {
+	 align: center
+}
+
+
+#framework_top {
+	float: left;
+	color: #666;
+	padding:0 16px;
+	margin:0 6px;
+}
+
+
+
+
+.ViewTable {
+    table-layout: fixed;
+}
+
+.ViewDiv {
+    overflow-y: auto;
+    WIDTH: 100%;   
+    HEIGHT: 100%
+}
+
+.InlineDiv {
+	display: inline
+}
+
+.ContentDiv {
+    overflow-x: auto; 
+    overflow-y: auto; 
+    position: absolute
+}
