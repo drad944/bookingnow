@@ -6,7 +6,8 @@ public class Constants {
 	public static final int ALL = -1;
 	
 	public static final int ORDER_NEW = 1;
-	public static final int ORDER_WAITING = ORDER_NEW + 1;
+	public static final int ORDER_WELCOMER_NEW = ORDER_NEW + 1;
+	public static final int ORDER_WAITING = ORDER_WELCOMER_NEW + 1;
 	public static final int ORDER_COMMITED = ORDER_WAITING + 1;
 	public static final int ORDER_COOKING = ORDER_COMMITED + 1;
 	public static final int ORDER_PAYING = ORDER_COOKING + 1;
