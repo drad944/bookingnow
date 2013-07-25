@@ -50,41 +50,62 @@ public class Food_PictureService implements IFood_PictureService{
 
 	@Override
 	public List<Food_Picture> searchFood_Pictures(Food_Picture food_picture) {
-		
-		return food_pictureDao.searchFood_Pictures(food_picture);
+		List<Food_Picture> realFood_Pictures = food_pictureDao.searchFood_Pictures(food_picture);
+		if (realFood_Pictures != null && realFood_Pictures.size() > 0) {
+			for (int i = 0; i < realFood_Pictures.size(); i++) {
+				realFood_Pictures.get(i).renderePicture();
+			}
+		}
+		return realFood_Pictures;
 	}
 
 	@Override
 	public Food_Picture searchPictureByFoodId(Long id) {
-		return food_pictureDao.selectByFoodId(id);
+		Food_Picture realFood_Picture = food_pictureDao.selectByFoodId(id);
+		if (realFood_Picture != null) {
+			realFood_Picture.renderePicture();
+		}
+		return realFood_Picture;
 	}
 
 	@Override
 	public List<Food_Picture> searchAllFood_Pictures() {
-		return food_pictureDao.searchAllFood_Pictures();
+		List<Food_Picture> realFood_Pictures = food_pictureDao.searchAllFood_Pictures();
+		if (realFood_Pictures != null && realFood_Pictures.size() > 0) {
+			for (int i = 0; i < realFood_Pictures.size(); i++) {
+				realFood_Pictures.get(i).renderePicture();
+			}
+		}
+		return realFood_Pictures;
 	}
 
 	@Override
 	public List<Food_Picture> searchFood_PicturesWithoutImage(
 			Food_Picture food_picture) {
-		// TODO Auto-generated method stub
 		return food_pictureDao.searchFood_PicturesWithoutImage(food_picture);
 	}
 
 	@Override
 	public List<Food_Picture> searchAllFood_PicturesWithoutImage() {
-		// TODO Auto-generated method stub
 		return food_pictureDao.searchAllFood_PicturesWithoutImage();
 	}
 
 	@Override
 	public Food_Picture searchSmallPictureByFoodId(Long id) {
-		return food_pictureDao.selectSmallImageByFoodId(id);
+		Food_Picture realFood_Picture = food_pictureDao.selectSmallImageByFoodId(id);
+		if (realFood_Picture != null) {
+			realFood_Picture.renderePicture();
+		}
+		return realFood_Picture;
 	}
 
 	@Override
 	public Food_Picture searchLargePictureByFoodId(Long id) {
-		return food_pictureDao.selectLargeImageByFoodId(id);
+		Food_Picture realFood_Picture = food_pictureDao.selectLargeImageByFoodId(id);
+		if (realFood_Picture != null) {
+			realFood_Picture.renderePicture();
+		}
+		return realFood_Picture;
 	}
 
 

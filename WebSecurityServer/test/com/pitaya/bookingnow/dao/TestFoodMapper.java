@@ -132,7 +132,6 @@ public class TestFoodMapper {
     		picture.setVersion(new Date().getTime());
     		picture.setName("回锅炒肉 图片2");
     		picture.setSmall_image(new byte[]{1,2,3,4,5,6});
-    		picture.setBig_image(new byte[]{7,8,9});
     		
     		tempFood.setPicture(picture);
     		

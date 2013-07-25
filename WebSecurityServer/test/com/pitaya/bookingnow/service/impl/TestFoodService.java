@@ -58,7 +58,6 @@ public class TestFoodService {
 		 Food_Picture picture = new Food_Picture();
 		 picture.setEnabled(true);
 		 picture.setName("new pi");
-		 picture.setBig_image(new byte[]{4,45,6});
 		 picture.setVersion(new Date().getTime());
 		 newFood2.setPicture(picture);
 		 
