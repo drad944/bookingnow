@@ -457,7 +457,7 @@ public class OrderService implements IOrderService{
 							if (order.getCustomer_count() != null && order.getCustomer_count() > 0) {
 								order.setCustomer_id(realCustomer.getId());
 								order.setModifyTime(new Date().getTime());
-								order.setStatus(Constants.ORDER_NEW);
+								order.setStatus(Constants.ORDER_WAITING);
 								
 								if(orderDao.insert(order) == 1) {
 									result.setExecuteResult(true);
@@ -486,7 +486,7 @@ public class OrderService implements IOrderService{
 								order.setCustomer_id(tempCustomer.getId());
 								order.setSubmit_time(new Date().getTime());
 								order.setModifyTime(order.getSubmit_time());
-								order.setStatus(Constants.ORDER_NEW);
+								order.setStatus(Constants.ORDER_WAITING);
 								
 								
 								if (orderDao.insert(order) == 1) {
@@ -592,7 +592,7 @@ public class OrderService implements IOrderService{
 							//update order status in DB
 							if(tempFood_Details.size() == result.getSubTrueCount()) {
 									order.setModifyTime(new Date().getTime());
-									order.setStatus(Constants.ORDER_WAITING);
+//									order.setStatus(Constants.ORDER_WAITING);
 									if (orderDao.updateByPrimaryKeySelective(order) == 1) {
 										result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(order.getId()));
 										result.setExecuteResult(true);
