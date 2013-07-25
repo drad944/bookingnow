@@ -10,14 +10,14 @@ import java.io.UnsupportedEncodingException;
 
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Food_Picture;
-import com.pitaya.bookingnow.service.impl.Food_PictureService;
+import com.pitaya.bookingnow.service.IFood_PictureService;
 import com.pitaya.bookingnow.util.Constants;
 
 public class Food_PictureAction extends BaseAction{
 	
 	private static final long serialVersionUID = 2899868808373852803L;
 	
-	private Food_PictureService food_pictureService;
+	private IFood_PictureService food_pictureService;
 	
 	private File upload;
 	private String uploadFileName;
@@ -31,6 +31,14 @@ public class Food_PictureAction extends BaseAction{
 	private File realDownloadFile;//下载的真实文件
 	
 	
+	public IFood_PictureService getFood_pictureService() {
+		return food_pictureService;
+	}
+
+	public void setFood_pictureService(IFood_PictureService food_pictureService) {
+		this.food_pictureService = food_pictureService;
+	}
+
 	public InputStream getLargeImage() {
 		return largeImage;
 	}
@@ -47,13 +55,6 @@ public class Food_PictureAction extends BaseAction{
 		this.smallImage = smallImage;
 	}
 
-	public Food_PictureService getFood_pictureService() {
-		return food_pictureService;
-	}
-
-	public void setFood_pictureService(Food_PictureService food_pictureService) {
-		this.food_pictureService = food_pictureService;
-	}
 
 	public Food getFood() {
 		return food;
