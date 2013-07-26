@@ -101,6 +101,7 @@ public class Food_PictureAction extends BaseAction{
 	}
 
 	public String findSmallFood_Picture() {
+		//try to use FileInputStream with picture path directly
 		if(this.food != null && food.getId() != null){
 			Food_Picture picture = food_pictureService.searchSmallPictureByFoodId(food.getId());
 			if(picture != null && picture.getSmall_image() != null) {
@@ -115,6 +116,7 @@ public class Food_PictureAction extends BaseAction{
 	}
 
 	public String findLargeFood_Picture(){
+		//try to use FileInputStream with picture path directly
 		if(this.food != null && food.getId() != null){
 			Food_Picture picture = food_pictureService.searchLargePictureByFoodId(food.getId());
 			if(picture != null && picture.getLarge_image() != null) {

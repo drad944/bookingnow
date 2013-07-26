@@ -179,26 +179,26 @@ create table pitaya_food_picture(
 	enabled boolean
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_food_picture values (1,'a',1351232321,'WebContent/images/1_l_123241422.jpg','WebContent/images/1_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (2,'b',1351232321,'WebContent/images/2_l_123241422.jpg','WebContent/images/2_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (3,'a',1351232321,'WebContent/images/3_l_123241422.jpg','WebContent/images/3_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (4,'c',1351232321,'WebContent/images/4_l_123241422.jpg','WebContent/images/4_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (5,'a',1351232321,'WebContent/images/5_l_123241422.jpg','WebContent/images/5_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (6,'b',1351232321,'WebContent/images/6_l_123241422.jpg','WebContent/images/6_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (7,'a',1351232321,'WebContent/images/7_l_123241422.jpg','WebContent/images/7_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (8,'b',1351232321,'WebContent/images/8_l_123241422.jpg','WebContent/images/8_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (9,'a',1351232321,'WebContent/images/9_l_123241422.jpg','WebContent/images/9_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (10,'c',1351232321,'WebContent/images/10_l_123241422.jpg','WebContent/images/10_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (11,'c',1351232321,'WebContent/images/11_l_123241422.jpg','WebContent/images/11_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (12,'c',1351232321,'WebContent/images/12_l_123241422.jpg','WebContent/images/12_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (13,'a',1351232321,'WebContent/images/13_l_123241422.jpg','WebContent/images/13_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (14,'b',1351232321,'WebContent/images/14_l_123241422.jpg','WebContent/images/14_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (15,'a',1351232321,'WebContent/images/15_l_123241422.jpg','WebContent/images/15_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (16,'a',1351232321,'WebContent/images/16_l_123241422.jpg','WebContent/images/16_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (17,'b',1351232321,'WebContent/images/17_l_123241422.jpg','WebContent/images/17_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (18,'a',1351232321,'WebContent/images/18_l_123241422.jpg','WebContent/images/18_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (19,'a',1351232321,'WebContent/images/19_l_123241422.jpg','WebContent/images/19_s_123241422.png','','',0,0,true);
-insert into pitaya_food_picture values (20,'a',1351232321,'WebContent/images/20_l_123241422.jpg','WebContent/images/20_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (1,'a',1351232321,'images/1_l_123241422.jpg','images/1_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (2,'b',1351232321,'images/2_l_123241422.jpg','images/2_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (3,'a',1351232321,'images/3_l_123241422.jpg','images/3_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (4,'c',1351232321,'images/4_l_123241422.jpg','images/4_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (5,'a',1351232321,'images/5_l_123241422.jpg','images/5_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (6,'b',1351232321,'images/6_l_123241422.jpg','images/6_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (7,'a',1351232321,'images/7_l_123241422.jpg','images/7_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (8,'b',1351232321,'images/8_l_123241422.jpg','images/8_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (9,'a',1351232321,'images/9_l_123241422.jpg','images/9_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (10,'c',1351232321,'images/10_l_123241422.jpg','images/10_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (11,'c',1351232321,'images/11_l_123241422.jpg','images/11_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (12,'c',1351232321,'images/12_l_123241422.jpg','images/12_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (13,'a',1351232321,'images/13_l_123241422.jpg','images/13_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (14,'b',1351232321,'images/14_l_123241422.jpg','images/14_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (15,'a',1351232321,'images/15_l_123241422.jpg','images/15_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (16,'a',1351232321,'images/16_l_123241422.jpg','images/16_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (17,'b',1351232321,'images/17_l_123241422.jpg','images/17_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (18,'a',1351232321,'images/18_l_123241422.jpg','images/18_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (19,'a',1351232321,'images/19_l_123241422.jpg','images/19_s_123241422.png','','',0,0,true);
+insert into pitaya_food_picture values (20,'a',1351232321,'images/20_l_123241422.jpg','images/20_s_123241422.png','','',0,0,true);
 
 
 create table pitaya_customer(
