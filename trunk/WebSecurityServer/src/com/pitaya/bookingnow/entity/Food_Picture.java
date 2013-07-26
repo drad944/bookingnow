@@ -5,8 +5,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts2.ServletActionContext;
+
+
 
 public class Food_Picture {
+	private static Log logger =  LogFactory.getLog(Food_Picture.class);
+	
     private Long id;
 
     private String name;
@@ -131,9 +138,10 @@ public class Food_Picture {
     	FileInputStream fis = null;
     	File file = null;
     	
-		
+    	String pathprefix = ServletActionContext.getServletContext().getRealPath("/");
     	if (this.getLarge_image_relative_path() != null && this.getLarge_image_relative_path().length() > 0) {
-			file = new File(this.getLarge_image_relative_path());
+			
+    		file = new File(pathprefix + this.getLarge_image_relative_path());
 			
 			if (file.exists()) {
 				try {
@@ -166,11 +174,13 @@ public class Food_Picture {
 					}
 				}
 				
+			}else {
+				logger.info(file.toString() + " -------------------- large picture is not exist.");
 			}
 		}
     	
     	if (this.getSmall_image_relative_path() != null && this.getSmall_image_relative_path().length() > 0) {
-			file = new File(this.getSmall_image_relative_path());
+			file = new File(pathprefix + this.getSmall_image_relative_path());
 			
 			if (file.exists()) {
 				try {
@@ -203,6 +213,8 @@ public class Food_Picture {
 					}
 				}
 				
+			}else {
+				logger.info(file.toString() + " -------------------- small picture is not exist.");
 			}
 		}
     }
