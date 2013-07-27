@@ -168,6 +168,30 @@ public class OrderAction extends BaseAction{
 	/*		
 	 * 		update a new or waiting order to committed
 	 */
+	public String updateTablesOfWaitingOrder() {
+		if (order != null) {
+			if(order.getTable_details() != null){
+				result = orderService.updateWaitingOrderToConfirmed(order);
+				if (result.isExecuteResult()) {
+					this.getResult().setExecuteResult(true);
+					return "commitWaitingOrderSuccess";
+				} else {
+					this.getResult().setExecuteResult(false);
+					this.getResult().setShortDetail(null);
+					return "Fail";
+				}
+			} else {
+				this.getResult().setExecuteResult(false);
+				this.getResult().setShortDetail("To commit order, it must contain food list or table details");
+				return "Fail";
+			}
+		} else {
+			this.getResult().setExecuteResult(false);
+			this.getResult().setShortDetail("Parameter order is missing");
+			return "Fail";
+		}
+	}
+	
 	public String commitOrder(){
 		if (order != null) {
 			if(order.getFood_details() != null){

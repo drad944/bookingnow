@@ -175,11 +175,9 @@
 	    O.id as O_id, 
 		O.status as O_status, 
 		O.customer_count as O_customer_count, 
-		O.modifyTime as O_modifyTime, 
 		O.allowance as O_allowance,
 		O.total_price as O_total_price,
 		O.prePay as O_prePay, 
-		O.submit_time as O_submit_time, 
 		O.enabled as O_enabled
 	</sql>
 	
@@ -206,11 +204,14 @@
 	
 	<sql id="Min_Food_Detail_Base_Column_List">
 		FD.id as FD_id,
-		FD.status as FD_status
+		FD.status as FD_status,
+		FD.count as FD_count,
+		FD.isFree as FD_isFree
 	</sql>
 	
 	<sql id="Min_Food_Base_Column_List">
-		F.id as F_id
+		F.id as F_id,
+		F.status as F_status
 	</sql>
 	
 	

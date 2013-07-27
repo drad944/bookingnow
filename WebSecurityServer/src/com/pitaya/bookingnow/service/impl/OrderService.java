@@ -717,6 +717,7 @@ public class OrderService implements IOrderService{
 								realOrder.setStatus(Constants.ORDER_COMMITED);
 								realOrder.setModifyTime(new Date().getTime());
 								if (orderDao.updateByPrimaryKeySelective(realOrder) == 1) {
+									result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(realOrder.getId()));
 									result.setExecuteResult(true);
 								}else {
 									throw new RuntimeException("-------- failed to insert order in DB.");
