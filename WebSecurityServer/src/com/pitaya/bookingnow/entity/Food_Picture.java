@@ -147,7 +147,7 @@ public class Food_Picture {
 				try {
 					fis = new FileInputStream(file);
 					byte[] buffer = new byte[1024];
-					byte[] pictureImage = new byte[1024*1024*5];
+					byte[] pictureImage = new byte[(int) file.length()];
 					
 					int len = 0;
 					int startIndex = 0;
@@ -186,7 +186,7 @@ public class Food_Picture {
 				try {
 					fis = new FileInputStream(file);
 					byte[] buffer = new byte[1024];
-					byte[] pictureImage = new byte[1024*1024*5];
+					byte[] pictureImage = new byte[(int) file.length()];
 					
 					int len = 0;
 					int startIndex = 0;
