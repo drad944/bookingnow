@@ -53,7 +53,17 @@ public class CustomerService implements ICustomerService{
 
 	@Override
 	public Customer login(Customer customer) {
-		// TODO Auto-generated method stub
+		if (customer != null && customer.getPassword() != null) {
+			return customerDao.login(customer);
+		}
+		return null;
+	}
+
+	@Override
+	public Customer searchCustomerById(Long id) {
+		if (id != null) {
+			return customerDao.selectByPrimaryKey(id);
+		}
 		return null;
 	}
 

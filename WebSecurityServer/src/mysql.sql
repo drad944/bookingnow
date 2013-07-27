@@ -204,7 +204,10 @@ insert into pitaya_food_picture values (20,'a',1351232321,'images/20_l_123241422
 create table pitaya_customer(
 	id bigint not null auto_increment primary key,
 	enabled boolean,
-	picture_id bigint,
+	modifyTime bigint,
+	image_size integer,
+	image_relative_path varchar(100),
+	image_absolute_path varchar(200),
 	name varchar(50),
 	account varchar(50),
 	password varchar(30),
@@ -215,34 +218,20 @@ create table pitaya_customer(
 	birthday bigint
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_customer values (1,true,1,'zhang','zhang','123456','13579024832',601,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
-insert into pitaya_customer values (2,true,2,'li','li','123456','13579024832',602,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
-insert into pitaya_customer values (3,true,3,'wang di','wang di','123456','13579024832',601,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
-insert into pitaya_customer values (4,true,4,'cheng','cheng','123456','13579024832',602,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
-insert into pitaya_customer values (5,true,5,'yang','yang','123456','13579024832',601,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
-insert into pitaya_customer values (6,true,6,'zhouli','zhouli','123456','13579024832',602,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
-
-create table pitaya_customer_picture(
-	id bigint not null auto_increment primary key,
-	name varchar(50),
-	last_modify_time bigint,
-	image mediumblob,
-	enabled boolean
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-insert into pitaya_customer_picture values (1,'a',1351232321,'',true);
-insert into pitaya_customer_picture values (2,'a',1351232321,'\cc\dd',true);
-insert into pitaya_customer_picture values (3,'a',1351232321,'\cc\dd\cc\dd',true);
-insert into pitaya_customer_picture values (4,'a',1351232321,'\cc\dd\cc\dd',true);
-insert into pitaya_customer_picture values (5,'a',1351232321,'\cc\dd\cc\dd',true);
-insert into pitaya_customer_picture values (6,'a',1351232321,'\cc\dd\cc\dd',true);
-
-
+insert into pitaya_customer values (1,true,1123123112,0,'images/customer/1_1234567890.jpg','','zhang','zhang','123456','13579024832',601,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
+insert into pitaya_customer values (2,true,1123123112,0,'images/customer/2_1234567890.jpg','','li','li','123456','13579024832',602,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
+insert into pitaya_customer values (3,true,1123123112,0,'images/customer/3_1234567890.jpg','','wang di','wang di','123456','13579024832',601,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
+insert into pitaya_customer values (4,true,1123123112,0,'images/customer/4_1234567890.jpg','','cheng','cheng','123456','13579024832',602,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
+insert into pitaya_customer values (5,true,1123123112,0,'images/customer/5_1234567890.jpg','','yang','yang','123456','13579024832',601,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
+insert into pitaya_customer values (6,true,1123123112,0,'images/customer/6_1234567890.jpg','','zhouli','zhouli','123456','13579024832',602,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464);
 
 create table pitaya_user(
 	id bigint not null auto_increment primary key,
 	enabled boolean,
-	picture_id bigint,
+	modifyTime bigint,
+	image_size integer,
+	image_relative_path varchar(100),
+	image_absolute_path varchar(200),
 	account varchar(50),
 	name varchar(50),
 	password varchar(30),
@@ -256,37 +245,16 @@ create table pitaya_user(
 	sub_system integer
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_user values (1,true,1,'hang','hang','123456','13579024832',701,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
-insert into pitaya_user values (2,true,2,'lili','lili','123456','13579024832',702,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a waiter',801,1000);
-insert into pitaya_user values (3,true,3,'ang di','ang di','123456','13579024832',701,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a boss',801,1000);
-insert into pitaya_user values (4,true,4,'che','che','123456','13579024832',702,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a casher',801,1000);
-insert into pitaya_user values (5,true,5,'yan','yan','123456','13579024832',701,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a service man',801,1000);
-insert into pitaya_user values (6,true,6,'zhoushuai','zhoushuai','123456','13579024832',702,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
-insert into pitaya_user values (7,true,7,'admin','admin','123456','13579024832',702,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
-insert into pitaya_user values (8,true,9,'mengfei','mengfei','123456','13579024832',702,'mengfei@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
-insert into pitaya_user values (9,true,9,'nidaye','nidaye','123456','13579024832',702,'nidaye@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
-insert into pitaya_user values (10,true,10,'laozi','laozi','123456','13579024832',702,'laozi@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
-
-
-
-create table pitaya_user_picture(
-	id bigint not null auto_increment primary key,
-	name varchar(50),
-	last_modify_time bigint,
-	image mediumblob,
-	enabled boolean
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-insert into pitaya_user_picture values (1,'a',1351232321,'\cc\dd\cc\dd',true);
-insert into pitaya_user_picture values (2,'b',1351232321,'\cc\dd\cc\dd',true);
-insert into pitaya_user_picture values (3,'c',1351232321,'\cc\dd\cc\dd',true);
-insert into pitaya_user_picture values (4,'d',1351232321,'\cc\dd\cc\dd',true);
-insert into pitaya_user_picture values (5,'e',1351232321,'\cc\dd\cc\dd',true);
-insert into pitaya_user_picture values (6,'f',1351232321,'\cc\dd\cc\dd',true);	
-insert into pitaya_user_picture values (7,'g',1351232321,'\cc\dd\cc\dd',true);
-insert into pitaya_user_picture values (8,'h',1351232321,'\cc\dd\cc\dd',true);
-insert into pitaya_user_picture values (9,'i',1351232321,'\cc\dd\cc\dd',true);
-insert into pitaya_user_picture values (10,'g',1351232321,'\cc\dd\cc\dd',true);
+insert into pitaya_user values (1,true,1123123112,0,'images/user/6_1234567890.jpg','','hang','hang','123456','13579024832',701,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
+insert into pitaya_user values (2,true,1123123112,0,'images/user/6_1234567890.jpg','','lili','lili','123456','13579024832',702,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a waiter',801,1000);
+insert into pitaya_user values (3,true,1123123112,0,'images/user/6_1234567890.jpg','','ang di','ang di','123456','13579024832',701,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a boss',801,1000);
+insert into pitaya_user values (4,true,1123123112,0,'images/user/6_1234567890.jpg','','che','che','123456','13579024832',702,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a casher',801,1000);
+insert into pitaya_user values (5,true,1123123112,0,'images/user/6_1234567890.jpg','','yan','yan','123456','13579024832',701,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a service man',801,1000);
+insert into pitaya_user values (6,true,1123123112,0,'images/user/6_1234567890.jpg','','zhoushuai','zhoushuai','123456','13579024832',702,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
+insert into pitaya_user values (7,true,1123123112,0,'images/user/6_1234567890.jpg','','admin','admin','123456','13579024832',702,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
+insert into pitaya_user values (8,true,1123123112,0,'images/user/6_1234567890.jpg','','mengfei','mengfei','123456','13579024832',702,'mengfei@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
+insert into pitaya_user values (9,true,1123123112,0,'images/user/6_1234567890.jpg','','nidaye','nidaye','123456','13579024832',702,'nidaye@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
+insert into pitaya_user values (10,true,1123123112,0,'images/user/6_1234567890.jpg','','laozi','laozi','123456','13579024832',702,'laozi@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
 
 
 create table pitaya_material(

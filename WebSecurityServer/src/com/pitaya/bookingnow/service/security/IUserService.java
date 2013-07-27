@@ -1,15 +1,8 @@
 package com.pitaya.bookingnow.service.security;
 
-
-
-
 import java.util.List;
 
 import com.pitaya.bookingnow.entity.security.User;
-
-
-
-
 
 public interface IUserService{
 	boolean add(User user);
@@ -23,5 +16,7 @@ public interface IUserService{
 	List<User> searchUsers(User user);
 	
 	User login(User user);
+	
+	User searchUserById(Long id);
 
 }

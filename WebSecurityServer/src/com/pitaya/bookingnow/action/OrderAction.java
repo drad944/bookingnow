@@ -58,7 +58,7 @@ public class OrderAction extends BaseAction{
 	public String searchByStatusOfOrder() {
 		if (params != null && (params.getUser_id() != null || params.getOrderStatusList() != null)) {
 			
-			List<Order> orders = orderService.searchFullOrders(params);
+			List<Order> orders = orderService.searchFullOrdersWithoutFoods(params);
 			matchedOrders = new HashMap<String, List<Order>>();
 			matchedOrders.put("result", orders);
 			return "searchOrderSuccess";
@@ -137,7 +137,7 @@ public class OrderAction extends BaseAction{
 	 */
 	public String updateFoodsOfWaitingOrder(){
 		if (order != null) {
-			result = orderService.updateFoodsWaitingOrder(order);
+			result = orderService.updateFoodsOfWaitingOrder(order);
 			
 			if (result.isExecuteResult()) {
 				return "updateFoodsOfWaitingOrderSuccess";
@@ -182,7 +182,7 @@ public class OrderAction extends BaseAction{
 				}
 			} else {
 				this.getResult().setExecuteResult(false);
-				this.getResult().setShortDetail("To commit order, it must contain food list or table details");
+				this.getResult().setShortDetail("To  order, it must contain food list or table details");
 				return "Fail";
 			}
 		} else {

@@ -3,7 +3,15 @@ package com.pitaya.bookingnow.entity;
 public class Customer {
     private Long id;
 
-    private Long picture_id;
+    private Boolean enabled;
+
+    private Long modifyTime;
+
+    private Integer image_size;
+
+    private String image_relative_path;
+
+    private String image_absolute_path;
 
     private String name;
 
@@ -20,28 +28,8 @@ public class Customer {
     private String address;
 
     private Long birthday;
-    
-    private Boolean enabled;
-    
-    private Customer_Picture picture;
 
-    public Boolean getEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
-	}
-
-	public Customer_Picture getPicture() {
-		return picture;
-	}
-
-	public void setPicture(Customer_Picture picture) {
-		this.picture = picture;
-	}
-
-	public Long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -49,12 +37,44 @@ public class Customer {
         this.id = id;
     }
 
-    public Long getPicture_id() {
-        return picture_id;
+    public Boolean getEnabled() {
+        return enabled;
     }
 
-    public void setPicture_id(Long picture_id) {
-        this.picture_id = picture_id;
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Long getModifyTime() {
+        return modifyTime;
+    }
+
+    public void setModifyTime(Long modifyTime) {
+        this.modifyTime = modifyTime;
+    }
+
+    public Integer getImage_size() {
+        return image_size;
+    }
+
+    public void setImage_size(Integer image_size) {
+        this.image_size = image_size;
+    }
+
+    public String getImage_relative_path() {
+        return image_relative_path;
+    }
+
+    public void setImage_relative_path(String image_relative_path) {
+        this.image_relative_path = image_relative_path;
+    }
+
+    public String getImage_absolute_path() {
+        return image_absolute_path;
+    }
+
+    public void setImage_absolute_path(String image_absolute_path) {
+        this.image_absolute_path = image_absolute_path;
     }
 
     public String getName() {

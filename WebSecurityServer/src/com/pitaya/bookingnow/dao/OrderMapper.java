@@ -36,5 +36,6 @@ public interface OrderMapper {
     
     List<Order> searchMinFullOrders(SearchParams params);
     
+    List<Order> searchFullOrdersWithoutFoods(SearchParams params);
     
 }

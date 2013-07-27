@@ -57,5 +57,13 @@ public class UserService implements IUserService {
 		return loginUser;
 	}
 
+	@Override
+	public User searchUserById(Long id) {
+		if (id != null) {
+			return userDao.selectByPrimaryKey(id);
+		}
+		return null;
+	}
+
 
 }
