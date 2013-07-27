@@ -19,6 +19,8 @@ public interface IOrderService {
 	
 	List<Order> searchFullOrders(SearchParams params);
 	
+	List<Order> searchFullOrdersWithoutFoods(SearchParams params);
+	
 	List<Order> searchFullOrdersByFullOrder(Order order);
 	
 	List<Order> searchOrdersByFullOrder(Order order);
@@ -32,7 +34,9 @@ public interface IOrderService {
 	
 	MyResult addWaitingOrder(Order order);
 	
-	MyResult updateFoodsWaitingOrder(Order order);
+	MyResult updateFoodsOfWaitingOrder(Order order);
+	
+	MyResult updateTablesOfWaitingOrder(Order order);
 	
 	MyResult updateWaitingOrderToConfirmed(Order order);
 	

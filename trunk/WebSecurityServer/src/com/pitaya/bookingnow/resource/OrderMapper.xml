@@ -30,7 +30,10 @@
 		
 		<association property="user" javaType="com.pitaya.bookingnow.entity.security.User">
 			<id column="U_id" property="id" jdbcType="BIGINT" />
-			<result column="U_picture_id" property="picture_id" jdbcType="BIGINT" />
+			<result column="U_modifyTime" property="modifyTime" jdbcType="BIGINT" />
+			<result column="U_image_size" property="image_size" jdbcType="INTEGER" />
+			<result column="U_image_relative_path" property="image_relative_path" jdbcType="VARCHAR" />
+			<result column="U_image_absolute_path" property="image_absolute_path" jdbcType="VARCHAR" />
 			<result column="U_account" property="account" jdbcType="VARCHAR" />
 			<result column="U_name" property="name" jdbcType="VARCHAR" />
 			<result column="U_password" property="password" jdbcType="VARCHAR" />
@@ -47,7 +50,10 @@
 		
 		<association property="customer" javaType="com.pitaya.bookingnow.entity.Customer">
 			<id column="C_id" property="id" jdbcType="BIGINT" />
-			<result column="C_picture_id" property="picture_id" jdbcType="BIGINT" />
+			<result column="C_modifyTime" property="modifyTime" jdbcType="BIGINT" />
+			<result column="C_image_size" property="image_size" jdbcType="INTEGER" />
+			<result column="C_image_relative_path" property="image_relative_path"	jdbcType="VARCHAR" />
+			<result column="C_image_absolute_path" property="image_absolute_path"	jdbcType="VARCHAR" />
 			<result column="C_name" property="name" jdbcType="VARCHAR" />
 			<result column="C_account" property="account" jdbcType="VARCHAR" />
 			<result column="C_password" property="password" jdbcType="VARCHAR" />
@@ -102,6 +108,100 @@
 		</collection>
 	</resultMap>
 	
+	<sql id="Max_Order_Base_Column_List">
+		O.id as O_id, 
+		O.status as O_status, 
+		O.user_id as O_user_id, 
+		O.customer_id as O_customer_id, 
+		O.customer_count as O_customer_count, 
+		O.modifyTime as O_modifyTime, 
+		O.allowance as O_allowance,
+		O.total_price as O_total_price,
+		O.prePay as O_prePay, 
+		O.submit_time as O_submit_time, 
+		O.enabled as O_enabled
+	</sql>
+	
+	<sql id="Max_User_Base_Column_List">
+		U.id as U_id, 
+		U.modifyTime as U_modifyTime, 
+		U.image_size as U_image_size,
+		U.image_relative_path as U_image_relative_path,
+		U.image_absolute_path as U_image_absolute_path,
+		U.account as U_account, 
+		U.name as U_name, 
+		U.password as U_password, 
+		U.phone as U_phone, 
+		U.sex as U_sex, 
+		U.email as U_email, 
+		U.address as U_address,
+		U.birthday as U_birthday, 
+		U.description as U_description,
+		U.department as U_department, 
+		U.sub_system as U_sub_system,
+		U.enabled as U_enabled
+	</sql>
+	
+	<sql id="Max_Customer_Base_Column_List">
+		C.id as C_id, 
+		C.enabled as C_enabled, 
+		C.modifyTime as C_modifyTime, 
+		C.image_size as C_image_size, 
+		C.image_relative_path as C_image_relative_path,
+		C.image_absolute_path as C_image_absolute_path, 
+		C.name as C_name,
+		C.account as C_account, 
+		C.password as C_password, 
+		C.phone as C_phone, 
+		C.sex as C_sex, 
+		C.email as C_email, 
+		C.address as C_address, 
+		C.birthday as C_birthday
+	</sql>
+	
+	<sql id="Max_Table_Detail_Base_Column_List">
+		TD.id as TD_id, 
+		TD.realCustomerCount as TD_realCustomerCount, 
+		TD.enabled as TD_enabled, 
+		TD.table_id as TD_table_id, 
+		TD.order_id as TD_order_id
+	</sql>
+	
+	<sql id="Max_Table_Base_Column_List">
+		T.id as T_id, 
+		T.status as T_status, 
+		T.minCustomerCount as T_minCustomerCount,
+		T.maxCustomerCount as T_maxCustomerCount, 
+		T.address as T_address,
+		T.indoorPrice as T_indoorPrice
+	</sql>
+	
+	<sql id="Max_Food_Detail_Base_Column_List">
+		FD.id as FD_id, 
+		FD.status as FD_status, 
+		FD.count as FD_count,
+		FD.preference as FD_preference,
+		FD.last_modify_time as FD_last_modify_time, 
+		FD.enabled as FD_enabled,
+		FD.isFree as FD_isFree,  
+		FD.food_id as FD_food_id,
+		FD.order_id as FD_order_id
+	</sql>
+	
+	<sql id="Max_Food_Base_Column_List">
+		F.id as F_id, 
+		F.recommendation as F_recommendation,
+		F.status as F_status, 
+		F.picture_id as F_picture_id, 
+		F.name as F_name, 
+		F.version as F_version,
+		F.period as F_period,
+		F.price as F_price,
+		F.category as F_category,
+		F.description as F_description
+		
+	</sql>
+	
 	<sql id="Order_Base_Column_List">
 		O.id as O_id, 
 		O.status as O_status, 
@@ -118,7 +218,6 @@
 	
 	<sql id="User_Base_Column_List">
 		U.id as U_id, 
-		U.picture_id as U_picture_id, 
 		U.name as U_name, 
 		U.sex as U_sex, 
 		U.department as U_department,
@@ -127,7 +226,6 @@
 	
 	<sql id="Customer_Base_Column_List">
 		C.id as C_id, 
-		C.picture_id as C_picture_id, 
 		C.name as C_name, 
 		C.phone as C_phone,
 		C.sex as C_sex,
@@ -170,6 +268,10 @@
 		F.price as F_price,
 		F.category as F_category
 	</sql>
+	
+	
+	
+	
 	
 	<sql id="Min_Order_Base_Column_List">
 	    O.id as O_id, 
@@ -216,9 +318,17 @@
 	
 	
 	<sql id="Base_Column_List">
-		id, status, user_id, customer_id, customer_count, modifyTime, allowance,
+		id, 
+		status, 
+		user_id, 
+		customer_id, 
+		customer_count, 
+		modifyTime, 
+		allowance,
 		total_price,
-		prePay, submit_time, enabled
+		prePay, 
+		submit_time, 
+		enabled
 	</sql>
 	
 	<select id="selectMinFullOrderByPrimaryKey" resultMap="Order_BaseResultMap"
@@ -246,6 +356,7 @@
 			left outer join pitaya_food F on FD.food_id = F.id
 		where O.id = #{id,jdbcType=BIGINT}
 	</select>
+	
 	
 	<select id="searchMinFullOrders" resultMap="Order_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
 		select
@@ -285,8 +396,7 @@
 	</select>
 	
 	
-	<select id="searchMinFullOrdersByFullOrderInfo" resultMap="Order_BaseResultMap"
-		parameterType="java.lang.Long">
+	<select id="searchMinFullOrdersByFullOrderInfo" resultMap="Order_BaseResultMap"	parameterType="com.pitaya.bookingnow.entity.Order">
 		select
 			<include refid="Min_Order_Base_Column_List" />
 			,
@@ -344,9 +454,20 @@
 				<if test="user.id != null">
 					and U.id = #{user.id,jdbcType=BIGINT}
 				</if>
-				<if test="user.picture_id != null">
-					and U.picture_id = #{user.picture_id,jdbcType=BIGINT}
+				
+				<if test="user.modifyTime != null">
+					and U.modifyTime = #{user.modifyTime,jdbcType=BIGINT}
 				</if>
+				<if test="user.image_size != null">
+					and U.image_size = #{user.image_size,jdbcType=INTEGER}
+				</if>
+				<if test="user.image_relative_path != null">
+					and U.image_relative_path = #{user.image_relative_path,jdbcType=VARCHAR}
+				</if>
+				<if test="user.image_absolute_path != null">
+					and U.image_absolute_path = #{user.image_absolute_path,jdbcType=VARCHAR}
+				</if>
+				
 				<if test="user.account != null">
 					and U.account = #{user.account,jdbcType=VARCHAR}
 				</if>
@@ -389,9 +510,20 @@
 				<if test="customer.id != null">
 					and C.id = #{customer.id,jdbcType=BIGINT}
 				</if>
-				<if test="customer.picture_id != null">
-					and C.picture_id = #{customer.picture_id,jdbcType=BIGINT}
+				
+				<if test="customer.modifyTime != null">
+					and C.modifyTime = #{customer.modifyTime,jdbcType=BIGINT}
 				</if>
+				<if test="customer.image_size != null">
+					and C.image_size = #{customer.image_size,jdbcType=INTEGER}
+				</if>
+				<if test="customer.image_relative_path != null">
+					and C.image_relative_path = #{customer.image_relative_path,jdbcType=VARCHAR}
+				</if>
+				<if test="customer.image_absolute_path != null">
+					and C.image_absolute_path = #{customer.image_absolute_path,jdbcType=VARCHAR}
+				</if>
+				
 				<if test="customer.name != null">
 					and C.name = #{customer.name,jdbcType=VARCHAR}
 				</if>
@@ -430,19 +562,19 @@
 	<select id="selectFullOrderByPrimaryKey" resultMap="Order_BaseResultMap"
 		parameterType="java.lang.Long">
 		select
-			<include refid="Order_Base_Column_List" />
+			<include refid="Max_Order_Base_Column_List" />
 			,
-			<include refid="User_Base_Column_List" />
+			<include refid="Max_User_Base_Column_List" />
 			,
-			<include refid="Customer_Base_Column_List" />
+			<include refid="Max_Customer_Base_Column_List" />
 			,
-			<include refid="Table_Detail_Base_Column_List" />
+			<include refid="Max_Table_Detail_Base_Column_List" />
 			,
-			<include refid="Table_Base_Column_List" />
+			<include refid="Max_Table_Base_Column_List" />
 			,
-			<include refid="Food_Detail_Base_Column_List" />
+			<include refid="Max_Food_Detail_Base_Column_List" />
 			,
-			<include refid="Food_Base_Column_List" />
+			<include refid="Max_Food_Base_Column_List" />
 		from pitaya_order O 
 			left outer join pitaya_user U on O.user_id = U.id
 			left outer join pitaya_customer C on O.customer_id = C.id
@@ -455,19 +587,19 @@
 	
 	<select id="searchFullOrders" resultMap="Order_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
 		select
-			<include refid="Order_Base_Column_List" />
+			<include refid="Max_Order_Base_Column_List" />
 			,
-			<include refid="User_Base_Column_List" />
+			<include refid="Max_User_Base_Column_List" />
 			,
-			<include refid="Customer_Base_Column_List" />
+			<include refid="Max_Customer_Base_Column_List" />
 			,
-			<include refid="Table_Detail_Base_Column_List" />
+			<include refid="Max_Table_Detail_Base_Column_List" />
 			,
-			<include refid="Table_Base_Column_List" />
+			<include refid="Max_Table_Base_Column_List" />
 			,
-			<include refid="Food_Detail_Base_Column_List" />
+			<include refid="Max_Food_Detail_Base_Column_List" />
 			,
-			<include refid="Food_Base_Column_List" />
+			<include refid="Max_Food_Base_Column_List" />
 		from pitaya_order O 
 			left outer join pitaya_user U on O.user_id = U.id
 			left outer join pitaya_customer C on O.customer_id = C.id
@@ -490,23 +622,53 @@
 		</where>
 	</select>
 	
-	
-	<select id="searchFullOrdersByFullOrderInfo" resultMap="Order_BaseResultMap"
-		parameterType="java.lang.Long">
+	<select id="searchFullOrdersWithoutFoods" resultMap="Order_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
 		select
-			<include refid="Order_Base_Column_List" />
+			<include refid="Max_Order_Base_Column_List" />
 			,
-			<include refid="User_Base_Column_List" />
+			<include refid="Max_User_Base_Column_List" />
 			,
-			<include refid="Customer_Base_Column_List" />
+			<include refid="Max_Customer_Base_Column_List" />
 			,
-			<include refid="Table_Detail_Base_Column_List" />
+			<include refid="Max_Table_Detail_Base_Column_List" />
 			,
-			<include refid="Table_Base_Column_List" />
+			<include refid="Max_Table_Base_Column_List" />
+		from pitaya_order O 
+			left outer join pitaya_user U on O.user_id = U.id
+			left outer join pitaya_customer C on O.customer_id = C.id
+			left outer join pitaya_order_table_detail TD on TD.order_id = O.id
+			left outer join pitaya_table T on TD.table_id = T.id
+		<where>
+			<if test="user_id != null">
+				O.user_id = #{user_id,jdbcType=INTEGER} and
+			</if>
+			
+			<if test="orderStatusList != null">
+				O.status in 
+				<foreach item="item" index="index" collection="orderStatusList"
+					open="(" separator="," close=")"> 
+					#{item} 
+				</foreach> 
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="searchFullOrdersByFullOrderInfo" resultMap="Order_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Order">
+		select
+			<include refid="Max_Order_Base_Column_List" />
 			,
-			<include refid="Food_Detail_Base_Column_List" />
+			<include refid="Max_User_Base_Column_List" />
 			,
-			<include refid="Food_Base_Column_List" />
+			<include refid="Max_Customer_Base_Column_List" />
+			,
+			<include refid="Max_Table_Detail_Base_Column_List" />
+			,
+			<include refid="Max_Table_Base_Column_List" />
+			,
+			<include refid="Max_Food_Detail_Base_Column_List" />
+			,
+			<include refid="Max_Food_Base_Column_List" />
 		from pitaya_order O 
 			left outer join pitaya_user U on O.user_id = U.id
 			left outer join pitaya_customer C on O.customer_id = C.id
@@ -550,8 +712,17 @@
 				<if test="user.id != null">
 					and U.id = #{user.id,jdbcType=BIGINT}
 				</if>
-				<if test="user.picture_id != null">
-					and U.picture_id = #{user.picture_id,jdbcType=BIGINT}
+				<if test="user.modifyTime != null">
+					and U.modifyTime = #{user.modifyTime,jdbcType=BIGINT}
+				</if>
+				<if test="user.image_size != null">
+					and U.image_size = #{user.image_size,jdbcType=INTEGER}
+				</if>
+				<if test="user.image_relative_path != null">
+					and U.image_relative_path = #{user.image_relative_path,jdbcType=VARCHAR}
+				</if>
+				<if test="user.image_absolute_path != null">
+					and U.image_absolute_path = #{user.image_absolute_path,jdbcType=VARCHAR}
 				</if>
 				<if test="user.account != null">
 					and U.account = #{user.account,jdbcType=VARCHAR}
@@ -595,8 +766,17 @@
 				<if test="customer.id != null">
 					and C.id = #{customer.id,jdbcType=BIGINT}
 				</if>
-				<if test="customer.picture_id != null">
-					and C.picture_id = #{customer.picture_id,jdbcType=BIGINT}
+				<if test="customer.modifyTime != null">
+					and C.modifyTime = #{customer.modifyTime,jdbcType=BIGINT}
+				</if>
+				<if test="customer.image_size != null">
+					and C.image_size = #{customer.image_size,jdbcType=INTEGER}
+				</if>
+				<if test="customer.image_relative_path != null">
+					and C.image_relative_path = #{customer.image_relative_path,jdbcType=VARCHAR}
+				</if>
+				<if test="customer.image_absolute_path != null">
+					and C.image_absolute_path = #{customer.image_absolute_path,jdbcType=VARCHAR}
 				</if>
 				<if test="customer.name != null">
 					and C.name = #{customer.name,jdbcType=VARCHAR}
@@ -630,8 +810,7 @@
 		</where>
 	</select>
 	
-	<select id="searchOrdersByFullOrderInfo" resultMap="Order_BaseResultMap"
-		parameterType="java.lang.Long">
+	<select id="searchOrdersByFullOrderInfo" resultMap="Order_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Order">
 		select
 			<include refid="Order_Base_Column_List" />
 		from pitaya_order O 
@@ -677,8 +856,17 @@
 				<if test="user.id != null">
 					and U.id = #{user.id,jdbcType=BIGINT}
 				</if>
-				<if test="user.picture_id != null">
-					and U.picture_id = #{user.picture_id,jdbcType=BIGINT}
+				<if test="user.modifyTime != null">
+					and U.modifyTime = #{user.modifyTime,jdbcType=BIGINT}
+				</if>
+				<if test="user.image_size != null">
+					and U.image_size = #{user.image_size,jdbcType=INTEGER}
+				</if>
+				<if test="user.image_relative_path != null">
+					and U.image_relative_path = #{user.image_relative_path,jdbcType=VARCHAR}
+				</if>
+				<if test="user.image_absolute_path != null">
+					and U.image_absolute_path = #{user.image_absolute_path,jdbcType=VARCHAR}
 				</if>
 				<if test="user.account != null">
 					and U.account = #{user.account,jdbcType=VARCHAR}
@@ -722,8 +910,17 @@
 				<if test="customer.id != null">
 					and C.id = #{customer.id,jdbcType=BIGINT}
 				</if>
-				<if test="customer.picture_id != null">
-					and C.picture_id = #{customer.picture_id,jdbcType=BIGINT}
+				<if test="customer.modifyTime != null">
+					and C.modifyTime = #{customer.modifyTime,jdbcType=BIGINT}
+				</if>
+				<if test="customer.image_size != null">
+					and C.image_size = #{customer.image_size,jdbcType=INTEGER}
+				</if>
+				<if test="customer.image_relative_path != null">
+					and C.image_relative_path = #{customer.image_relative_path,jdbcType=VARCHAR}
+				</if>
+				<if test="customer.image_absolute_path != null">
+					and C.image_absolute_path = #{customer.image_absolute_path,jdbcType=VARCHAR}
 				</if>
 				<if test="customer.name != null">
 					and C.name = #{customer.name,jdbcType=VARCHAR}
@@ -756,8 +953,7 @@
 		</where>
 	</select>
 	
-	<select id="searchOrders" resultMap="BaseResultMap"
-		parameterType="com.pitaya.bookingnow.entity.Order">
+	<select id="searchOrders" resultMap="BaseResultMap"	parameterType="com.pitaya.bookingnow.entity.Order">
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_order
@@ -797,8 +993,7 @@
 	
 
 	
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
-		parameterType="java.lang.Long">
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_order

@@ -3,7 +3,10 @@
 <mapper namespace="com.pitaya.bookingnow.dao.security.UserMapper">
 	<resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.security.User">
 		<id column="id" property="id" jdbcType="BIGINT" />
-		<result column="picture_id" property="picture_id" jdbcType="BIGINT" />
+		<result column="modifyTime" property="modifyTime" jdbcType="BIGINT" />
+		<result column="image_size" property="image_size" jdbcType="INTEGER" />
+		<result column="image_relative_path" property="image_relative_path" jdbcType="VARCHAR" />
+		<result column="image_absolute_path" property="image_absolute_path" jdbcType="VARCHAR" />
 		<result column="account" property="account" jdbcType="VARCHAR" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="password" property="password" jdbcType="VARCHAR" />
@@ -20,7 +23,10 @@
 	
 	<resultMap id="User_BaseResultMap" type="com.pitaya.bookingnow.entity.security.User">
 		<id column="U_id" property="id" jdbcType="BIGINT" />
-		<result column="U_picture_id" property="picture_id" jdbcType="BIGINT" />
+		<result column="U_modifyTime" property="modifyTime" jdbcType="BIGINT" />
+		<result column="U_image_size" property="image_size" jdbcType="INTEGER" />
+		<result column="U_image_relative_path" property="image_relative_path" jdbcType="VARCHAR" />
+		<result column="U_image_absolute_path" property="image_absolute_path" jdbcType="VARCHAR" />
 		<result column="U_account" property="account" jdbcType="VARCHAR" />
 		<result column="U_name" property="name" jdbcType="VARCHAR" />
 		<result column="U_password" property="password" jdbcType="VARCHAR" />
@@ -51,15 +57,33 @@
 		</collection>
 	</resultMap>
 	
+	
 	<sql id="Base_Column_List">
-		id, picture_id, account, name, password, phone, sex, email, address,
-		birthday, description,
-		department, sub_system, enabled
+		id, 
+		modifyTime, 
+		image_size,
+		image_relative_path,
+		image_absolute_path,
+		account, 
+		name, 
+		password, 
+		phone, 
+		sex, 
+		email, 
+		address,
+		birthday, 
+		description,
+		department, 
+		sub_system, 
+		enabled
 	</sql>
 	
 	<sql id="User_Base_Column_List">
 		U.id as U_id, 
-		U.picture_id as U_picture_id, 
+		U.modifyTime as U_modifyTime, 
+		U.image_size as U_image_size,
+		U.image_relative_path as U_image_relative_path,
+		U.image_absolute_path as U_image_absolute_path,
 		U.account as U_account, 
 		U.name as U_name, 
 		U.password as U_password, 
@@ -111,9 +135,20 @@
 			left outer join pitaya_user_role_detail UR on UR.user_id = U.id
 			left outer join pitaya_role R on R.id = UR.role_id
 		<where>
-			<if test="picture_id != null">
-				picture_id = #{picture_id,jdbcType=BIGINT}
+			<if test="modifyTime != null">
+				modifyTime = #{modifyTime,jdbcType=BIGINT}
 			</if>
+			
+			<if test="image_size != null">
+				and image_size = #{image_size,jdbcType=INTEGER}
+			</if>
+			<if test="image_relative_path != null">
+				and image_relative_path = #{image_relative_path,jdbcType=VARCHAR}
+			</if>
+			<if test="image_absolute_path != null">
+				and image_absolute_path = #{image_absolute_path,jdbcType=VARCHAR}
+			</if>
+			
 			<if test="account != null">
 				and account = #{account,jdbcType=VARCHAR}
 			</if>
@@ -172,12 +207,12 @@
 			order="AFTER">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
-		insert into pitaya_user (picture_id, account, name,
+		insert into pitaya_user (modifyTime, image_size, image_relative_path, image_absolute_path, account, name,
 		password, phone, sex,
 		email, address, birthday,
 		description, department, sub_system, enabled
 		)
-		values (#{picture_id,jdbcType=BIGINT}, #{account,jdbcType=VARCHAR},
+		values (#{modifyTime,jdbcType=BIGINT},#{image_size,jdbcType=INTEGER},#{image_relative_path,jdbcType=VARCHAR},#{image_absolute_path,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR},
 		#{name,jdbcType=VARCHAR},
 		#{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER},
 		#{email,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
@@ -185,6 +220,7 @@
 		#{description,jdbcType=VARCHAR}, #{department,jdbcType=INTEGER}, #{sub_system,jdbcType=INTEGER}, #{enabled,jdbcType=BIT}
 		)
 	</insert>
+	
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.security.User">
 		<selectKey resultType="java.lang.Long" keyProperty="id"
 			order="AFTER">
@@ -192,9 +228,20 @@
 		</selectKey>
 		insert into pitaya_user
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="picture_id != null">
-				picture_id,
+			<if test="modifyTime != null">
+				modifyTime,
 			</if>
+			
+			<if test="image_size != null">
+				image_size,
+			</if>
+			<if test="image_relative_path != null">
+				image_relative_path,
+			</if>
+			<if test="image_absolute_path != null">
+				image_absolute_path,
+			</if>
+			
 			<if test="account != null">
 				account,
 			</if>
@@ -233,10 +280,22 @@
 			</if>
 			
 		</trim>
+		
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="picture_id != null">
-				#{picture_id,jdbcType=BIGINT},
+			<if test="modifyTime != null">
+				#{modifyTime,jdbcType=BIGINT},
 			</if>
+			
+			<if test="image_size != null">
+				#{image_size,jdbcType=INTEGER},
+			</if>
+			<if test="image_relative_path != null">
+				#{image_relative_path,jdbcType=VARCHAR},
+			</if>
+			<if test="image_absolute_path != null">
+				#{image_absolute_path,jdbcType=VARCHAR},
+			</if>
+			
 			<if test="account != null">
 				#{account,jdbcType=VARCHAR},
 			</if>
@@ -276,12 +335,24 @@
 			
 		</trim>
 	</insert>
+	
 	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.security.User">
 		update pitaya_user
 		<set>
-			<if test="picture_id != null">
-				picture_id = #{picture_id,jdbcType=BIGINT},
+			<if test="modifyTime != null">
+				modifyTime = #{modifyTime,jdbcType=BIGINT},
 			</if>
+			
+			<if test="image_size != null">
+				image_size = #{image_size,jdbcType=INTEGER},
+			</if>
+			<if test="image_relative_path != null">
+				image_relative_path = #{image_relative_path,jdbcType=VARCHAR},
+			</if>
+			<if test="image_absolute_path != null">
+				image_absolute_path = #{image_absolute_path,jdbcType=VARCHAR},
+			</if>
+			
 			<if test="account != null">
 				account = #{account,jdbcType=VARCHAR},
 			</if>
@@ -322,9 +393,13 @@
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
+	
 	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.security.User">
 		update pitaya_user
-		set picture_id = #{picture_id,jdbcType=BIGINT},
+		set modifyTime = #{modifyTime,jdbcType=BIGINT},
+		image_size = #{image_size,jdbcType=INTEGER},
+		image_relative_path = #{image_relative_path,jdbcType=VARCHAR},
+		image_absolute_path = #{image_absolute_path,jdbcType=VARCHAR},
 		account = #{account,jdbcType=VARCHAR},
 		name = #{name,jdbcType=VARCHAR},
 		password = #{password,jdbcType=VARCHAR},

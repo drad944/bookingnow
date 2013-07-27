@@ -48,7 +48,6 @@ public class TestOrderMapper {
 					System.out.println("user name: " + user.getName());
 					System.out.println("user sex: " + user.getSex());
 					System.out.println("user department: " + user.getDepartment());
-					System.out.println("user picture id: " + user.getPicture_id());
 				}
 				
 				Customer customer = order.getCustomer();
@@ -56,7 +55,6 @@ public class TestOrderMapper {
 					System.out.println("customer id: " + customer.getId());
 					System.out.println("customer name: " + customer.getName());
 					System.out.println("customer sex: " + customer.getSex());
-					System.out.println("customer picture id: " + customer.getPicture_id());
 				}
 				
 				List<Order_Table_Detail> table_Details = order.getTable_details();
@@ -138,7 +136,6 @@ public class TestOrderMapper {
 						System.out.println("user name: " + user.getName());
 						System.out.println("user sex: " + user.getSex());
 						System.out.println("user department: " + user.getDepartment());
-						System.out.println("user picture id: " + user.getPicture_id());
 					}
 					
 					Customer customer = order.getCustomer();
@@ -146,7 +143,6 @@ public class TestOrderMapper {
 						System.out.println("customer id: " + customer.getId());
 						System.out.println("customer name: " + customer.getName());
 						System.out.println("customer sex: " + customer.getSex());
-						System.out.println("customer picture id: " + customer.getPicture_id());
 					}
 					
 					List<Order_Table_Detail> table_Details = order.getTable_details();

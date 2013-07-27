@@ -18,4 +18,6 @@ public interface ICustomerService {
 	List<Customer> searchCustomers(Customer customer);
 	
 	Customer login(Customer customer);
+	
+	Customer searchCustomerById(Long id);
 }

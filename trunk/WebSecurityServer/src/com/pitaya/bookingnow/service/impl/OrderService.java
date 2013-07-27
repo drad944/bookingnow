@@ -523,7 +523,7 @@ public class OrderService implements IOrderService{
 	}
 	
 	@Override
-	public MyResult updateFoodsWaitingOrder(Order order){
+	public MyResult updateFoodsOfWaitingOrder(Order order){
 		/*
 		 * welcomer update order with food list when customer is waiting table and choose food
 		 * in:order_id,user_id,customer_id,food list,order status:waiting,food status:new
@@ -1227,6 +1227,112 @@ public class OrderService implements IOrderService{
 		return orderDao.searchFullOrders(params);
 	}
 
+	@Override
+	public List<Order> searchFullOrdersWithoutFoods(SearchParams params) {
+		return orderDao.searchFullOrdersWithoutFoods(params);
+	}
 
+	@Override
+	public MyResult updateTablesOfWaitingOrder(Order order) {
+		/*
+		 * waiter take customer which serviced by welcomer to seat in table,but not book foods.
+		 * in:table_id,order_id,user_id,order status:new
+		 * 
+		 */
+		
+		MyResult result = new MyResult();
+		// check order existed in client data 
+		if (order != null && order.getId() != null) {
+			if (order.getUser() != null && order.getUser().getId() != null) {
+				Order realOrder = orderDao.selectFullOrderByPrimaryKey(order.getId());
+				
+				if (realOrder != null && realOrder.getId() != null) {
+					User realUser = userDao.selectByPrimaryKey(order.getUser().getId());
+					if (realUser != null && realUser.getId() != null) {
+						realOrder.setUser_id(realUser.getId());
+						
+						List<Order_Table_Detail> table_Details = order.getTable_details();
+						
+						if (table_Details != null && table_Details.size() > 0) {
+							for (int i = 0; i < table_Details.size(); i++) {
+								Order_Table_Detail tempTable_Detail = table_Details.get(i);
+								
+								//check table existed in client data and DB data
+								if (tempTable_Detail.getTable() != null && tempTable_Detail.getTable().getId() != null) {
+									Table realTable = tableDao.selectByPrimaryKey(tempTable_Detail.getTable().getId());
+									if(realTable != null && realTable.getId() != null){
+										
+										//update table status in DB
+										if (realTable.getStatus() == Constants.TABLE_EMPTY) {
+											realTable.setStatus(Constants.TABLE_USING);
+										}else {
+											throw new RuntimeException("-------- failed to update table status,table is not empty now.");
+										}
+										
+										if(tableDao.updateByPrimaryKeySelective(realTable) == 1) {
+											
+										}else {
+											throw new RuntimeException("-------- failed to update table in DB.");
+										}
+									
+										//insert table_Detail in DB
+										tempTable_Detail.setOrder_id(order.getId());
+										tempTable_Detail.setTable_id(realTable.getId());
+										tempTable_Detail.setEnabled(true);
+										if (table_detailDao.insertSelective(tempTable_Detail) == 1) {
+											
+										}else {
+											throw new RuntimeException("-------- failed to insert table detail in DB.");
+										}
+										
+										//store the count of true result in for loop
+										result.setSubTrueCount(result.getSubTrueCount() + 1);
+									}else {
+										result.getErrorDetails().put("table_exist", "can not find table in DB");
+										break;
+									}
+									
+								}else {
+									result.getErrorDetails().put("table_exist", "can not find table in client data");
+									break;
+								}
+								
+							}
+							if (table_Details.size() == result.getSubTrueCount()) {
+								
+								//update order in DB
+								realOrder.setStatus(Constants.ORDER_NEW);
+								realOrder.setModifyTime(new Date().getTime());
+								if (orderDao.updateByPrimaryKeySelective(realOrder) == 1) {
+									result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(realOrder.getId()));
+									result.setExecuteResult(true);
+								}else {
+									throw new RuntimeException("-------- failed to insert order in DB.");
+								}
+								
+							}else {
+								//do nothing
+							}
+							
+						}else {
+							result.getErrorDetails().put("table_exist", "can not find table detail in client data");
+						}
+						
+					}else {
+						result.getErrorDetails().put("user_exist", "can not find in DB.");
+					}
+					
+				}else {
+					result.getErrorDetails().put("order_exist", "can not find order or order id in DB data");
+				}
+			}else{
+				result.getErrorDetails().put("user_exist", "can not find in client data");
+			}
+		}else {
+			result.getErrorDetails().put("order_exist", "can not find order or order id in client data");
+		}
+		
+		return result;
+	}
 
 }

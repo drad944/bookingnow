@@ -7,15 +7,16 @@ public class User {
 		
 	}
 	
-	public User(String account,String password) {
-		this.account = account;
-		this.password = password;
-	}
-	
     private Long id;
-
-    private Long picture_id;
-
+    
+    private Long modifyTime;
+    
+    private Integer image_size;
+    
+	private String image_relative_path;
+	
+    private String image_absolute_path;
+    
     private String account;
 
     private String name;
@@ -42,6 +43,38 @@ public class User {
     
     List<User_Role_Detail> role_Details;
 
+	public Long getModifyTime() {
+		return modifyTime;
+	}
+
+	public void setModifyTime(Long modifyTime) {
+		this.modifyTime = modifyTime;
+	}
+
+	public Integer getImage_size() {
+		return image_size;
+	}
+
+	public void setImage_size(Integer image_size) {
+		this.image_size = image_size;
+	}
+
+	public String getImage_relative_path() {
+		return image_relative_path;
+	}
+
+	public void setImage_relative_path(String image_relative_path) {
+		this.image_relative_path = image_relative_path;
+	}
+
+	public String getImage_absolute_path() {
+		return image_absolute_path;
+	}
+
+	public void setImage_absolute_path(String image_absolute_path) {
+		this.image_absolute_path = image_absolute_path;
+	}
+
 	public Boolean getEnabled() {
 		return enabled;
 	}
@@ -66,13 +99,6 @@ public class User {
         this.id = id;
     }
 
-    public Long getPicture_id() {
-        return picture_id;
-    }
-
-    public void setPicture_id(Long picture_id) {
-        this.picture_id = picture_id;
-    }
 
     public String getAccount() {
         return account;

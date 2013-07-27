@@ -17,7 +17,7 @@ public interface CustomerMapper {
 
     int updateByPrimaryKey(Customer customer);
     
-    List<Customer> searchCustomers(Customer customer);
+    List<Customer> selectCustomers(Customer customer);
     
     Customer login(Customer customer);
 }
