@@ -32,7 +32,7 @@
 			<property name="enableSubPackages" value="false" />
 		</javaClientGenerator>
 		
- <!--
+
 		<table catalog="" schema="" tableName="pitaya_order" domainObjectName="Order"
 			enableSelectByExample="false" 
 			enableDeleteByExample="false" 
@@ -43,7 +43,7 @@
 			<property name="useActualColumnNames" value="true" />
 			<generatedKey column="id" sqlStatement="MySql" identity="true" />
 		</table>
-  -->		
+ <!--  -->		
  		
 <!-- 
 		<table catalog="" schema="" tableName="pitaya_customer" domainObjectName="Customer"
