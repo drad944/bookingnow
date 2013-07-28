@@ -1,15 +1,28 @@
 package com.pitaya.bookingnow.entity.security;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts2.ServletActionContext;
+
+import com.pitaya.bookingnow.entity.Food_Picture;
 
 public class User {
 	public User() {
 		
 	}
+	private static Log logger =  LogFactory.getLog(Food_Picture.class);
 	
     private Long id;
     
     private Long modifyTime;
+    
+    private byte[] image;
     
     private Integer image_size;
     
@@ -42,6 +55,14 @@ public class User {
     private Boolean enabled;
     
     List<User_Role_Detail> role_Details;
+
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
+	}
 
 	public Long getModifyTime() {
 		return modifyTime;
@@ -186,5 +207,52 @@ public class User {
 
     public void setSub_system(Integer sub_system) {
         this.sub_system = sub_system;
+    }
+    
+    public void renderePicture() {
+    	FileInputStream fis = null;
+    	File file = null;
+    	
+    	String pathprefix = ServletActionContext.getServletContext().getRealPath("/");
+    	if (this.getImage_relative_path() != null && this.getImage_relative_path().length() > 0) {
+			
+    		file = new File(pathprefix + this.getImage_relative_path());
+			
+			if (file.exists()) {
+				try {
+					fis = new FileInputStream(file);
+					byte[] buffer = new byte[1024];
+					byte[] pictureImage = new byte[(int) file.length()];
+					
+					int len = 0;
+					int startIndex = 0;
+					while((len = fis.read(buffer)) > 0) {
+						
+						System.arraycopy(buffer, 0, pictureImage, startIndex, len);
+						startIndex = startIndex + len;
+					}
+					if (this.getImage_size() == null || this.getImage_size() <= 0) {
+						this.setImage_size((int) file.length());
+					}
+					this.setImage(pictureImage);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}finally {
+					if (fis != null) {
+						try {
+							fis.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				
+			}else {
+				logger.info(file.toString() + " -------------------- large picture is not exist.");
+			}
+		}
+    	
     }
 }
