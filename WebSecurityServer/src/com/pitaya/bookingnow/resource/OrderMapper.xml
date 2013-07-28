@@ -274,12 +274,16 @@
 	
 	
 	<sql id="Min_Order_Base_Column_List">
-	    O.id as O_id, 
+		O.id as O_id, 
 		O.status as O_status, 
+		O.user_id as O_user_id, 
+		O.customer_id as O_customer_id, 
 		O.customer_count as O_customer_count, 
+		O.modifyTime as O_modifyTime, 
 		O.allowance as O_allowance,
 		O.total_price as O_total_price,
 		O.prePay as O_prePay, 
+		O.submit_time as O_submit_time, 
 		O.enabled as O_enabled
 	</sql>
 	
