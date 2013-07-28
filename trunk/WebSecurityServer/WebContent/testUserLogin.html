@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>test.html</title>
+<link rel="stylesheet" type="text/css" href="css/head.css">
+	
+	<script src="js/jquery-1.10.2.js" type="text/javascript"></script>
+	<script src="js/AppUtil.js" type="text/javascript"></script>
+	
+	<script>
+		$(document).ready(function(){
+		    var food = new Object();
+		    food.id = 1;
+			var param = new Object();
+			param.food = food;
+			//{"food.id":1}
+		    	$.post("loginUser.action", 
+		    			{"user.account": "lili","user.password": "123456"}, 
+		    		    function(data){
+		    				var user = data;
+		    				
+		    				if(user.image_relative_path != null) {
+		    					$("#userImage").attr("src",user.image_relative_path);
+		    				}
+		    				
+		    		    },"json");
+		    });
+	</script>
+	
+</head>
+
+<body>
+	<div id="framework_main">welcome to bookingNow management!</div>
+	<div>
+		<img id="userImage" alt="" src=""  />
+	</div>
+
+</body>
+</html>
