@@ -130,6 +130,18 @@
 	        </result>
 		</action>
 		
+		<action name="*Customer" class="com.pitaya.bookingnow.action.CustomerAction" method="{1}Customer">
+			<result name="loginSuccess" type="json">
+				<param name="root">loginCustomer</param>
+	        </result>
+	        
+			<result name="loginFail" type="json">
+				/Page/Common/error.jsp
+	        </result>
+
+			
+		</action>
+		
 
 		<action name="*Order" class="com.pitaya.bookingnow.action.OrderAction" method="{1}Order">
 
