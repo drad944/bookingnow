@@ -1208,8 +1208,11 @@ public class OrderService implements IOrderService{
 
 	@Override
 	public Order searchOrderById(Long id) {
-		Order realOrder= orderDao.selectFullOrderByPrimaryKey(id);
-		return realOrder;
+		if (id != null) {
+			Order realOrder= orderDao.selectFoodsInOrderByPrimaryKey(id);
+			return realOrder;
+		}
+		return null;
 	}
 
 	@Override

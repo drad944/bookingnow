@@ -28,7 +28,7 @@ public interface OrderMapper {
     
     List<Order> searchFullOrders(SearchParams params);
     
-    
+    Order selectFoodsInOrderByPrimaryKey(Long id);
     
     Order selectMinFullOrderByPrimaryKey(Long id);
     
