@@ -448,6 +448,52 @@ public class TestOrderService {
 	}
 	
 	@Test
+	public void testUpdateTablesOfWaitingOrder() {
+		/*
+		 * waiter take customer which serviced by welcomer to seat in table,but not book foods.
+		 * in:table_id,order_id,user_id,order status:new
+		 * 
+		 */
+		List<Order_Table_Detail> table_Details = new ArrayList<Order_Table_Detail>();
+		for (int i = 0; i < 2; i++) {
+			Table t = new Table();
+			t.setId((long) (i + 6));
+			Order_Table_Detail table_Detail = new Order_Table_Detail();
+			table_Detail.setEnabled(true);
+			table_Detail.setTable_id(t.getId());
+			table_Detail.setTable(t);
+			table_Details.add(table_Detail);
+		}
+		
+		User user = new User();
+		user.setId((long) 3);
+		
+		Order tempOrder = new Order();
+		tempOrder.setId(5l);
+		tempOrder.setUser(user);
+		tempOrder.setTable_details(table_Details);
+		
+		
+		MyResult result = orderService.updateTablesOfWaitingOrder(tempOrder);
+		if (result.isExecuteResult()) {
+			
+			System.out.println("add new order successfully!");
+		} else {
+			System.out.println("add new order failed!");
+			Map<String, String> falseResults = result.getErrorDetails();
+			Iterator iter = falseResults.entrySet().iterator(); 
+			while (iter.hasNext()) { 
+			    Map.Entry entry = (Map.Entry) iter.next();
+			    System.out.println(entry.getKey().toString() + " : " + entry.getValue().toString());
+			} 
+			
+		}
+		
+	}
+	
+	
+	
+	@Test
 	public void testUpdateWaitingOrderToConfirmed() {
 		
 		Customer customer = new Customer();
