@@ -6,10 +6,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.OrderDetailActivity;
 import com.pitaya.bookingnow.app.model.Order;
+import com.pitaya.bookingnow.app.model.Order.Food;
+import com.pitaya.bookingnow.app.data.GetOrderFoodsHandler;
+import com.pitaya.bookingnow.app.data.GetOrderFoodsStatusHandler;
+import com.pitaya.bookingnow.app.data.WorkerOrderDetailAdapter;
+import com.pitaya.bookingnow.app.data.PreviewOrderDetailAdapter;
+import com.pitaya.bookingnow.app.data.HttpHandler;
 import com.pitaya.bookingnow.app.service.DataService;
+import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.service.OrderTable;
 import com.pitaya.bookingnow.app.util.Constants;
 
@@ -26,6 +37,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +51,7 @@ public class WaiterOrderLeftView extends OrderLeftView{
 	
 	private OrderListsViewPagerAdapter mAdapter;
 	private OrderListsViewPager mOrdersViewPager;
-	private String lastSelectItem = null;
+
 	
 	public WaiterOrderLeftView(){
 		super();
@@ -63,44 +75,91 @@ public class WaiterOrderLeftView extends OrderLeftView{
 		View view = inflater.inflate(R.layout.orderleftview4waiter, null);
 		mOrdersViewPager = (OrderListsViewPager)view.findViewById(R.id.waitororderviewpager);
 		mOrdersViewPager.setParentFragment(this);
+		mOrdersViewPager.setOnPageChangeListener(new OnPageChangeListener(){
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+				
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+				
+			}
+
+			@Override
+			public void onPageSelected(int index) {
+				//Clean the selected item in the last page
+			}
+			
+		});
 		ArrayList<Integer> listTypes = new ArrayList<Integer>();
 		listTypes.add(MYORDERS);
 		listTypes.add(WAITING_ORDERS);
 		mAdapter = new OrderListsViewPagerAdapter(this.getActivity(), listTypes) ;
 		mOrdersViewPager.setAdapter(mAdapter);
-		
 		return view;
+	}
+	
+	public void moveOrderToMineList(Order order){
+		if(this.mAdapter.mOrderListViews.size() == 2){
+			OrderListView waiterOrderListV = this.mAdapter.mOrderListViews.get(0);
+			OrderListView waitingOrderListV = this.mAdapter.mOrderListViews.get(1);
+			ArrayList<Order> waitingOrderList = waitingOrderListV.mAdapter.getOrderList();
+			for(int i=0; i < waitingOrderList.size(); i++){
+				Order searchorder = waitingOrderList.get(i);
+				if(searchorder.getOrderKey().equals(order.getOrderKey())){
+					waitingOrderList.remove(i);
+					break;
+				}
+			}
+			waiterOrderListV.mAdapter.getOrderList().add(order);
+			waiterOrderListV.mAdapter.setSelectItem(waiterOrderListV.mAdapter.getOrderList().size() - 1);
+			this.setLastItem(order.getOrderKey());
+			waiterOrderListV.refresh();
+			this.mOrdersViewPager.setCurrentItem(0, true);
+		}
+	}
+	
+	public void showOrderDetail(final Order order, final boolean isForce, int type){
+    	switch(type){
+    		case MYORDERS:
+    			order.enrichFoods(this.getActivity());
+            	if(order.getStatus() == Constants.ORDER_COMMITED){
+            		if(order.isDirty()){
+            			order.enrichUpdateFoods(this.getActivity());
+            		}
+            		GetOrderFoodsStatusHandler handler = new GetOrderFoodsStatusHandler(this.getActivity(), order);
+            		handler.setAfterGetFoodsStatusListener(new GetOrderFoodsStatusHandler.AfterGetFoodsStatusListener(){
+
+						@Override
+						public void afterGetFoodsStatus() {
+							showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class);
+						}
+            			
+            		});
+            		OrderService.getFoodsOfOrder(Long.parseLong(order.getOrderKey()), handler);
+            	} else {
+            		showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class);
+            	}
+    			break;
+    		case WAITING_ORDERS:
+    			GetOrderFoodsHandler handler = new GetOrderFoodsHandler(getActivity(), order);
+    			handler.setAfterGetFoodsListener(new GetOrderFoodsHandler.AfterGetFoodsListener(){
+					@Override
+					public void afterGetFoods() {
+						showOrderDetail(order, isForce, PreviewOrderDetailAdapter.class);
+					}
+    			});
+    			OrderService.getFoodsOfOrder(Long.parseLong(order.getOrderKey()), handler);
+    			break;
+    	}
 	}
 	
 	public int getCurrentViewPageIndex(){
 		return this.mOrdersViewPager.getCurrentItem();
 	}
-	
-	public void setLastItem(String key){
-		this.mContentContainer.saveStatus(key);
-	}
-	
-	public String getLastItem(){
-		return this.lastSelectItem;
-	}
-	
-	public void showOrderDetail(Order order, boolean isForce){
-        // Check what fragment is currently shown, replace if needed.
-        String key = order.getOrderKey();
-        OrderDetailFragment details = (OrderDetailFragment)getFragmentManager().findFragmentById(R.id.orderdetail);
-        if (details == null || isForce || !details.getShownOrder().getOrderKey().equals(key)) {
-        	order.enrichFoods(this.getActivity());
-        	if(order.getStatus() == Constants.ORDER_COMMITED && order.isDirty()){
-        		order.enrichUpdateFoods(this.getActivity());
-        	}
-        	FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
-    		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    		fragmentTransaction.replace(R.id.orderdetail, OrderDetailFragment.newInstance(order, mContentContainer));
-    		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-    		fragmentTransaction.commit();
-        }
-	}
-	
+
 	private String getTitleByType(int type){
 		switch(type){
 			case MYORDERS:
@@ -111,18 +170,16 @@ public class WaiterOrderLeftView extends OrderLeftView{
 		return "unknow order list type";
 	}
 	
-	private class OrderListsViewPagerAdapter extends PagerAdapter {
+	class OrderListsViewPagerAdapter extends PagerAdapter {
 		
 		private Context mContext;
-		private ArrayList<WaiterOrderListView> mOrderListViews;
+		private ArrayList<OrderListView> mOrderListViews;
 		private List<String> mTitleList;
-		private List<Integer> mListTypes;
 	
 	    public OrderListsViewPagerAdapter(Context context, ArrayList<Integer> types) {
 	        this.mContext = context;
-	        mOrderListViews = new ArrayList<WaiterOrderListView>();
+	        mOrderListViews = new ArrayList<OrderListView>();
 	        mTitleList = new ArrayList<String>();
-	        mListTypes = types;
 	        for(int type : types){
 				mTitleList.add(getTitleByType(type));
 	        }
@@ -138,8 +195,6 @@ public class WaiterOrderLeftView extends OrderLeftView{
 	    public void destroyItem(View container, int position, Object object) {  
 	    	WaiterOrderListView itemView = (WaiterOrderListView)object;  
 	        itemView.recycle();
-	        ((ViewPager)container).removeView(itemView);
-	        itemView = null;
 	    }
 	    
 	    @Override
@@ -149,12 +204,16 @@ public class WaiterOrderLeftView extends OrderLeftView{
 	    
 	    @Override  
 	    public Object instantiateItem(View container, int position) {
-	    	WaiterOrderListView orderListView;  
+	    	OrderListView orderListView = null;  
 	        if(position < mOrderListViews.size()){
 	        	orderListView = mOrderListViews.get(position);
 	        } else {
-	        	orderListView = new WaiterOrderListView(mContext, WaiterOrderLeftView.this);
-				orderListView.setupViews(mListTypes.get(position));
+	        	if(position == 0){
+	        		orderListView = new WaiterOrderListView(mContext, WaiterOrderLeftView.this);
+	        	} else if(position == 1){
+	        		orderListView = new WaitingOrderListView(mContext, WaiterOrderLeftView.this);
+	        	}
+	        	orderListView.setupViews();
 		        mOrderListViews.add(orderListView);
 	            ((ViewPager) container).addView(orderListView);  
 	        }

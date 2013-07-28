@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.OrderDetailPreviewActivity;
+import com.pitaya.bookingnow.app.data.GetOrderFoodsHandler.AfterGetFoodsListener;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.model.Order.OnDirtyChangedListener;
 import com.pitaya.bookingnow.app.model.Order.OnOrderStatusChangedListener;
@@ -23,11 +24,11 @@ import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.util.Constants;
 import com.pitaya.bookingnow.app.util.ToastUtil;
 
-public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
+public class CustomerOrderDetailAdapter extends OrderDetailAdapter {
 	
 	private static final String TAG = "OrderDetailPreviewAdapter";
 	
-	public OrderDetailPreviewAdapter(Context c, View view, Order order)
+	public CustomerOrderDetailAdapter(Context c, View view, Order order)
 			throws IllegalArgumentException, IllegalAccessException {
 		super(c, view, order);
 	}
@@ -42,6 +43,7 @@ public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
 		final Button resetBtn = (Button)itemView.findViewById(R.id.action2);
 		switch(mOrder.getStatus()){
 			case Constants.ORDER_NEW:
+			case Constants.ORDER_WELCOMER_NEW:
 				confirmBtn.setText(R.string.commit);
 				resetBtn.setText(R.string.reset);
 
@@ -58,8 +60,7 @@ public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
 									if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
 										//TODO handle fail
 									} else {
-										JSONObject jorder = jresp.getJSONObject("order");
-										JSONArray jorder_foods = jorder.getJSONArray("food_details");
+										JSONArray jorder_foods = jresp.getJSONArray("food_details");
 										for(int i=0; i < jorder_foods.length(); i++){
 											JSONObject jorder_food = jorder_foods.getJSONObject(i);
 											int status = jorder_food.getInt("status");
@@ -74,7 +75,7 @@ public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
 												Log.e(TAG, "Can not find food in order");
 											}
 										}
-										mOrder.setStatus(jorder.getInt("status"));
+										mOrder.setStatus(jresp.getInt("status"));
 										mOrder.markDirty(mContext, false);
 										ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
 									}
@@ -100,7 +101,7 @@ public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
 					public void onClick(View v) {
 						DataService.removeFoodsOfOrder(mContext, mOrder.getOrderKey());
 						mOrder.removeAllFood();
-						OrderDetailPreviewAdapter.this.notifyDataSetChanged();
+						CustomerOrderDetailAdapter.this.notifyDataSetChanged();
 					}
 					
 				});
@@ -118,8 +119,7 @@ public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
 						
 						@Override
 						public void onClick(View v) {
-							//TODO update order to server
-							OrderService.updateFoodsOfOrder(mOrder, new UpdateFoodsHttpHandler(mContext, mOrder, OrderDetailPreviewAdapter.this));
+							OrderService.updateFoodsOfOrder(mOrder, new UpdateFoodsHttpHandler(mContext, mOrder, CustomerOrderDetailAdapter.this));
 						}
 						
 					});
@@ -128,8 +128,16 @@ public class OrderDetailPreviewAdapter extends OrderDetailAdapter {
 		
 						@Override
 						public void onClick(View v) {
-							//TODO restore order content from server
-							OrderDetailPreviewAdapter.this.notifyDataSetChanged();
+							GetOrderFoodsHandler handler = new GetOrderFoodsHandler(mContext, mOrder);
+							handler.setAfterGetFoodsListener(new AfterGetFoodsListener(){
+								@Override
+								public void afterGetFoods() {
+									mOrder.markDirty(mContext, false);
+									DataService.saveOrderDetails(mContext, mOrder);
+									CustomerOrderDetailAdapter.this.notifyDataSetChanged();
+								}
+							});
+							OrderService.getFoodsOfOrder(Long.parseLong(mOrder.getOrderKey()), handler);
 						}
 						
 					});

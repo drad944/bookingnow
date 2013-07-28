@@ -124,7 +124,6 @@ public class FoodService {
 								bundle.putInt(HttpHandler.ERROR_CODE, Constants.GET_FOOD_IMAGE_ERROR);
 								handler.sendMessage(amsg);
 								e.printStackTrace();
-								this.fileBytes = null;
 							}
 				        } else if(action.equals("findLargeFood_Picture.action")){
 				        	if(type == 0){
@@ -134,14 +133,13 @@ public class FoodService {
 				        	}
 				        	bundle.putInt(HttpHandler.RESULT, Constants.SUCCESS);
 				        	handler.sendMessage(amsg);
-				        	this.fileBytes = null;
 				        }
 					} else {
 						bundle.putInt(HttpHandler.RESULT, Constants.FAIL);
 						bundle.putInt(HttpHandler.ERROR_CODE, Constants.GET_FOOD_IMAGE_ERROR);
 			        	handler.sendMessage(amsg);
-			        	this.fileBytes = null;
 					}
+					this.fileBytes = null;
 				}
 				
 				@Override
