@@ -140,6 +140,7 @@ public class OrderAction extends BaseAction{
 			result = orderService.updateFoodsOfWaitingOrder(order);
 			
 			if (result.isExecuteResult()) {
+				order = result.getOrder();
 				return "updateFoodsOfWaitingOrderSuccess";
 			}
 		}
@@ -173,7 +174,7 @@ public class OrderAction extends BaseAction{
 			if(order.getTable_details() != null){
 				result = orderService.updateWaitingOrderToConfirmed(order);
 				if (result.isExecuteResult()) {
-					this.getResult().setExecuteResult(true);
+					order = result.getOrder();
 					return "commitWaitingOrderSuccess";
 				} else {
 					this.getResult().setExecuteResult(false);
@@ -197,20 +198,18 @@ public class OrderAction extends BaseAction{
 			if(order.getFood_details() != null){
 				result = orderService.updateNewOrderToConfirmed(order);
 				if (result.isExecuteResult()) {
-					this.getResult().setExecuteResult(true);
+					order = result.getOrder();
 					return "commitNewOrderSuccess";
 				} else {
-					this.getResult().setExecuteResult(false);
 					this.getResult().setShortDetail(null);
 					return "Fail";
 				}
 			} else if(order.getTable_details() != null){
 				result = orderService.updateWaitingOrderToConfirmed(order);
 				if (result.isExecuteResult()) {
-					this.getResult().setExecuteResult(true);
+					order = result.getOrder();
 					return "commitWaitingOrderSuccess";
 				} else {
-					this.getResult().setExecuteResult(false);
 					this.getResult().setShortDetail(null);
 					return "Fail";
 				}
