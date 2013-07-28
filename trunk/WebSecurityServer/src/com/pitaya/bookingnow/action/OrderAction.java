@@ -172,7 +172,7 @@ public class OrderAction extends BaseAction{
 	public String updateTablesOfWaitingOrder() {
 		if (order != null) {
 			if(order.getTable_details() != null){
-				result = orderService.updateWaitingOrderToConfirmed(order);
+				result = orderService.updateTablesOfWaitingOrder(order);
 				if (result.isExecuteResult()) {
 					order = result.getOrder();
 					return "commitWaitingOrderSuccess";
