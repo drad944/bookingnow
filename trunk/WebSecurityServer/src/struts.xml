@@ -149,6 +149,11 @@
 				<param name="root">matchedOrders</param>
 	        </result>
 	        
+	        <result name="searchFoodsInOrderSuccess" type="json">
+	            <param name="excludeNullProperties">true</param>
+				<param name="root">order</param>
+	        </result>
+	        
 	        <result name="submitWaitingSuccess" type="json">
 	            <param name="excludeNullProperties">true</param>
 				<param name="root">order</param>
