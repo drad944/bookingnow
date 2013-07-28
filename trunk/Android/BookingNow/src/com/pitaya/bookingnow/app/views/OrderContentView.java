@@ -57,6 +57,13 @@ public class OrderContentView extends BaseContentView{
 							LayoutParams.MATCH_PARENT, 0.45f));
 					mLeftView = new WelcomerOrderLeftView();
 					break;
+				case Constants.ROLE_CHEF:
+					mView.findViewById(R.id.orderlist).setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+							LayoutParams.MATCH_PARENT, 0.75f));
+					mView.findViewById(R.id.orderdetail).setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+							LayoutParams.MATCH_PARENT, 0.25f));
+					mLeftView = new KitchenOrderLeftView();
+					break;
 			}
 		}
 		if(mLeftView != null){
@@ -80,6 +87,9 @@ public class OrderContentView extends BaseContentView{
 		}
 		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		fragmentTransaction.commit();
+		if(this.mView != null){
+			container.removeView(this.mView);
+		}
 		return true;
 	}
 		

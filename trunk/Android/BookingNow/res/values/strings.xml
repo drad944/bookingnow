@@ -44,15 +44,23 @@
     <string name="order_list_title_submitter">提交者</string>
     <string name="order_list_title_status">状态</string>
     <string name="order_list_title_time">更新时间</string>
+    <string name="order_list_title_submittime">创建时间</string>
     <string name="order_list_title_customer">客户姓名</string>
     <string name="order_list_title_phone">联系电话</string>
     <string name="order_list_title_count">人数</string>
     <string name="neworderbtn">新建订单</string>
     
+    <string name="cookingitem_title_name">菜名</string>
+    <string name="cookingitem_title_quantity">数量</string>
+    <string name="cookingitem_title_timer">计时</string>
+    <string name="cookingitem_title_status">状态</string>
+    <string name="cookingitem_title_operations">操作</string>
+    
     <string name="foodunavailablebtn">缺料</string>
     <string name="freebtn">赠送</string>
     <string name="seatssearchbtn">座位查询</string>
     <string name="orderssearchbtn">订单查询</string>
+    <string name="commitwaitingorderbtn">加入我的订单</string>
     <string name="peoplecount">就餐人数</string>
     <string name="phonenumber">手机号码</string>
     <string name="customername">客户名称</string>

@@ -90,9 +90,10 @@ public class HttpService {
 			                while((len = fileInStream.read(buffer)) != -1){
 			                    out.write(buffer, 0, len);
 			                }
-			                handler.setStream(out.toByteArray());
+			                byte[] result = out.toByteArray();
+			                handler.setStream(result);
 					        bundle.putInt(HttpHandler.RESULT, Constants.SUCCESS);
-					        bundle.putString(HttpHandler.RESPONSE, "Success to get file, size is " + out.size());
+					        bundle.putString(HttpHandler.RESPONSE, "Success to get file, size is " + result.length);
 			        	} else {
 			        		Log.e(TAG, "The action does not return a stream");
 			        		bundle.putInt(HttpHandler.RESULT, Constants.FAIL);

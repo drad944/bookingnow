@@ -103,6 +103,7 @@ public class DataService {
 				Long version = Long.parseLong(cursor.getString(indexes[1]));
 				foodVersions.put(food_key, version);
 			}
+			cursor.close();
 		}
 	}
 	
@@ -122,6 +123,7 @@ public class DataService {
 				Long image_v = Long.parseLong(cursor.getString(indexes[2]));
 				check_foods.add(new Food(id, food_v, image_v));
 			}
+			cursor.close();
 			return check_foods;
 		}
 		return null;
@@ -178,6 +180,24 @@ public class DataService {
 		context.getContentResolver().update(OrderDetailContentProvider.CONTENT_URI, values,
 				OrderDetailTable.COLUMN_ORDER_KEY + "=? and " + OrderDetailTable.COLUMN_FOOD_KEY + "=?",
 				new String[]{order.getOrderKey(), food.getKey()});
+	}
+	
+	
+	public static void getFoodDetails(Context context, Order.Food food){
+		String[] projection = {
+				FoodMenuTable.COLUMN_NAME,
+				FoodMenuTable.COLUMN_PRICE,
+				FoodMenuTable.COLUMN_REVISION
+		};
+		Cursor cursor = context.getContentResolver().query(FoodMenuContentProvider.CONTENT_URI, projection,
+				FoodMenuTable.COLUMN_FOOD_KEY + "=?", new String[]{food.getKey()},null);
+		if(cursor != null && cursor.moveToFirst()){
+			int indexes[] = getColumnIndexs(cursor, projection);
+			food.setName(cursor.getString(indexes[0]));
+			food.setPrice(cursor.getFloat(indexes[1]));
+			food.setVersion(cursor.getLong(indexes[2]));
+			cursor.close();
+		}
 	}
 	
 	public static void getFoodsOfOrder(Context context, Order order){
@@ -285,6 +305,7 @@ public class DataService {
 				UpdateFood updateFood = new UpdateFood(foodkey, refid, version, isfree, count);
 				order.getUpdateFoods().get(Order.getUpdateType(type)).add(updateFood);
 			}
+			cursor.close();
 		}
 	}
 	
@@ -318,8 +339,13 @@ public class DataService {
 			String food_key = entry.getKey().getKey();
 			int quantity = entry.getValue();
 			boolean isFree = entry.getKey().isFree();
+			String refid = "-1";
+			if(entry.getKey().getId() != null){
+				refid = String.valueOf(entry.getKey().getId());
+			}
 			values.put(OrderDetailTable.COLUMN_ORDER_KEY, order_key);
 			values.put(OrderDetailTable.COLUMN_FOOD_KEY, food_key);
+			values.put(OrderDetailTable.COLUMN_ORDER_FOOD_REFID, refid);
 			values.put(OrderDetailTable.COLUMN_QUANTITY, quantity);
 			values.put(OrderDetailTable.COLUMN_FREE, isFree);
 			context.getContentResolver().insert(OrderDetailContentProvider.CONTENT_URI, values);
@@ -395,6 +421,7 @@ public class DataService {
 		if(cursor != null && cursor.moveToFirst()){
 			int [] indexes =  getColumnIndexs(cursor, projection);
 			order.setDirty(Boolean.parseBoolean(cursor.getString(indexes[0])));
+			cursor.close();
 		} else {
 			order.setDirty(false);
 		}

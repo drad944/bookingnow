@@ -79,6 +79,7 @@ public class Order implements Serializable{
 	
 	public static String getOrderStatusString(int status){
 		switch(status){
+			case Constants.ORDER_WELCOMER_NEW:
 			case Constants.ORDER_NEW:
 				return "新建";
 			case Constants.ORDER_COMMITED:
@@ -234,6 +235,10 @@ public class Order implements Serializable{
 		this.user_id = id;
 	}
 	
+	public void setTables(List<Table> tables){
+		this.tables = tables;
+	}
+	
 	public void setDirty(boolean flag){
 		this.isDirty = flag;
 	}
@@ -295,9 +300,10 @@ public class Order implements Serializable{
 	}
 	
 	public void enrichFoods(Context context){
-		if(this.foods == null || this.foods.size() == 0){
-			DataService.getFoodsOfOrder(context, this);
+		if(this.foods != null && this.foods.size() > 0){
+			this.removeAllFood();
 		}
+		DataService.getFoodsOfOrder(context, this);
 	}
 	
 	public void enrichUpdateFoods(Context context){
@@ -366,6 +372,7 @@ public class Order implements Serializable{
 	}
 	
 	public void removeAllFood(){
+		this.foods = null;
 		this.foods = new LinkedHashMap<Order.Food, Integer>();
 	}
 	
@@ -466,6 +473,14 @@ public class Order implements Serializable{
 		
 		public Long getVersion(){
 			return this.version;
+		}
+		
+		public void setName(String n){
+			this.name = n;
+		}
+		
+		public void setPrice(float p){
+			this.price = p;
 		}
 		
 		public void setVersion(Long v){

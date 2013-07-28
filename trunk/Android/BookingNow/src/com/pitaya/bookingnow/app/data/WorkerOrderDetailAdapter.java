@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pitaya.bookingnow.app.*;
+import com.pitaya.bookingnow.app.data.GetOrderFoodsHandler.AfterGetFoodsListener;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.model.Order.OnDirtyChangedListener;
 import com.pitaya.bookingnow.app.model.Order.OnOrderStatusChangedListener;
@@ -30,19 +31,15 @@ import com.pitaya.bookingnow.app.util.ToastUtil;
 import com.pitaya.bookingnow.app.views.OrderDetailFragment;
 import com.pitaya.bookingnow.message.ResultMessage;
 
-public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
+public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
 	
 	private static final String TAG = "OrderDetailFragmentAdapter";
 	private Context mContext;
 	
-	public OrderDetailFragmentAdapter(Context c, View view, Order order)
+	public WorkerOrderDetailAdapter(Context c, View view, Order order)
 			throws IllegalArgumentException, IllegalAccessException {
 		super(c, view, order);
 		this.mContext = c;
-	}
-	
-	public void setOrder(Order order){
-		this.mOrder = order;
 	}
 	
 	private void setViewByOrderStatus(View view){
@@ -56,6 +53,7 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 		TextView hinttext = ((TextView)itemView.findViewById(R.id.hint));
 		switch(this.mOrder.getStatus()){
 			case Constants.ORDER_NEW:
+			case Constants.ORDER_WELCOMER_NEW:
 				this.mOrder.setOnDirtyChangedListener(null);
 				actBtn1.setText(R.string.commit);
 				actBtn2.setText(R.string.modification);
@@ -74,8 +72,7 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 									if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
 										//TODO handle fail
 									} else {
-										JSONObject jorder = jresp.getJSONObject("order");
-										JSONArray jorder_foods = jorder.getJSONArray("food_details");
+										JSONArray jorder_foods = jresp.getJSONArray("food_details");
 										for(int i=0; i < jorder_foods.length(); i++){
 											JSONObject jorder_food = jorder_foods.getJSONObject(i);
 											int status = jorder_food.getInt("status");
@@ -90,7 +87,7 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 												Log.e(TAG, "Can not find food in order");
 											}
 										}
-										mOrder.setStatus(jorder.getInt("status"));
+										mOrder.setStatus(jresp.getInt("status"));
 										mOrder.markDirty(mContext, false);
 										ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
 									}
@@ -148,15 +145,25 @@ public class OrderDetailFragmentAdapter extends OrderDetailAdapter{
 
 						@Override
 						public void onClick(View v) {
-							OrderService.updateFoodsOfOrder(mOrder, new UpdateFoodsHttpHandler(mContext, mOrder, OrderDetailFragmentAdapter.this));
+							OrderService.updateFoodsOfOrder(mOrder, new UpdateFoodsHttpHandler(mContext, mOrder, WorkerOrderDetailAdapter.this));
 						}
+						
 					});
     				actBtn2.setOnClickListener(new OnClickListener(){
 
 						@Override
 						public void onClick(View v) {
 							//TODO send request to get the order info again and restore mOrder
-							OrderDetailFragmentAdapter.this.notifyDataSetChanged();
+							GetOrderFoodsHandler handler = new GetOrderFoodsHandler(mContext, mOrder);
+							handler.setAfterGetFoodsListener(new AfterGetFoodsListener(){
+								@Override
+								public void afterGetFoods() {
+									mOrder.markDirty(mContext, false);
+									DataService.saveOrderDetails(mContext, mOrder);
+									WorkerOrderDetailAdapter.this.notifyDataSetChanged();
+								}
+							});
+							OrderService.getFoodsOfOrder(Long.parseLong(mOrder.getOrderKey()), handler);
 						}
     					
     				});

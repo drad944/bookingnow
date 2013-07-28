@@ -28,10 +28,13 @@ import android.widget.TextView;
 import com.pitaya.bookingnow.app.HomeActivity;
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.OrderDetailPreviewActivity;
-import com.pitaya.bookingnow.app.data.OrderDetailPreviewAdapter;
+import com.pitaya.bookingnow.app.data.CustomerOrderDetailAdapter;
+import com.pitaya.bookingnow.app.data.GetOrderFoodsStatusHandler;
+import com.pitaya.bookingnow.app.data.WorkerOrderDetailAdapter;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
+import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.util.Constants;
 
 import java.util.ArrayList;
@@ -100,10 +103,24 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			if(this.mContentContainer != null && this.mContentContainer.getOrder() != null){
 				
 				final ListView orderPreview = new ListView(getActivity());
-				OrderDetailPreviewAdapter orderAdapter;
+				final CustomerOrderDetailAdapter orderAdapter;
 				try {
-					orderAdapter = new OrderDetailPreviewAdapter(getActivity(), orderPreview, mContentContainer.getOrder());
-					orderPreview.setAdapter(orderAdapter);
+					orderAdapter = new CustomerOrderDetailAdapter(getActivity(), orderPreview, mContentContainer.getOrder());
+					if(this.mContentContainer.getOrder().getStatus() == Constants.ORDER_COMMITED){
+	            		GetOrderFoodsStatusHandler handler = new GetOrderFoodsStatusHandler(this.getActivity(), mContentContainer.getOrder());
+	            		handler.setAfterGetFoodsStatusListener(new GetOrderFoodsStatusHandler.AfterGetFoodsStatusListener(){
+	
+							@Override
+							public void afterGetFoodsStatus() {
+								orderPreview.setAdapter(orderAdapter);
+							}
+	            			
+	            		});
+	            		OrderService.getFoodsOfOrder(Long.parseLong(mContentContainer.getOrder().getOrderKey()), handler);
+					} else {
+						orderPreview.setAdapter(orderAdapter);
+					}
+            		
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {

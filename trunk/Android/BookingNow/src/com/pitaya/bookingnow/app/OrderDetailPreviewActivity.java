@@ -21,7 +21,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pitaya.bookingnow.app.data.OrderDetailPreviewAdapter;
+import com.pitaya.bookingnow.app.data.CustomerOrderDetailAdapter;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.model.Order.Food;
 import com.pitaya.bookingnow.app.service.DataService;
@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 public class OrderDetailPreviewActivity extends ListActivity  {
 
 	private Order mOrder;
-	private OrderDetailPreviewAdapter mOrderAdapter;
+	private CustomerOrderDetailAdapter mOrderAdapter;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +48,7 @@ public class OrderDetailPreviewActivity extends ListActivity  {
 			mOrder = (Order)bundle.getSerializable("order");
 	          
 	        try {
-				mOrderAdapter = new OrderDetailPreviewAdapter(this, this.getListView(), mOrder);
+				mOrderAdapter = new CustomerOrderDetailAdapter(this, this.getListView(), mOrder);
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
@@ -73,7 +73,7 @@ public class OrderDetailPreviewActivity extends ListActivity  {
 	
 	@Override
 	protected void onDestroy(){
-		Log.i("OrderDetailPreviewActivity", "in OrderDetailPreviewActivity destroy" + this);
+		Log.i("CustomerOrderDetailAdapter", "in OrderDetailPreviewActivity destroy" + this);
 		super.onDestroy();
 		if(this.mOrder != null){
 			this.mOrder.setOnDirtyChangedListener(null);

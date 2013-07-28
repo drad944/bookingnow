@@ -20,12 +20,33 @@ import com.pitaya.bookingnow.app.util.Constants;
 
 public class OrderService {
 	
-	public static void getOrderByStatus(ArrayList<Integer> statuses, HttpHandler callback){
+	public static void getFoodsOfOrder(Long order_id, HttpHandler callback){
+		if(order_id == null)
+			return;
 		JSONObject jreq = new JSONObject();
 		JSONObject jparams = new JSONObject(); 
 		try {
-			jparams.put("orderStatusList", new JSONArray(statuses));
-			jparams.put("user_id", UserManager.getUserId());
+			jparams.put("order_id", order_id);
+			jreq.put("params", jparams);
+			HttpService.post("searchFoodsInOrder.action", new StringEntity(jreq.toString()), callback);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static void getOrderByStatus(boolean byUser, ArrayList<Integer> statuses, HttpHandler callback){
+		JSONObject jreq = new JSONObject();
+		JSONObject jparams = new JSONObject(); 
+		try {
+			if(statuses != null){
+				jparams.put("orderStatusList", new JSONArray(statuses));
+			}
+			if(byUser){
+				jparams.put("user_id", UserManager.getUserId());
+			}
 			jreq.put("params", jparams);
 			HttpService.post("searchByStatusOfOrder.action", new StringEntity(jreq.toString()), callback);
 		} catch (JSONException e) {
@@ -168,19 +189,34 @@ public class OrderService {
 		}
 	}
 	
+	/*
+	 * If current status is welcomer_new, this method will update the order to new status, or if current
+	 * status is waiting, it will update to committed.
+	 * Return type is order
+	 */
 	public static void commitWaitingOrder(Order order, HttpHandler callback){
-		JSONObject orderDetail = new JSONObject();
-		JSONObject orderJson = new JSONObject();
+		JSONObject jorder = new JSONObject();
+		JSONObject jreq = new JSONObject();
 		try {
-			orderDetail.put("id", Long.parseLong(order.getOrderKey()));
-			orderDetail.put("status", Constants.ORDER_COMMITED);
-			JSONArray tableids = new JSONArray(order.getTables());
-			orderDetail.put("table_details", tableids);
+			jorder.put("id", Long.parseLong(order.getOrderKey()));
+			JSONArray jtables = new JSONArray();
+			for(int i=0; i < order.getTables().size(); i++){
+				JSONObject jtabledetail = new JSONObject();
+				JSONObject jtable = new JSONObject();
+				jtable.put("id", order.getTables().get(i).getId());
+				jtabledetail.put("table", jtable);
+				jtables.put(i, jtabledetail);
+			} 
+			jorder.put("table_details", jtables);
 			JSONObject user = new JSONObject();
 			user.put("id", order.getSubmitterId());
-			orderDetail.put("user", user);
-			orderJson.put("order", orderDetail);
-			HttpService.post("commitOrder.action", new StringEntity(orderJson.toString()), callback);
+			jorder.put("user", user);
+			jreq.put("order", jorder);
+			if(order.getStatus() == Constants.ORDER_WELCOMER_NEW){
+				HttpService.post("updateTablesOfWaitingOrder.action", new StringEntity(jreq.toString()), callback);
+			} else if(order.getStatus() == Constants.ORDER_WAITING){
+				HttpService.post("commitOrder.action", new StringEntity(jreq.toString()), callback);
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
@@ -188,6 +224,11 @@ public class OrderService {
 		}
 	}
 	
+	/*
+	 * If there is table info, this method will commit a new order to committed, otherwise
+	 * it will update a welcomer_new order to waiting
+	 * Return type is order
+	 */
 	public static void commitNewOrder(Context context, Order order, HttpHandler callback){
 		JSONObject jorder = new JSONObject();
 		JSONObject jreq = new JSONObject();

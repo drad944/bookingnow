@@ -44,6 +44,10 @@ public class OrderDetailAdapter extends BaseAdapter {
         this.mOrder = order;
     }
     
+	public void setOrder(Order order){
+		this.mOrder = order;
+	}
+    
     @Override  
     public int getViewTypeCount() {
         return 2;
@@ -106,137 +110,13 @@ public class OrderDetailAdapter extends BaseAdapter {
 		updateSummaryPrice();
 	}
 
-	private void setupFoodStatusButton(final Button changeStatusBtn, final Order.Food food){
-		changeStatusBtn.setVisibility(View.VISIBLE);
-		switch(food.getStatus()){
-			case Constants.FOOD_NEW:
-				changeStatusBtn.setText("开始");
-				changeStatusBtn.setOnClickListener(new OnClickListener(){
-
-					@Override
-					public void onClick(View v) {
-						food.setStatus(Constants.FOOD_WAITING);
-						setupFoodStatusButton(changeStatusBtn, food);
-					}
-					
-				});
-				break;
-			case Constants.FOOD_UNAVAILABLE:
-			case Constants.FOOD_WAITING:
-				changeStatusBtn.setText("开始加工");
-				changeStatusBtn.setOnClickListener(new OnClickListener(){
-
-					@Override
-					public void onClick(View v) {
-						food.setStatus(Constants.FOOD_COOKING);
-						setupFoodStatusButton(changeStatusBtn, food);
-					}
-					
-				});
-				break;
-			case Constants.FOOD_COOKING:
-				changeStatusBtn.setText("完成");
-				changeStatusBtn.setOnClickListener(new OnClickListener(){
-
-					@Override
-					public void onClick(View v) {
-						food.setStatus(Constants.FOOD_FINISHED);
-						setupFoodStatusButton(changeStatusBtn, food);
-					}
-					
-				});
-				break;
-			case Constants.FOOD_FINISHED:
-				changeStatusBtn.setVisibility(View.INVISIBLE);
-				break;
-		}
-	}
-	
-	//Setup the food item view for kitchen role
-	private void setupKitchenView(final View itemView, final int index){
-		Item item = (Item)this.getItem(index);
-		final Order.Food food = item.food;
-		final RelativeLayout fooditemRL = (RelativeLayout) itemView.findViewById(R.id.fooditemdetail);
-		TextView nameText = (TextView) fooditemRL.findViewById(R.id.name);
-        nameText.setText(food.getName());
-        TextView quanText = (TextView) fooditemRL.findViewById(R.id.quantity);
-        quanText.setText(String.valueOf(item.quantity));
-		final TextView statusText = (TextView) fooditemRL.findViewById(R.id.foodstatus);
-        statusText.setText(Order.getFoodStatusString(food.getStatus()));
-        Button updateStatusBtn = (Button) fooditemRL.findViewById(R.id.updatestatusbtn);
-        setupFoodStatusButton(updateStatusBtn, food);
-        final Button unavailableBtn = (Button) fooditemRL.findViewById(R.id.unavailablebtn);
-        unavailableBtn.setOnClickListener(new OnClickListener(){
-
-			@Override
-			public void onClick(View v) {
-				food.setStatus(Constants.FOOD_UNAVAILABLE);
-			}
-        	
-        });
-        
-        final TextView timerText = (TextView) fooditemRL.findViewById(R.id.timer);
-
-        if(food.getStatus() != Constants.FOOD_FINISHED){
-        	//TODO use this to instead later final long beginTime = this.mOrder.getCommitTime();
-	        final long beginTime = this.mOrder.getModificationTime();
-	        final Handler handler = new Handler(); 
-	        final Runnable timer = new Runnable(){
-		        @Override 
-		        public void run() {
-		        	long current = System.currentTimeMillis();
-		        	long seconds = (current - beginTime)/1000;
-		        	if(seconds >= 36000){
-		        		//10 hours
-		        		timerText.setText("等待时间 >10小时");
-		        		timerText.setTextColor(mContext.getResources().getColor(R.color.red));
-		        	} else {
-		        		timerText.setText("等待时间 " + (seconds/3600 < 10 ? "0" + String.valueOf(seconds/3600) : String.valueOf(seconds/3600)) 
-		        				+ ":" + ((seconds%3600)/60 < 10 ? "0" + String.valueOf((seconds%3600)/60) : String.valueOf((seconds%3600)/60))
-		        				+ ":" + ((seconds%3600)%60 < 10 ? "0" + String.valueOf((seconds%3600)%60) : String.valueOf((seconds%3600)%60)));
-		        		if(seconds > 120){
-		        			timerText.setTextColor(mContext.getResources().getColor(R.color.red));
-		        		} else if(seconds > 60){
-		        			timerText.setTextColor(mContext.getResources().getColor(R.color.yellow));
-		        		} else {
-		        			timerText.setTextColor(mContext.getResources().getColor(R.color.green));
-		        		}
-		        		handler.postDelayed(this, 1000); 
-		        	}
-		        }
-	        };
-	        handler.post(timer);
-	
-	    	food.setOnFoodStatusChangedListener(new Order.OnFoodStatusChangedListener() {
-				
-				@Override
-				public void onFoodStatusChanged(Order.Food food, int status, int old_status) {
-					updateFoodStatus(index, food, status, old_status);
-					if(status == Constants.FOOD_FINISHED){
-						handler.removeCallbacks(timer);
-						timerText.setVisibility(View.INVISIBLE);
-						unavailableBtn.setVisibility(View.INVISIBLE);
-					} else if(status == Constants.FOOD_UNAVAILABLE) {
-						timerText.setVisibility(View.INVISIBLE);
-					} else {
-						timerText.setVisibility(View.VISIBLE);
-					}
-				}
-	    		
-	    	});
-        } else {
-        	timerText.setVisibility(View.INVISIBLE);
-        }
-    	
-	}
-
 	//Setup the food item view for waiter role
-	private void setupWaiterView(final View itemView, final int index){
+	private void setupView(final View itemView, final int index){
 		final Item item = (Item)this.getItem(index);
 		final Order.Food food = item.food;
 		final int quantity = item.quantity;
-		RelativeLayout fooditemRL = (RelativeLayout) itemView.findViewById(R.id.fooditemdetail);
 		
+		RelativeLayout fooditemRL = (RelativeLayout) itemView.findViewById(R.id.fooditemdetail);
         TextView nameText = (TextView) fooditemRL.findViewById(R.id.name);
         nameText.setText(food.getName());
         final TextView totalPriceText = (TextView) fooditemRL.findViewById(R.id.totalprice);
@@ -246,14 +126,25 @@ public class OrderDetailAdapter extends BaseAdapter {
         	totalPriceText.setText(String.valueOf(food.getPrice() * quantity) + "元");
         }
         final TextView statusText = (TextView) fooditemRL.findViewById(R.id.foodstatus);
-        if(mOrder.getStatus() != Constants.ORDER_NEW && mOrder.getStatus() != Constants.ORDER_WAITING){
-        	statusText.setText(Order.getFoodStatusString(food.getStatus()));
+        if(mOrder.getStatus() == Constants.ORDER_NEW || mOrder.getStatus() == Constants.ORDER_COMMITED){
+        	food.setOnFoodStatusChangedListener(new Order.OnFoodStatusChangedListener() {
+    			
+    			@Override
+    			public void onFoodStatusChanged(Order.Food food, int status, int old_status) {
+    				updateFoodStatus(index, food, status, old_status);
+    			}
+        		
+        	});
+        	if(mOrder.getStatus() == Constants.ORDER_COMMITED){
+        		statusText.setText(Order.getFoodStatusString(food.getStatus()));
+        	}
         } else {
         	statusText.setVisibility(View.GONE);
         }
+    	
         TextView freeStatusText = (TextView) fooditemRL.findViewById(R.id.freestatus);
         final Button freeBtn = (Button) fooditemRL.findViewById(R.id.freebtn);
-        if(this instanceof OrderDetailFragmentAdapter){
+        if(this instanceof WorkerOrderDetailAdapter){
         	freeBtn.setVisibility(View.VISIBLE);
         	freeStatusText.setVisibility(View.GONE);
 	        if(food.isFree()){
@@ -274,18 +165,20 @@ public class OrderDetailAdapter extends BaseAdapter {
 						freeBtn.setText(R.string.cancelfreebtn);
 						totalPriceText.setText("0元");
 					}
-					DataService.updateFoodFreeStatus(mContext, mOrder, food);
-					if(mOrder.getStatus() == Constants.ORDER_COMMITED || mOrder.getStatus() == Constants.ORDER_WAITING){
-						mOrder.addUpdateFoods(mContext, Order.UPDATED, food, quantity);
-						mOrder.markDirty(mContext, true);
-					}
-					if(mView.findViewById(R.id.orderbottom) != null){
-						((TextView)mView.findViewById(R.id.orderbottom).findViewById(R.id.summary)).setText("合计"+mOrder.getTotalPrice()+"元");
+					if(mOrder.getStatus() != Constants.ORDER_PAYING && mOrder.getStatus() != Constants.ORDER_FINISHED){
+						DataService.updateFoodFreeStatus(mContext, mOrder, food);
+						if(mOrder.getStatus() == Constants.ORDER_COMMITED || mOrder.getStatus() == Constants.ORDER_WAITING){
+							mOrder.addUpdateFoods(mContext, Order.UPDATED, food, quantity);
+							mOrder.markDirty(mContext, true);
+						}
+						if(mView.findViewById(R.id.orderbottom) != null){
+							((TextView)mView.findViewById(R.id.orderbottom).findViewById(R.id.summary)).setText("合计"+mOrder.getTotalPrice()+"元");
+						}
 					}
 				}
 	        	
 	        });
-        } else if(this instanceof OrderDetailPreviewAdapter){
+        } else if(this instanceof CustomerOrderDetailAdapter){
         	freeBtn.setVisibility(View.GONE);
         	freeStatusText.setVisibility(View.VISIBLE);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(totalPriceText.getLayoutParams().width
@@ -297,15 +190,6 @@ public class OrderDetailAdapter extends BaseAdapter {
         		freeStatusText.setTextColor(mContext.getResources().getColor(R.color.green));
         	}
         }
-        
-    	food.setOnFoodStatusChangedListener(new Order.OnFoodStatusChangedListener() {
-			
-			@Override
-			public void onFoodStatusChanged(Order.Food food, int status, int old_status) {
-				updateFoodStatus(index, food, status, old_status);
-			}
-    		
-    	});
     	
      	View foodstepper = View.inflate(mContext, R.layout.foodstepper, null);
         RelativeLayout.LayoutParams fsRL_LP = new RelativeLayout.LayoutParams(
@@ -444,26 +328,15 @@ public class OrderDetailAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		//This implementation is only for food item, you have to implement bottom buttons or header view in subclass
-		View itemView = null;
-		switch(UserManager.getUserRole()){
-			case Constants.ROLE_WAITER:
-			case Constants.ROLE_WELCOME:
-				itemView = View.inflate(mContext, R.layout.fooditem_waiter, null);
-				setupWaiterView(itemView, position);
-				break;
-			case Constants.ROLE_CHEF:
-				itemView = View.inflate(mContext, R.layout.fooditem_kitchen, null);
-				setupKitchenView(itemView, position);
-				break;
-			default:
-				itemView = new TextView(parent.getContext());
-				((TextView)itemView).setText("Unsupported role for this view");
-				break;
+		View itemView = convertView;
+		if(itemView == null){
+			itemView = View.inflate(mContext, R.layout.fooditem_waiter, null);
 		}
+		setupView(itemView, position);
 		return itemView;
 	}
 	
-	private class Item{
+	protected class Item{
 		Order.Food food;
 		int quantity;
 		
