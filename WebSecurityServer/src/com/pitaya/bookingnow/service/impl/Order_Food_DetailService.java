@@ -137,6 +137,9 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 								tempNewFood_Detail.setFood_id(tempNewFood.getId());
 								tempNewFood_Detail.setLast_modify_time(new Date().getTime());
 								tempNewFood_Detail.setOrder_id(orderId);
+								if (tempNewFood_Detail.getEnabled() == null) {
+									tempNewFood_Detail.setEnabled(true);
+								}
 								if (tempNewFood_Detail.getStatus() == null) {
 									tempNewFood_Detail.setStatus(Constants.FOOD_CONFIRMED);
 								}
