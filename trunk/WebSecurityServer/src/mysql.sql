@@ -16,9 +16,7 @@ drop table pitaya_authority;
 drop table pitaya_role;
 drop table pitaya_food_material_detail;
 drop table pitaya_material;
-drop table pitaya_user_picture;
 drop table pitaya_user;
-drop table pitaya_customer_picture;
 drop table pitaya_customer;
 drop table pitaya_food_picture;
 drop table pitaya_order_food_detail;
@@ -65,8 +63,8 @@ create table pitaya_order(
 	
 insert into pitaya_order values (1,1,0,1,4,1351232321,0.95,0,0,1351232321,true);
 insert into pitaya_order values (2,2,1,0,5,1351232321,0.90,0,0,1351232321,false);
-insert into pitaya_order values (3,3,0,2,6,1351232321,0.95,0,0,1351232321,1);
-insert into pitaya_order values (4,4,0,3,7,1351232321,1,0,0,1351232321,0);
+insert into pitaya_order values (3,3,0,2,6,1351232321,0.95,0,0,1351232321,true);
+insert into pitaya_order values (4,4,0,3,7,1351232321,1,0,0,1351232321,true);
 insert into pitaya_order values (5,5,2,0,4,1351232321,0.90,0,0,1351232321,true);
 insert into pitaya_order values (6,6,3,0,5,1351232321,0.95,0,0,1351232321,false);
 insert into pitaya_order values (7,3,1,0,4,1351232321,0.90,0,0,1351232321,true);
