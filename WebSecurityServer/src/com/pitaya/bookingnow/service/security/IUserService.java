@@ -3,19 +3,22 @@ package com.pitaya.bookingnow.service.security;
 import java.util.List;
 
 import com.pitaya.bookingnow.entity.security.User;
+import com.pitaya.bookingnow.util.MyResult;
 
 public interface IUserService{
-	boolean add(User user);
+	MyResult add(User user);
 	
-	boolean removeUserById(Long id);
+	MyResult removeUserById(Long id);
 	
-	boolean remove(User user);
-
-	boolean modify(User user);
+	MyResult modify(User user);
 	
 	List<User> searchUsers(User user);
 	
-	User login(User user);
+	List<User> searchUsersWithRole(User user);
+	
+	List<User> searchAllUsers();
+	
+	MyResult login(User user);
 	
 	User searchUserById(Long id);
 

@@ -1,18 +1,26 @@
 package com.pitaya.bookingnow.action;
 
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.pitaya.bookingnow.entity.security.User;
 import com.pitaya.bookingnow.service.security.IUserService;
+import com.pitaya.bookingnow.util.Constants;
+import com.pitaya.bookingnow.util.MyResult;
+import com.pitaya.bookingnow.util.SearchParams;
 
 
 public class UserAction extends BaseAction{
 	private static final long serialVersionUID = 1921350238570284375L;
 	
 	private IUserService userService;
+	
+	private SearchParams params;
+	
+	private Map<String, List<User>> matchedUsers;
 	
 	private String j_username;
 	
@@ -21,6 +29,18 @@ public class UserAction extends BaseAction{
 	private User user;
 	private User loginUser;
 	
+	public Map<String, List<User>> getMatchedUsers() {
+		return matchedUsers;
+	}
+	public void setMatchedUsers(Map<String, List<User>> matchedUsers) {
+		this.matchedUsers = matchedUsers;
+	}
+	public SearchParams getParams() {
+		return params;
+	}
+	public void setParams(SearchParams params) {
+		this.params = params;
+	}
 	public String getJ_username() {
 		return j_username;
 	}
@@ -60,23 +80,24 @@ public class UserAction extends BaseAction{
 			user.setPassword(j_password);
 			return loginUser();
 		}
-		return "loginFail";
+		return "Fail";
 		
 	}
 	
 	public String loginUser() {
 		
 		if(user != null) {
-        	loginUser = userService.login(user);
+        	result = userService.login(user);
         }
         
-        if(loginUser != null){ 
+        if(result.isExecuteResult()){ 
         	Map<String,Object> session = ActionContext.getContext().getSession();
+        	loginUser = result.getUser();
     		session.put("loginUser", loginUser);
     		
-            return "loginSuccess";  
+            return "loginUserSuccess";  
         }else{  
-            return "loginFail";  
+            return "Fail";  
         }  
 	}
 	
@@ -84,55 +105,93 @@ public class UserAction extends BaseAction{
 		Map<String,Object> session = ActionContext.getContext().getSession();
 		
 		session.remove("loginUser");
-		return "logoutSuccess";
+		return "logoutUserSuccess";
 	}
 	
 	public String findUser() {
-		List<User> loginUsers = null;
 		if(user != null) {
-        	loginUsers = userService.searchUsers(user);
-        }
-        
-        if(loginUsers != null){  
-            return "findSuccess";  
-        }else{  
-            return "findFail";  
-        }  
+        	List<User> users = userService.searchUsers(user);
+        	if (matchedUsers == null) {
+				matchedUsers = new HashMap<String,List<User>>();
+			}
+        	matchedUsers.put("result", users);
+        	return "findUserSuccess";
+        }else {
+			if (result == null) {
+				result = new MyResult();
+			}
+			result.setErrorType(Constants.FAIL);
+			result.setExecuteResult(false);
+			result.getErrorDetails().put("user_exist", "can not find user in client data.");
+			return "Fail";
+		}
 	}
 	
 	public String registerUser() {
 		if(user != null) {
-			if(userService.add(user)){  
-	            return "registerSuccess";  
+			result = userService.add(user);
+			
+			if(result.isExecuteResult()){ 
+				user = result.getUser();
+	            return "registerUserSuccess";  
 	        }else{  
-	            return "registerFail";  
+	            return "Fail";  
 	        }  
         }
-		return "registerFail";  
+		if (result == null) {
+			result = new MyResult();
+			result.setErrorType(Constants.FAIL);
+		}
+        return "Fail"; 
 	}
 	
 	public String updateUser() {
 		if(user != null) {
-			if(userService.modify(user)){  
-	            return "updateSuccess";  
+			result = userService.modify(user);
+			
+			if(result.isExecuteResult()){ 
+				user = result.getUser();
+	            return "updateUserSuccess";  
 	        }else{  
-	            return "updateFail";  
+	            return "Fail";  
 	        }  
         }
-            return "updateFail";  
+		if (result == null) {
+			result = new MyResult();
+			result.setErrorType(Constants.FAIL);
+		}
+        return "Fail";
 	}
 	
 	
 	
 	public String removeUser() {
 		if(user != null) {
-			if(userService.remove(user)){  
-	            return "removeSuccess";  
+			result = userService.removeUserById(user.getId());
+			
+			if(result.isExecuteResult()){ 
+				user = result.getUser();
+	            return "removeUserSuccess";  
 	        }else{  
-	            return "removeFail";  
+	            return "Fail";  
 	        }  
         }
-            return "removeFail";  
+		if (result == null) {
+			result = new MyResult();
+			result.setErrorType(Constants.FAIL);
+		}
+        return "removeFail";
+	}
+	
+	
+	public String findAllUser() {
+		
+		List<User> users = userService.searchAllUsers();
+    	if (matchedUsers == null) {
+			matchedUsers = new HashMap<String,List<User>>();
+		}
+    	matchedUsers.put("result", users);
+    	return "findAllUserSuccess";
 	}
 	
 }

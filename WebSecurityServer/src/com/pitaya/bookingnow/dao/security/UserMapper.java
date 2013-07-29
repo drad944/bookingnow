@@ -19,5 +19,9 @@ public interface UserMapper {
     
     List<User> searchUsers(User user);
     
+    List<User> searchUsersWithRole(User user);
+    
+    List<User> searchAllUsers();
+    
     User login(User user);
 }
