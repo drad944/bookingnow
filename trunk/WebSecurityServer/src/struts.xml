@@ -87,58 +87,88 @@
 	    </action>
 
 		<action name="*User" class="com.pitaya.bookingnow.action.UserAction" method="{1}User">
-			<result name="loginSuccess" type="json">
+			<result name="loginUserSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
 				<param name="root">loginUser</param>
 	        </result>
 	        
-			<result name="loginFail" type="json">
-				/Page/Common/error.jsp
-	        </result>
-
-			
-	        
-			<result name="findFail" type="dispatcher">
-				/Page/error.jsp
-	        </result>
-
-			<result name="findSuccess" type="dispatcher">
-				/Page/success.jsp
+			<result name="logoutUserSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">true</param>
 	        </result>
 	        
-	        <result name="registerSuccess" type="dispatcher">
-				/Page/error.jsp
-	        </result>
-
-			<result name="registerFail" type="dispatcher">
-				/Page/success.jsp
+	        <result name="findUserSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">matchedUsers</param>
 	        </result>
 	        
-	        <result name="updateSuccess" type="dispatcher">
-				/Page/error.jsp
-	        </result>
-
-			<result name="updateFail" type="dispatcher">
-				/Page/success.jsp
+	        <result name="registerUserSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">user</param>
 	        </result>
 	        
-	        <result name="removeSuccess" type="dispatcher">
-				/Page/error.jsp
+	        <result name="updateUserSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">user</param>
+	        </result>
+	        
+	        <result name="removeUserSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">user</param>
+	        </result>
+	        
+	        <result name="findAllUserSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">matchedUsers</param>
+	        </result>
+	        
+			<result name="Fail" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">result</param>
 	        </result>
 
-			<result name="removeFail" type="dispatcher">
-				/Page/success.jsp
-	        </result>
 		</action>
 		
 		<action name="*Customer" class="com.pitaya.bookingnow.action.CustomerAction" method="{1}Customer">
 			<result name="loginSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
 				<param name="root">loginCustomer</param>
 	        </result>
-	        
-			<result name="loginFail" type="json">
-				/Page/Common/error.jsp
+			
+			<result name="logoutCustomerSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">true</param>
 	        </result>
-
+	        
+	        <result name="findCustomerSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">matchedCustomers</param>
+	        </result>
+	        
+	        <result name="registerCustomerSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">user</param>
+	        </result>
+	        
+	        <result name="updateCustomerSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">user</param>
+	        </result>
+	        
+	        <result name="removeCustomerSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">user</param>
+	        </result>
+	        
+	        <result name="findAllCustomerSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">matchedCustomers</param>
+	        </result>
+	        
+			<result name="Fail" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">result</param>
+	        </result>
 			
 		</action>
 		

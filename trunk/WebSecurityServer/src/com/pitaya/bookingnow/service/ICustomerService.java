@@ -3,21 +3,24 @@ package com.pitaya.bookingnow.service;
 import java.util.List;
 
 import com.pitaya.bookingnow.entity.Customer;
+import com.pitaya.bookingnow.util.MyResult;
 
 
 public interface ICustomerService {
 	
-	boolean add(Customer customer);
+	MyResult add(Customer customer);
 	
-	boolean removeCustomerById(Long id);
+	MyResult removeCustomerById(Long id);
 	
-	boolean remove(Customer customer);
-
-	boolean modify(Customer customer);
+	MyResult modify(Customer customer);
 	
 	List<Customer> searchCustomers(Customer customer);
 	
-	Customer login(Customer customer);
+	List<Customer> searchCustomersWithRole(Customer customer);
+	
+	List<Customer> searchAllCustomers();
+	
+	MyResult login(Customer customer);
 	
 	Customer searchCustomerById(Long id);
 }

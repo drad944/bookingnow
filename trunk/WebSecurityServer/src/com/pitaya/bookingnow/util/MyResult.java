@@ -3,7 +3,11 @@ package com.pitaya.bookingnow.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.pitaya.bookingnow.entity.Customer;
+import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Order;
+import com.pitaya.bookingnow.entity.Table;
+import com.pitaya.bookingnow.entity.security.User;
 
 public class MyResult {
 	int errorType = 0;
@@ -20,6 +24,46 @@ public class MyResult {
 	double totalPriceOfOrder = 0d;
 	
 	Order order = new Order();
+	
+	User user = new User();
+
+	Food food = new Food();
+	
+	Customer customer = new Customer();
+	
+	Table table = new Table();
+	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Food getFood() {
+		return food;
+	}
+
+	public void setFood(Food food) {
+		this.food = food;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public Table getTable() {
+		return table;
+	}
+
+	public void setTable(Table table) {
+		this.table = table;
+	}
 
 	public int getErrorType() {
 		return errorType;

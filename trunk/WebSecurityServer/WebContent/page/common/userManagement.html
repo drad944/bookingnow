@@ -2,12 +2,248 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>user management</title>
+<link rel="stylesheet" type="text/css" href="../../css/head.css">
+	<link rel="stylesheet" href="../../css/jqx.base.css" type="text/css" />
+	
+	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../../js/AppUtil.js"></script>
+	
+    <script type="text/javascript" src="../../js/jqxcore.js"></script>
+    <script type="text/javascript" src="../../js/jqxbuttons.js"></script>
+    <script type="text/javascript" src="../../js/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="../../js/jqxmenu.js"></script>
+    <script type="text/javascript" src="../../js/jqxgrid.js"></script>
+    <script type="text/javascript" src="../../js/jqxgrid.selection.js"></script> 
+    <script type="text/javascript" src="../../js/jqxgrid.columnsresize.js"></script> 
+    <script type="text/javascript" src="../../js/jqxdata.js"></script> 
+    <script type="text/javascript" src="../../js/gettheme.js"></script>
+    <script type="text/javascript">
+         $(document).ready(function () {
+         		$.post("findUser.action", 
+		    			{"user.enabled": true}, 
+		    			function(matchedusers){
+	if(matchedusers != null && matchedusers.result != null){
+		users = matchedusers.result;
+	}
+	
+	
+	var userSize = users.length;
+	var userData = {};
+	
+	var columns = {};
+	
+	var datafields = {};
+	for(var i = 0;i < userSize; i++) {
+		user = users[i];
+		if(i==0) {
+			var j=0;
+			
+			for(var item in user) {
+				var datafield = {};
+				var column = {};
+				
+				if(item == "id"){
+					datafield["type"] = "number";
+					column["text"] = "Id";
+					
+				}else if(item == "modifyTime") {
+					datafield["type"] = "number";
+					column["text"] = "ModifyTime";
+					
+				}else if(item == "image_size") {
+					datafield["type"] = "number";
+					column["text"] = "Image_size";
+					
+				}else if(item == "image_relative_path") {
+					datafield["type"] = "string";
+					column["text"] = "Image_relative_path";
+					
+				}else if(item == "account") {
+					datafield["type"] = "string";
+					column["text"] = "Account";
+					
+				}else if(item == "name") {
+					datafield["type"] = "string";
+					column["text"] = "Name";
+					
+				}else if(item == "password") {
+					datafield["type"] = "string";
+					column["text"] = "Password";
+					
+				}else if(item == "phone") {
+					datafield["type"] = "string";
+					column["text"] = "Phone";
+					
+				}else if(item == "sex") {
+					datafield["type"] = "number";
+					column["text"] = "Sex";
+					
+				}else if(item == "email") {
+					datafield["type"] = "string";
+					column["text"] = "Email";
+					
+				}else if(item == "address") {
+					datafield["type"] = "string";
+					column["text"] = "Address";
+					
+				}else if(item == "birthday") {
+					datafield["type"] = "number";
+					column["text"] = "Birthday";
+					
+				}else if(item == "description") {
+					datafield["type"] = "string";
+					column["text"] = "Description";
+					
+				}else if(item == "department") {
+					datafield["type"] = "number";
+					column["text"] = "Department";
+					
+				}else if(item == "sub_system") {
+					datafield["type"] = "number";
+					column["text"] = "Sub_system";
+					
+				}else if(item == "enabled") {
+					datafield["type"] = "boolean";
+					column["text"] = "enabled";
+					
+				}else if(item == "role_Details" || item == "image" || item == "image_absolute_path"){
+					//do nothing
+				}else {
+					datafield["type"] = "string";
+					column["text"] = "XX";
+				}
+				
+				if(item == "role_Details" || item == "image" || item == "image_absolute_path"){
+					
+				}else {
+					column["datafield"] = item;
+					if(item == "id") {
+						column["width"] = "50";
+					}
+					
+					columns[j] = column;
+					
+					datafields[j] = datafield;
+					j++;
+				}
+			}
+		}
+		
+		var rowData = {};
+		for(var item in user) {
+			if(item == "role_Details" || item == "image" || item == "image_absolute_path"){
+					
+			}else {
+				rowData[item] = user[item];
+			}
+			
+		}
+		
+		userData[i] = rowData;
+	}
+	
+         
+            var theme = getDemoTheme();
+            
+            var source =
+            {
+                localdata: userData,
+                datatype: "local",
+                datafields:datafields,
+                addrow: function (rowid, rowdata, position, commit) {
+                    // synchronize with the server - send insert command
+                    // call commit with parameter true if the synchronization with the server is successful 
+                    //and with parameter false if the synchronization failed.
+                    // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
+                    commit(true);
+                },
+                deleterow: function (rowid, commit) {
+                    // synchronize with the server - send delete command
+                    // call commit with parameter true if the synchronization with the server is successful 
+                    //and with parameter false if the synchronization failed.
+                    commit(true);
+                },
+                updaterow: function (rowid, newdata, commit) {
+                    // synchronize with the server - send update command
+                    // call commit with parameter true if the synchronization with the server is successful 
+                    // and with parameter false if the synchronization failed.
+                    commit(true);
+                }
+            };
+            var dataAdapter = new $.jqx.dataAdapter(source);
+            // initialize jqxGrid
+            $("#jqxgrid").jqxGrid(
+            {
+                width: 1000,
+                height: 350,
+                source: dataAdapter,
+                theme: theme,
+                columns: columns
+            });
+            $("#addrowbutton").jqxButton({ theme: theme });
+            $("#addmultiplerowsbutton").jqxButton({ theme: theme });
+            $("#deleterowbutton").jqxButton({ theme: theme });
+            $("#updaterowbutton").jqxButton({ theme: theme });
+            // update row.
+            $("#updaterowbutton").on('click', function () {
+                var datarow = generaterow();
+                var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
+                var rowscount = $("#jqxgrid").jqxGrid('getdatainformation').rowscount;
+                if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
+                    var id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
+                    var commit = $("#jqxgrid").jqxGrid('updaterow', id, datarow);
+                    $("#jqxgrid").jqxGrid('ensurerowvisible', selectedrowindex);
+                }
+            });
+            // create new row.
+            $("#addrowbutton").on('click', function () {
+                var datarow = generaterow();
+                var commit = $("#jqxgrid").jqxGrid('addrow', null, datarow);
+            });
+            // create new rows.
+            $("#addmultiplerowsbutton").on('click', function () {
+                $("#jqxgrid").jqxGrid('beginupdate');
+                for (var i = 0; i < 10; i++) {
+                    var datarow = generaterow();
+                    var commit = $("#jqxgrid").jqxGrid('addrow', null, datarow);
+                }
+                $("#jqxgrid").jqxGrid('endupdate');
+            });
+            // delete row.
+            $("#deleterowbutton").on('click', function () {
+                var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
+                var rowscount = $("#jqxgrid").jqxGrid('getdatainformation').rowscount;
+                if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
+                    var id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
+                    var commit = $("#jqxgrid").jqxGrid('deleterow', id);
+                }
+            });
+        });
+    });
+    </script>
 </head>
 	
 <body>
 	<div id="content">
 		user management.haha.
 	</div>
+	<div id='jqxWidget' style="font-size: 13px; font-family: Verdana; float: left;">
+        	<div style="float: left;" id="jqxgrid"></div>
+	        <div style="margin-left: 10px; float: left;">
+	            <div>
+	                <input id="addrowbutton" type="button" value="Add New Row" />
+	            </div>
+	            <div style="margin-top: 10px;">
+	                <input id="addmultiplerowsbutton" type="button" value="Add Multiple New Rows" />
+	            </div>
+	            <div style="margin-top: 10px;">
+	                <input id="deleterowbutton" type="button" value="Delete Selected Row" />
+	            </div>
+	            <div style="margin-top: 10px;">
+	                <input id="updaterowbutton" type="button" value="Update Selected Row" />
+	            </div>
+	        </div>
+    	</div>
 </body>
 </html>

@@ -17,6 +17,7 @@
 		<result column="address" property="address" jdbcType="VARCHAR" />
 		<result column="birthday" property="birthday" jdbcType="BIGINT" />
 	</resultMap>
+	
 	<sql id="Base_Column_List">
 		id, 
 		enabled, 
@@ -58,7 +59,61 @@
 		</where>
 	</select>
 	
-	<select id="selectCustomers" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Customer">
+	<select id="searchCustomersWithRole" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Customer">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_customer
+		<where>
+		   <if test="enabled != null">
+				enabled = #{enabled,jdbcType=BIT}
+			</if>
+			<if test="modifyTime != null">
+				and modifyTime = #{modifyTime,jdbcType=BIGINT}
+			</if>
+			<if test="image_size != null">
+				and image_size = #{image_size,jdbcType=INTEGER}
+			</if>
+			<if test="image_relative_path != null">
+				and image_relative_path = #{image_relative_path,jdbcType=VARCHAR}
+			</if>
+			<if test="image_absolute_path != null">
+				and image_absolute_path = #{image_absolute_path,jdbcType=VARCHAR}
+			</if>
+			<if test="name != null">
+				and name = #{name,jdbcType=VARCHAR}
+			</if>
+			<if test="account != null">
+				and account = #{account,jdbcType=VARCHAR}
+			</if>
+			<if test="password != null">
+				and password = #{password,jdbcType=VARCHAR}
+			</if>
+			<if test="phone != null">
+				and phone = #{phone,jdbcType=VARCHAR}
+			</if>
+			<if test="sex != null">
+				and sex = #{sex,jdbcType=INTEGER}
+			</if>
+			<if test="email != null">
+				and email = #{email,jdbcType=VARCHAR}
+			</if>
+			<if test="address != null">
+				and address = #{address,jdbcType=VARCHAR}
+			</if>
+			<if test="birthday != null">
+				and birthday = #{birthday,jdbcType=BIGINT}
+			</if> 
+		</where>
+	</select>
+	
+	
+	<select id="searchAllCustomers" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_customer
+	</select>
+	
+	<select id="searchCustomers" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Customer">
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_customer
@@ -109,6 +164,7 @@
 		delete from pitaya_customer
 		where id = #{id,jdbcType=BIGINT}
 	</delete>
+	
 	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Customer">
 		<selectKey resultType="java.lang.Long" keyProperty="id"
 			order="AFTER">
@@ -128,6 +184,7 @@
 		#{email,jdbcType=VARCHAR},
 		#{address,jdbcType=VARCHAR}, #{birthday,jdbcType=BIGINT})
 	</insert>
+	
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Customer">
 		<selectKey resultType="java.lang.Long" keyProperty="id"
 			order="AFTER">
@@ -217,6 +274,7 @@
 			</if>
 		</trim>
 	</insert>
+	
 	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Customer">
 		update pitaya_customer
 		<set>
@@ -262,6 +320,7 @@
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
+	
 	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Customer">
 		update pitaya_customer
 		set enabled = #{enabled,jdbcType=BIT},
