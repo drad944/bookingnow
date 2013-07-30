@@ -5,80 +5,80 @@
 		<id column="id" property="id" jdbcType="BIGINT" />
 		<result column="recommendation" property="recommendation" jdbcType="INTEGER" />
 		<result column="status" property="status" jdbcType="INTEGER" />
-		<result column="picture_id" property="picture_id" jdbcType="BIGINT" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="version" property="version" jdbcType="BIGINT" />
 		<result column="period" property="period" jdbcType="BIGINT" />
 		<result column="price" property="price" jdbcType="DOUBLE" />
 		<result column="category" property="category" jdbcType="VARCHAR" />
 		<result column="description" property="description" jdbcType="VARCHAR" />
+		
+		<result column="enabled" property="enabled" jdbcType="BIT" />
+		<result column="large_image_relative_path" property="large_image_relative_path" jdbcType="VARCHAR" />
+		<result column="small_image_relative_path" property="small_image_relative_path" jdbcType="VARCHAR" />
+		<result column="large_image_absolute_path" property="large_image_absolute_path" jdbcType="VARCHAR" />
+		<result column="small_image_absolute_path" property="small_image_absolute_path" jdbcType="VARCHAR" />
+		<result column="large_image_size" property="large_image_size" jdbcType="INTEGER" />
+		<result column="small_image_size" property="small_image_size" jdbcType="INTEGER" />
 	</resultMap>
     
-	<resultMap id="Food_BaseResultMap" type="com.pitaya.bookingnow.entity.Food">
-		<id column="F_id" property="id" jdbcType="BIGINT" />
-		<result column="F_recommendation" property="recommendation" jdbcType="INTEGER" />
-		<result column="F_status" property="status" jdbcType="INTEGER" />
-		<result column="F_picture_id" property="picture_id" jdbcType="BIGINT" />
-		<result column="F_name" property="name" jdbcType="VARCHAR" />
-		<result column="F_version" property="version" jdbcType="BIGINT" />
-		<result column="F_period" property="period" jdbcType="BIGINT" />
-		<result column="F_price" property="price" jdbcType="DOUBLE" />
-		<result column="F_category" property="category" jdbcType="VARCHAR" />
-		<result column="F_description" property="description" jdbcType="VARCHAR" />
-		
-		<association property="picture" javaType="com.pitaya.bookingnow.entity.Food_Picture">
-			<id column="P_id" property="id" jdbcType="BIGINT" />
-			<result column="P_name" property="name" jdbcType="VARCHAR" />
-			<result column="P_version" property="version" jdbcType="BIGINT" />
-			<result column="P_enabled" property="enabled" jdbcType="BIT" />
-			<result column="P_big_image" property="big_image" jdbcType="LONGVARBINARY" />
-			<result column="P_small_image" property="small_image" jdbcType="LONGVARBINARY" />
-		</association> 
-	
-	</resultMap>
-	
 	
 	<sql id="Base_Column_List">
 		id, 
 		recommendation, 
 		status, 
-		picture_id, 
 		name, 
 		version, 
 		period, 
 		price,
 		category, 
-		description
+		description,		
+		enabled,
+		large_image_relative_path, 
+		small_image_relative_path
 	</sql>
 	
-	<sql id="Aliase_Base_Column_List" >
-	    F.id as F_id, 
-	    F.recommendation as F_recommendation, 
-	    F.status as F_status, 
-	    F.picture_id as F_picture_id, 
-	    F.name as F_name, 
-	    F.version as F_version, 
-	    F.period as F_period, 
-	    F.price as F_price,
-	    F.category as F_category, 
-	    F.description as F_description
-  </sql>
-  
-   <sql id="Food_Picture_Column_List">
-		P.id as P_id, 
-		P.name as P_name, 
-		P.version as P_version, 
-		P.enabled as P_enabled,
-		P.big_image as P_big_image, 
-		P.small_image as P_small_image
+	<sql id="Max_Base_Column_List">
+		id, 
+		recommendation, 
+		status, 
+		name, 
+		version, 
+		period, 
+		price,
+		category, 
+		description,		
+		enabled,
+		large_image_size,
+		small_image_size,
+		large_image_relative_path, 
+		small_image_relative_path, 
+		large_image_absolute_path, 
+		small_image_absolute_path
 	</sql>
 	
-	<sql id="Food_Picture_Without_Image_Column_List">
-		P.id as P_id, 
-		P.name as P_name, 
-		P.version as P_version, 
-		P.enabled as P_enabled
+	<sql id="NoPicture_Base_Column_List">
+		id, 
+		recommendation, 
+		status, 
+		name, 
+		version, 
+		period, 
+		price,
+		category, 
+		description,		
+		enabled
 	</sql>
+	
+	<sql id="Min_Base_Column_List">
+		id, 
+		status, 
+		name, 
+		version, 
+		price,
+		category, 
+		enabled
+	</sql>
+	
   
 <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -87,14 +87,11 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   
-  <select id="selectFullByPrimaryKey" resultMap="Food_BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectFullByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
-    <include refid="Aliase_Base_Column_List" />
-    ,
-    <include refid="Food_Picture_Column_List" />
-    from pitaya_food F 
-    	left outer join pitaya_food_picture P on F.picture_id = P.id
-    where F.id = #{id,jdbcType=BIGINT}
+    <include refid="Max_Base_Column_List" />
+    from pitaya_food
+    where id = #{id,jdbcType=BIGINT}
   </select>
   
     <select id="selectAllFoods" resultMap="BaseResultMap" >
@@ -103,40 +100,41 @@
     from pitaya_food
   </select>
   
-  <select id="selectAllFullFoods" resultMap="Food_BaseResultMap" >
+  <select id="selectAllFullFoods" resultMap="BaseResultMap" >
     select 
-    <include refid="Aliase_Base_Column_List" />
-    ,
-    <include refid="Food_Picture_Column_List" />
-    from pitaya_food F 
-    left outer join pitaya_food_picture P on 
-    F.picture_id = P.id
+    <include refid="Max_Base_Column_List" />
+    from pitaya_food
   </select>
   
-  <select id="selectAllFoodsWithoutImage" resultMap="Food_BaseResultMap" >
+  <select id="selectAllFoodsWithoutImage" resultMap="BaseResultMap" >
     select 
-    <include refid="Aliase_Base_Column_List" />
-    ,
-    <include refid="Food_Picture_Without_Image_Column_List" />
-    from pitaya_food F 
-    left outer join pitaya_food_picture P on 
-    F.picture_id = P.id
+    <include refid="NoPicture_Base_Column_List" />
+    from pitaya_food
+  </select>
+  
+  <select id="selectSmallImageByFoodId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id,status,version,small_image_size,small_image_relative_path,enabled
+    
+    from pitaya_food
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectLargeImageByFoodId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id,status,version,large_image_size,large_image_relative_path,enabled
+    from pitaya_food
+    where id = #{id,jdbcType=BIGINT}
   </select>
   
   <select id="selectFoods" resultMap="BaseResultMap" parameterType="Food" >
     select 
     <include refid="Base_Column_List" />
     from pitaya_food 
-    
     <where>
       		<if test="recommendation != null">
 				and recommendation = #{recommendation,jdbcType=INTEGER}
 			</if>
 			<if test="status != null">
 				and status = #{status,jdbcType=INTEGER}
-			</if>
-			<if test="picture_id != null">
-				and picture_id = #{picture_id,jdbcType=BIGINT}
 			</if>
 			<if test="name != null">
 				and name = #{name,jdbcType=VARCHAR}
@@ -156,86 +154,81 @@
 			<if test="description != null">
 				and description = #{description,jdbcType=VARCHAR}
 			</if>
-    	
+			<if test="enabled != null">
+				and enabled = #{enabled,jdbcType=BIT}
+			</if>
     </where>
     </select>
   
-   <select id="selectFullFoods" resultMap="Food_BaseResultMap" parameterType="Food" >
+   <select id="selectFullFoods" resultMap="BaseResultMap" parameterType="Food" >
     select 
-    <include refid="Aliase_Base_Column_List" />
-    ,
-    <include refid="Food_Picture_Column_List" />
-    from pitaya_food F 
-    	left outer join pitaya_food_picture P on F.picture_id = P.id
+    <include refid="Max_Base_Column_List" />
+    from pitaya_food
     <where>
       		<if test="recommendation != null">
-				F.recommendation = #{recommendation,jdbcType=INTEGER}
+				recommendation = #{recommendation,jdbcType=INTEGER}
 			</if>
 			<if test="status != null">
-				and F.status = #{status,jdbcType=INTEGER}
-			</if>
-			<if test="picture_id != null">
-				and F.picture_id = #{picture_id,jdbcType=BIGINT}
+				and status = #{status,jdbcType=INTEGER}
 			</if>
 			<if test="name != null">
-				and F.name = #{name,jdbcType=VARCHAR}
+				and name = #{name,jdbcType=VARCHAR}
 			</if>
 			<if test="version != null">
-				and F.version = #{version,jdbcType=BIGINT}
+				and version = #{version,jdbcType=BIGINT}
 			</if>
 			<if test="period != null">
-				and F.period = #{period,jdbcType=BIGINT}
+				and period = #{period,jdbcType=BIGINT}
 			</if>
 			<if test="price != null">
-				and F.price = #{price,jdbcType=DOUBLE}
+				and price = #{price,jdbcType=DOUBLE}
 			</if>
 			<if test="category != null">
-				and F.category = #{category,jdbcType=VARCHAR}
+				and category = #{category,jdbcType=VARCHAR}
 			</if>
 			<if test="description != null">
-				and F.description = #{description,jdbcType=VARCHAR}
+				and description = #{description,jdbcType=VARCHAR}
+			</if>
+			<if test="enabled != null">
+				and enabled = #{enabled,jdbcType=BIT}
 			</if>
     	
     </where>
     </select>
     
-    <select id="selectFoodsWithoutImage" resultMap="Food_BaseResultMap" parameterType="Food" >
+    <select id="selectFoodsWithoutImage" resultMap="BaseResultMap" parameterType="Food" >
     select 
-    <include refid="Aliase_Base_Column_List" />
-    ,
-    <include refid="Food_Picture_Without_Image_Column_List" />
-    from pitaya_food F 
-    	left outer join pitaya_food_picture P on F.picture_id = P.id
+    <include refid="NoPicture_Base_Column_List" />
+    from pitaya_food
     
     <where>
       		<if test="recommendation != null">
-				F.recommendation = #{recommendation,jdbcType=INTEGER}
+				recommendation = #{recommendation,jdbcType=INTEGER}
 			</if>
 			<if test="status != null">
-				and F.status = #{status,jdbcType=INTEGER}
-			</if>
-			<if test="picture_id != null">
-				and F.picture_id = #{picture_id,jdbcType=BIGINT}
+				and status = #{status,jdbcType=INTEGER}
 			</if>
 			<if test="name != null">
-				and F.name = #{name,jdbcType=VARCHAR}
+				and name = #{name,jdbcType=VARCHAR}
 			</if>
 			<if test="version != null">
-				and F.version = #{version,jdbcType=BIGINT}
+				and version = #{version,jdbcType=BIGINT}
 			</if>
 			<if test="period != null">
-				and F.period = #{period,jdbcType=BIGINT}
+				and period = #{period,jdbcType=BIGINT}
 			</if>
 			<if test="price != null">
-				and F.price = #{price,jdbcType=DOUBLE}
+				and price = #{price,jdbcType=DOUBLE}
 			</if>
 			<if test="category != null">
-				and F.category = #{category,jdbcType=VARCHAR}
+				and category = #{category,jdbcType=VARCHAR}
 			</if>
 			<if test="description != null">
-				and F.description = #{description,jdbcType=VARCHAR}
+				and description = #{description,jdbcType=VARCHAR}
 			</if>
-    	
+    		<if test="enabled != null">
+				and enabled = #{enabled,jdbcType=BIT}
+			</if>
     </where>
     </select>
     
@@ -250,15 +243,41 @@
 			order="AFTER">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
-		insert into pitaya_food (recommendation, status, picture_id,
-		name, version, period,
-		price, category, description
+		insert into pitaya_food (
+			recommendation, 
+			status,
+			name, 
+			version, 
+			period,
+			price, 
+			category, 
+			description,
+			
+			enabled,
+			large_image_size,
+			small_image_size,
+			large_image_relative_path, 
+			small_image_relative_path, 
+			large_image_absolute_path, 
+			small_image_absolute_path
 		)
-		values (#{recommendation,jdbcType=INTEGER}, #{status,jdbcType=INTEGER},
-		#{picture_id,jdbcType=BIGINT},
-		#{name,jdbcType=VARCHAR}, #{version,jdbcType=BIGINT}, #{period,jdbcType=BIGINT},
-		#{price,jdbcType=DOUBLE}, #{category,jdbcType=VARCHAR},
-		#{description,jdbcType=VARCHAR}
+		values (
+			#{recommendation,jdbcType=INTEGER}, 
+			#{status,jdbcType=INTEGER},
+			#{name,jdbcType=VARCHAR}, 
+			#{version,jdbcType=BIGINT}, 
+			#{period,jdbcType=BIGINT},
+			#{price,jdbcType=DOUBLE}, 
+			#{category,jdbcType=VARCHAR},
+			#{description,jdbcType=VARCHAR},
+			
+			#{enabled,jdbcType=BIT},
+			#{large_image_size,jdbcType=INTEGER},
+			#{small_image_size,jdbcType=INTEGER},
+			#{large_image_relative_path,jdbcType=VARCHAR},
+			#{small_image_relative_path,jdbcType=VARCHAR},
+			#{large_image_absolute_path,jdbcType=VARCHAR},
+			#{small_image_absolute_path,jdbcType=VARCHAR}
 		)
 	</insert>
 	
@@ -274,9 +293,6 @@
 			</if>
 			<if test="status != null">
 				status,
-			</if>
-			<if test="picture_id != null">
-				picture_id,
 			</if>
 			<if test="name != null">
 				name,
@@ -296,6 +312,28 @@
 			<if test="description != null">
 				description,
 			</if>
+			
+			<if test="enabled != null">
+				enabled,
+			</if>
+			<if test="large_image_size != null">
+				large_image_size,
+			</if>
+			<if test="small_image_size != null">
+				small_image_size,
+			</if>
+			<if test="large_image_relative_path != null">
+				large_image_relative_path,
+			</if>
+			<if test="small_image_relative_path != null">
+				small_image_relative_path,
+			</if>
+			<if test="large_image_absolute_path != null">
+				large_image_absolute_path,
+			</if>
+			<if test="small_image_absolute_path != null">
+				small_image_absolute_path,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="recommendation != null">
@@ -303,9 +341,6 @@
 			</if>
 			<if test="status != null">
 				#{status,jdbcType=INTEGER},
-			</if>
-			<if test="picture_id != null">
-				#{picture_id,jdbcType=BIGINT},
 			</if>
 			<if test="name != null">
 				#{name,jdbcType=VARCHAR},
@@ -325,6 +360,28 @@
 			<if test="description != null">
 				#{description,jdbcType=VARCHAR},
 			</if>
+			
+			<if test="enabled != null">
+			    #{enabled,jdbcType=BIT},
+			</if>
+			<if test="large_image_size != null">
+			    #{large_image_size,jdbcType=INTEGER},
+			</if>
+			<if test="small_image_size != null">
+			    #{small_image_size,jdbcType=INTEGER},
+			</if>
+			<if test="large_image_relative_path != null">
+			    #{large_image_relative_path,jdbcType=VARCHAR},
+			</if>
+			<if test="small_image_relative_path != null">
+			    #{small_image_relative_path,jdbcType=VARCHAR},
+			</if>
+			<if test="large_image_absolute_path != null">
+			    #{large_image_absolute_path,jdbcType=VARCHAR},
+			</if>
+			<if test="small_image_absolute_path != null">
+			    #{small_image_absolute_path,jdbcType=VARCHAR},
+			</if>
 		</trim>
 	</insert>
 	
@@ -336,9 +393,6 @@
 			</if>
 			<if test="status != null">
 				status = #{status,jdbcType=INTEGER},
-			</if>
-			<if test="picture_id != null">
-				picture_id = #{picture_id,jdbcType=BIGINT},
 			</if>
 			<if test="name != null">
 				name = #{name,jdbcType=VARCHAR},
@@ -358,6 +412,28 @@
 			<if test="description != null">
 				description = #{description,jdbcType=VARCHAR},
 			</if>
+			
+			<if test="enabled != null">
+			    enabled = #{enabled,jdbcType=BIT},
+			</if>
+			<if test="large_image_size != null">
+			    large_image_size = #{large_image_size,jdbcType=INTEGER},
+			</if>
+			<if test="small_image_size != null">
+			    small_image_size = #{small_image_size,jdbcType=INTEGER},
+			</if>
+			<if test="large_image_relative_path != null">
+			    large_image_relative_path = #{large_image_relative_path,jdbcType=VARCHAR},
+			</if>
+			<if test="small_image_relative_path != null">
+			    small_image_relative_path = #{small_image_relative_path,jdbcType=VARCHAR},
+			</if>
+			<if test="large_image_absolute_path != null">
+			    large_image_absolute_path = #{large_image_absolute_path,jdbcType=VARCHAR},
+			</if>
+			<if test="small_image_absolute_path != null">
+			    small_image_absolute_path = #{small_image_absolute_path,jdbcType=VARCHAR}
+			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
@@ -365,14 +441,20 @@
 	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Food">
 		update pitaya_food
 		set recommendation = #{recommendation,jdbcType=INTEGER},
-		status = #{status,jdbcType=INTEGER},
-		picture_id = #{picture_id,jdbcType=BIGINT},
-		name = #{name,jdbcType=VARCHAR},
-		version = #{version,jdbcType=BIGINT},
-		period = #{period,jdbcType=BIGINT},
-		price = #{price,jdbcType=DOUBLE},
-		category = #{category,jdbcType=VARCHAR},
-		description = #{description,jdbcType=VARCHAR}
+			status = #{status,jdbcType=INTEGER},
+			name = #{name,jdbcType=VARCHAR},
+			version = #{version,jdbcType=BIGINT},
+			period = #{period,jdbcType=BIGINT},
+			price = #{price,jdbcType=DOUBLE},
+			category = #{category,jdbcType=VARCHAR},
+			description = #{description,jdbcType=VARCHAR},
+			enabled = #{enabled,jdbcType=BIT},
+			large_image_size = #{large_image_size,jdbcType=INTEGER},
+			small_image_size = #{small_image_size,jdbcType=INTEGER},
+			large_image_relative_path = #{large_image_relative_path,jdbcType=VARCHAR},
+			small_image_relative_path = #{small_image_relative_path,jdbcType=VARCHAR},
+			large_image_absolute_path = #{large_image_absolute_path,jdbcType=VARCHAR},
+			small_image_absolute_path = #{small_image_absolute_path,jdbcType=VARCHAR}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 </mapper>

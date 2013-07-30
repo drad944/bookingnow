@@ -4,19 +4,18 @@ import java.util.List;
 import java.util.Map;
 
 import com.pitaya.bookingnow.entity.Food;
-import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.util.MyResult;
 
 
 public interface IFoodService {
 	
-	boolean add(Food food);
+	MyResult add(Food food);
 	
-	boolean removeFoodById(Long id);
+	MyResult removeFoodById(Long id);
 	
-	boolean remove(Food food);
+	MyResult remove(Food food);
 
-	boolean modify(Food food);
+	MyResult modify(Food food);
 	
 	List<Food> searchFoods(Food food);
 	List<Food> searchFoodsWithoutImage(Food food);
@@ -26,4 +25,7 @@ public interface IFoodService {
 	
 	public Map<String, List<Food>> updateMenuFoods(List<Food> clientFoods);
 	
+	Food searchSmallPictureByFood(Food food);
+	
+	Food searchLargePictureByFood(Food food);
 }

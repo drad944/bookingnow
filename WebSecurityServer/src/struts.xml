@@ -35,47 +35,7 @@
 			<result name="error">/page/error.jsp</result>
 		</global-results>
 		
-		<!-- 文件上传和下载控制器 ，class 引用spring 的注入 -->
-	        <action name="*Food_Picture" class="com.pitaya.bookingnow.action.Food_PictureAction" method="{1}Food_Picture">
-				
-	        	
-				<result name="uploadSuccess" type="redirectAction">
-				    showMyFile.action
-				</result>
-				
-				<result name="findSmallImageSuccess" type="stream">
-					<param name="inputName">smallImageStream</param>
-					<param name="bufferSize">4096</param>
-				</result>
-				
-				<result name="findLargeImageSuccess" type="stream">
-					<param name="inputName">largeImageStream</param>
-					<param name="bufferSize">4096</param>
-				</result>
-				
-				
-				<result name="downloadSuccess" type="stream">
-				
-					<!-- 下载文件的类型 ,这里表示无限制
-					<param name="contentType">application/octet-stream;charset=GBK</param>
-					-->
-					<param name="contentType">application/octet-stream;charset="iso-8859-1"</param>
-					
-					<!-- 下载文件的长度 -->
-					<param name="contentLength">${realDownloadFile.length()}</param>
-					
-					<!-- inputName 流对象名 —— 比如这里写targetFile，它就会自动去找Action中的getTargetFile方法 -->
-					<param name="inputName">downloadFileStream</param>
-					
-					<!-- contentDisposition 使用经过转码的文件名作为下载文件名 —— 默认
-					格式是attachment;filename="${fileName}",将调用该Action中的getDownloadFileName方法。 -->
-					<param name="contentDisposition">attachment;filename="${downloadFileName}"</param>
-					
-					<!-- 设置下载缓冲大小 -->
-					<param name="bufferSize">4096</param>
-				</result>
-					
-	        </action>
+		
 	    <action name="j_spring_security_check" class="com.pitaya.bookingnow.action.UserAction" method="spring_security_loginUser">
 			<result name="loginSuccess" type="json">
 				<param name="root">loginUser</param>
@@ -226,7 +186,15 @@
 		</action>
 		
 		<action name="*Food" class="com.pitaya.bookingnow.action.FoodAction" method="{1}Food">
-	        
+        	<result name="findSmallImageSuccess" type="stream">
+				<param name="inputName">smallImageStream</param>
+				<param name="bufferSize">4096</param>
+			</result>
+			
+			<result name="findLargeImageSuccess" type="stream">
+				<param name="inputName">largeImageStream</param>
+				<param name="bufferSize">4096</param>
+			</result>
 	        <result name="updateMenuSuccess" type="json">
 	        	<param name="excludeNullProperties">true</param>
 				<param name="root">newMenuFood</param>

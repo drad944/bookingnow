@@ -1,5 +1,7 @@
 package com.pitaya.bookingnow.action;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +16,22 @@ public class FoodAction extends BaseAction{
 	private List<Food> clientMenuFoods;
 	private Map<String, List<Food>> newMenuFood;
 	
+	private InputStream largeImageStream;
 	
+	private InputStream smallImageStream;
+	
+	public InputStream getLargeImageStream() {
+		return largeImageStream;
+	}
+	public void setLargeImageStream(InputStream largeImageStream) {
+		this.largeImageStream = largeImageStream;
+	}
+	public InputStream getSmallImageStream() {
+		return smallImageStream;
+	}
+	public void setSmallImageStream(InputStream smallImageStream) {
+		this.smallImageStream = smallImageStream;
+	}
 	public Map<String, List<Food>> getNewMenuFood() {
 		return newMenuFood;
 	}
@@ -90,6 +107,34 @@ public class FoodAction extends BaseAction{
 		return "Fail";
 	}
 	
-	
+	public String findSmallPictureOfFood() {
+		//try to use FileInputStream with picture path directly
+		if(this.food != null && food.getId() != null){
+			food = foodService.searchSmallPictureByFood(food);
+			if(food != null && food.getSmall_image() != null) {
+				smallImageStream = new ByteArrayInputStream(food.getSmall_image());
+				return "findSmallImageSuccess";
+			}
+			
+		}
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
+		return "Fail";
+	}
+
+	public String findLargePictureOfFood(){
+		//try to use FileInputStream with picture path directly
+		if(this.food != null && food.getId() != null){
+			food = foodService.searchLargePictureByFood(food);
+			if(food != null && food.getLarge_image() != null) {
+				largeImageStream = new ByteArrayInputStream(food.getLarge_image());
+				return "findLargeImageSuccess";
+			}
+			
+		}
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
+		return "Fail";
+	}
 	
 }

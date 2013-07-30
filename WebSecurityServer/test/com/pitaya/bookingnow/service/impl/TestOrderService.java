@@ -122,16 +122,25 @@ public class TestOrderService {
 					System.out.println(space + food_detailString  + "IsFree : " + realFood_Detail.getIsFree());
 					if (realFood_Detail.getFood() != null) {
 						Food realFood = realFood_Detail.getFood();
-						System.out.println(space + space + foodString + "id : " + realFood.getId());
+						System.out.println(space + space + foodString + "Id : " + realFood.getId());
 						System.out.println(space + space + foodString + "Category : " + realFood.getCategory());
 						System.out.println(space + space + foodString + "Description : " + realFood.getDescription());
+						System.out.println(space + space + foodString + "Large_image_absolute_path : " + realFood.getLarge_image_absolute_path());
+						System.out.println(space + space + foodString + "Large_image_relative_path : " + realFood.getLarge_image_relative_path());
 						System.out.println(space + space + foodString + "Name : " + realFood.getName());
+						System.out.println(space + space + foodString + "Small_image_absolute_path : " + realFood.getSmall_image_absolute_path());
+						System.out.println(space + space + foodString + "Small_image_relative_path : " + realFood.getSmall_image_relative_path());
+						System.out.println(space + space + foodString + "Large_image_size : " + realFood.getLarge_image_size());
 						System.out.println(space + space + foodString + "Period : " + realFood.getPeriod());
-						System.out.println(space + space + foodString + "Picture_id : " + realFood.getPicture_id());
 						System.out.println(space + space + foodString + "Price : " + realFood.getPrice());
 						System.out.println(space + space + foodString + "Recommendation : " + realFood.getRecommendation());
+						System.out.println(space + space + foodString + "Small_image_size : " + realFood.getSmall_image_size());
 						System.out.println(space + space + foodString + "Status : " + realFood.getStatus());
 						System.out.println(space + space + foodString + "Version : " + realFood.getVersion());
+						System.out.println(space + space + foodString + "Enabled : " + realFood.getEnabled());
+						System.out.println(space + space + foodString + "Large_image : " + realFood.getLarge_image());
+						System.out.println(space + space + foodString + "Small_image : " + realFood.getSmall_image());
+						
 					}
 				}
 			}

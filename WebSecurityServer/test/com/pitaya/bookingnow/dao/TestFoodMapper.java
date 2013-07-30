@@ -8,7 +8,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.Test;
 
 import com.pitaya.bookingnow.entity.Food;
-import com.pitaya.bookingnow.entity.Food_Picture;
 import com.pitaya.bookingnow.util.MyBatisUtil;
 
 public class TestFoodMapper {
@@ -16,7 +15,29 @@ public class TestFoodMapper {
     static { 
        sqlSessionFactory = MyBatisUtil.getSqlSessionFactory(); 
     } 
- 
+
+    public void showFood(Food food) {
+    	if (food != null) {
+			System.out.println("Id : " + food.getId());
+			System.out.println("Category : " + food.getCategory());
+			System.out.println("Description : " + food.getDescription());
+			System.out.println("Large_image_absolute_path : " + food.getLarge_image_absolute_path());
+			System.out.println("Large_image_relative_path : " + food.getLarge_image_relative_path());
+			System.out.println("Name : " + food.getName());
+			System.out.println("Small_image_absolute_path : " + food.getSmall_image_absolute_path());
+			System.out.println("Small_image_relative_path : " + food.getSmall_image_relative_path());
+			System.out.println("Large_image_size : " + food.getLarge_image_size());
+			System.out.println("Period : " + food.getPeriod());
+			System.out.println("Price : " + food.getPrice());
+			System.out.println("Recommendation : " + food.getRecommendation());
+			System.out.println("Small_image_size : " + food.getSmall_image_size());
+			System.out.println("Status : " + food.getStatus());
+			System.out.println("Version : " + food.getVersion());
+			System.out.println("Enabled : " + food.getEnabled());
+			System.out.println("Large_image : " + food.getLarge_image());
+			System.out.println("Small_image : " + food.getSmall_image());
+		}
+    }
     
     @Test 
     public void testSelectByPrimaryKey() { 
@@ -24,16 +45,7 @@ public class TestFoodMapper {
     	try { 
     		FoodMapper foodMapper = sqlSession.getMapper(FoodMapper.class);
     		Food newFood = foodMapper.selectByPrimaryKey((long)2);
-    		System.out.println("name : " + newFood.getName());
-    		System.out.println("price : " + newFood.getPrice());
-    		
-    		Food_Picture picture = newFood.getPicture();
-    		if(picture != null) {
-    			System.out.println("id : " + picture.getId());
-        		System.out.println("name : " + picture.getName());
-        		System.out.println("version : " + picture.getVersion());
-    		}
-    		
+    		showFood(newFood);
     		
     	}finally { 
             sqlSession.close(); 
@@ -53,16 +65,7 @@ public class TestFoodMapper {
     			
     			for (int i = 0; i < newFoods.size(); i++) {
     				Food newFood = newFoods.get(i);
-    				System.out.println("id : " + newFood.getId());
-    				System.out.println("name : " + newFood.getName());
-    	    		System.out.println("price : " + newFood.getPrice());
-    	    		
-    	    		Food_Picture picture = newFood.getPicture();
-    	    		if(picture != null) {
-    	    			System.out.println("id : " + picture.getId());
-    	        		System.out.println("name : " + picture.getName());
-    	        		System.out.println("version : " + picture.getVersion());
-    	    		}
+    				showFood(newFood);
     			}
     		}
     		
@@ -84,31 +87,12 @@ public class TestFoodMapper {
     		newFood.setPrice(108.00);
     		newFood.setVersion(new Date().getTime());
     		
-    		Food_PictureMapper food_PictureMapper = sqlSession.getMapper(Food_PictureMapper.class);
-    		Food_Picture picture = new Food_Picture();
-    		picture.setEnabled(true);
-    		picture.setVersion(new Date().getTime());
-    		picture.setName("回锅炒肉");
-    		picture.setSmall_image(new byte[]{1,2,3});
-    		
-    		food_PictureMapper.insertSelective(picture);
-    		
-    		newFood.setPicture_id(picture.getId());
     		foodMapper.insertSelective(newFood);
     		
     		sqlSession.commit();
     		
     		Food tempFood = foodMapper.selectByPrimaryKey(newFood.getId());
-    		System.out.println("name : " + tempFood.getName());
-    		System.out.println("price : " + tempFood.getPrice());
-    		
-    		Food_Picture tempPicture = tempFood.getPicture();
-    		if(picture != null) {
-    			System.out.println("id : " + tempPicture.getId());
-        		System.out.println("name : " + tempPicture.getName());
-        		System.out.println("version : " + tempPicture.getVersion());
-    		}
-    		
+    		showFood(tempFood);
     		
     	}finally { 
             sqlSession.close(); 
@@ -122,32 +106,11 @@ public class TestFoodMapper {
     		FoodMapper foodMapper = sqlSession.getMapper(FoodMapper.class);
     		Food tempFood = new Food();
     		tempFood.setId((long)21);
-    		tempFood.setPicture_id((long)22);
     		tempFood.setName("回锅肉2");
     		tempFood.setDescription("回锅肉更新了哈");
     		tempFood.setPrice(98.1);
     		
-    		Food_Picture picture = new Food_Picture();
-    		picture.setEnabled(true);
-    		picture.setVersion(new Date().getTime());
-    		picture.setName("回锅炒肉 图片2");
-    		picture.setSmall_image(new byte[]{1,2,3,4,5,6});
-    		
-    		tempFood.setPicture(picture);
-    		
-    		
     		if(tempFood != null && tempFood.getId() != null) {
-    			
-				Food_PictureMapper food_PictureMapper = sqlSession.getMapper(Food_PictureMapper.class);
-				
-	    		if(tempFood.getPicture_id() != null && tempFood.getPicture() != null) {
-	    			Food_Picture tempPicture = tempFood.getPicture();
-	    			tempPicture.setId(tempFood.getPicture_id());
-	    			food_PictureMapper.updateByPrimaryKeySelective(tempPicture);
-	    		}else if(tempFood.getPicture() != null && tempFood.getPicture().getId() != null) {
-	    			food_PictureMapper.updateByPrimaryKeySelective(tempFood.getPicture());
-	    			
-				}
 	    		
 	    		foodMapper.updateByPrimaryKeySelective(tempFood);
     		}
@@ -170,12 +133,6 @@ public class TestFoodMapper {
     			
     			for (int i = 0; i < newFoods.size(); i++) {
     				Food newFood = newFoods.get(i);
-    				
-    				
-    				Food_PictureMapper food_PictureMapper = sqlSession.getMapper(Food_PictureMapper.class);
-    	    		if(newFood.getPicture_id() != null && newFood.getPicture_id() != 0) {
-    	    			food_PictureMapper.deleteByPrimaryKey(newFood.getPicture_id());
-    	    		}
     	    		
     	    		foodMapper.deleteByPrimaryKey(newFood.getId());
     			}

@@ -10,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
 
 public class Customer {
-	private static Log logger =  LogFactory.getLog(Food_Picture.class);
+	private static Log logger =  LogFactory.getLog(Customer.class);
 	
     private Long id;
 

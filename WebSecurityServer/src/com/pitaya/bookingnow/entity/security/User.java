@@ -10,13 +10,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
 
-import com.pitaya.bookingnow.entity.Food_Picture;
-
 public class User {
 	public User() {
 		
 	}
-	private static Log logger =  LogFactory.getLog(Food_Picture.class);
+	private static Log logger =  LogFactory.getLog(User.class);
 	
     private Long id;
     

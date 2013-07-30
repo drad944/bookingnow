@@ -55,16 +55,24 @@ public class TestOrder_Food_DetailService {
 			if (food_Detail.getFood() != null) {
 				Food realFood = food_Detail.getFood();
 				String space = "    ";
-				System.out.println(space + "id : " + realFood.getId());
+				System.out.println(space + "Id : " + realFood.getId());
 				System.out.println(space + "Category : " + realFood.getCategory());
 				System.out.println(space + "Description : " + realFood.getDescription());
+				System.out.println(space + "Large_image_absolute_path : " + realFood.getLarge_image_absolute_path());
+				System.out.println(space + "Large_image_relative_path : " + realFood.getLarge_image_relative_path());
 				System.out.println(space + "Name : " + realFood.getName());
+				System.out.println(space + "Small_image_absolute_path : " + realFood.getSmall_image_absolute_path());
+				System.out.println(space + "Small_image_relative_path : " + realFood.getSmall_image_relative_path());
+				System.out.println(space + "Large_image_size : " + realFood.getLarge_image_size());
 				System.out.println(space + "Period : " + realFood.getPeriod());
-				System.out.println(space + "Picture_id : " + realFood.getPicture_id());
 				System.out.println(space + "Price : " + realFood.getPrice());
 				System.out.println(space + "Recommendation : " + realFood.getRecommendation());
+				System.out.println(space + "Small_image_size : " + realFood.getSmall_image_size());
 				System.out.println(space + "Status : " + realFood.getStatus());
 				System.out.println(space + "Version : " + realFood.getVersion());
+				System.out.println(space + "Enabled : " + realFood.getEnabled());
+				System.out.println(space + "Large_image : " + realFood.getLarge_image());
+				System.out.println(space + "Small_image : " + realFood.getSmall_image());
 			}
 			System.out.println();
 		}
