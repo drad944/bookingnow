@@ -26,12 +26,14 @@ public interface FoodMapper {
     List<Food> selectAllFoodsWithoutImage();
     
     
-    
     Food selectFullByPrimaryKey(Long id);
     
     List<Food> selectAllFullFoods();
     
     List<Food> selectFullFoods(Food food);
     
+    Food selectSmallImageByFoodId(Long id);
+    
+    Food selectLargeImageByFoodId(Long id);
     
 }

@@ -36,7 +36,6 @@
     <typeAliases>  
         <typeAlias alias="Customer"  type="com.pitaya.bookingnow.entity.Customer" /> 
         <typeAlias alias="Food_Material_Detail"  type="com.pitaya.bookingnow.entity.Food_Material_Detail" /> 
-        <typeAlias alias="Food_Picture"  type="com.pitaya.bookingnow.entity.Food_Picture" /> 
         <typeAlias alias="Food"  type="com.pitaya.bookingnow.entity.Food" /> 
         <typeAlias alias="Material"  type="com.pitaya.bookingnow.entity.Material" /> 
         <typeAlias alias="Order_Food_Detail"  type="com.pitaya.bookingnow.entity.Order_Food_Detail" /> 
@@ -89,7 +88,6 @@
 		
 		
 		<mapper resource="com/pitaya/bookingnow/resource/FoodMapper.xml" />
-		<mapper resource="com/pitaya/bookingnow/resource/Food_PictureMapper.xml" />
 		<mapper resource="com/pitaya/bookingnow/resource/Food_Material_DetailMapper.xml" />
 		<mapper resource="com/pitaya/bookingnow/resource/MaterialMapper.xml" />
 		<mapper resource="com/pitaya/bookingnow/resource/CustomerMapper.xml" />

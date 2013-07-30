@@ -93,7 +93,6 @@ public class TestOrderMapper {
 							System.out.println("    " + "food id: " + food.getId());
 							System.out.println("    " + "food name: " + food.getName());
 							System.out.println("    " + "food status: " + food.getStatus());
-							System.out.println("    " + "food picture id: " + food.getPicture_id());
 							System.out.println("    " + "food price: " + food.getPrice());
 							System.out.println("    " + "food category: " + food.getCategory());
 						}
@@ -181,7 +180,6 @@ public class TestOrderMapper {
 								System.out.println("    " + "food id: " + food.getId());
 								System.out.println("    " + "food name: " + food.getName());
 								System.out.println("    " + "food status: " + food.getStatus());
-								System.out.println("    " + "food picture id: " + food.getPicture_id());
 								System.out.println("    " + "food price: " + food.getPrice());
 								System.out.println("    " + "food category: " + food.getCategory());
 							}
