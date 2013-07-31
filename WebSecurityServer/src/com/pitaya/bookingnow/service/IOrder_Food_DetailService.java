@@ -20,6 +20,8 @@ public interface IOrder_Food_DetailService {
 	
 	List<Order_Food_Detail> searchOrder_Food_Details(Order_Food_Detail food_detail);
 	
+	List<Order_Food_Detail> searchFood_Details(SearchParams params);
+			
 	MyResult updateFoodStatus(Order_Food_Detail food_detail);
 	
 	MyResult updateFoods(Map<String, List<Order_Food_Detail>> changeFoods,Long orderId);

@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.pitaya.bookingnow.dao.FoodMapper;
 import com.pitaya.bookingnow.dao.Order_Food_DetailMapper;
 import com.pitaya.bookingnow.entity.Food;
@@ -15,6 +18,8 @@ import com.pitaya.bookingnow.util.MyResult;
 import com.pitaya.bookingnow.util.SearchParams;
 
 public class Order_Food_DetailService implements IOrder_Food_DetailService{
+	private static Log logger =  LogFactory.getLog(Order_Food_DetailService.class);
+	
 	private Order_Food_DetailMapper food_detailDao;
 	
 	private FoodMapper foodDao;
@@ -69,6 +74,21 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 		}
 		return null;
 	}
+	
+	@Override
+	public List<Order_Food_Detail> searchFood_Details(SearchParams params) {
+		if (params != null) {
+			if(params.getFood_detail_id() != null && params.getFood_detailStatusList() != null && params.getFood_detailStatusList().size() > 0 && params.getRowCount() != null){
+				List<Order_Food_Detail> realFood_Details = food_detailDao.selectByParams(params);
+				return realFood_Details;
+			}else {
+				logger.info("search food_detail params is not enough.");
+			}
+		}else {
+			logger.info("can not find food detail in client data");
+		}
+		return null;
+	}
 
 	@Override
 	public MyResult updateFoodStatus(Order_Food_Detail food_detail) {
@@ -87,6 +107,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 					realFood_Detail.setLast_modify_time(new Date().getTime());
 						
 					if (food_detailDao.updateByPrimaryKeySelective(realFood_Detail) == 1) {
+						result.setFood_Detail(realFood_Detail);
 						result.setExecuteResult(true);
 					}else {
 						throw new RuntimeException("failed to update food detail status in DB");
