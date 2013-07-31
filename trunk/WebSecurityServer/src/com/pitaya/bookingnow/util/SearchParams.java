@@ -7,7 +7,8 @@ public class SearchParams {
 	private Long user_id;
 	private Long customer_id;
 	private List<Integer> orderStatusList;
-	
+	private List<Integer> foodStatusList;
+	private List<Integer> food_detailStatusList;
 	private Long order_id;
 	
 	private Long food_detail_id;
@@ -18,6 +19,35 @@ public class SearchParams {
 	
 	private Integer status;
 	
+	private Integer offset;
+	
+	private Integer rowCount;
+	
+	
+	public Integer getOffset() {
+		return offset;
+	}
+	public void setOffset(Integer offset) {
+		this.offset = offset;
+	}
+	public Integer getRowCount() {
+		return rowCount;
+	}
+	public void setRowCount(Integer rowCount) {
+		this.rowCount = rowCount;
+	}
+	public List<Integer> getFood_detailStatusList() {
+		return food_detailStatusList;
+	}
+	public void setFood_detailStatusList(List<Integer> food_detailStatusList) {
+		this.food_detailStatusList = food_detailStatusList;
+	}
+	public List<Integer> getFoodStatusList() {
+		return foodStatusList;
+	}
+	public void setFoodStatusList(List<Integer> foodStatusList) {
+		this.foodStatusList = foodStatusList;
+	}
 	public Long getOrder_id() {
 		return order_id;
 	}

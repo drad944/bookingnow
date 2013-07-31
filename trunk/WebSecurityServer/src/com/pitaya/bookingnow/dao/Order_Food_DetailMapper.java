@@ -32,5 +32,5 @@ public interface Order_Food_DetailMapper {
     
     Order_Food_Detail selectFullByPrimaryKeyAndOrderId(SearchParams params);
     
-    
+    List<Order_Food_Detail> selectByParams(SearchParams params);
 }

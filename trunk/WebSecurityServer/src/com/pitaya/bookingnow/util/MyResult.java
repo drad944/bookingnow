@@ -6,6 +6,7 @@ import java.util.Map;
 import com.pitaya.bookingnow.entity.Customer;
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Order;
+import com.pitaya.bookingnow.entity.Order_Food_Detail;
 import com.pitaya.bookingnow.entity.Table;
 import com.pitaya.bookingnow.entity.security.User;
 
@@ -33,6 +34,17 @@ public class MyResult {
 	
 	Table table = new Table();
 	
+	Order_Food_Detail food_Detail = new Order_Food_Detail();
+	
+	
+	public Order_Food_Detail getFood_Detail() {
+		return food_Detail;
+	}
+
+	public void setFood_Detail(Order_Food_Detail food_Detail) {
+		this.food_Detail = food_Detail;
+	}
+
 	public User getUser() {
 		return user;
 	}
