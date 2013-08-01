@@ -103,7 +103,7 @@
 	</sql>
 	
 	
-	<select id="selectByParams" resultMap="Food_Detail_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
+	<select id="selectByParams" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
            
 	    select
 		<include refid="Base_Column_List" />
@@ -116,17 +116,23 @@
 					#{item} 
 				</foreach> 
 			</if>
-			order by id
-			<if test="offset != null">
-				limit #{offset,jdbcType=INTEGER}
-				<if test="rowCount != null">
-					,#{rowCount,jdbcType=INTEGER}
+			<if test="food_detail_id != null">
+			    and id > #{food_detail_id,jdbcType=BIGINT}
+			</if>
+				order by id 
+			<if test="rowCount != null">
+				<if test="offset != null">
+					limit #{offset,jdbcType=INTEGER},#{rowCount,jdbcType=INTEGER}
+				</if>
+				<if test="offset == null">
+					limit 0,#{rowCount,jdbcType=INTEGER}
 				</if>
 			</if>
+			
 		</where>
 	</select>
 	
-	<select id="selectBySelective" resultMap="Food_Detail_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Order_Food_Detail">
+	<select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Order_Food_Detail">
            
 	    select
 		<include refid="Base_Column_List" />

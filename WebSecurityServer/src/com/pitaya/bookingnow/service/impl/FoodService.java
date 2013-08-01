@@ -118,6 +118,11 @@ public class FoodService implements IFoodService{
 				Food DBFood = allDBFoods.get(i);
 				if(DBFood.getId().equals(clientFood.getId())){
 					if(DBFood.getVersion() > clientFood.getVersion()){
+						if (DBFood.getImage_version() > clientFood.getImage_version()) {
+							
+						}else {
+							DBFood.setImage_version(0L);
+						}
 						updateFoods.add(DBFood);
 					}
 					allDBFoods.remove(i);

@@ -22,6 +22,8 @@ public class Food {
     private String name;
 
     private Long version;
+    
+    private Long image_version;
 
     private Long period;
 
@@ -50,7 +52,15 @@ public class Food {
     
     private byte[] large_image;
     
-    public Boolean getEnabled() {
+    public Long getImage_version() {
+		return image_version;
+	}
+
+	public void setImage_version(Long image_version) {
+		this.image_version = image_version;
+	}
+
+	public Boolean getEnabled() {
 		return enabled;
 	}
 
