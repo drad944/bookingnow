@@ -98,6 +98,7 @@ create table pitaya_food(
 	status integer,
 	name varchar(50),
 	version bigint,
+	image_version bigint,
 	period bigint,
 	price double,
 	category varchar(50),
@@ -111,26 +112,26 @@ create table pitaya_food(
 	enabled boolean
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 	
-insert into pitaya_food values (1,5,1,'Sweet and sour pork ribs',1351232321,1351232321,11,'chinese food','good food','images/1_l_123241422.jpg','images/1_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (2,4,1,'Tomato soup',1351232321,1351232321,12,'chinese food','good food','images/2_l_123241422.jpg','images/2_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (3,5,1,'Green pepper and potato silk',1351232321,1351232321,13,'chinese food','good food','images/3_l_123241422.jpg','images/3_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (4,5,1,'Griddle chicken',1351232321,1351232321,14,'western food','good food','images/4_l_123241422.jpg','images/4_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (5,5,1,'Saliva chicken',1351232321,1351232321,15,'chinese food','good food','images/5_l_123241422.jpg','images/5_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (6,5,1,'hamburger',1351232321,1351232321,16,'western food','good food','images/6_l_123241422.jpg','images/6_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (7,5,1,'Saliva chicken',1351232321,1351232321,17,'chinese food','good food','images/7_l_123241422.jpg','images/7_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (8,5,1,'Saliva chicken',1351232321,1351232321,18,'chinese food','good food','images/8_l_123241422.jpg','images/8_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (9,5,1,'Saliva chicken',1351232321,1351232321,19,'chinese food','good food','images/9_l_123241422.jpg','images/9_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (10,5,1,'Saliva chicken',1351232321,1351232321,20,'chinese food','good food','images/10_l_123241422.jpg','images/10_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (11,5,1,'Saliva chicken',1351232321,1351232321,21,'western food','good food','images/11_l_123241422.jpg','images/11_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (12,5,1,'Saliva chicken',1351232321,1351232321,22,'sichuan food','good food','images/12_l_123241422.jpg','images/12_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (13,5,1,'Saliva chicken',1351232321,1351232321,23,'chinese food','good food','images/13_l_123241422.jpg','images/13_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (14,5,1,'Saliva chicken',1351232321,1351232321,24,'western food','good food','images/14_l_123241422.jpg','images/14_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (15,5,1,'Saliva chicken',1351232321,1351232321,25,'chinese food','good food','images/15_l_123241422.jpg','images/15_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (16,5,1,'Saliva chicken',1351232321,1351232321,26,'sichuan food','good food','images/16_l_123241422.jpg','images/16_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (17,5,1,'Saliva chicken',1351232321,1351232321,27,'chinese food','good food','images/17_l_123241422.jpg','images/17_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (18,5,1,'Saliva chicken',1351232321,1351232321,28,'sichuan food','good food','images/18_l_123241422.jpg','images/18_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (19,5,1,'Saliva chicken',1351232321,1351232321,28,'sichuan food','good food','images/19_l_123241422.jpg','images/19_s_123241422.png','','',0,0,true);
-insert into pitaya_food values (20,5,1,'fish',1351232321,1351232321,30,'chinese food','good food','images/20_l_123241422.jpg','images/20_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (1,5,1,'Sweet and sour pork ribs',1351232321,1351232321,1351232321,11,'chinese food','good food','images/1_l_123241422.jpg','images/1_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (2,4,1,'Tomato soup',1351232321,1351232321,1351232321,12,'chinese food','good food','images/2_l_123241422.jpg','images/2_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (3,5,1,'Green pepper and potato silk',1351232321,1351232321,1351232321,13,'chinese food','good food','images/3_l_123241422.jpg','images/3_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (4,5,1,'Griddle chicken',1351232321,1351232321,1351232321,14,'western food','good food','images/4_l_123241422.jpg','images/4_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (5,5,1,'Saliva chicken',1351232321,1351232321,1351232321,15,'chinese food','good food','images/5_l_123241422.jpg','images/5_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (6,5,1,'hamburger',1351232321,1351232321,1351232321,16,'western food','good food','images/6_l_123241422.jpg','images/6_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (7,5,1,'Saliva chicken',1351232321,1351232321,1351232321,17,'chinese food','good food','images/7_l_123241422.jpg','images/7_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (8,5,1,'Saliva chicken',1351232321,1351232321,1351232321,18,'chinese food','good food','images/8_l_123241422.jpg','images/8_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (9,5,1,'Saliva chicken',1351232321,1351232321,1351232321,19,'chinese food','good food','images/9_l_123241422.jpg','images/9_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (10,5,1,'Saliva chicken',1351232321,1351232321,1351232321,20,'chinese food','good food','images/10_l_123241422.jpg','images/10_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (11,5,1,'Saliva chicken',1351232321,1351232321,1351232321,21,'western food','good food','images/11_l_123241422.jpg','images/11_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (12,5,1,'Saliva chicken',1351232321,1351232321,1351232321,22,'sichuan food','good food','images/12_l_123241422.jpg','images/12_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (13,5,1,'Saliva chicken',1351232321,1351232321,1351232321,23,'chinese food','good food','images/13_l_123241422.jpg','images/13_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (14,5,1,'Saliva chicken',1351232321,1351232321,1351232321,24,'western food','good food','images/14_l_123241422.jpg','images/14_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (15,5,1,'Saliva chicken',1351232321,1351232321,1351232321,25,'chinese food','good food','images/15_l_123241422.jpg','images/15_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (16,5,1,'Saliva chicken',1351232321,1351232321,1351232321,26,'sichuan food','good food','images/16_l_123241422.jpg','images/16_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (17,5,1,'Saliva chicken',1351232321,1351232321,1351232321,27,'chinese food','good food','images/17_l_123241422.jpg','images/17_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (18,5,1,'Saliva chicken',1351232321,1351232321,1351232321,28,'sichuan food','good food','images/18_l_123241422.jpg','images/18_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (19,5,1,'Saliva chicken',1351232321,1351232321,1351232321,28,'sichuan food','good food','images/19_l_123241422.jpg','images/19_s_123241422.png','','',0,0,true);
+insert into pitaya_food values (20,5,1,'fish',1351232321,1351232321,1351232321,30,'chinese food','good food','images/20_l_123241422.jpg','images/20_s_123241422.png','','',0,0,true);
 
 
 create table pitaya_order_food_detail(
