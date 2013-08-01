@@ -109,7 +109,7 @@ public class FoodService implements IFoodService{
 		List<Food> newFoods = null;
 		List<Food> deleteFoods = null;
 		List<Food> updateFoods = new ArrayList<Food>();
-		List<Food> allDBFoods = foodDao.selectAllFoodsWithoutImage();
+		List<Food> allDBFoods = foodDao.selectAllFoods();
 
 		
 		for (int j = clientFoods.size() - 1; j >= 0; j--){
