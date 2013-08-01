@@ -1,5 +1,6 @@
 package com.pitaya.bookingnow.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -212,5 +213,32 @@ public class TestFoodService extends TestCase{
 		 assertEquals(true, result.isExecuteResult());
 	 }
 	 
+	 @Test
+	 public void testUpdateMenuFoods() {
+		 init();
+		 List<Food> clientFoods = new ArrayList<Food>();
+		 for (int i = 0; i < 15; i++) {
+			 Food clientFood = new Food();
+			 clientFood.setId((long) (i + 1));
+			if (1== (i % 3)) {
+				clientFood.setVersion((long) 1351232321);
+			}else {
+				clientFood.setVersion((long) 135);
+			}
+			
+			if (i == 2) {
+				clientFood.setImage_version((long) 13);
+			}else {
+				clientFood.setImage_version((long) 1351232321);
+			}
+			 
+		}
+		 Food newFood = new Food();
+		 newFood.setName("红烧猪蹄x");
+		 newFood.setPrice(23.0);
+		 List<Food> foods = foodService.searchFoods(newFood);
+		 MyResult result = foodService.removeFoodById(foods.get(0).getId());
+		 assertEquals(true, result.isExecuteResult());
+	 }
 	 
 }
