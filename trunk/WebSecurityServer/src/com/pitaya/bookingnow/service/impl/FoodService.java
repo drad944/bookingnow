@@ -172,7 +172,7 @@ public class FoodService implements IFoodService{
 		if (food != null && food.getId() != null) {
 			Food realFood = foodDao.selectSmallImageByFoodId(food.getId());
 			if (realFood != null) {
-				realFood.renderePicture();
+				realFood.renderPicture();
 				return realFood;
 			}
 		}
@@ -184,7 +184,7 @@ public class FoodService implements IFoodService{
 		if (food != null && food.getId() != null) {
 			Food realFood = foodDao.selectLargeImageByFoodId(food.getId());
 			if (realFood != null) {
-				realFood.renderePicture();
+				realFood.renderPicture();
 				return realFood;
 			}
 		}
