@@ -110,22 +110,22 @@ public class FoodService {
 			        bundle.putString(HttpHandler.ACTION_TYPE, action);
 			        bundle.putString("key", food.getKey());
 			        String filename = null;
-			        if(action.equals("findSmallFood_Picture.action")){
+			        if(action.equals("findSmallPictureOfFood.action")){
 			        	filename = food.getSmallImageName();
-			        } else if(action.equals("findLargeFood_Picture.action")){
+			        } else if(action.equals("findLargePictureOfFood.action")){
 			        	filename =  food.getLargeImageName();
 			        }
 					if(FileUtil.writeFile(context, filename, this.fileBytes)){
-				        if(action.equals("findSmallFood_Picture.action")){
+				        if(action.equals("findSmallPictureOfFood.action")){
 				        	try {
-								HttpService.getFileViaPost("findLargeFood_Picture.action", new StringEntity(jparam.toString()), this);
+								HttpService.getFileViaPost("findLargePictureOfFood.action", new StringEntity(jparam.toString()), this);
 							} catch (UnsupportedEncodingException e) {
 								bundle.putInt(HttpHandler.RESULT, Constants.FAIL);
 								bundle.putInt(HttpHandler.ERROR_CODE, Constants.GET_FOOD_IMAGE_ERROR);
 								handler.sendMessage(amsg);
 								e.printStackTrace();
 							}
-				        } else if(action.equals("findLargeFood_Picture.action")){
+				        } else if(action.equals("findLargePictureOfFood.action")){
 				        	if(type == 0){
 				        		DataService.addNewFood(context, food);
 				        	} else {
@@ -156,7 +156,7 @@ public class FoodService {
 				
 			};
 			
-			HttpService.getFileViaPost("findSmallFood_Picture.action", new StringEntity(jparam.toString()), fileHandler);
+			HttpService.getFileViaPost("findSmallPictureOfFood.action", new StringEntity(jparam.toString()), fileHandler);
 			
 		} catch (NumberFormatException e) {
 			error = true;
@@ -193,10 +193,10 @@ public class FoodService {
 		}
 		if(foodsToUpdate.get("update") != null){
 			for(Food food : foodsToUpdate.get("update")){
-				if(food.getImageVersion() != null){
+				if(food.getImageVersion() != null && food.getImageVersion() > 0L){
 					getFoodImages(context, food, handler, 1);
 				} else {
-					Log.i(TAG, "The image of this food is latest");
+					Log.i(TAG, "No need to update image of this food");
 					DataService.updateFood(context, food);
 					android.os.Message amsg = new android.os.Message();
 		        	Bundle bundle = new Bundle();
