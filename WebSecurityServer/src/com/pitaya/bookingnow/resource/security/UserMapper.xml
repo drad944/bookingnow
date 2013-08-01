@@ -133,7 +133,7 @@
 		R.type as R_type
 	</sql>
 	
-	<!-- 
+	
 	<select id="login" resultMap="User_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">
 		select
 		<include refid="User_Base_Column_List" />
@@ -147,14 +147,15 @@
 			left outer join pitaya_role R on R.id = UR.role_id
 		where U.account = #{account,jdbcType=VARCHAR} and U.password = #{password,jdbcType=VARCHAR}
 	</select>
-	 -->
 	 
+	 <!-- 
 	<select id="login" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_user
 		where account = #{account,jdbcType=VARCHAR} and password = #{password,jdbcType=VARCHAR}
 	</select>
+	-->
 	
 	<select id="searchUsersWithRole" resultMap="User_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">
 		select
