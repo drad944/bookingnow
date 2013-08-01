@@ -7,10 +7,12 @@
 		<result column="status" property="status" jdbcType="INTEGER" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="version" property="version" jdbcType="BIGINT" />
+		<result column="image_version" property="image_version" jdbcType="BIGINT" />
 		<result column="period" property="period" jdbcType="BIGINT" />
 		<result column="price" property="price" jdbcType="DOUBLE" />
 		<result column="category" property="category" jdbcType="VARCHAR" />
 		<result column="description" property="description" jdbcType="VARCHAR" />
+		
 		
 		<result column="enabled" property="enabled" jdbcType="BIT" />
 		<result column="large_image_relative_path" property="large_image_relative_path" jdbcType="VARCHAR" />
@@ -27,7 +29,8 @@
 		recommendation, 
 		status, 
 		name, 
-		version, 
+		version,
+		image_version, 
 		period, 
 		price,
 		category, 
@@ -43,6 +46,7 @@
 		status, 
 		name, 
 		version, 
+		image_version,
 		period, 
 		price,
 		category, 
@@ -113,14 +117,14 @@
   </select>
   
   <select id="selectSmallImageByFoodId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select id,status,version,small_image_size,small_image_relative_path,enabled
+    select id,status,image_version,small_image_size,small_image_relative_path,enabled
     
     from pitaya_food
     where id = #{id,jdbcType=BIGINT}
   </select>
   
   <select id="selectLargeImageByFoodId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select id,status,version,large_image_size,large_image_relative_path,enabled
+    select id,status,image_version,large_image_size,large_image_relative_path,enabled
     from pitaya_food
     where id = #{id,jdbcType=BIGINT}
   </select>
@@ -141,6 +145,9 @@
 			</if>
 			<if test="version != null">
 				and version = #{version,jdbcType=BIGINT}
+			</if>
+			<if test="image_version != null">
+				and image_version = #{image_version,jdbcType=BIGINT}
 			</if>
 			<if test="period != null">
 				and period = #{period,jdbcType=BIGINT}
@@ -176,6 +183,9 @@
 			</if>
 			<if test="version != null">
 				and version = #{version,jdbcType=BIGINT}
+			</if>
+			<if test="image_version != null">
+				and image_version = #{image_version,jdbcType=BIGINT}
 			</if>
 			<if test="period != null">
 				and period = #{period,jdbcType=BIGINT}
@@ -247,7 +257,8 @@
 			recommendation, 
 			status,
 			name, 
-			version, 
+			version,
+			image_version, 
 			period,
 			price, 
 			category, 
@@ -265,7 +276,8 @@
 			#{recommendation,jdbcType=INTEGER}, 
 			#{status,jdbcType=INTEGER},
 			#{name,jdbcType=VARCHAR}, 
-			#{version,jdbcType=BIGINT}, 
+			#{version,jdbcType=BIGINT},
+			#{image_version,jdbcType=BIGINT},
 			#{period,jdbcType=BIGINT},
 			#{price,jdbcType=DOUBLE}, 
 			#{category,jdbcType=VARCHAR},
@@ -299,6 +311,9 @@
 			</if>
 			<if test="version != null">
 				version,
+			</if>
+			<if test="image_version != null">
+				image_version,
 			</if>
 			<if test="period != null">
 				period,
@@ -347,6 +362,9 @@
 			</if>
 			<if test="version != null">
 				#{version,jdbcType=BIGINT},
+			</if>
+			<if test="image_version != null">
+				#{image_version,jdbcType=BIGINT},
 			</if>
 			<if test="period != null">
 				#{period,jdbcType=BIGINT},
@@ -400,6 +418,9 @@
 			<if test="version != null">
 				version = #{version,jdbcType=BIGINT},
 			</if>
+			<if test="image_version != null">
+				image_version = #{image_version,jdbcType=BIGINT},
+			</if>
 			<if test="period != null">
 				period = #{period,jdbcType=BIGINT},
 			</if>
@@ -444,6 +465,7 @@
 			status = #{status,jdbcType=INTEGER},
 			name = #{name,jdbcType=VARCHAR},
 			version = #{version,jdbcType=BIGINT},
+			image_version = #{image_version,jdbcType=BIGINT},
 			period = #{period,jdbcType=BIGINT},
 			price = #{price,jdbcType=DOUBLE},
 			category = #{category,jdbcType=VARCHAR},

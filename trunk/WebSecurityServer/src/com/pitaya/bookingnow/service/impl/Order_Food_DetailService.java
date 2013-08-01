@@ -78,7 +78,9 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 	@Override
 	public List<Order_Food_Detail> searchFood_Details(SearchParams params) {
 		if (params != null) {
-			if(params.getFood_detail_id() != null && params.getFood_detailStatusList() != null && params.getFood_detailStatusList().size() > 0 && params.getRowCount() != null){
+			if(params.getFood_detail_id() != null 
+					&& params.getFood_detailStatusList() != null && params.getFood_detailStatusList().size() > 0 
+					&& params.getRowCount() != null){
 				List<Order_Food_Detail> realFood_Details = food_detailDao.selectByParams(params);
 				return realFood_Details;
 			}else {
