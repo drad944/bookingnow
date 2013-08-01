@@ -241,4 +241,24 @@ public class TestFoodService extends TestCase{
 		 assertEquals(true, result.isExecuteResult());
 	 }
 	 
+	 @Test
+	 public void testFindSmallPictureOfFood() {
+		 init();
+		 Food newFood = new Food();
+		 newFood.setId(1l);
+		 
+		 Food result = foodService.searchSmallPictureByFood(newFood);
+		 showFood(result);
+	 }
+	 
+	 @Test
+	 public void testFindLargePictureOfFood() {
+		 init();
+		 Food newFood = new Food();
+		 newFood.setId(1l);
+		 
+		 Food result = foodService.searchLargePictureByFood(newFood);
+		 showFood(result);
+	 }
+	 
 }
