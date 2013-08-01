@@ -57,8 +57,17 @@
 		</collection>
 	</resultMap>
 	
+	<sql id="Min_User_Base_Column_List">
+		id, 
+		account, 
+		name, 
+		phone, 
+		sex, 
+		department, 
+		enabled
+	</sql>
 	
-	<sql id="Base_Column_List">
+	<sql id="Max_User_Base_Column_List">
 		id, 
 		modifyTime, 
 		image_size,
@@ -75,6 +84,21 @@
 		description,
 		department, 
 		sub_system, 
+		enabled
+	</sql>
+	
+	<sql id="Base_Column_List">
+		id, 
+		image_size,
+		image_relative_path,
+		account, 
+		name, 
+		phone, 
+		sex, 
+		email, 
+		address,
+		birthday, 
+		department, 
 		enabled
 	</sql>
 	
@@ -109,6 +133,7 @@
 		R.type as R_type
 	</sql>
 	
+	<!-- 
 	<select id="login" resultMap="User_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">
 		select
 		<include refid="User_Base_Column_List" />
@@ -121,6 +146,14 @@
 			left outer join pitaya_user_role_detail UR on UR.user_id = U.id
 			left outer join pitaya_role R on R.id = UR.role_id
 		where U.account = #{account,jdbcType=VARCHAR} and U.password = #{password,jdbcType=VARCHAR}
+	</select>
+	 -->
+	 
+	<select id="login" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_user
+		where account = #{account,jdbcType=VARCHAR} and password = #{password,jdbcType=VARCHAR}
 	</select>
 	
 	<select id="searchUsersWithRole" resultMap="User_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">

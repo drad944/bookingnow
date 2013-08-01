@@ -89,6 +89,7 @@ public class UserService implements IUserService {
 			User loginUser = userDao.login(user);
 			if (loginUser != null && loginUser.getId() != null) {
 				result.setExecuteResult(true);
+				result.setUser(loginUser);
 				return result;
 			}else {
 				result.getErrorDetails().put("user_exist", "can not find user in DB data.");
