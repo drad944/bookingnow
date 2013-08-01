@@ -158,7 +158,7 @@ public class DataService {
 		values.put(FoodMenuTable.COLUMN_RECOMMENDATION, food.isRecommended());
 		values.put(FoodMenuTable.COLUMN_STATUS, food.getStatus());
 		values.put(FoodMenuTable.COLUMN_REVISION, food.getVersion());
-		if(food.getImageVersion() != null){
+		if(food.getImageVersion() != null && food.getImageVersion() > 0L){
 			values.put(FoodMenuTable.COLUMN_IAMGE_REVISION, food.getImageVersion());
 		}
 		context.getContentResolver().update(FoodMenuContentProvider.CONTENT_URI, values, 

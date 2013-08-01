@@ -37,12 +37,17 @@ public class OrderDetailAdapter extends BaseAdapter {
 	protected View mView;
 	protected EditText mEditText;
 	protected Order mOrder;
+	protected DataSetChangedListener mListener;
     
     public OrderDetailAdapter(Context c, View view, Order order) throws IllegalArgumentException, IllegalAccessException{  
         this.mContext = c;
         this.mView = view;
         this.mOrder = order;
     }
+    
+	public void setDataSetChangedListener(DataSetChangedListener l){
+		this.mListener = l;
+	}
     
 	public void setOrder(Order order){
 		this.mOrder = order;
@@ -230,6 +235,9 @@ public class OrderDetailAdapter extends BaseAdapter {
 					}
 					if(result == Order.REMOVED){
 						OrderDetailAdapter.this.notifyDataSetChanged();
+						if(OrderDetailAdapter.this.mListener != null){
+							mListener.OnDataSetChanged();
+						}
 						return;
 					}
 				}
@@ -328,10 +336,10 @@ public class OrderDetailAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		//This implementation is only for food item, you have to implement bottom buttons or header view in subclass
-		View itemView = convertView;
-		if(itemView == null){
-			itemView = View.inflate(mContext, R.layout.fooditem_waiter, null);
-		}
+		//View itemView = convertView;
+		//if(itemView == null){
+		View	itemView = View.inflate(mContext, R.layout.fooditem_waiter, null);
+		//}
 		setupView(itemView, position);
 		return itemView;
 	}
@@ -345,5 +353,8 @@ public class OrderDetailAdapter extends BaseAdapter {
 			this.quantity = quantity;
 		}
 	}
-
+	
+    public interface DataSetChangedListener{
+    	public void OnDataSetChanged();
+    }
 }

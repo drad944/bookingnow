@@ -197,8 +197,8 @@ public class Food implements Serializable, IJSONTransition{
 			if(jfood.has("version")){
 				this.version = jfood.getLong("version");
 			}
-			if(jfood.has("picture") && jfood.getJSONObject("picture") != null){
-				this.image_version = jfood.getJSONObject("picture").getLong("version");
+			if(jfood.has("image_version") && jfood.getLong("image_version") > 0L){
+				this.image_version = jfood.getLong("image_version");
 			}
 		} catch (JSONException e) {
 			Log.e(TAG, "Key is missing when parse food from json object: " + jfood.toString());

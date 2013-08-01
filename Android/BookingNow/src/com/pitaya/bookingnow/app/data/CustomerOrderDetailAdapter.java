@@ -102,6 +102,9 @@ public class CustomerOrderDetailAdapter extends OrderDetailAdapter {
 						DataService.removeFoodsOfOrder(mContext, mOrder.getOrderKey());
 						mOrder.removeAllFood();
 						CustomerOrderDetailAdapter.this.notifyDataSetChanged();
+						if(CustomerOrderDetailAdapter.this.mListener != null){
+							CustomerOrderDetailAdapter.this.mListener.OnDataSetChanged();
+						}
 					}
 					
 				});
@@ -135,6 +138,9 @@ public class CustomerOrderDetailAdapter extends OrderDetailAdapter {
 									mOrder.markDirty(mContext, false);
 									DataService.saveOrderDetails(mContext, mOrder);
 									CustomerOrderDetailAdapter.this.notifyDataSetChanged();
+									if(CustomerOrderDetailAdapter.this.mListener != null){
+										CustomerOrderDetailAdapter.this.mListener.OnDataSetChanged();
+									}
 								}
 							});
 							OrderService.getFoodsOfOrder(Long.parseLong(mOrder.getOrderKey()), handler);

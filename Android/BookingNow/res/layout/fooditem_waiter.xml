@@ -10,9 +10,10 @@
             android:layout_width="230dp"
             android:layout_height="40dp"
             android:textAppearance="@android:style/TextAppearance.Medium"
-            android:gravity="left"
+            android:gravity="center|left"
             android:layout_alignParentLeft="true"
             android:singleLine="true"
+            android:paddingLeft="5dp"
             android:marqueeRepeatLimit="marquee_forever"
    			android:ellipsize="marquee"
             android:textColor="@android:color/white"/>

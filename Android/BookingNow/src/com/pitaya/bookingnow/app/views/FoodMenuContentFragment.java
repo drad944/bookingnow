@@ -30,7 +30,7 @@ import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.OrderDetailPreviewActivity;
 import com.pitaya.bookingnow.app.data.CustomerOrderDetailAdapter;
 import com.pitaya.bookingnow.app.data.GetOrderFoodsStatusHandler;
-import com.pitaya.bookingnow.app.data.WorkerOrderDetailAdapter;
+import com.pitaya.bookingnow.app.data.OrderDetailAdapter;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
@@ -90,6 +90,10 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			}
 		}
 		
+		private int getPopupWindowSize(int items){
+			return (items + 1) * 40 + 8;
+		}
+		
 		@Override
 	    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			Log.i(TAG, "onCreateView in FoodMenuContentFragment" + this.hashCode());
@@ -103,31 +107,8 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			if(this.mContentContainer != null && this.mContentContainer.getOrder() != null){
 				
 				final ListView orderPreview = new ListView(getActivity());
-				final CustomerOrderDetailAdapter orderAdapter;
-				try {
-					orderAdapter = new CustomerOrderDetailAdapter(getActivity(), orderPreview, mContentContainer.getOrder());
-					if(this.mContentContainer.getOrder().getStatus() == Constants.ORDER_COMMITED){
-	            		GetOrderFoodsStatusHandler handler = new GetOrderFoodsStatusHandler(this.getActivity(), mContentContainer.getOrder());
-	            		handler.setAfterGetFoodsStatusListener(new GetOrderFoodsStatusHandler.AfterGetFoodsStatusListener(){
-	
-							@Override
-							public void afterGetFoodsStatus() {
-								orderPreview.setAdapter(orderAdapter);
-							}
-	            			
-	            		});
-	            		OrderService.getFoodsOfOrder(Long.parseLong(mContentContainer.getOrder().getOrderKey()), handler);
-					} else {
-						orderPreview.setAdapter(orderAdapter);
-					}
-            		
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
-				final PopupWindow popupWindow =  new PopupWindow(orderPreview, 700,  
-						LayoutParams.WRAP_CONTENT, true);
+				final PopupWindow popupWindow =  new PopupWindow(orderPreview, 0,  
+						0, true);
 				popupWindow.setFocusable(true);
 		        popupWindow.setOutsideTouchable(false);
 		        popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
@@ -147,15 +128,40 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 					
 					@Override
 					public void onClick(View arg0) {
-						//get current good items
-//						Bundle bundle = new Bundle();
-//						bundle.putSerializable("order", mContentContainer.getOrder());
-//						Intent intent = new Intent(FoodMenuContentFragment.this.getActivity(), OrderDetailPreviewActivity.class);
-//						intent.putExtras(bundle);
-//						startActivity(intent);
-						
+						//get current good items						
 				        popupWindow.showAtLocation(mFoodMenuContentView, 
 				        		Gravity.CENTER_HORIZONTAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+						try {
+							final CustomerOrderDetailAdapter orderAdapter = new CustomerOrderDetailAdapter(getActivity(), orderPreview, mContentContainer.getOrder());
+							orderAdapter.setDataSetChangedListener(new OrderDetailAdapter.DataSetChangedListener(){
+
+								@Override
+								public void OnDataSetChanged() {
+									popupWindow.update(700, getPopupWindowSize(mContentContainer.getOrder().getFoods().size()));
+								}
+								
+							});
+							if(mContentContainer.getOrder().getStatus() == Constants.ORDER_COMMITED){
+			            		GetOrderFoodsStatusHandler handler = new GetOrderFoodsStatusHandler(getActivity(), mContentContainer.getOrder());
+			            		handler.setAfterGetFoodsStatusListener(new GetOrderFoodsStatusHandler.AfterGetFoodsStatusListener(){
+			
+									@Override
+									public void afterGetFoodsStatus() {
+										orderPreview.setAdapter(orderAdapter);
+										popupWindow.update(700,getPopupWindowSize(mContentContainer.getOrder().getFoods().size()));
+									}
+			            			
+			            		});
+			            		OrderService.getFoodsOfOrder(Long.parseLong(mContentContainer.getOrder().getOrderKey()), handler);
+							} else {
+								orderPreview.setAdapter(orderAdapter);
+								popupWindow.update(700,getPopupWindowSize(mContentContainer.getOrder().getFoods().size()));
+							}
+						} catch (IllegalArgumentException e) {
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							e.printStackTrace();
+						}
 					}
 					
 					
