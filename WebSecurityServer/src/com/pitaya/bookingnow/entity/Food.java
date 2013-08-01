@@ -205,7 +205,7 @@ public class Food {
         this.description = description;
     }
     
-    public void renderePicture() {
+    public void renderPicture() {
     	FileInputStream fis = null;
     	File file = null;
     	
