@@ -103,23 +103,26 @@
 	</sql>
 	
 	
-	<select id="selectByParams" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
+	<select id="selectByParams" resultMap="Food_Detail_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
            
 	    select
-		<include refid="Base_Column_List" />
-		from pitaya_order_food_detail			
+		<include refid="Food_Detail_Base_Column_List" />
+		,
+		<include refid="Food_Without_Image_Column_List" />
+		from pitaya_order_food_detail FD 
+			left outer join pitaya_food F on FD.food_id = F.id
 		<where>
 		    <if test="food_detailStatusList != null">
-				status in 
+				FD.status in 
 				<foreach item="item" index="index" collection="food_detailStatusList"
 					open="(" separator="," close=")"> 
 					#{item} 
 				</foreach> 
 			</if>
 			<if test="food_detail_id != null">
-			    and id > #{food_detail_id,jdbcType=BIGINT}
+			    and FD.id > #{food_detail_id,jdbcType=BIGINT}
 			</if>
-				order by id 
+				order by FD.id 
 			<if test="rowCount != null">
 				<if test="offset != null">
 					limit #{offset,jdbcType=INTEGER},#{rowCount,jdbcType=INTEGER}
