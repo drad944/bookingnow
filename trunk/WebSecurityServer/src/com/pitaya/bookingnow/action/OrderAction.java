@@ -251,4 +251,19 @@ public class OrderAction extends BaseAction{
 		return "Fail";
 	}
 	
+	public String calculateOrder(){
+		if (order != null && order.getId() != null) {
+			result = orderService.calculateOrder(order);
+			
+			if (result.isExecuteResult()) {
+				order = result.getOrder();
+				return "calculateOrderSuccess";
+			}
+		}
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
+		return "Fail";
+	}
+	
+	
 }

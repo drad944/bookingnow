@@ -1119,6 +1119,11 @@ public class OrderService implements IOrderService{
 
 	@Override
 	public MyResult calculateOrder(Order order) {
+		//use another sevice method to finished order,set all table to empty and closed all food details.close order.
+		//updateOrderToFinished
+		/*
+		 * total price = (each table.indoorprice + each unfree food.price * food.count ) * order.allowance
+		 */
 		MyResult result = new MyResult();
 		Order realOrder =  null;
 		if (order != null && order.getId() != null) {
@@ -1133,6 +1138,7 @@ public class OrderService implements IOrderService{
 						if (realTable_Detail.getTable() != null && realTable_Detail.getTable().getIndoorPrice() != null) {
 							//plus indoor price
 							result.setTotalPriceOfOrder(result.getTotalPriceOfOrder() + realTable_Detail.getTable().getIndoorPrice());
+							//use another sevice method to finished order,set all table to empty and closed all food details.close order.
 						}else {
 							result.setTotalPriceOfOrder(-1);
 							result.getErrorDetails().put("indoor_price_exist", "can not find indoor price in DB data");
