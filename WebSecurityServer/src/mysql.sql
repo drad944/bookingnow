@@ -217,7 +217,7 @@ create table pitaya_user(
 
 insert into pitaya_user values (1,true,1123123112,0,'images/user/1_u_134563223.jpg','','hang','hang','123456','13579024832',3,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
 insert into pitaya_user values (2,true,1123123112,0,'images/user/2_u_134563223.jpg','','lili','lili','123456','13579024832',2,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a waiter',801,1000);
-insert into pitaya_user values (3,true,1123123112,0,'images/user/3_u_134563223.jpg','','ang di','ang di','123456','13579024832',3,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a boss',801,1000);
+insert into pitaya_user values (3,true,1123123112,0,'images/user/3_u_134563223.jpg','','zrm','zrm','123456','13579024832',3,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a boss',801,1000);
 insert into pitaya_user values (4,true,1123123112,0,'images/user/4_u_134563223.jpg','','che','che','123456','13579024832',2,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a casher',801,1000);
 insert into pitaya_user values (5,true,1123123112,0,'images/user/5_u_134563223.jpg','','yan','yan','123456','13579024832',3,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a service man',801,1000);
 insert into pitaya_user values (6,true,1123123112,0,'images/user/6_u_134563223.jpg','','zhoushuai','zhoushuai','123456','13579024832',2,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',123465464,'I am a cooker',801,1000);
@@ -277,9 +277,9 @@ create table pitaya_role(
 	module integer
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_role values (1,2,'ROLE_ANONYMOUS','Anonymous',false,1101);	
-insert into pitaya_role values (2,7,'ROLE_WAITER','waiter',false,1101);
-insert into pitaya_role values (3,3,'ROLE_CUSTOMER_VIP1','customer',false,1101);
+insert into pitaya_role values (1,6,'ROLE_WELCOME','welcome',false,1101);	
+insert into pitaya_role values (2,8,'ROLE_WAITER','waiter',false,1101);
+insert into pitaya_role values (3,7,'ROLE_CHEF','chef',false,1101);
 insert into pitaya_role values (4,4,'ROLE_CUSTOMER_VIP2','customer',false,1101);
 insert into pitaya_role values (5,5,'ROLE_WELCOME','welcome',false,1101);
 insert into pitaya_role values (6,6,'ROLE_CHEF','chef',false,1101);
