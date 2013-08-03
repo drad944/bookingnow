@@ -13,6 +13,8 @@ public interface UserMapper {
 
     User selectByPrimaryKey(Long id);
 
+    User getUserRole(Long id);
+    
     int updateByPrimaryKeySelective(User user);
 
     int updateByPrimaryKey(User user);

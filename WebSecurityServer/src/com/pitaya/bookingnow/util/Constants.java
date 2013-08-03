@@ -30,6 +30,7 @@ public class Constants {
 	
 	public static final int SOCKET_CONNECTION = 1;
 	public static final int LOGIN_REQUEST = SOCKET_CONNECTION + 1;
+	public static final int REGISTER_REQUEST = LOGIN_REQUEST + 1;
 	
 	//table status
 	public static final int TABLE_STATUS = 1;
