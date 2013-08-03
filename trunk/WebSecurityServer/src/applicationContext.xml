@@ -160,5 +160,9 @@
 	<bean id="customerAction" class="com.pitaya.bookingnow.action.CustomerAction" scope="prototype">
 		<property name="customerService" ref="customerService" />
 	</bean>
+
+	<bean id="messageService" class="com.pitaya.bookingnow.service.impl.MessageService" scope="singleton">
+		<property name="userService" ref="userService"/>
+	</bean>
 	
 </beans>

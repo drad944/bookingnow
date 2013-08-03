@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,10 +19,16 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.pitaya.bookingnow.message.LoginMessage;
+import com.pitaya.bookingnow.entity.security.User;
+import com.pitaya.bookingnow.entity.security.User_Role_Detail;
 import com.pitaya.bookingnow.message.Message;
+import com.pitaya.bookingnow.message.RegisterMessage;
 import com.pitaya.bookingnow.message.ResultMessage;
+import com.pitaya.bookingnow.service.impl.security.UserService;
+import com.pitaya.bookingnow.service.security.IUserService;
 import com.pitaya.bookingnow.util.Constants;
 
 class ClientAgent extends Thread{
@@ -31,7 +38,7 @@ class ClientAgent extends Thread{
 	MessageService service;
 	PrintWriter out;
 	BufferedReader in;
-	String username;
+	Long userId;
 	Integer role;
 	
 	ClientAgent(MessageService service, Socket socket){
@@ -46,7 +53,7 @@ class ClientAgent extends Thread{
 			String message = null;
 			while((message = in.readLine()) != null){
 				this.service.onMessage(message, this);
-				logger.info("["+this.username+"]" + message);
+				logger.info("Receive message from client: ["+this.userId+"], content:" + message);
 			}
 		 } catch (Exception e) {
 	        e.printStackTrace();
@@ -84,7 +91,7 @@ class ClientAgent extends Thread{
 				 client_socket.close();
 			 }
 			 this.service.removeChild(this);
-			 logger.info("Success to close connection to " + this.username);
+			 logger.info("Success to close connection to " + this.userId);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -149,12 +156,19 @@ public class MessageService {
 	private MessageServerThread serverThread;
 	private int port;
 	private boolean hasStarted;
-	private Map<Integer, Map<String, ClientAgent>> groups;
+	private Map<Integer, Map<Long, ClientAgent>> groups;
+	
+	private IUserService userService;
+	
+	public MessageService(){
+		this.hasStarted = false;
+		this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientAgent>>();
+	}
 	
 	private MessageService(int port){
 		this.hasStarted = false;
 		this.port = port;
-		this.groups = new ConcurrentHashMap <Integer, Map<String, ClientAgent>>();
+		this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientAgent>>();
 		this.start();
 	}
 	
@@ -169,6 +183,11 @@ public class MessageService {
 		return _instance;
 	}
 	
+	public void start(int port){
+		this.port = port;
+		this.start();
+	}
+	
 	public static boolean shutdownService(){
 		if(_instance.hasStarted) {
 			_instance.serverThread.shutdown();
@@ -177,8 +196,8 @@ public class MessageService {
         				_instance.serverSocket.close();
         			}
         			_instance.hasStarted = false;
-					for(Entry<Integer, Map<String, ClientAgent>> entry : _instance.groups.entrySet()){
-						for(Entry<String, ClientAgent> subentry : ((Map<String, ClientAgent>)entry.getValue()).entrySet()){
+					for(Entry<Integer, Map<Long, ClientAgent>> entry : _instance.groups.entrySet()){
+						for(Entry<Long, ClientAgent> subentry : ((Map<Long, ClientAgent>)entry.getValue()).entrySet()){
 							subentry.getValue().shutdown();
 						}
 					}
@@ -192,6 +211,14 @@ public class MessageService {
 			}
 		}
 		return true;
+	}
+	
+	public void setUserService(IUserService us){
+		this.userService = us;
+	}
+	
+	public IUserService getUserService(){
+		return this.userService;
 	}
 	
 	private boolean start(){
@@ -220,11 +247,11 @@ public class MessageService {
 	
 	public boolean sendMessageToGroup(int groupType, Message message){
 		logger.info("Send message to group");
-		Map<String, ClientAgent> group = this.groups.get(groupType);
+		Map<Long, ClientAgent> group = this.groups.get(groupType);
 		String msgstring = parseMessage(message);
 		if(group != null){
 			boolean success = true;
-			for(Entry<String, ClientAgent> entry : group.entrySet()){
+			for(Entry<Long, ClientAgent> entry : group.entrySet()){
 				if(!entry.getValue().sendMessage(msgstring)){
 					logger.error("Fail to send message to" + entry.getKey() + ":" + msgstring);
 					success = false;
@@ -237,40 +264,35 @@ public class MessageService {
 	
 	synchronized void onMessage(String msgstring, ClientAgent clientAgent){
 		Message message = unparseMessage(msgstring);
-		if(message instanceof LoginMessage){
-			String username = ((LoginMessage)message).getUsername();
-			String password = ((LoginMessage)message).getPassword();
-			String key = ((LoginMessage)message).getKey();
+		if(message instanceof RegisterMessage){
+			Long id = ((RegisterMessage)message).getUserId();
+			String key = ((RegisterMessage)message).getKey();
 			ResultMessage resultmsg = null;
-			//Get password from database service
-			if(password.equals("123456")){
-				clientAgent.username = username;
-				//Get role from database service
-				clientAgent.role = Constants.ROLE_WAITER;
+			User user  = userService.getUserRole(id);
+			if(user != null && user.getRole_Details() != null && user.getRole_Details().size() > 0){
+				clientAgent.userId = id;
+				clientAgent.role = user.getRole_Details().get(0).getRole().getType();
 				if(this.addClient(clientAgent)){
-					resultmsg = new ResultMessage(key, Constants.LOGIN_REQUEST, 
-							Constants.SUCCESS, String.valueOf(Constants.ROLE_WAITER));
+					resultmsg = new ResultMessage(key, Constants.REGISTER_REQUEST, 
+							Constants.SUCCESS, String.valueOf(clientAgent.role));
 				} else {
-					resultmsg = new ResultMessage(key, Constants.LOGIN_REQUEST, 
+					resultmsg = new ResultMessage(key, Constants.REGISTER_REQUEST, 
 							Constants.FAIL, "Can't login two clients with same user!");
 				}
-			} else {
-				resultmsg = new ResultMessage(key, Constants.LOGIN_REQUEST, 
-						Constants.FAIL, "Wrong username or password!");
+				clientAgent.sendMessage(parseMessage(resultmsg));
 			}
-			clientAgent.sendMessage(parseMessage(resultmsg));
 		}
 	}
 	
 	boolean addClient(ClientAgent clientAgent){
-		Map<String, ClientAgent> group = this.groups.get(clientAgent.role);
+		Map<Long, ClientAgent> group = this.groups.get(clientAgent.role);
 		if(group == null){
-			group = new ConcurrentHashMap<String, ClientAgent>();
+			group = new ConcurrentHashMap<Long, ClientAgent>();
 			this.groups.put(clientAgent.role, group);
 		}
-		if(group.get(clientAgent.username) == null){
-			group.put(clientAgent.username, clientAgent);
-			logger.info("Add client into server thread pool: [" + clientAgent.username + ":" + clientAgent.role + "]");
+		if(group.get(clientAgent.userId) == null){
+			group.put(clientAgent.userId, clientAgent);
+			logger.info("Add client into server thread pool: [user id: " + clientAgent.userId + "; role type: " + clientAgent.role + "]");
 			return true;
 		}else{
 			return false;
@@ -279,13 +301,13 @@ public class MessageService {
 	
 	void removeChild(ClientAgent clientAgent){
 		
-		if(clientAgent.username == null && clientAgent.role == null){
+		if(clientAgent.userId == null && clientAgent.role == null){
 			logger.info("Remove a unautherized clientAgent");
 			return;
 		}
-		if(this.groups.get(clientAgent.role) != null && this.groups.get(clientAgent.role).get(clientAgent.username) != null){
-			this.groups.get(clientAgent.role).remove(clientAgent.username);
-			logger.info("Remove client from server thread pool: [" + clientAgent.username + ":" + clientAgent.role + "]");
+		if(this.groups.get(clientAgent.role) != null && this.groups.get(clientAgent.role).get(clientAgent.userId) != null){
+			this.groups.get(clientAgent.role).remove(clientAgent.userId);
+			logger.info("Remove client from server thread pool: [" + clientAgent.userId + ":" + clientAgent.role + "]");
 			clientAgent = null;
 		}
 	}
@@ -306,10 +328,10 @@ public class MessageService {
 				Class<?> msgcls = Class.forName(type);
 				msg = (Message) JSONObject.toBean(jsonMsg, msgcls);
 			} else {
-				logger.error("Message type is null: " + message);
+				logger.error("Message type is missing: " + message);
 			}
 		} catch (JSONException e) {
-			logger.error("Fail to parse message to json object: " + message);
+			logger.error("Can't indentify message: " + message);
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			logger.error("Unsupported message type: " + type);
@@ -320,14 +342,17 @@ public class MessageService {
 	
     public static void main(String [] args){
     	MessageService messageService = MessageService.initService(19191);
-	    	for(int i=0 ;i<500; i++){
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			messageService.sendMessageToGroup(Constants.ROLE_WAITER, new Message("test"));
-    	}
+		ApplicationContext aCtx = new FileSystemXmlApplicationContext("src/applicationContext.xml");
+		IUserService us = aCtx.getBean(IUserService.class);
+		messageService.setUserService(us);
+//    	for(int i=0 ;i<500; i++){
+//			try {
+//				Thread.sleep(5000);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			messageService.sendMessageToGroup(Constants.ROLE_WAITER, new Message("test"));
+//    	}
     }
 	
 }
