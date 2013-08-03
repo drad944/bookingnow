@@ -64,7 +64,7 @@ class ClientAgent extends Thread{
 				 if(client_socket != null && !client_socket.isClosed()){
 					 client_socket.close();
 				 }
-				 this.service.removeChild(this);
+				 this.service.removeClient(this);
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
@@ -90,7 +90,7 @@ class ClientAgent extends Thread{
 			 if(client_socket != null && !client_socket.isClosed()){
 				 client_socket.close();
 			 }
-			 this.service.removeChild(this);
+			 this.service.removeClient(this);
 			 logger.info("Success to close connection to " + this.userId);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -171,31 +171,20 @@ public class MessageService {
 		this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientAgent>>();
 		this.start();
 	}
-	
-	public static MessageService initService(int port){
-		if(_instance == null){
-			_instance = new MessageService(port);
-		}
-		return _instance;
-	}
-	
-	public static MessageService getService(){
-		return _instance;
-	}
-	
+
 	public void start(int port){
 		this.port = port;
 		this.start();
 	}
 	
-	public static boolean shutdownService(){
-		if(_instance.hasStarted) {
-			_instance.serverThread.shutdown();
+	public boolean shutdown(){
+		if(this.hasStarted) {
+			this.serverThread.shutdown();
 			try {
-        			if(_instance.serverSocket != null && _instance.serverSocket.isClosed()){
-        				_instance.serverSocket.close();
+        			if(this.serverSocket != null && _instance.serverSocket.isClosed()){
+        				this.serverSocket.close();
         			}
-        			_instance.hasStarted = false;
+        			this.hasStarted = false;
 					for(Entry<Integer, Map<Long, ClientAgent>> entry : _instance.groups.entrySet()){
 						for(Entry<Long, ClientAgent> subentry : ((Map<Long, ClientAgent>)entry.getValue()).entrySet()){
 							subentry.getValue().shutdown();
@@ -299,7 +288,7 @@ public class MessageService {
 		}
 	}
 	
-	void removeChild(ClientAgent clientAgent){
+	void removeClient(ClientAgent clientAgent){
 		
 		if(clientAgent.userId == null && clientAgent.role == null){
 			logger.info("Remove a unautherized clientAgent");
@@ -312,6 +301,42 @@ public class MessageService {
 		}
 	}
 	
+	
+	public static MessageService initService(int port){
+		if(_instance == null){
+			_instance = new MessageService(port);
+		}
+		return _instance;
+	}
+	
+	public static MessageService getService(){
+		return _instance;
+	}
+	
+	public static boolean shutdownService(){
+		if(_instance.hasStarted) {
+			_instance.serverThread.shutdown();
+			try {
+        			if(_instance.serverSocket != null && _instance.serverSocket.isClosed()){
+        				_instance.serverSocket.close();
+        			}
+        			_instance.hasStarted = false;
+					for(Entry<Integer, Map<Long, ClientAgent>> entry : _instance.groups.entrySet()){
+						for(Entry<Long, ClientAgent> subentry : ((Map<Long, ClientAgent>)entry.getValue()).entrySet()){
+							subentry.getValue().shutdown();
+						}
+					}
+					_instance = null;
+					logger.info("Success to shutdown message service.");
+					return true;
+			} catch (IOException e) {
+					e.printStackTrace();
+					_instance = null;
+					return false;
+			}
+		}
+		return true;
+	}
 	
 	public static String parseMessage(Message message){
 		JSONObject jsonMsg = JSONObject.fromObject(message);
