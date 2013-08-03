@@ -287,6 +287,20 @@
 		from pitaya_user
 	</select>
 	
+	<select id="getUserRole" resultMap="User_BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="User_Base_Column_List" />
+		,
+		<include refid="Role_Detail_Base_Column_List" />
+		,
+		<include refid="Role_Base_Column_List" />
+		
+		from pitaya_user U
+			left outer join pitaya_user_role_detail UR on UR.user_id = U.id
+			left outer join pitaya_role R on R.id = UR.role_id
+		where U.id = #{id,jdbcType=BIGINT}
+	</select>
+	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Long">
 		select

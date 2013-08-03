@@ -21,5 +21,7 @@ public interface IUserService{
 	MyResult login(User user);
 	
 	User searchUserById(Long id);
-
+	
+	User getUserRole(Long id);
+	
 }

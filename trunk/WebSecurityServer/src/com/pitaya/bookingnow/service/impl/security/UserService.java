@@ -125,5 +125,13 @@ public class UserService implements IUserService {
 		return userDao.searchAllUsers();
 	}
 
+	@Override
+	public User getUserRole(Long id) {
+		if(id != null){
+			return userDao.getUserRole(id);
+		}
+		return null;
+	}
+
 
 }
