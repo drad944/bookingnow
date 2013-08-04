@@ -9,8 +9,7 @@ public class Constants {
 	public static final int ORDER_WELCOMER_NEW = ORDER_NEW + 1;
 	public static final int ORDER_WAITING = ORDER_WELCOMER_NEW + 1;
 	public static final int ORDER_COMMITED = ORDER_WAITING + 1;
-	public static final int ORDER_COOKING = ORDER_COMMITED + 1;
-	public static final int ORDER_PAYING = ORDER_COOKING + 1;
+	public static final int ORDER_PAYING = ORDER_COMMITED + 1;
 	public static final int ORDER_FINISHED = ORDER_PAYING + 1;
 	public static final int ORDER_UNAVAILABLE = ORDER_FINISHED + 1;
 	public static final int ORDER_AVAILABLE = ORDER_UNAVAILABLE + 1;
@@ -18,19 +17,10 @@ public class Constants {
 	//food status
 	public static final int FOOD_NEW = 1;
 	public static final int FOOD_CONFIRMED = FOOD_NEW + 1;
-	public static final int FOOD_WAITING = FOOD_CONFIRMED + 1;
-	public static final int FOOD_COOKING = FOOD_WAITING + 1;
-	public static final int FOOD_READY = FOOD_COOKING + 1;
-	public static final int FOOD_FINISHED = FOOD_READY + 1;
+	public static final int FOOD_COOKING = FOOD_CONFIRMED + 1;
+	public static final int FOOD_FINISHED = FOOD_COOKING + 1;
 	public static final int FOOD_UNAVAILABLE = FOOD_FINISHED + 1;
 	public static final int FOOD_AVAILABLE = FOOD_UNAVAILABLE + 1;
-	
-	public static final int SUCCESS = 1;
-	public static final int FAIL = SUCCESS + 1;
-	
-	public static final int SOCKET_CONNECTION = 1;
-	public static final int LOGIN_REQUEST = SOCKET_CONNECTION + 1;
-	public static final int REGISTER_REQUEST = LOGIN_REQUEST + 1;
 	
 	//table status
 	public static final int TABLE_STATUS = 1;
@@ -117,5 +107,21 @@ public class Constants {
 	public static final int AUTHORITY_CASHIER = AUTHORITY_WAITER + 1;
 	public static final int AUTHORITY_MANAGER = AUTHORITY_CASHIER + 1;
 	public static final int AUTHORITY_ADMIN = AUTHORITY_MANAGER + 1;
+
+	public static final String ACTION_ADD = "new";
+	public static final String ACTION_REMOVE = "delete";
+	public static final String ACTION_UPDATE = "update";
+	
+	public static final int SUCCESS = 1;
+	public static final int FAIL = SUCCESS + 1;
+	
+	public static final int SOCKET_CONNECTION = 1;
+	public static final int LOGIN_REQUEST = SOCKET_CONNECTION + 1;
+	public static final int REGISTER_REQUEST = LOGIN_REQUEST + 1;
+	
+	public static final String ORDER_MESSAGE = "order_message";
+	public static final String REGISTER_MESSAGE = "register_message";
+	public static final String RESULT_MESSAGE = "result_message";
+	public static final String SYSTEM_MESSAGE = "system_message";
 	
 }

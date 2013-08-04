@@ -128,7 +128,7 @@ public class OrderAction extends BaseAction{
 	}
 	
 	/*		
-	 * 		waiter submit a new waiting order which contains customer info
+	 * 		submit a welcomer_new order
 	 */
 	public String submitWaitingOrder(){
 		if (order != null) {
@@ -145,7 +145,7 @@ public class OrderAction extends BaseAction{
 	}
 	
 	/*		
-	 * 		waiter update a waiting order with food list
+	 * 		update a welcomer_new order to waiting
 	 */
 	public String updateFoodsOfWaitingOrder(){
 		if (order != null) {
@@ -162,7 +162,7 @@ public class OrderAction extends BaseAction{
 	}
 	
 	/*		
-	 * 		submit a new created order which contains user id and table id
+	 * 		submit a new order
 	 */
 	
 	public String submitNewOrder(){
@@ -179,7 +179,7 @@ public class OrderAction extends BaseAction{
 	}
 	
 	/*		
-	 * 		update a new or waiting order to committed
+	 * 		update welcomer_new order to new
 	 */
 	public String updateTablesOfWaitingOrder() {
 		if (order != null) {
@@ -205,6 +205,9 @@ public class OrderAction extends BaseAction{
 		}
 	}
 	
+	/*
+	 * 		Update new or waiting order to committed 
+	 */
 	public String commitOrder(){
 		if (order != null) {
 			if(order.getFood_details() != null){
