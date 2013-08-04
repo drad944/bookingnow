@@ -1,5 +1,6 @@
 package com.pitaya.bookingnow.service.impl;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -1184,7 +1185,7 @@ public class OrderService implements IOrderService{
 				}
 				
 				if (realOrder.getAllowance() != null && realOrder.getAllowance() >= 0 && realOrder.getAllowance() <= 1) {
-					result.setTotalPriceOfOrder(result.getTotalPriceOfOrder() * realOrder.getAllowance());
+					result.setTotalPriceOfOrder(new Double(new DecimalFormat(".00").format(result.getTotalPriceOfOrder() * realOrder.getAllowance())));
 					realOrder.setTotal_price(result.getTotalPriceOfOrder());
 					result.setOrder(realOrder);
 					result.setExecuteResult(true);
