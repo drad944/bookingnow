@@ -1,5 +1,6 @@
 package com.pitaya.bookingnow.app.views;
 
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,13 +17,16 @@ import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.model.Order.Food;
 import com.pitaya.bookingnow.app.data.GetOrderFoodsHandler;
 import com.pitaya.bookingnow.app.data.GetOrderFoodsStatusHandler;
+import com.pitaya.bookingnow.app.data.MessageHandler;
 import com.pitaya.bookingnow.app.data.WorkerOrderDetailAdapter;
 import com.pitaya.bookingnow.app.data.PreviewOrderDetailAdapter;
 import com.pitaya.bookingnow.app.data.HttpHandler;
 import com.pitaya.bookingnow.app.service.DataService;
+import com.pitaya.bookingnow.app.service.MessageService;
 import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.service.OrderTable;
 import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.message.*;
 
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -51,7 +55,8 @@ public class WaiterOrderLeftView extends OrderLeftView{
 	
 	private OrderListsViewPagerAdapter mAdapter;
 	private OrderListsViewPager mOrdersViewPager;
-
+	private SoftReference<MessageService> msRef;
+	private MessageHandler mMessageHandler;
 	
 	public WaiterOrderLeftView(){
 		super();
@@ -98,7 +103,22 @@ public class WaiterOrderLeftView extends OrderLeftView{
 		listTypes.add(WAITING_ORDERS);
 		mAdapter = new OrderListsViewPagerAdapter(this.getActivity(), listTypes) ;
 		mOrdersViewPager.setAdapter(mAdapter);
+		mMessageHandler = new MessageHandler();
+		mMessageHandler.setOnMessageListener(new MessageHandler.OnMessageListener(){
+
+			@Override
+			public void onMessage(Message message) {
+			}
+			
+		});
+		getMessageService().registerHandler(Constants.ORDER_MESSAGE, mMessageHandler);
 		return view;
+	}
+	
+	@Override
+	public void onDestroyView(){
+		super.onDestroyView();
+		getMessageService().unregisterHandler(Constants.ORDER_MESSAGE, mMessageHandler);
 	}
 	
 	public void moveOrderToMineList(Order order){
@@ -168,6 +188,13 @@ public class WaiterOrderLeftView extends OrderLeftView{
 				return "等候中的订单";
 		}
 		return "unknow order list type";
+	}
+	
+	private MessageService getMessageService(){
+		if(this.msRef == null){
+			msRef = new SoftReference<MessageService>(MessageService.getService());
+		}
+		return (MessageService)msRef.get();
 	}
 	
 	class OrderListsViewPagerAdapter extends PagerAdapter {

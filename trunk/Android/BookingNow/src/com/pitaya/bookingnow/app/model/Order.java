@@ -99,7 +99,6 @@ public class Order implements Serializable{
 			case Constants.FOOD_NEW:
 				return "新提交";
 			case Constants.FOOD_CONFIRMED:
-			case Constants.FOOD_WAITING:
 				return "等待加工";
 			case Constants.FOOD_COOKING:
 				return "加工中";
@@ -268,8 +267,7 @@ public class Order implements Serializable{
 		DataService.resetOrderUpdateDetails(context, this);
 	}
 	
-	public Map<String, ArrayList<UpdateFood>> getUpdateFoods(){
-		
+	public Map<String, ArrayList<UpdateFood>> getUpdateFoods(){	
 		return this.updateFoods;
 	}
 	
@@ -301,7 +299,7 @@ public class Order implements Serializable{
 	
 	public void enrichFoods(Context context){
 		if(this.foods != null && this.foods.size() > 0){
-			this.removeAllFood();
+			this.removeAllFood(null);
 		}
 		DataService.getFoodsOfOrder(context, this);
 	}
@@ -371,9 +369,11 @@ public class Order implements Serializable{
 		this.mOnDirtyChangedListeners = null;
 	}
 	
-	public void removeAllFood(){
-		this.foods = null;
+	public void removeAllFood(Context context){
 		this.foods = new LinkedHashMap<Order.Food, Integer>();
+		if(context != null){
+			DataService.removeFoodsOfOrder(context, this.getOrderKey());
+		}
 	}
 	
 	public Order.Food searchFood(String food_key){

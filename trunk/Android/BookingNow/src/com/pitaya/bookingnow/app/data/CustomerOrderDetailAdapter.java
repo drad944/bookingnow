@@ -99,8 +99,7 @@ public class CustomerOrderDetailAdapter extends OrderDetailAdapter {
 	
 					@Override
 					public void onClick(View v) {
-						DataService.removeFoodsOfOrder(mContext, mOrder.getOrderKey());
-						mOrder.removeAllFood();
+						mOrder.removeAllFood(mContext);
 						CustomerOrderDetailAdapter.this.notifyDataSetChanged();
 						if(CustomerOrderDetailAdapter.this.mListener != null){
 							CustomerOrderDetailAdapter.this.mListener.OnDataSetChanged();
@@ -136,7 +135,7 @@ public class CustomerOrderDetailAdapter extends OrderDetailAdapter {
 								@Override
 								public void afterGetFoods() {
 									mOrder.markDirty(mContext, false);
-									DataService.saveOrderDetails(mContext, mOrder);
+									//DataService.saveOrderDetails(mContext, mOrder);
 									CustomerOrderDetailAdapter.this.notifyDataSetChanged();
 									if(CustomerOrderDetailAdapter.this.mListener != null){
 										CustomerOrderDetailAdapter.this.mListener.OnDataSetChanged();

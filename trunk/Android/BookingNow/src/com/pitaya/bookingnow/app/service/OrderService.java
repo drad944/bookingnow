@@ -108,6 +108,9 @@ public class OrderService {
 	
 	public static void updateFoodsOfOrder(Order order, HttpHandler callback){
 		Map<String, ArrayList<UpdateFood>> foods = order.getUpdateFoods();
+		if(foods == null){
+			return;
+		}
 		JSONObject jreq = new JSONObject();
 		JSONObject jupdatefoods = new JSONObject();
 		JSONArray jfoods;
@@ -116,6 +119,12 @@ public class OrderService {
 			ArrayList<UpdateFood> newFoods = foods.get(Order.getUpdateType(Order.ADDED));
 			int i = 0;
 			try {
+				int status = -1;
+				if(order.getStatus() == Constants.ORDER_WAITING){
+					status = Constants.FOOD_NEW;
+				} else if(order.getStatus() == Constants.ORDER_COMMITED){
+					status = Constants.FOOD_CONFIRMED;
+				}
 				for(UpdateFood food : newFoods){
 					JSONObject jorder_food = new JSONObject();
 					JSONObject jfood = new JSONObject();
@@ -124,6 +133,9 @@ public class OrderService {
 					jorder_food.put("food", jfood);
 					jorder_food.put("count", food.getQuantity());
 					jorder_food.put("isFree", food.isFree());
+					if(status != -1){
+						jorder_food.put("status", status);
+					}
 					jfoods.put(i++, jorder_food);
 				}
 				jupdatefoods.put(Order.getUpdateType(Order.ADDED), jfoods);

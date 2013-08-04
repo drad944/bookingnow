@@ -1,10 +1,17 @@
 package com.pitaya.bookingnow.app.model;
 
-public class CookingItem {
+import java.io.Serializable;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.pitaya.bookingnow.message.IJSONTransition;
+
+public class CookingItem implements IJSONTransition{
 	
 	private Long id;
-	private String food_id;
-	private String order_id;
+	private Long food_id;
+	private Long order_id;
 	private String food_name;
 	private int status;
 	private int quantity;
@@ -14,10 +21,13 @@ public class CookingItem {
 	
 	private OnStatusChangedListener mListener;
 	
-	public CookingItem(Long id, String fid, String oid, int status, int quantity, boolean f, String preference, Long time){
+	public CookingItem(){}
+	
+	public CookingItem(Long id, Long fid, Long oid, String name, int status, int quantity, boolean f, String preference, Long time){
 		this.id = id;
 		this.food_id = fid;
 		this.order_id = oid;
+		this.food_name = name;
 		this.status = status;
 		this.quantity = quantity;
 		this.free = f;
@@ -29,11 +39,11 @@ public class CookingItem {
 		return this.id;
 	}
 	
-	public String getFoodId(){
+	public Long getFoodId(){
 		return this.food_id;
 	}
 	
-	public String getOrderId(){
+	public Long getOrderId(){
 		return this.order_id;
 	}
 	
@@ -95,6 +105,30 @@ public class CookingItem {
 	public interface OnStatusChangedListener{
 		
 		public void onStatusChanged(CookingItem item, int status, int old_status);
+
+	}
+
+	@Override
+	public void toJSONObject(JSONObject jsonObj) {
+
+	}
+
+	@Override
+	public void fromJSONObject(JSONObject jsonObj) {
+		try {
+			this.id = jsonObj.getLong("id");
+			if(jsonObj.has("isFree")){
+				this.free = jsonObj.getBoolean("isFree");
+			}
+			if(jsonObj.has("count")){
+				this.quantity = jsonObj.getInt("count");
+			}
+			if(jsonObj.has("last_modify_time")){
+				this.submit_time = jsonObj.getLong("last_modify_time");
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 
 	}
 }

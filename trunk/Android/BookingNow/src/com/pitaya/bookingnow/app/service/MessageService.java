@@ -3,7 +3,10 @@ package com.pitaya.bookingnow.app.service;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -14,13 +17,13 @@ import com.pitaya.bookingnow.message.Message;
 
 public class MessageService {
 	
-	private static String LOGTAG = "MessageService";
+	private static String TAG = "MessageService";
 	private static MessageService _instance;
 	private Client clientAgent;
-	private Map<String, Handler> handlers;
+	private Map<String, List<Handler>> handlers;
 	
 	private MessageService(String ip, int port){
-		this.handlers = new HashMap<String, Handler>();
+		this.handlers = new HashMap<String, List<Handler>>();
 		this.start(ip, port);
 	}
 	
@@ -43,15 +46,26 @@ public class MessageService {
 	}
 	
 	public void registerHandler(String key, Handler handler){
-		if(this.handlers.get(key) != null){
-			Log.e(LOGTAG, "Fail to register handler with same key");
-		} else {
-			this.handlers.put(key, handler);
+		List<Handler> handlerList = this.handlers.get(key);
+		if(handlerList == null){
+			handlerList = new ArrayList<Handler>();
+			this.handlers.put(key, handlerList);
 		}
+		handlerList.add(handler);
+		Log.i(TAG, "Register message handler with key: " + key);
 	}
 	
-	public void unregisterHandler(String key){
-		this.handlers.remove(key);
+	public void unregisterHandler(String key, Handler handler){
+		List<Handler> handlerList = this.handlers.get(key);
+		if(handlerList != null){
+			for(int i=0; i < handlerList.size(); i++){
+				if(handlerList.get(i) == handler){
+					handlerList.remove(i);
+					Log.i(TAG, "Register message handler with key: " + key);
+					break;
+				}
+			}
+		}
 	}
 	
 	public boolean isConnecting(){
@@ -75,47 +89,43 @@ public class MessageService {
 	}
 	
 	public boolean sendMessage(Message message){
-		return this.clientAgent.sendMessage(this.parseMessage(message));
+		return this.clientAgent.sendMessage(parseMessage(message));
 	}
 	
 	public boolean isReady(){
 		return this.clientAgent.isReady();
 	}
 	
-	//For only system service message, broadcast to all handlers
 	void onMessage(Message message){
-		for(Entry<String, Handler> entry : handlers.entrySet()){
-			android.os.Message amsg = new android.os.Message();
-	        Bundle bundle = new Bundle();  
-	        bundle.putSerializable("message", message);
-	        amsg.setData(bundle);
-			entry.getValue().sendMessage(amsg);
+		if(message == null){
+			return;
+		}
+		List<Handler> handlerList = this.handlers.get(message.getCategory());
+		if(handlerList != null && handlerList.size() > 0){
+	        for(Handler handler : handlerList){
+				android.os.Message amsg = new android.os.Message();  
+		        Bundle bundle = new Bundle();  
+		        bundle.putSerializable("message", message);
+		        amsg.setData(bundle);
+	        	handler.sendMessage(amsg);
+	        }
+		} else {
+			Log.i(TAG, "This category message has not been registered: " + message.getCategory());
 		}
 	}
 	
 	void onMessage(String message){
-		Message msg = this.unparseMessage(message);
-		if(msg != null){
-			Handler handler = this.handlers.get(msg.getKey());
-			if(handler != null){
-				android.os.Message amsg = new android.os.Message();  
-		        Bundle bundle = new Bundle();  
-		        bundle.putSerializable("message", msg);
-		        amsg.setData(bundle);
-		        this.handlers.get(msg.getKey()).sendMessage(amsg);
-			} else {
-				Log.e(LOGTAG, "The key of this message has not been registered: " + message);
-			}
-		}
+		Message msg = unparseMessage(message);
+		onMessage(msg);
 	}
 	
-	public String parseMessage(Message message){
+	public static String parseMessage(Message message){
 		JSONObject jsonObj = new JSONObject();
 		message.toJSONObject(jsonObj);
 		return jsonObj.toString();
 	}
 	
-	public Message unparseMessage(String message){
+	public static Message unparseMessage(String message){
 		Message msg = null;
 		String type = null;
 		try {
@@ -126,19 +136,19 @@ public class MessageService {
 				msg = (Message) msgcls.newInstance();
 				msg.fromJSONObject(jsonMsg);
 			} else {
-				Log.e(LOGTAG, "Message type is null: " + message);
+				Log.e(TAG, "Message type is null: " + message);
 			}
 		} catch (JSONException e) {
-			Log.e(LOGTAG, "Fail to parse from message to json" + message);
+			Log.e(TAG, "Fail to parse from message to json" + message);
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			Log.e(LOGTAG, "Unsupported message type: " + type);
+			Log.e(TAG, "Unsupported message type: " + type);
 			e.printStackTrace();
 		} catch (InstantiationException e) {
-			Log.e(LOGTAG, "Fail to parse message type:" + type);
+			Log.e(TAG, "Fail to parse message type:" + type);
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			Log.e(LOGTAG, "Fail to parse message type:" + type);
+			Log.e(TAG, "Fail to parse message type:" + type);
 			e.printStackTrace();
 		}
 		return msg;

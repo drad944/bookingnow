@@ -93,7 +93,6 @@ public class UpdateFoodsHttpHandler extends HttpHandler{
 			mOrder.markDirty(mContext, false);
 			mOrder.resetUpdateFoods(mContext);
 			if(needrestore){
-				mOrder.removeAllFood();
 				mOrder.enrichFoods(mContext);
 				this.mAdapter.notifyDataSetChanged();
 			}
