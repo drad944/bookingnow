@@ -176,7 +176,7 @@ public class TestUserService {
 
 	@Test
 	public void testRemoveUserById() {
-		userService.removeUserById((long) 12);
+		userService.removeUserById((long) 10);
 
 	}
 

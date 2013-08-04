@@ -170,7 +170,6 @@ public class UserAction extends BaseAction{
 			result = userService.removeUserById(user.getId());
 			
 			if(result.isExecuteResult()){ 
-				user = result.getUser();
 	            return "removeUserSuccess";  
 	        }else{  
 	            return "Fail";  

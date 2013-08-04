@@ -10,6 +10,16 @@ var AppUtil = {
 	}
 };
 
+function callAction(actionName,parameter) {
+		var result = {};
+		$.post(actionName, parameter,function(data){
+			
+			result = data;
+			});
+		
+		return result;
+}
+
 String.prototype.startWith=function(str){
 	if(str==null||str==""||this.length==0||str.length>this.length)
 	  return false;

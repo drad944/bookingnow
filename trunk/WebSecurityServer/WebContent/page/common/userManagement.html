@@ -10,13 +10,13 @@
 	<script type="text/javascript" src="../../js/AppUtil.js"></script>
 	
     <script type="text/javascript" src="../../js/jqxcore.js"></script>
+    <script type="text/javascript" src="../../js/jqxdata.js"></script> 
     <script type="text/javascript" src="../../js/jqxbuttons.js"></script>
     <script type="text/javascript" src="../../js/jqxscrollbar.js"></script>
     <script type="text/javascript" src="../../js/jqxmenu.js"></script>
     <script type="text/javascript" src="../../js/jqxgrid.js"></script>
     <script type="text/javascript" src="../../js/jqxgrid.selection.js"></script> 
     <script type="text/javascript" src="../../js/jqxgrid.columnsresize.js"></script> 
-    <script type="text/javascript" src="../../js/jqxdata.js"></script> 
     <script type="text/javascript" src="../../js/gettheme.js"></script>
     <script type="text/javascript">
          $(document).ready(function () {
@@ -216,7 +216,13 @@
                 var rowscount = $("#jqxgrid").jqxGrid('getdatainformation').rowscount;
                 if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
                     var id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
-                    var commit = $("#jqxgrid").jqxGrid('deleterow', id);
+                    
+                    var rowData = $('#jqxgrid').jqxGrid('getrowdatabyid', id);
+                    
+                    var result = callAction("removeUser.action",{"user.id": rowData["id"]});
+                    if(result != null && result["executeResult"] != null && result["executeResult"] == true){
+                    	var commit = $("#jqxgrid").jqxGrid('deleterow', id);
+                    }
                 }
             });
         });
