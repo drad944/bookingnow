@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>caculate order</title>
+
+	<link rel="stylesheet" type="text/css" href="../../css/head.css">
+	<link rel="stylesheet" href="../../css/jqx.base.css" type="text/css" />
+	
+	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../../js/AppUtil.js"></script>
+	
+    <script type="text/javascript" src="../../js/jqxcore.js"></script>
+    <script type="text/javascript" src="../../js/jqxbuttons.js"></script>
+    <script type="text/javascript" src="../../js/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="../../js/jqxmenu.js"></script>
+    <script type="text/javascript" src="../../js/jqxgrid.js"></script>
+    <script type="text/javascript" src="../../js/jqxgrid.selection.js"></script> 
+    <script type="text/javascript" src="../../js/jqxgrid.columnsresize.js"></script> 
+    <script type="text/javascript" src="../../js/jqxdata.js"></script> 
+    <script type="text/javascript" src="../../js/gettheme.js"></script>
+    <script type="text/javascript">
+         $(document).ready(function () {
+         		$.post("calculateOrder.action", 
+		    			{"order.id": 1}, 
+		    			function(matchedOrder){
+		    				var invoiceData = {};
+		    				
+	if(matchedOrder != null && matchedOrder.id != null){
+		for(var orderAttr in matchedOrder) {
+			if(orderAttr == "food_details" || 
+					orderAttr == "table_details" || 
+					orderAttr == "allowance" || 
+					orderAttr == "total_price"){
+				if(orderAttr == "food_details"){
+					var food_details = matchedOrder[orderAttr];
+					if(food_details != null && food_details.length > 0) {
+						for(var i = 0;i < food_details.length; i++) {
+							var food_detail = food_details[i];
+							if(food_detail != null && food_detail["id"] != null){
+								var invoiceFood = {};
+								
+								invoiceFood["count"] = food_detail["count"];
+								if(food_detail["isFree"] != null && food_detail["isFree"] == false) {
+									if(food_detail["food"] != null) {
+										var food = food_detail["food"];
+										if(food["price"] != null) {
+											invoiceFood["name"] = food["name"];
+											invoiceFood["price"] = food["price"] * food_detail["count"];
+											
+										}
+									}
+									
+								}else{
+									if(food_detail["food"] != null) {
+										var food = food_detail["food"];
+										if(food["price"] != null) {
+											invoiceFood["name"] = food["name"];
+											invoiceFood["price"] = food["price"] * 0;
+										}
+									}
+								}
+								
+								invoiceData["food_" + i] = invoiceFood;
+							}
+							
+						}
+					}
+					
+				}
+				
+				if(orderAttr == "table_details"){
+					var table_details = matchedOrder[orderAttr];
+					if(table_details != null && table_details.length > 0) {
+						for(var i = 0;i < table_details.length; i++) {
+							var table_detail = table_details[i];
+							if(table_detail["table"] != null && table_detail["id"] != null) {
+								var invoiceTable = {};
+								var table = table_detail["table"];
+								if(table["indoorPrice"] != null && table["indoorPrice"] > 0) {
+									invoiceTable["name"] = table["address"];
+									invoiceTable["count"] = 1;
+									invoiceTable["price"] = table["indoorPrice"];
+									
+									invoiceData["table_" + i] = invoiceTable;
+								}
+							}
+							
+						}
+					}
+					
+				}
+				
+				
+				if(orderAttr == "allowance" && matchedOrder["allowance"] > 0){
+					var invoiceAllowance = {};
+					invoiceAllowance["name"] = "折扣";
+					invoiceAllowance["count"] = matchedOrder["allowance"];
+					invoiceAllowance["price"] = "";
+					invoiceData["allowance"] = invoiceAllowance;
+				}
+				
+				if(orderAttr == "total_price"){
+					var invoiceTotal_price = {};
+					invoiceTotal_price["name"] = "总计";
+					invoiceTotal_price["count"] = "";
+					invoiceTotal_price["price"] = matchedOrder["total_price"];
+					
+					invoiceData["total_price"] = invoiceTotal_price;
+				}
+			}
+		}
+	}
+	
+	function invoiceOrderTable(invoiceData) {
+		var orderTableBegin="<table>";
+		var orderTableEnd="</table>";
+		var orderTableRowBegin="<tr>";
+		var orderTableRowEnd="</tr>";
+		var orderTableColumnBegin="<td>";
+		var orderTableColumnEnd="</td>";
+		var orderTableFirstRow = "<tr><td>商品名称</td><td>数量</td><td>价格</td></tr>";
+		
+		var orderTable = orderTableBegin;
+		orderTable = orderTable + orderTableFirstRow;
+		if(invoiceData != null) {
+			for(var rowAttr in invoiceData) {
+				if(rowAttr.startWith("food")) {
+					var rowObject = invoiceData[rowAttr];
+					if(rowObject != null) {
+						var rowTable = orderTableRowBegin;
+						for(var columnAttr in rowObject) {
+							if(columnAttr == "name") {
+								var columnTable = orderTableColumnBegin;
+								columnTable = columnTable + rowObject[columnAttr];
+								columnTable = columnTable + orderTableColumnEnd;
+								rowTable = rowTable + columnTable;
+								break;
+							}
+						}
+						for(var columnAttr in rowObject) {
+							if(columnAttr == "count") {
+								var columnTable = orderTableColumnBegin;
+								columnTable = columnTable + rowObject[columnAttr];
+								columnTable = columnTable + orderTableColumnEnd;
+								rowTable = rowTable + columnTable;
+								break;
+							}
+						}
+						for(var columnAttr in rowObject) {
+							if(columnAttr == "price") {
+								var columnTable = orderTableColumnBegin;
+								columnTable = columnTable + rowObject[columnAttr];
+								columnTable = columnTable + orderTableColumnEnd;
+								rowTable = rowTable + columnTable;
+								break;
+							}
+						}
+						rowTable = rowTable + orderTableRowEnd;
+						orderTable = orderTable + rowTable;
+					}
+					delete invoiceData[rowAttr];
+				}
+				
+			}
+			
+			for(var rowAttr in invoiceData) {
+				if(rowAttr.startWith("table")) {
+					var rowObject = invoiceData[rowAttr];
+					if(rowObject != null) {
+						var rowTable = orderTableRowBegin;
+						
+						for(var columnAttr in rowObject) {
+							if(columnAttr == "name") {
+								var columnTable = orderTableColumnBegin;
+								columnTable = columnTable + rowObject[columnAttr];
+								columnTable = columnTable + orderTableColumnEnd;
+								rowTable = rowTable + columnTable;
+								break;
+							}
+						}
+						for(var columnAttr in rowObject) {
+							if(columnAttr == "count") {
+								var columnTable = orderTableColumnBegin;
+								columnTable = columnTable + rowObject[columnAttr];
+								columnTable = columnTable + orderTableColumnEnd;
+								rowTable = rowTable + columnTable;
+								break;
+							}
+						}
+						for(var columnAttr in rowObject) {
+							if(columnAttr == "price") {
+								var columnTable = orderTableColumnBegin;
+								columnTable = columnTable + rowObject[columnAttr];
+								columnTable = columnTable + orderTableColumnEnd;
+								rowTable = rowTable + columnTable;
+								break;
+							}
+						}
+						rowTable = rowTable + orderTableRowEnd;
+						orderTable = orderTable + rowTable;
+					}
+					delete invoiceData[rowAttr];
+				}
+			}
+			
+			for(var rowAttr in invoiceData) {
+				if(rowAttr.startWith("allowance")) {
+					var rowObject = invoiceData[rowAttr];
+					if(rowObject != null) {
+						var rowTable = orderTableRowBegin;
+						
+						for(var columnAttr in rowObject) {
+							if(columnAttr == "name") {
+								var columnTable = orderTableColumnBegin;
+								columnTable = columnTable + rowObject[columnAttr];
+								columnTable = columnTable + orderTableColumnEnd;
+								rowTable = rowTable + columnTable;
+								break;
+							}
+						}
+						for(var columnAttr in rowObject) {
+							if(columnAttr == "count") {
+								var columnTable = orderTableColumnBegin;
+								columnTable = columnTable + rowObject[columnAttr];
+								columnTable = columnTable + orderTableColumnEnd;
+								rowTable = rowTable + columnTable;
+								break;
+							}
+						}
+						for(var columnAttr in rowObject) {
+							if(columnAttr == "price") {
+								var columnTable = orderTableColumnBegin;
+								columnTable = columnTable + rowObject[columnAttr];
+								columnTable = columnTable + orderTableColumnEnd;
+								rowTable = rowTable + columnTable;
+								break;
+							}
+						}
+						
+						rowTable = rowTable + orderTableRowEnd;
+						orderTable = orderTable + rowTable;
+					}
+					delete invoiceData[rowAttr];
+					break;
+				}
+			}
+			for(var rowAttr in invoiceData) {
+				if(rowAttr.startWith("total_price")) {
+					var rowObject = invoiceData[rowAttr];
+					if(rowObject != null) {
+						var rowTable = orderTableRowBegin;
+						for(var columnAttr in rowObject) {
+							if(columnAttr == "name") {
+								var columnTable = orderTableColumnBegin;
+								columnTable = columnTable + rowObject[columnAttr];
+								columnTable = columnTable + orderTableColumnEnd;
+								rowTable = rowTable + columnTable;
+								break;
+							}
+						}
+						for(var columnAttr in rowObject) {
+							if(columnAttr == "count") {
+								var columnTable = orderTableColumnBegin;
+								columnTable = columnTable + rowObject[columnAttr];
+								columnTable = columnTable + orderTableColumnEnd;
+								rowTable = rowTable + columnTable;
+								break;
+							}
+						}
+						for(var columnAttr in rowObject) {
+							if(columnAttr == "price") {
+								var columnTable = orderTableColumnBegin;
+								columnTable = columnTable + rowObject[columnAttr];
+								columnTable = columnTable + orderTableColumnEnd;
+								rowTable = rowTable + columnTable;
+								break;
+							}
+						}
+						rowTable = rowTable + orderTableRowEnd;
+						orderTable = orderTable + rowTable;
+					}
+					delete invoiceData[rowAttr];
+					break;
+				}
+			}
+			orderTable = orderTable + orderTableEnd;
+		}
+		return orderTable;
+	}
+	
+            $("#caculateOrderTable").html(invoiceOrderTable(invoiceData));
+            
+        });
+    });
+    </script>
+</head>
+	
+<body>
+	<div id="content">
+		caculate order.
+		<div id="framework_main">welcome to bookingNow management!</div>
+		<div id="caculateOrderTable" >
+        	
+    	</div>
+		
+	</div>
+	
+</body>
+</html>

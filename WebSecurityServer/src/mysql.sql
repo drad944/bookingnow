@@ -34,7 +34,7 @@ create table pitaya_table(
 	indoorPrice double
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_table values (1,2,1,2,'in the first floor',0);	
+insert into pitaya_table values (1,2,1,2,'in the first floor',60);	
 insert into pitaya_table values (2,2,1,2,'in the second floor',50);
 insert into pitaya_table values (3,2,2,5,'in the first floor',0);
 insert into pitaya_table values (4,3,2,5,'in the second floor',50);
@@ -150,9 +150,9 @@ create table pitaya_order_food_detail(
 	CONSTRAINT fk_order_food_detail_order FOREIGN KEY (order_id) REFERENCES pitaya_order (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_order_food_detail values (1,1,1,2,1351232321,true,false,1,1);
-insert into pitaya_order_food_detail values (2,2,1,2,1351232321,true,true,2,1);
-insert into pitaya_order_food_detail values (3,3,1,3,1351232321,true,false,3,1);
+insert into pitaya_order_food_detail values (1,1,2,2,1351232321,true,false,1,1);
+insert into pitaya_order_food_detail values (2,2,2,2,1351232321,true,true,2,1);
+insert into pitaya_order_food_detail values (3,3,3,3,1351232321,true,false,3,1);
 insert into pitaya_order_food_detail values (4,4,2,4,1351232321,true,false,4,2);
 insert into pitaya_order_food_detail values (5,4,1,2,1351232321,true,true,5,2);
 insert into pitaya_order_food_detail values (6,1,3,2,1351232321,true,false,6,2);
