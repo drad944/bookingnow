@@ -9,22 +9,22 @@ public class Message implements Serializable{
 	 */
 	private static final long serialVersionUID = 6356895567978585140L;
 	
-	private String key;
+	private String category;
 	private String type; 
 	
 	public Message(){}
 	
-	public Message(String key){
-		this.key = key;
+	public Message(String category){
+		this.category = category;
 		this.type = this.getClass().getName();
 	}
 	
-	public void setKey(String key){
-		this.key = key;
+	public void setCategory(String category){
+		this.category = category;
 	}
 	
-	public String getKey(){
-		return this.key;
+	public String getCategory(){
+		return this.category;
 	}
 	
 	public void setType(String type){

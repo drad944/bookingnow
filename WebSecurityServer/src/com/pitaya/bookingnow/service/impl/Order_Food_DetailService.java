@@ -1,5 +1,6 @@
 package com.pitaya.bookingnow.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -7,11 +8,15 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.struts2.ServletActionContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.pitaya.bookingnow.dao.FoodMapper;
 import com.pitaya.bookingnow.dao.Order_Food_DetailMapper;
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Order_Food_Detail;
+import com.pitaya.bookingnow.message.OrderDetailMessage;
 import com.pitaya.bookingnow.service.IOrder_Food_DetailService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
@@ -23,6 +28,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 	private Order_Food_DetailMapper food_detailDao;
 	
 	private FoodMapper foodDao;
+	private MessageService messageService;
 
 	public FoodMapper getFoodDao() {
 		return foodDao;
@@ -40,6 +46,14 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 		this.food_detailDao = food_detailDao;
 	}
 
+	public void setMessageService(MessageService ms){
+		this.messageService = ms;
+	}
+	
+	public MessageService getMessageService(){
+		return this.messageService;
+	}
+	
 	@Override
 	public boolean add(Order_Food_Detail food_detail) {
 		// TODO Auto-generated method stub
@@ -144,9 +158,10 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 		
 //		Order resultOrder = new Order();
 //		resultOrder.setId(orderId);
-
+		OrderDetailMessage orderDetailUpdateMessage = new OrderDetailMessage();
+		
 		if (changeFoods != null && changeFoods.size() > 0 && orderId != null) {
-			
+			orderDetailUpdateMessage.setHasNew(false);
 			newFood_Details = changeFoods.get("new");
 			if (newFood_Details != null && newFood_Details.size() > 0) {
 				result.setSubFalseCount(result.getSubFalseCount() + newFood_Details.size());
@@ -168,8 +183,10 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 								}
 								
 								if (food_detailDao.insertSelective(tempNewFood_Detail) == 1) {
-									
 									result.setSubTrueCount(result.getSubTrueCount() + 1);
+									if(tempNewFood_Detail.getStatus() == Constants.FOOD_CONFIRMED){
+										orderDetailUpdateMessage.setHasNew(true);
+									}
 								}else {
 									throw new RuntimeException("failed to insert food detail in DB.");
 								}
@@ -197,13 +214,13 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 //			resultOrder.setFood_details(newFood_Details);
 //			result.setOrder(resultOrder);
 			
+			List<Order_Food_Detail> removeItems = new ArrayList<Order_Food_Detail>();
 			deleteFood_Details = changeFoods.get("delete");
 			if (deleteFood_Details != null && deleteFood_Details.size() > 0) {
 				result.setSubFalseCount(result.getSubFalseCount() + deleteFood_Details.size());
 				for (int i = deleteFood_Details.size() - 1; i >= 0; i--) {
 					Order_Food_Detail tempDeleteFood_Detail = deleteFood_Details.get(i);
 					if (tempDeleteFood_Detail != null && tempDeleteFood_Detail.getId() != null) {
-						
 						Food tempDeleteFood = tempDeleteFood_Detail.getFood();
 						if (tempDeleteFood != null && tempDeleteFood.getId() != null) {
 							params.setFood_detail_id(tempDeleteFood_Detail.getId());
@@ -213,11 +230,11 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 							if (realFood_Detail != null) {
 								Food realFood = realFood_Detail.getFood();
 								if (realFood != null && realFood.getId().equals(tempDeleteFood.getId())) {
-									if(realFood_Detail.getStatus() == Constants.FOOD_NEW || realFood_Detail.getStatus() == Constants.FOOD_WAITING 
-											|| realFood_Detail.getStatus() == Constants.FOOD_CONFIRMED) {
+									if(realFood_Detail.getStatus() == Constants.FOOD_NEW || realFood_Detail.getStatus() == Constants.FOOD_CONFIRMED) {
 										if (food_detailDao.deleteByPrimaryKey(tempDeleteFood_Detail.getId()) == 1) {
 											deleteFood_Details.remove(i);
 											result.setSubTrueCount(result.getSubTrueCount() + 1);
+											removeItems.add(tempDeleteFood_Detail);
 										}else {
 											throw new RuntimeException("failed to delete food detail in DB.");
 										}
@@ -242,7 +259,8 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 					
 				}
 			}
-			
+
+			List<Order_Food_Detail> updateItems = new ArrayList<Order_Food_Detail>();
 			updateFood_Details = changeFoods.get("update");
 			if (updateFood_Details != null && updateFood_Details.size() > 0) {
 				result.setSubFalseCount(result.getSubFalseCount() + updateFood_Details.size());
@@ -260,10 +278,11 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 								Food realFood = realFood_Detail.getFood();
 								if (realFood != null && realFood.getId().equals(tempUpdateFood.getId())) {
 									if(tempUpdateFood_Detail.getCount() >= realFood_Detail.getCount() ||
-											(realFood_Detail.getStatus() == Constants.FOOD_NEW || realFood_Detail.getStatus() == Constants.FOOD_WAITING || realFood_Detail.getStatus() == Constants.FOOD_CONFIRMED)) {
+											(realFood_Detail.getStatus() == Constants.FOOD_NEW  || realFood_Detail.getStatus() == Constants.FOOD_CONFIRMED)) {
 										if (food_detailDao.updateByPrimaryKeySelective(tempUpdateFood_Detail) == 1) {
 											result.setSubTrueCount(result.getSubTrueCount() + 1);
 											updateFood_Details.remove(i);
+											updateItems.add(tempUpdateFood_Detail);
 										} else {
 											throw new RuntimeException("failed to update food detail in DB.");
 										}
@@ -287,6 +306,15 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 					}
 					
 				}
+			}
+			if(orderDetailUpdateMessage.getHasNew() == true || updateItems.size() > 0 || removeItems.size() > 0){
+				if(updateItems.size() > 0){
+					orderDetailUpdateMessage.setUpdateItems(updateItems);
+				}
+				if(removeItems.size() > 0){
+					orderDetailUpdateMessage.setRemoveItems(removeItems);
+				}
+				this.messageService.sendMessageToGroup(Constants.ROLE_CHEF, orderDetailUpdateMessage);
 			}
 		}else {
 			result.getErrorDetails().put("changeFoods_exist", "can not find changeFoods or order id in client data.");

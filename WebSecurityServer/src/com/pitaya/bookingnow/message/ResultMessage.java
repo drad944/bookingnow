@@ -1,10 +1,9 @@
 package com.pitaya.bookingnow.message;
 
-
+import com.pitaya.bookingnow.util.Constants;
 
 public class ResultMessage extends Message{
 	
-	private static String TAG = "BaseResultMessage";
 	private static final long serialVersionUID = 6351604296315217738L;
 	
 	private int requestType;
@@ -13,8 +12,8 @@ public class ResultMessage extends Message{
 	
 	public ResultMessage(){}
 	
-	public ResultMessage(String key, int reqtype, int result, String detail) {
-		super(key);
+	public ResultMessage(int reqtype, int result, String detail) {
+		super(Constants.RESULT_MESSAGE);
 		this.result = result;
 		this.detail = detail;
 		this.requestType = reqtype;

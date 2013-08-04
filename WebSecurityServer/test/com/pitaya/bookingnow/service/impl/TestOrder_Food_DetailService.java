@@ -102,7 +102,6 @@ public class TestOrder_Food_DetailService {
 		params.setRowCount(5);
 		List<Integer> food_detailStatusList = new ArrayList<Integer>();
 		food_detailStatusList.add(Constants.FOOD_NEW);
-		food_detailStatusList.add(Constants.FOOD_WAITING);
 		food_detailStatusList.add(Constants.FOOD_CONFIRMED);
 		food_detailService.searchFood_Details(params);
 		params.setFood_detailStatusList(food_detailStatusList);

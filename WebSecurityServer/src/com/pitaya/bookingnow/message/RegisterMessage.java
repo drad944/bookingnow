@@ -1,5 +1,7 @@
 package com.pitaya.bookingnow.message;
 
+import com.pitaya.bookingnow.util.Constants;
+
 public class RegisterMessage extends Message{
 
 	private static final long serialVersionUID = 6185409247446469881L;
@@ -8,8 +10,8 @@ public class RegisterMessage extends Message{
 	
 	public RegisterMessage(){}
 	
-	public RegisterMessage(String key, Long id) {
-		super(key);
+	public RegisterMessage(Long id) {
+		super(Constants.REGISTER_MESSAGE);
 		this.userId = id;
 	}
 

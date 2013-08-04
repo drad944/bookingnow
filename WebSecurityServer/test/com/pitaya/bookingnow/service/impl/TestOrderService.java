@@ -201,7 +201,6 @@ public class TestOrderService {
 	public void testSearchFullOrders() {
 		List<Integer> orderStatusList = new ArrayList<Integer>();
 		orderStatusList.add(Constants.ORDER_COMMITED);
-		orderStatusList.add(Constants.ORDER_COOKING);
 		orderStatusList.add(Constants.ORDER_NEW);
 		SearchParams params = new SearchParams();
 		params.setUser_id((long) 3);

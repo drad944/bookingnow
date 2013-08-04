@@ -18,6 +18,7 @@ import com.pitaya.bookingnow.entity.Order_Food_Detail;
 import com.pitaya.bookingnow.entity.Order_Table_Detail;
 import com.pitaya.bookingnow.entity.Table;
 import com.pitaya.bookingnow.entity.security.User;
+import com.pitaya.bookingnow.message.OrderDetailMessage;
 import com.pitaya.bookingnow.service.IOrderService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
@@ -32,7 +33,7 @@ public class OrderService implements IOrderService{
 	private FoodMapper foodDao;
 	private Order_Food_DetailMapper food_detailDao;
 	private CustomerMapper customerDao;
-	
+	private MessageService messageService;
 
 	public CustomerMapper getCustomerDao() {
 		return customerDao;
@@ -91,6 +92,14 @@ public class OrderService implements IOrderService{
 		this.orderDao = orderDao;
 	}
 
+	public void setMessageService(MessageService ms){
+		this.messageService = ms;
+	}
+	
+	public MessageService getMessageService(){
+		return this.messageService;
+	}
+	
 	@Override
 	public boolean add(Order order) {
 		// TODO Auto-generated method stub
@@ -225,7 +234,7 @@ public class OrderService implements IOrderService{
 		 */
 		
 		MyResult result = new MyResult();
-				
+		
 		//check order existed in client data and DB data
 		if(order.getId() != null) {
 			Order realOrder = orderDao.selectByPrimaryKey(order.getId());
@@ -233,7 +242,8 @@ public class OrderService implements IOrderService{
 				
 				List<Order_Food_Detail> tempFood_Details = order.getFood_details();
 				if (tempFood_Details != null && tempFood_Details.size() > 0) {
-					
+					OrderDetailMessage message = new OrderDetailMessage();
+					message.setHasNew(false);
 					//check food list existed in client data
 					for (int i = 0; i < tempFood_Details.size(); i++) {
 						Order_Food_Detail tempFood_Detail = tempFood_Details.get(i);
@@ -258,6 +268,7 @@ public class OrderService implements IOrderService{
 											if(food_detailDao.insertSelective(tempFood_Detail) == 1) {
 												//total price increase and get success info of insert into DB table.
 												result.setSubTrueCount(result.getSubTrueCount() + 1);
+												message.setHasNew(true);
 											}else {
 												//do nothing
 											}
@@ -282,6 +293,10 @@ public class OrderService implements IOrderService{
 						}
 					}
 					
+					if(message.getHasNew() == true){
+						this.messageService.sendMessageToGroup(Constants.ROLE_CHEF, message);
+					}
+					
 					//update order status in DB
 					if(tempFood_Details.size() == result.getSubTrueCount()) {
 							order.setModifyTime(new Date().getTime());
@@ -293,7 +308,7 @@ public class OrderService implements IOrderService{
 								result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(order.getId()));
 								result.setExecuteResult(true);
 							}
-						
+							
 					}else {
 						result.getErrorDetails().put("order_status", "can not update all food in DB");
 					}
@@ -697,13 +712,15 @@ public class OrderService implements IOrderService{
 							}
 							if (table_Details.size() == result.getSubTrueCount()) {
 								//update food status in DB.
+								OrderDetailMessage message = new OrderDetailMessage();
+								message.setHasNew(false);
 								if (realOrder.getFood_details() != null && realOrder.getFood_details().size() > 0) {
 									for (int i = 0; i < realOrder.getFood_details().size(); i++) {
 										Order_Food_Detail realFood_Detail = realOrder.getFood_details().get(i);
 										if (realFood_Detail.getStatus() == Constants.FOOD_NEW) {
 											realFood_Detail.setStatus(Constants.FOOD_CONFIRMED);
 											if (food_detailDao.updateByPrimaryKeySelective(realFood_Detail) == 1) {
-												
+												message.setHasNew(true);
 											}else {
 												throw new RuntimeException("-------- can not update food status in DB.");
 											}
@@ -713,6 +730,9 @@ public class OrderService implements IOrderService{
 									throw new RuntimeException("-------- can not find food in DB.");
 								}
 								
+								if(message.getHasNew() == true){
+									this.messageService.sendMessageToGroup(Constants.ROLE_CHEF, message);
+								}
 								
 								//update order in DB
 								realOrder.setStatus(Constants.ORDER_COMMITED);

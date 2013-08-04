@@ -255,17 +255,16 @@ public class MessageService {
 		Message message = unparseMessage(msgstring);
 		if(message instanceof RegisterMessage){
 			Long id = ((RegisterMessage)message).getUserId();
-			String key = ((RegisterMessage)message).getKey();
 			ResultMessage resultmsg = null;
 			User user  = userService.getUserRole(id);
 			if(user != null && user.getRole_Details() != null && user.getRole_Details().size() > 0){
 				clientAgent.userId = id;
 				clientAgent.role = user.getRole_Details().get(0).getRole().getType();
 				if(this.addClient(clientAgent)){
-					resultmsg = new ResultMessage(key, Constants.REGISTER_REQUEST, 
+					resultmsg = new ResultMessage(Constants.REGISTER_REQUEST, 
 							Constants.SUCCESS, String.valueOf(clientAgent.role));
 				} else {
-					resultmsg = new ResultMessage(key, Constants.REGISTER_REQUEST, 
+					resultmsg = new ResultMessage(Constants.REGISTER_REQUEST, 
 							Constants.FAIL, "Can't login two clients with same user!");
 				}
 				clientAgent.sendMessage(parseMessage(resultmsg));
@@ -281,9 +280,10 @@ public class MessageService {
 		}
 		if(group.get(clientAgent.userId) == null){
 			group.put(clientAgent.userId, clientAgent);
-			logger.info("Add client into server thread pool: [user id: " + clientAgent.userId + "; role type: " + clientAgent.role + "]");
+			logger.info("Add client into server thread pool [user id: " + clientAgent.userId + "; role type: " + clientAgent.role + "]");
 			return true;
 		}else{
+			logger.info("Client already registered [user id: " + clientAgent.userId + "]");
 			return false;
 		}
 	}
@@ -296,7 +296,7 @@ public class MessageService {
 		}
 		if(this.groups.get(clientAgent.role) != null && this.groups.get(clientAgent.role).get(clientAgent.userId) != null){
 			this.groups.get(clientAgent.role).remove(clientAgent.userId);
-			logger.info("Remove client from server thread pool: [" + clientAgent.userId + ":" + clientAgent.role + "]");
+			logger.info("Remove client from server thread pool [user id: " + clientAgent.userId + "; role type: " + clientAgent.role + "]");
 			clientAgent = null;
 		}
 	}
