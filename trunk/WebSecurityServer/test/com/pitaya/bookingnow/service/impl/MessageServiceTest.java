@@ -1,5 +1,11 @@
 package com.pitaya.bookingnow.service.impl;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import com.pitaya.bookingnow.message.OrderDetailMessage;
+import com.pitaya.bookingnow.util.Constants;
+
 import junit.framework.TestCase;
 
 public class MessageServiceTest extends TestCase {
@@ -8,17 +14,20 @@ public class MessageServiceTest extends TestCase {
 	
 		@Override 
 		public void setUp(){
-			messageServer = MessageService.initService(19191);
+			ApplicationContext aCtx = new FileSystemXmlApplicationContext("src/applicationContext.xml");
+			messageServer = (MessageService)aCtx.getBean("messageService");
+			messageServer.start(19191);
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			for(int i=0; i < 10; i++){
-				new Client().start();
-			}
+//			for(int i=0; i < 10; i++){
+//				new Client().start();
+//			}
+			new Client(3L).start();
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(3000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -26,19 +35,28 @@ public class MessageServiceTest extends TestCase {
 	
 		
 		public void testSendToGroup(){
-//			messageServer.sendMessageToGroup(Constants.CASH_GP, "有新的订单需要结帐");
-//			messageServer.sendMessageToGroup(Constants.KITCHEN_GP, "新的菜品加工条目");
-//			messageServer.sendMessageToGroup(Constants.WAITER_GP, "菜品加工好了");
+			for(int i = 0; i < 10; i++){
+				new Thread(){
+					
+					@Override
+					public void run(){
+						OrderDetailMessage msg = new OrderDetailMessage();
+						msg.setHasNew(true);
+						messageServer.sendMessageToGroup(Constants.ROLE_CHEF, msg);
+					}
+					
+				}.start();
+			}
+			try {
+				Thread.sleep(300000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		@Override 
 		public void tearDown(){
-			try {
-				Thread.sleep(15000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			MessageService.shutdownService();
+			messageServer.shutdown();
 		}
 		
 }

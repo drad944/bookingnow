@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,10 +42,14 @@ class ClientAgent extends Thread{
 	BufferedReader in;
 	Long userId;
 	Integer role;
+	List<String> messages;
+	boolean isSending;
 	
 	ClientAgent(MessageService service, Socket socket){
 		this.client_socket = socket;
 		this.service = service;
+		this.isSending = false;
+		this.messages = Collections.synchronizedList(new ArrayList<String>());
 	}
 	
 	public void run(){
@@ -52,8 +58,8 @@ class ClientAgent extends Thread{
 			out = new PrintWriter(client_socket.getOutputStream());   
 			String message = null;
 			while((message = in.readLine()) != null){
-				this.service.onMessage(message, this);
 				logger.info("Receive message from client: ["+this.userId+"], content:" + message);
+				this.service.onMessage(message, this);
 			}
 		 } catch (Exception e) {
 	        e.printStackTrace();
@@ -71,14 +77,32 @@ class ClientAgent extends Thread{
 		 }
 	}
 	
-	synchronized boolean sendMessage(String message){
+	void sendMessage(String message){
+		this.messages.add(message);
+		synchronized(this){
+			if(this.isSending == true){
+				logger.debug("client is in sending, add message to queue");
+				return;
+			} else {
+				this.isSending = true;
+			}
+		}
 		try {
-			out.println(message);
-			out.flush();
-			return true;
+			while(this.messages.size() > 0){
+				String msg = this.messages.get(0);
+				out.println(msg);
+				out.flush();
+				this.messages.remove(0);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
+		}
+		/*		Notice!!! It's unsafe to add any codes without sync here. Because during the 
+		 * 		logic, it's possible that a new thread is asking send message, so it won't be 
+		 * 		sent until next time because isSending still true.
+		 */
+		synchronized(this){
+			this.isSending = false;
 		}
 	}
 	
@@ -179,23 +203,21 @@ public class MessageService {
 	
 	public boolean shutdown(){
 		if(this.hasStarted) {
-			this.serverThread.shutdown();
 			try {
-        			if(this.serverSocket != null && _instance.serverSocket.isClosed()){
+        			if(this.serverSocket != null && this.serverSocket.isClosed()){
         				this.serverSocket.close();
         			}
         			this.hasStarted = false;
-					for(Entry<Integer, Map<Long, ClientAgent>> entry : _instance.groups.entrySet()){
+					for(Entry<Integer, Map<Long, ClientAgent>> entry : this.groups.entrySet()){
 						for(Entry<Long, ClientAgent> subentry : ((Map<Long, ClientAgent>)entry.getValue()).entrySet()){
 							subentry.getValue().shutdown();
 						}
 					}
-					_instance = null;
+					this.serverThread.shutdown();
 					logger.info("Success to shutdown message service.");
 					return true;
 			} catch (IOException e) {
 					e.printStackTrace();
-					_instance = null;
 					return false;
 			}
 		}
@@ -235,18 +257,14 @@ public class MessageService {
 	}
 	
 	public boolean sendMessageToGroup(int groupType, Message message){
-		logger.info("Send message to group");
-		Map<Long, ClientAgent> group = this.groups.get(groupType);
 		String msgstring = parseMessage(message);
+		Map<Long, ClientAgent> group = this.groups.get(groupType);
 		if(group != null){
-			boolean success = true;
 			for(Entry<Long, ClientAgent> entry : group.entrySet()){
-				if(!entry.getValue().sendMessage(msgstring)){
-					logger.error("Fail to send message to" + entry.getKey() + ":" + msgstring);
-					success = false;
-				}
+				entry.getValue().sendMessage(msgstring);
 			}
-			return success;
+			logger.info("Send message to group: " + groupType);
+			return true;
 		}
 		return false;
 	}
