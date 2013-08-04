@@ -52,7 +52,7 @@
     
     <string name="cookingitem_title_name">菜名</string>
     <string name="cookingitem_title_quantity">数量</string>
-    <string name="cookingitem_title_timer">计时</string>
+    <string name="cookingitem_title_timer">等待时间</string>
     <string name="cookingitem_title_status">状态</string>
     <string name="cookingitem_title_operations">操作</string>
     
@@ -68,6 +68,7 @@
     <string name="bookingbtn">预订</string>
     <string name="cancelfreebtn">取消赠送</string>
     <string name="seatavailable">找到符合条件的座位:</string>
+    <string name="loading">数据加载中...</string>
     <drawable name="common_background">#4e72b8</drawable>
     <drawable name="menu_background">#494e8f</drawable>
     

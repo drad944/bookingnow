@@ -2,6 +2,7 @@ package com.pitaya.bookingnow.app;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import org.json.JSONObject;
 
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.data.HttpHandler;
+import com.pitaya.bookingnow.app.data.MessageHandler;
 import com.pitaya.bookingnow.app.data.ProgressHandler;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.model.Order;
@@ -35,7 +37,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
+//import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -63,14 +65,14 @@ public class HomeActivity extends FragmentActivity {
 	public static final int ORDER_LIST_LOADER = MENU_LOADER + 1;
 	
 	private static String TAG = "HomeActivity";
-	private static String messageKey = UUID.randomUUID().toString();
 	
 	private SlideContent homecontent;
 	private View mLeftMenu;
 	
 	private AlertDialog loginDialog;
 	
-	private MessageService messageService;
+	private SoftReference<MessageService> msRef;
+	private MessageHandler mMessageHandler;
 	private boolean isUpdating = false;
 	private boolean isRemeberMe = false;
 	private String username;
@@ -79,13 +81,24 @@ public class HomeActivity extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
-//		SharedPreferences settings = getSharedPreferences(UserManager.SETTING_INFOS, 0);
-//		settings.edit().remove(UserManager.NAME).remove(UserManager.PASSWORD)
-//				.commit();
 		this.setHomeContent();
-		messageService = MessageService.initService("192.168.0.102", 19191);
-		messageService.registerHandler(messageKey,  new MessageHandler());
-		//testInsertDB();
+		MessageService.initService("192.168.0.102", 19191);
+		mMessageHandler = new MessageHandler();
+		mMessageHandler.setOnMessageListener(new MessageHandler.OnMessageListener() {
+			
+			@Override
+			public void onMessage(Message message) {
+	            if(message instanceof ResultMessage){
+	            	ResultMessage resultmsg = (ResultMessage)message;
+	            	if(resultmsg.getRequestType() == Constants.REGISTER_REQUEST){
+	            		handleRegisterResultMsg(resultmsg);
+	            	} else if(resultmsg.getRequestType() == Constants.SOCKET_CONNECTION){
+	            		handleConnectResultMsg(resultmsg);
+	            	}
+	            }
+			}
+		});
+		this.getMessageService().registerHandler(Constants.RESULT_MESSAGE, mMessageHandler);
 		setOrder();
 	}
 	
@@ -104,11 +117,18 @@ public class HomeActivity extends FragmentActivity {
 		}
 	}
 	
+	private MessageService getMessageService(){
+		if(this.msRef == null){
+			msRef = new SoftReference<MessageService>(MessageService.getService());
+		}
+		return (MessageService)msRef.get();
+	}
+	
 	@Override
 	public void onResume() {
 		super.onResume();
-		if(!messageService.isReady()){
-			if(messageService.isConnecting()){ 
+		if(!this.getMessageService().isReady()){
+			if(this.getMessageService().isConnecting()){ 
 				showConnectResultToast("正在连接服务器...");
 			} else {
 				MessageService.initService("192.168.0.102", 19191);
@@ -137,7 +157,7 @@ public class HomeActivity extends FragmentActivity {
 	public void onDestroy() {
 		super.onDestroy();
 		Log.i(TAG, "onDestroy");
-		messageService.unregisterHandler(messageKey);
+		this.getMessageService().unregisterHandler(Constants.RESULT_MESSAGE, mMessageHandler);
     }
 	
 	private synchronized void refreshMenuByRole(){
@@ -276,7 +296,6 @@ public class HomeActivity extends FragmentActivity {
                     	 HomeActivity.this.username = ((EditText)dialogView.findViewById(R.id.username)).getText().toString();
                     	 HomeActivity.this.password = ((EditText)dialogView.findViewById(R.id.password)).getText().toString();
                     	 HomeActivity.this.isRemeberMe = ((CheckBox)dialogView.findViewById(R.id.autologin)).isChecked();
-//                    	 Use http to login instead of socket message
 //                    	 if(!messageService.sendMessage(new LoginMessage(messageKey, username, password))){
 //                    		 handleLoginError("请检查连接");
 //                    	 }
@@ -315,12 +334,11 @@ public class HomeActivity extends FragmentActivity {
 		this.showLoginDialog();
 	}
 	
-	private void handleLoginResultMsg(ResultMessage message){
+	private void handleRegisterResultMsg(ResultMessage message){
 		if(message.getResult() == Constants.SUCCESS){
-			Log.i("HomeActivity", "Success to login");
-			this.loginDialog.dismiss();
+			Log.i(TAG, "Success to register client to message service: " + message.getDetail());
 		} else if(message.getResult() == Constants.FAIL){
-			handleLoginError(message.getDetail());
+			Log.e(TAG, "Fail to register client to message service: " + message.getDetail());
 		}
 	}
 	
@@ -343,7 +361,7 @@ public class HomeActivity extends FragmentActivity {
 				JSONObject firstrole = roles.getJSONObject(0);
 				JSONObject jrole = firstrole.getJSONObject("role");
 				int role = jrole.getInt("type");
-				Log.i(TAG, "Login sucessfully: id is " + id + " type is " + role);
+				Log.i(TAG, "Login sucessfully: id is " + id + " role is " + role);
 				UserManager.setUserId(id);
 				UserManager.setUserRole(role);
 				if(this.isRemeberMe){
@@ -356,6 +374,9 @@ public class HomeActivity extends FragmentActivity {
 				ToastUtil.showToast(this, "登录成功", Toast.LENGTH_SHORT);
 				this.refreshMenuByRole();
 				this.homecontent.selectItem("menu");
+           	 	if(!this.getMessageService().sendMessage(new RegisterMessage(id))){
+           	 		Log.e(TAG, "Fail to send register message");
+           	 	}
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -399,24 +420,6 @@ public class HomeActivity extends FragmentActivity {
 			}
 		}
 	}
-	
-	private class MessageHandler extends Handler{
-		
-        @Override  
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);  
-            Bundle bundle = msg.getData();  
-            Object obj =bundle.getSerializable("message");
-            if(obj instanceof ResultMessage){
-            	ResultMessage resultmsg = (ResultMessage)obj;
-            	if(resultmsg.getRequestType() == Constants.LOGIN_REQUEST){
-            		handleLoginResultMsg(resultmsg);
-            	} else if(resultmsg.getRequestType() == Constants.SOCKET_CONNECTION){
-            		handleConnectResultMsg(resultmsg);
-            	}
-            }
-        }
-    }
 	
 	private void checkMenuUpdate(){
 		synchronized(this) {

@@ -23,10 +23,10 @@ import android.widget.TextView;
 public class CookingItemsAdapter extends BaseAdapter {
 	
 	private ArrayList<CookingItem> cookingItems;
-	private View mView;
+	private ListView mView;
 	private Context mContext;
 	
-	public CookingItemsAdapter(View view){
+	public CookingItemsAdapter(ListView view){
 		this.cookingItems = new ArrayList<CookingItem>();
 		this.mView = view;
 		this.mContext = view.getContext();
@@ -60,10 +60,7 @@ public class CookingItemsAdapter extends BaseAdapter {
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View itemView = convertView;
-		if(itemView == null){
-			itemView = View.inflate(mContext, R.layout.cookingitem, null);
-		}
+		View itemView = View.inflate(mContext, R.layout.cookingitem, null);
 		final int index = position;
 		final CookingItem item = (CookingItem)this.getItem(position);
 		final RelativeLayout fooditemRL = (RelativeLayout) itemView.findViewById(R.id.fooditemdetail);
@@ -99,10 +96,10 @@ public class CookingItemsAdapter extends BaseAdapter {
 		        	long seconds = (current - beginTime)/1000;
 		        	if(seconds >= 36000){
 		        		//10 hours
-		        		timerText.setText("等待时间 >10小时");
+		        		timerText.setText(">10小时");
 		        		timerText.setTextColor(mContext.getResources().getColor(R.color.red));
 		        	} else {
-		        		timerText.setText("等待时间 " + (seconds/3600 < 10 ? "0" + String.valueOf(seconds/3600) : String.valueOf(seconds/3600)) 
+		        		timerText.setText((seconds/3600 < 10 ? "0" + String.valueOf(seconds/3600) : String.valueOf(seconds/3600)) 
 		        				+ ":" + ((seconds%3600)/60 < 10 ? "0" + String.valueOf((seconds%3600)/60) : String.valueOf((seconds%3600)/60))
 		        				+ ":" + ((seconds%3600)%60 < 10 ? "0" + String.valueOf((seconds%3600)%60) : String.valueOf((seconds%3600)%60)));
 		        		if(seconds > 120){
@@ -121,7 +118,7 @@ public class CookingItemsAdapter extends BaseAdapter {
 				
 	    		@Override
 				public void onStatusChanged(CookingItem item, int status, int old_status) {
-					updateStatusView(index, status, old_status);
+					updateStatusView(statusText, status, old_status);
 					if(status == Constants.FOOD_FINISHED){
 						handler.removeCallbacks(timer);
 						timerText.setVisibility(View.INVISIBLE);
@@ -130,8 +127,8 @@ public class CookingItemsAdapter extends BaseAdapter {
 						handler.removeCallbacks(timer);
 						timerText.setVisibility(View.INVISIBLE);
 					} else if(old_status == Constants.FOOD_UNAVAILABLE) {
-						 handler.post(timer);
-						 timerText.setVisibility(View.VISIBLE);
+						handler.post(timer);
+						timerText.setVisibility(View.VISIBLE);
 					}
 					updateStatusButton(updateStatusBtn, item);
 				}
@@ -145,33 +142,27 @@ public class CookingItemsAdapter extends BaseAdapter {
 		return itemView;
 	}
 	
-	private void updateStatusView(int index, int status, int old_status){
-		View view = ((ListView)mView).getChildAt(index);
-		if(view != null){
-			TextView statusText = (TextView) view.findViewById(R.id.foodstatus);
-			if(statusText != null){
-				statusText.setText(Order.getFoodStatusString(status));
-			}
-		}
+	private void updateStatusView(TextView statusText, int status, int old_status){
+		statusText.setText(Order.getFoodStatusString(status));
 	}
 	
 	private void updateStatusButton(final Button changeStatusBtn, final CookingItem item){
 		changeStatusBtn.setVisibility(View.VISIBLE);
 		switch(item.getStatus()){
 			case Constants.FOOD_NEW:
-				changeStatusBtn.setText("开始");
+				changeStatusBtn.setText("新提交");
 				changeStatusBtn.setOnClickListener(new OnClickListener(){
 
 					@Override
 					public void onClick(View v) {
 						//TODO update cooking item status
-						item.setStatus(Constants.FOOD_WAITING);
+						item.setStatus(Constants.FOOD_CONFIRMED);
 					}
 					
 				});
 				break;
 			case Constants.FOOD_UNAVAILABLE:
-			case Constants.FOOD_WAITING:
+			case Constants.FOOD_CONFIRMED:
 				changeStatusBtn.setText("开始加工");
 				changeStatusBtn.setOnClickListener(new OnClickListener(){
 

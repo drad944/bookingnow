@@ -153,16 +153,16 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
 
 						@Override
 						public void onClick(View v) {
-							//TODO send request to get the order info again and restore mOrder
 							GetOrderFoodsHandler handler = new GetOrderFoodsHandler(mContext, mOrder);
 							handler.setAfterGetFoodsListener(new AfterGetFoodsListener(){
 								@Override
 								public void afterGetFoods() {
 									mOrder.markDirty(mContext, false);
-									DataService.saveOrderDetails(mContext, mOrder);
+									//DataService.saveOrderDetails(mContext, mOrder);
 									WorkerOrderDetailAdapter.this.notifyDataSetChanged();
 								}
 							});
+							
 							OrderService.getFoodsOfOrder(Long.parseLong(mOrder.getOrderKey()), handler);
 						}
     					

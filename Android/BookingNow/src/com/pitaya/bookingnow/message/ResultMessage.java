@@ -3,11 +3,13 @@ package com.pitaya.bookingnow.message;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.pitaya.bookingnow.app.util.Constants;
+
 import android.util.Log;
 
 public class ResultMessage extends Message{
 	
-	private static String LOGTAG = "BaseResultMessage";
+	private static String TAG = "ResultMessage";
 	private static final long serialVersionUID = 6351604296315217738L;
 	
 	private int requestType;
@@ -16,8 +18,8 @@ public class ResultMessage extends Message{
 	
 	public ResultMessage(){}
 	
-	public ResultMessage(String key, int reqtype, int result, String detail) {
-		super(key);
+	public ResultMessage(int reqtype, int result, String detail) {
+		super(Constants.RESULT_MESSAGE);
 		this.result = result;
 		this.detail = detail;
 		this.requestType = reqtype;
@@ -55,7 +57,7 @@ public class ResultMessage extends Message{
 			jsonObj.put("detail", this.getDetail());
 			jsonObj.put("requestType", this.getRequestType());
 		} catch (JSONException e) {
-			Log.e(LOGTAG, "Fail to parse json string from login result message");
+			Log.e(TAG, "Fail to parse json string from result message");
 			e.printStackTrace();
 		}
 	}
@@ -68,7 +70,7 @@ public class ResultMessage extends Message{
 			this.setDetail(jsonObj.getString("detail"));
 			this.setRequestType(jsonObj.getInt("requestType"));
 		} catch (JSONException e) {
-			Log.e(LOGTAG, "Fail to parse login result message from json string");
+			Log.e(TAG, "Fail to parse result message from json string");
 			e.printStackTrace();
 		}
 	}

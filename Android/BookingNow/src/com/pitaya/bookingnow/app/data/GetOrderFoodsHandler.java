@@ -34,9 +34,8 @@ public class GetOrderFoodsHandler extends HttpHandler{
 				//TODO handle fail
 			} else {
 				JSONArray jorder_details = jresp.getJSONArray("food_details");
-				DataService.removeFoodsOfOrder(mContext, mOrder.getOrderKey());
-				DataService.resetOrderUpdateDetails(mContext, mOrder);
-				mOrder.removeAllFood();
+				mOrder.resetUpdateFoods(mContext);
+				mOrder.removeAllFood(mContext);
 				for(int i=0; i < jorder_details.length(); i++){
 					JSONObject jorder_detail = jorder_details.getJSONObject(i);
 					JSONObject jfood = jorder_detail.getJSONObject("food");
@@ -45,7 +44,7 @@ public class GetOrderFoodsHandler extends HttpHandler{
 					food.setId(jorder_detail.getLong("id"));
 					food.setFree(jorder_detail.getBoolean("isFree"));
 					food.setStatus(jorder_detail.getInt("status"));
-					mOrder.addFood(food, jorder_detail.getInt("count"));
+					DataService.updateOrderDetails(mContext, mOrder, food, jorder_detail.getInt("count"));
 				}
 				if(mListener != null){
 					mListener.afterGetFoods();
