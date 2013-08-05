@@ -205,8 +205,8 @@
             // update row.
             $("#updaterowbutton").on('click', function () {
             	var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
-            	id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
-                rowData = $('#jqxgrid').jqxGrid('getrowdatabyid', id);
+            	//id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
+                rowData = $('#jqxgrid').jqxGrid('getrowdata', selectedrowindex);
                 
 				
 				if(rowData != null) {
@@ -291,12 +291,12 @@
                 var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
                 var rowscount = $("#jqxgrid").jqxGrid('getdatainformation').rowscount;
                 if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
-                    var id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
+                    //var id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
                     
-                    var rowData = $('#jqxgrid').jqxGrid('getrowdatabyid', id);
+                    var rowData = $('#jqxgrid').jqxGrid('getrowdata', selectedrowindex);
                     $.post("removeUser.action", {"user.id": rowData["id"]},function(result){
 						if(result != null && result["executeResult"] != null && result["executeResult"] == true){
-	                    	var commit = $("#jqxgrid").jqxGrid('deleterow', id);
+	                    	var commit = $("#jqxgrid").jqxGrid('deleterow', selectedrowindex);
 	                    }
 					});
                     
