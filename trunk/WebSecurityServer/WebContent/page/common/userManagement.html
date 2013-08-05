@@ -9,15 +9,28 @@
 	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
 	<script type="text/javascript" src="../../js/AppUtil.js"></script>
 	
-    <script type="text/javascript" src="../../js/jqxcore.js"></script>
-    <script type="text/javascript" src="../../js/jqxdata.js"></script> 
-    <script type="text/javascript" src="../../js/jqxbuttons.js"></script>
-    <script type="text/javascript" src="../../js/jqxscrollbar.js"></script>
-    <script type="text/javascript" src="../../js/jqxmenu.js"></script>
-    <script type="text/javascript" src="../../js/jqxgrid.js"></script>
-    <script type="text/javascript" src="../../js/jqxgrid.selection.js"></script> 
-    <script type="text/javascript" src="../../js/jqxgrid.columnsresize.js"></script> 
-    <script type="text/javascript" src="../../js/gettheme.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxcore.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxdata.js"></script>
+    
+     
+    <script type="text/javascript" src="../../js/widget/jqxbuttons.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxdropdownlist.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxlistbox.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxmenu.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxgrid.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxgrid.filter.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxgrid.sort.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxgrid.pager.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxgrid.selection.js"></script> 
+    <script type="text/javascript" src="../../js/widget/jqxgrid.columnsresize.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxgrid.columnsreorder.js"></script> 
+    
+     <script type="text/javascript" src="../../js/widget/jqxnumberinput.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxwindow.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxinput.js"></script>
+    
+    <script type="text/javascript" src="../../js/widget/gettheme.js"></script>
     <script type="text/javascript">
          $(document).ready(function () {
          		$.post("findUser.action", 
@@ -179,37 +192,108 @@
                 height: 350,
                 source: dataAdapter,
                 theme: theme,
+                selectionmode: 'multiplerowsextended',
+                sortable: true,
+                pageable: true,
+                autoheight: true,
+                columnsresize: true,
+              //  columnsreorder: true,
                 columns: columns
             });
             $("#addrowbutton").jqxButton({ theme: theme });
-            $("#addmultiplerowsbutton").jqxButton({ theme: theme });
             $("#deleterowbutton").jqxButton({ theme: theme });
             $("#updaterowbutton").jqxButton({ theme: theme });
+            $("#addUserTable #cancel").jqxButton({ theme: theme });
+            $("#updateUserTable #cancel").jqxButton({ theme: theme });
+            $("#saveUserButton").jqxButton({ theme: theme });
+            $("#addUserButton").jqxButton({ theme: theme });
             // update row.
             $("#updaterowbutton").on('click', function () {
-                var datarow = generaterow();
-                var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
-                var rowscount = $("#jqxgrid").jqxGrid('getdatainformation').rowscount;
-                if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
-                    var id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
-                    var commit = $("#jqxgrid").jqxGrid('updaterow', id, datarow);
-                    $("#jqxgrid").jqxGrid('ensurerowvisible', selectedrowindex);
-                }
+            	var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
+            	id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
+                rowData = $('#jqxgrid').jqxGrid('getrowdatabyid', id);
+                
+				
+				if(rowData != null) {
+					var offset = $("#jqxgrid").offset();
+					$("#updatePopupWindow").jqxWindow({ position: { x: parseInt(offset.left) + 60, y: parseInt(offset.top) + 60 } });
+					
+					//get old data in popupwindow
+					$("#updateUserTable #id").val(rowData["id"]);
+					$("#updateUserTable #account").val(rowData["account"]);
+					$("#updateUserTable #name").val(rowData["name"]);
+					$("#updateUserTable #password").val(rowData["password"]);
+					$("#updateUserTable #address").val(rowData["address"]);
+					$("#updateUserTable #birthday").val(rowData["birthday"]);
+					$("#updateUserTable #department").val(rowData["department"]);
+					$("#updateUserTable #email").val(rowData["email"]);
+					$("#updateUserTable #enabled").val(rowData["enabled"]);
+					$("#updateUserTable #image_relative_path").val(rowData["image_relative_path"]);
+					$("#updateUserTable #image_size").val(rowData["image_size"]);
+					$("#updateUserTable #phone").val(rowData["phone"]);
+					$("#updateUserTable #sex").val(rowData["sex"]);
+					
+					// show the popup window.
+					$("#updatePopupWindow").jqxWindow('open');
+				}
+                
+                
             });
-            // create new row.
+            // show the popup window
             $("#addrowbutton").on('click', function () {
-                var datarow = generaterow();
-                var commit = $("#jqxgrid").jqxGrid('addrow', null, datarow);
+            	var offset = $("#jqxgrid").offset();
+					$("#addPopupWindow").jqxWindow({ position: { x: parseInt(offset.left) + 60, y: parseInt(offset.top) + 60 } });
+					
+					// show the popup window.
+					$("#addPopupWindow").jqxWindow('open');
             });
-            // create new rows.
-            $("#addmultiplerowsbutton").on('click', function () {
-                $("#jqxgrid").jqxGrid('beginupdate');
-                for (var i = 0; i < 10; i++) {
-                    var datarow = generaterow();
-                    var commit = $("#jqxgrid").jqxGrid('addrow', null, datarow);
+            
+            // create new row
+            $("#addUserButton").on('click', function () {
+                if($("#addUserTable #account").val() != null && $("#addUserTable #password").val() != null){
+                	var newrow = {
+                		"account": $("#addUserTable #account").val(), 
+                    	"account": $("#addUserTable #account").val(), 
+                    	"name": $("#addUserTable #name").val(),
+                        "password": $("#addUserTable #password").val(),
+                       	"address": $("#addUserTable #address").val(),
+                        "birthday": $("#addUserTable #birthday").val(),
+                        "department": $("#addUserTable #department").val(),
+                        "email": $("#addUserTable #email").val(),
+                        "enabled": $("#addUserTable #enabled").val(),
+                        "image_relative_path": $("#addUserTable #image_relative_path").val(),
+                        "image_size": $("#addUserTable #image_size").val(),
+                        "phone": $("#addUserTable #phone").val(),
+                        "sex": $("#addUserTable #sex").val()
+                    };
+                    var addUserData = { 
+                    	"user.account": $("#addUserTable #account").val(), 
+                    	"user.name": $("#addUserTable #name").val(),
+                        "user.password": $("#addUserTable #password").val(),
+                       	"user.address": $("#addUserTable #address").val(),
+                        "user.birthday": $("#addUserTable #birthday").val(),
+                        "user.department": $("#addUserTable #department").val(),
+                        "user.email": $("#addUserTable #email").val(),
+                        "user.enabled": $("#addUserTable #enabled").val(),
+                        "user.image_relative_path": $("#addUserTable #image_relative_path").val(),
+                        "user.image_size": $("#addUserTable #image_size").val(),
+                        "user.phone": $("#addUserTable #phone").val(),
+                        "user.sex": $("#addUserTable #sex").val()
+                    };
+                    
+                    $.post("registerUser.action", addUserData,function(result){
+						if(result != null && result["id"] != null){
+	                    	//var rowID = $('#jqxgrid').jqxGrid('getrowid', rowData);
+	                    	newrow["id"] = result["id"];
+		                    $('#jqxgrid').jqxGrid('addrow', null, newrow);
+		                    $("#addPopupWindow").jqxWindow('hide');
+	                    }else if(result != null && result["executeResult"] != null && result["executeResult"] == false){
+	                    	//do nothing
+	                    }
+					});
                 }
-                $("#jqxgrid").jqxGrid('endupdate');
             });
+            
             // delete row.
             $("#deleterowbutton").on('click', function () {
                 var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
@@ -218,16 +302,89 @@
                     var id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
                     
                     var rowData = $('#jqxgrid').jqxGrid('getrowdatabyid', id);
+                    $.post("removeUser.action", {"user.id": rowData["id"]},function(result){
+						if(result != null && result["executeResult"] != null && result["executeResult"] == true){
+	                    	var commit = $("#jqxgrid").jqxGrid('deleterow', id);
+	                    }
+					});
                     
-                    var result = callAction("removeUser.action",{"user.id": rowData["id"]});
-                    if(result != null && result["executeResult"] != null && result["executeResult"] == true){
-                    	var commit = $("#jqxgrid").jqxGrid('deleterow', id);
-                    }
                 }
             });
+            
+             // initialize the popup window and buttons.
+            $("#addPopupWindow").jqxWindow({
+                width: 350, resizable: false, theme: theme, isModal: true, autoOpen: false, cancelButton: $("#addUserTable #cancel"), modalOpacity: 0.01           
+            });
+            $("#addPopupWindow").on('open', function () {
+                $("#id").jqxInput('selectAll');
+            });
+            
+             // initialize the popup window and buttons.
+            $("#updatePopupWindow").jqxWindow({
+                width: 350, resizable: false, theme: theme, isModal: true, autoOpen: false, cancelButton: $("#updateUserTable #cancel"), modalOpacity: 0.01           
+            });
+            $("#updatePopupWindow").on('open', function () {
+                $("#id").jqxInput('selectAll');
+            });
+            
+            // update the edited row when the user clicks the 'Save' button.
+            $("#saveUserButton").click(function () {
+                if (rowData != null && rowData["id"] != null) {
+					
+                    var newrow = { 
+                    	"id": $("#updateUserTable #id").val(), 
+                    	"account": $("#updateUserTable #account").val(), 
+                    	"name": $("#updateUserTable #name").val(),
+                        "password": $("#updateUserTable #password").val(),
+                       	"address": $("#updateUserTable #address").val(),
+                        "birthday": $("#updateUserTable #birthday").val(),
+                        "department": $("#updateUserTable #department").val(),
+                        "email": $("#updateUserTable #email").val(),
+                        "enabled": $("#updateUserTable #enabled").val(),
+                        "image_relative_path": $("#updateUserTable #image_relative_path").val(),
+                        "image_size": $("#updateUserTable #image_size").val(),
+                        "phone": $("#updateUserTable #phone").val(),
+                        "sex": $("#updateUserTable #sex").val()
+                    };
+                    var updateUserData = { 
+                    	"user.id": $("#updateUserTable #id").val(), 
+                    	"user.account": $("#updateUserTable #account").val(), 
+                    	"user.name": $("#updateUserTable #name").val(),
+                        "user.password": $("#updateUserTable #password").val(),
+                       	"user.address": $("#updateUserTable #address").val(),
+                        "user.birthday": $("#updateUserTable #birthday").val(),
+                        "user.department": $("#updateUserTable #department").val(),
+                        "user.email": $("#updateUserTable #email").val(),
+                        "user.enabled": $("#updateUserTable #enabled").val(),
+                        "user.image_relative_path": $("#updateUserTable #image_relative_path").val(),
+                        "user.image_size": $("#updateUserTable #image_size").val(),
+                        "user.phone": $("#updateUserTable #phone").val(),
+                        "user.sex": $("#updateUserTable #sex").val()
+                    };
+                    
+                    $.post("updateUser.action", updateUserData,function(result){
+						if(result != null && result["id"] != null){
+	                    	//var rowID = $('#jqxgrid').jqxGrid('getrowid', rowData);
+		                    $('#jqxgrid').jqxGrid('updaterow', id, newrow);
+		                    $("#updatePopupWindow").jqxWindow('hide');
+	                    }else if(result != null && result["executeResult"] != null && result["executeResult"] == false){
+	                    	//do nothing
+	                    }
+					});
+                     
+                    
+                }
+            });
+            /*
+             $("#jqxgrid").on('columnreordered', function (event) {
+                var column = event.args.columntext;
+                var newindex = event.args.newindex
+                var oldindex = event.args.oldindex;
+            });
+            */
         });
     });
-    </script>
+	</script>
 </head>
 	
 <body>
@@ -241,15 +398,260 @@
 	                <input id="addrowbutton" type="button" value="Add New Row" />
 	            </div>
 	            <div style="margin-top: 10px;">
-	                <input id="addmultiplerowsbutton" type="button" value="Add Multiple New Rows" />
-	            </div>
-	            <div style="margin-top: 10px;">
 	                <input id="deleterowbutton" type="button" value="Delete Selected Row" />
 	            </div>
 	            <div style="margin-top: 10px;">
 	                <input id="updaterowbutton" type="button" value="Update Selected Row" />
 	            </div>
 	        </div>
-    	</div>
+
+			<div id="updatePopupWindow">
+				<div>
+					Edit
+				</div>
+				<div id="popupTable" style="overflow: hidden;">
+						<table id="updateUserTable">
+							<tr>
+								<td align="right">
+									Id:
+								</td>
+								<td align="left">
+									<input id="id" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Account:
+								</td>
+								<td align="left">
+									<input id="account" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Name:
+								</td>
+								<td align="left">
+									<input id="name" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Password:
+								</td>
+								<td align="left">
+									<input id="password" />
+								</td>
+							</tr>
+							
+							
+							<tr>
+								<td align="right">
+									Address:
+								</td>
+								<td align="left">
+									<input id="address" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Birthday:
+								</td>
+								<td align="left">
+									<input id="birthday" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Department:
+								</td>
+								<td align="left">
+									<input id="department" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Email:
+								</td>
+								<td align="left">
+									<input id="email" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Enabled:
+								</td>
+								<td align="left">
+									<input id="enabled" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Image_relative_path:
+								</td>
+								<td align="left">
+									<input id="image_relative_path" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Image_size:
+								</td>
+								<td align="left">
+									<input id="image_size" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Phone:
+								</td>
+								<td align="left">
+									<input id="phone" />
+								</td>
+							</tr>
+							
+							<tr>
+								<td align="right">
+									Sex:
+								</td>
+								<td align="left">
+									<input id="sex" />
+								</td>
+							</tr>
+							
+							
+							<tr>
+								<td align="right"></td>
+								<td style="padding-top: 10px;" align="right">
+									<input style="margin-right: 5px;" type="button" id="saveUserButton"
+										value="Save" />
+									<input id="cancel" type="button" value="Cancel" />
+								</td>
+							</tr>
+						</table>
+				</div>
+			</div>
+			
+			<div id="addPopupWindow"  style="overflow: hidden;">
+				<div>
+					Add User
+				</div>
+				<div id="popupTable" style="overflow: hidden;">
+					<form id="testForm" action="./">
+						<table id="addUserTable">
+							<tr>
+								<td align="right">
+									Account:
+								</td>
+								<td align="left">
+									<input id="account" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Name:
+								</td>
+								<td align="left">
+									<input id="name" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Password:
+								</td>
+								<td align="left">
+									<input id="password" />
+								</td>
+							</tr>
+							
+							
+							<tr>
+								<td align="right">
+									Address:
+								</td>
+								<td align="left">
+									<input id="address" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Birthday:
+								</td>
+								<td align="left">
+									<input id="birthday" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Department:
+								</td>
+								<td align="left">
+									<input id="department" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Email:
+								</td>
+								<td align="left">
+									<input id="email" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Enabled:
+								</td>
+								<td align="left">
+									<input id="enabled" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Image_relative_path:
+								</td>
+								<td align="left">
+									<input id="image_relative_path" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Image_size:
+								</td>
+								<td align="left">
+									<input id="image_size" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Phone:
+								</td>
+								<td align="left">
+									<input id="phone" />
+								</td>
+							</tr>
+							
+							<tr>
+								<td align="right">
+									Sex:
+								</td>
+								<td align="left">
+									<input id="sex" />
+								</td>
+							</tr>
+							
+							
+							<tr>
+								<td align="right"></td>
+								<td style="padding-top: 10px;" align="right">
+									<input style="margin-right: 5px;" type="button" id="addUserButton"
+										value="Add" />
+									<input id="cancel" type="button" value="Cancel" />
+								</td>
+							</tr>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
 </body>
 </html>

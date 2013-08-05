@@ -93,6 +93,7 @@
 		image_relative_path,
 		account, 
 		name, 
+		password,
 		phone, 
 		sex, 
 		email, 
