@@ -40,7 +40,9 @@
 		users = matchedusers.result;
 	}
 	
-	
+	var imageRenderer = function (row, datafield, value) {
+        return '<img style="margin-left: 5px;" height="60" width="50" src="../../' + value + '"/>';
+    }
 	var userSize = users.length;
 	var userData = {};
 	
@@ -71,7 +73,7 @@
 				}else if(item == "image_relative_path") {
 					datafield["type"] = "string";
 					column["text"] = "Image_relative_path";
-					
+					column["cellsrenderer"] = imageRenderer;
 				}else if(item == "account") {
 					datafield["type"] = "string";
 					column["text"] = "Account";
@@ -152,6 +154,7 @@
 		userData[i] = rowData;
 	}
 	
+	
             var theme = getDemoTheme();
             
             var source =
@@ -204,9 +207,9 @@
             $("#addUserButton").jqxButton({ theme: theme });
             // update row.
             $("#updaterowbutton").on('click', function () {
-            	var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
+            	selectedupdaterowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
             	//id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
-                rowData = $('#jqxgrid').jqxGrid('getrowdata', selectedrowindex);
+                rowData = $('#jqxgrid').jqxGrid('getrowdata', selectedupdaterowindex);
                 
 				
 				if(rowData != null) {
@@ -222,6 +225,8 @@
 					$("#updateUserTable #birthday").val(rowData["birthday"]);
 					$("#updateUserTable #department").val(rowData["department"]);
 					$("#updateUserTable #email").val(rowData["email"]);
+					$("#updateUserTable #user_image").attr("src","../../" + rowData["image_relative_path"]);
+					
 					$("#updateUserTable #image_relative_path").val(rowData["image_relative_path"]);
 					$("#updateUserTable #image_size").val(rowData["image_size"]);
 					$("#updateUserTable #phone").val(rowData["phone"]);
@@ -371,7 +376,7 @@
                     $.post("updateUser.action", updateUserData,function(result){
 						if(result != null && result["id"] != null){
 	                    	//var rowID = $('#jqxgrid').jqxGrid('getrowid', rowData);
-		                    $('#jqxgrid').jqxGrid('updaterow', id, newrow);
+		                    $('#jqxgrid').jqxGrid('updaterow', selectedupdaterowindex, newrow);
 		                    $("#updatePopupWindow").jqxWindow('hide');
 	                    }else if(result != null && result["executeResult"] != null && result["executeResult"] == false){
 	                    	//do nothing
@@ -502,6 +507,7 @@
 									Image_relative_path:
 								</td>
 								<td align="left">
+									<img  id="user_image" style="margin-left: 5px;" height="60" width="50" ></img>
 									<input id="image_relative_path" />
 								</td>
 							</tr>
@@ -614,6 +620,7 @@
 									Image_relative_path:
 								</td>
 								<td align="left">
+									
 									<input id="image_relative_path" />
 								</td>
 							</tr>
