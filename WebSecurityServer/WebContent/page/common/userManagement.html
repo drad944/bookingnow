@@ -116,18 +116,14 @@
 					datafield["type"] = "number";
 					column["text"] = "Sub_system";
 					
-				}else if(item == "enabled") {
-					datafield["type"] = "boolean";
-					column["text"] = "enabled";
-					
-				}else if(item == "role_Details" || item == "image" || item == "image_absolute_path"){
+				}else if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
 					//do nothing
 				}else {
 					datafield["type"] = "string";
 					column["text"] = "XX";
 				}
 				
-				if(item == "role_Details" || item == "image" || item == "image_absolute_path"){
+				if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
 					
 				}else {
 					column["datafield"] = item;
@@ -145,7 +141,7 @@
 		
 		var rowData = {};
 		for(var item in user) {
-			if(item == "role_Details" || item == "image" || item == "image_absolute_path"){
+			if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
 					
 			}else {
 				rowData[item] = user[item];
@@ -227,7 +223,6 @@
 					$("#updateUserTable #birthday").val(rowData["birthday"]);
 					$("#updateUserTable #department").val(rowData["department"]);
 					$("#updateUserTable #email").val(rowData["email"]);
-					$("#updateUserTable #enabled").val(rowData["enabled"]);
 					$("#updateUserTable #image_relative_path").val(rowData["image_relative_path"]);
 					$("#updateUserTable #image_size").val(rowData["image_size"]);
 					$("#updateUserTable #phone").val(rowData["phone"]);
@@ -260,7 +255,6 @@
                         "birthday": $("#addUserTable #birthday").val(),
                         "department": $("#addUserTable #department").val(),
                         "email": $("#addUserTable #email").val(),
-                        "enabled": $("#addUserTable #enabled").val(),
                         "image_relative_path": $("#addUserTable #image_relative_path").val(),
                         "image_size": $("#addUserTable #image_size").val(),
                         "phone": $("#addUserTable #phone").val(),
@@ -274,7 +268,6 @@
                         "user.birthday": $("#addUserTable #birthday").val(),
                         "user.department": $("#addUserTable #department").val(),
                         "user.email": $("#addUserTable #email").val(),
-                        "user.enabled": $("#addUserTable #enabled").val(),
                         "user.image_relative_path": $("#addUserTable #image_relative_path").val(),
                         "user.image_size": $("#addUserTable #image_size").val(),
                         "user.phone": $("#addUserTable #phone").val(),
@@ -340,7 +333,6 @@
                         "birthday": $("#updateUserTable #birthday").val(),
                         "department": $("#updateUserTable #department").val(),
                         "email": $("#updateUserTable #email").val(),
-                        "enabled": $("#updateUserTable #enabled").val(),
                         "image_relative_path": $("#updateUserTable #image_relative_path").val(),
                         "image_size": $("#updateUserTable #image_size").val(),
                         "phone": $("#updateUserTable #phone").val(),
@@ -355,7 +347,6 @@
                         "user.birthday": $("#updateUserTable #birthday").val(),
                         "user.department": $("#updateUserTable #department").val(),
                         "user.email": $("#updateUserTable #email").val(),
-                        "user.enabled": $("#updateUserTable #enabled").val(),
                         "user.image_relative_path": $("#updateUserTable #image_relative_path").val(),
                         "user.image_size": $("#updateUserTable #image_size").val(),
                         "user.phone": $("#updateUserTable #phone").val(),
@@ -479,14 +470,6 @@
 							</tr>
 							<tr>
 								<td align="right">
-									Enabled:
-								</td>
-								<td align="left">
-									<input id="enabled" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
 									Image_relative_path:
 								</td>
 								<td align="left">
@@ -595,14 +578,6 @@
 								</td>
 								<td align="left">
 									<input id="email" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Enabled:
-								</td>
-								<td align="left">
-									<input id="enabled" />
 								</td>
 							</tr>
 							<tr>

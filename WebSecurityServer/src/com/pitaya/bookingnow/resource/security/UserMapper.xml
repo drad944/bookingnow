@@ -146,7 +146,7 @@
 		from pitaya_user U
 			left outer join pitaya_user_role_detail UR on UR.user_id = U.id
 			left outer join pitaya_role R on R.id = UR.role_id
-		where U.account = #{account,jdbcType=VARCHAR} and U.password = #{password,jdbcType=VARCHAR}
+		where U.account = #{account,jdbcType=VARCHAR} and U.password = #{password,jdbcType=VARCHAR} and U.enabled = true
 	</select>
 	 
 	 <!-- 
@@ -220,6 +220,9 @@
 			<if test="enabled != null">
 				and U.enabled = #{enabled,jdbcType=BIT}
 			</if>
+			<if test="enabled == null">
+				and U.enabled = true
+			</if>
 		</where>
 		
 	</select>
@@ -279,6 +282,9 @@
 			<if test="enabled != null">
 				and enabled = #{enabled,jdbcType=BIT}
 			</if>
+			<if test="enabled == null">
+				and enabled = true
+			</if>
 		</where>
 	</select>
 	
@@ -286,6 +292,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_user
+		where enabled = true
 	</select>
 	
 	<select id="getUserRole" resultMap="User_BaseResultMap" parameterType="java.lang.Long">
@@ -329,7 +336,7 @@
 		#{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER},
 		#{email,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
 		#{birthday,jdbcType=BIGINT},
-		#{description,jdbcType=VARCHAR}, #{department,jdbcType=INTEGER}, #{sub_system,jdbcType=INTEGER}, #{enabled,jdbcType=BIT}
+		#{description,jdbcType=VARCHAR}, #{department,jdbcType=INTEGER}, #{sub_system,jdbcType=INTEGER}, true
 		)
 	</insert>
 	
