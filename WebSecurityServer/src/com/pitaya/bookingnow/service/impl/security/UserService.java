@@ -1,4 +1,5 @@
 package com.pitaya.bookingnow.service.impl.security;
+import java.util.Date;
 import java.util.List;
 
 
@@ -22,7 +23,10 @@ public class UserService implements IUserService {
 	@Override
 	public MyResult add(User user) {
 		MyResult result = new MyResult();
-		if (user != null) {
+		if (user != null && user.getAccount() != null) {
+			if (user.getModifyTime() == null) {
+				user.setModifyTime(new Date().getTime());
+			}
 			if (userDao.insert(user) == 1) {
 				result.setExecuteResult(true);
 				result.setUser(userDao.selectByPrimaryKey(user.getId()));
@@ -57,6 +61,9 @@ public class UserService implements IUserService {
 	public MyResult modify(User user) {
 		MyResult result = new MyResult();
 		if (user != null && user.getId() != null) {
+			if (user.getModifyTime() == null) {
+				user.setModifyTime(new Date().getTime());
+			}
 			if (userDao.updateByPrimaryKeySelective(user) == 1) {
 				
 				result.setExecuteResult(true);
