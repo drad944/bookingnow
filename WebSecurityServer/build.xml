@@ -2,7 +2,8 @@
 <project name="Booking" basedir="." default="deploy">
 	<property file="${basedir}/build.properties" />
 	
-	<property name="webapp.dir" value="${deploy.dir}" />	
+	<property name="webapp.dir" value="${deploy.dir}" />
+	<property name="project.dir" value="${webapp.dir}/${ant.project.name}"/>
 	<property name="src.dir" value="./src" />
 	<property name="webcontent.dir" value="./WebContent" />
 	<property name="classes.dir" value="${webcontent.dir}/WEB-INF/classes" />
@@ -20,9 +21,19 @@
 		</fileset>
 	</path>
 	
+	<target name="web">
+		<copy todir="${project.dir}" overwrite="YES"> 
+			<fileset dir="${webcontent.dir}" includes="**/*.jsp"/>
+			<fileset dir="${webcontent.dir}" includes="**/*.html"/>
+			<fileset dir="${webcontent.dir}" includes="**/*.js"/>
+			<fileset dir="${webcontent.dir}" includes="**/*.css"/>
+		</copy>
+	</target>
+	
 	<target name="clean">
-			<delete dir="${classes.dir}"/>
-			<delete dir="${war.file}"/>
+		<delete dir="${classes.dir}"/>
+		<delete dir="${war.file}"/>
+		<delete dir="${project.dir}"/>
 	</target>
 	
 	<target name="copywar">
