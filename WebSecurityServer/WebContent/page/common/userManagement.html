@@ -247,7 +247,6 @@
                 if($("#addUserTable #account").val() != null && $("#addUserTable #password").val() != null){
                 	var newrow = {
                 		"account": $("#addUserTable #account").val(), 
-                    	"account": $("#addUserTable #account").val(), 
                     	"name": $("#addUserTable #name").val(),
                         "password": $("#addUserTable #password").val(),
                        	"address": $("#addUserTable #address").val(),
@@ -279,6 +278,23 @@
 	                    	newrow["id"] = result["id"];
 		                    $('#jqxgrid').jqxGrid('addrow', null, newrow);
 		                    $("#addPopupWindow").jqxWindow('hide');
+		                    
+		                    addUserData = null;
+		                    newrow = null;
+		                    
+		                    //empty input value
+		                    $("#addUserTable #account").val("");
+		                    $("#addUserTable #name").val("");
+		                    $("#addUserTable #password").val("");
+		                    $("#addUserTable #address").val("");
+		                    $("#addUserTable #birthday").val("");
+		                    $("#addUserTable #department").val("");
+		                    $("#addUserTable #email").val("");
+		                    $("#addUserTable #image_relative_path").val("");
+		                    $("#addUserTable #image_size").val("")
+		                    $("#addUserTable #phone").val("");
+		                    $("#addUserTable #sex").val("");
+		                    
 	                    }else if(result != null && result["executeResult"] != null && result["executeResult"] == false){
 	                    	//do nothing
 	                    }
@@ -308,7 +324,7 @@
                 width: 350, resizable: false, theme: theme, isModal: true, autoOpen: false, cancelButton: $("#addUserTable #cancel"), modalOpacity: 0.01           
             });
             $("#addPopupWindow").on('open', function () {
-                $("#id").jqxInput('selectAll');
+                //$("#id").jqxInput('selectAll');
             });
             
              // initialize the popup window and buttons.
