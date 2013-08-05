@@ -152,7 +152,6 @@
 		userData[i] = rowData;
 	}
 	
-         
             var theme = getDemoTheme();
             
             var source =
@@ -383,18 +382,32 @@
 		user management.haha.
 	</div>
 	<div id='jqxWidget' style="font-size: 13px; font-family: Verdana; float: left;">
+		<div id="J_Nav" class="main-nav">
+			<ul>
+				<li class="J_nav_1 ">
+					<div>
+	                	<input id="addrowbutton" type="button" value="Add New Row" />
+	            	</div>
+				</li>
+				
+				<li class="J_nav_1 ">
+					<div>
+	                	<input id="updaterowbutton" type="button" value="Update Selected Row" />
+	            	</div>
+				</li>
+				
+				<li class="J_nav_1 ">
+					<div>
+	                	<input id="deleterowbutton" type="button" value="Delete Selected Row" />
+	            	</div>
+				</li>
+				
+			</ul>
+		</div>
+        	
+	        
         	<div style="float: left;" id="jqxgrid"></div>
-	        <div style="margin-left: 10px; float: left;">
-	            <div>
-	                <input id="addrowbutton" type="button" value="Add New Row" />
-	            </div>
-	            <div style="margin-top: 10px;">
-	                <input id="deleterowbutton" type="button" value="Delete Selected Row" />
-	            </div>
-	            <div style="margin-top: 10px;">
-	                <input id="updaterowbutton" type="button" value="Update Selected Row" />
-	            </div>
-	        </div>
+	        
 
 			<div id="updatePopupWindow">
 				<div>
