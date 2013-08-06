@@ -27,6 +27,8 @@
 			<fileset dir="${webcontent.dir}" includes="**/*.html"/>
 			<fileset dir="${webcontent.dir}" includes="**/*.js"/>
 			<fileset dir="${webcontent.dir}" includes="**/*.css"/>
+			<fileset dir="${webcontent.dir}" includes="**/*.png"/>
+			<fileset dir="${webcontent.dir}" includes="**/*.gif"/>
 		</copy>
 	</target>
 	
