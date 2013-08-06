@@ -2,36 +2,101 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>test.html</title>
-<link rel="stylesheet" type="text/css" href="css/head.css">
-	
+<title>testUploadPicture.html</title>
+	<link rel="stylesheet" type="text/css" href="css/head.css">
+	<link rel="stylesheet" type="text/css" href="css/jquery.Jcrop.css">
+
+	<style type="text/css">
+		.crop_preview{position:absolute; left:520px; top:0; width:150px; height:150px; overflow:hidden;}
+	</style>
 	<script src="js/jquery-1.10.2.js" type="text/javascript"></script>
-	<script src="js/AppUtil.js" type="text/javascript"></script>
+	<script src="js/jquery.color.js" type="text/javascript"></script>
+	<script src="js/jquery.Jcrop.js" type="text/javascript"></script>
 	
+	<script src="js/AppUtil.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		//记得放在jQuery(window).load(...)内调用，否则Jcrop无法正确初始化
+		$("#xuwanting").Jcrop({
+			aspectRatio:4/4,
+			onChange:showCoords,
+			onSelect:showCoords
+		});	
+		//简单的事件处理程序，响应自onChange,onSelect事件，按照上面的Jcrop调用
+		function showCoords(obj){
+			$("#x").val(obj.x);
+			$("#y").val(obj.y);
+			$("#w").val(obj.w);
+			$("#h").val(obj.h);
+			if(parseInt(obj.w) > 0){
+				//计算预览区域图片缩放的比例，通过计算显示区域的宽度(与高度)与剪裁的宽度(与高度)之比得到
+				var rx = $("#preview_box").width() / obj.w; 
+				var ry = $("#preview_box").height() / obj.h;
+				//通过比例值控制图片的样式与显示
+				$("#crop_preview").css({
+					width:Math.round(rx * $("#xuwanting").width()) + "px",	//预览图片宽度为计算比例值与原图片宽度的乘积
+					height:Math.round(rx * $("#xuwanting").height()) + "px",	//预览图片高度为计算比例值与原图片高度的乘积
+					marginLeft:"-" + Math.round(rx * obj.x) + "px",
+					marginTop:"-" + Math.round(ry * obj.y) + "px"
+				});
+			}
+		}
+		$("#crop_submit").click(function(){
+			if(parseInt($("#x").val())){
+				$("#crop_form").submit();	
+			}else{
+				alert("要先在图片上划一个选区再单击确认剪裁的按钮哦！");	
+			}
+		});
+		
+		$("#selectPicture").change(function(){
+			var imagePath = "file:///" + $("#selectPicture").val();
+			$("#xuwanting").attr("src","");
+	        $("#xuwanting").attr("src","file:///" + $("#selectPicture").val());
+		});
+	});
+	
+	
+	</script>
 	<script>
-		$(document).ready(function(){
-		    var food = new Object();
-		    food.id = 1;
-			var param = new Object();
-			param.food = food;
-			//{"food.id":1}
-		    	$.post("findSmallFood_Picture.action", 
-		    			{"food.id":1}, 
-		    		    function(data){
-		    				var len = data.length;
-		    				alert("len:" + len);
-		    				
-		    		        $.each(data, function(areaIdx, area) {
-		    		            //alert(area.radius);
-		    		        });
-		    		    },"json");
-		    });
+	
 	</script>
 	
 </head>
 
 <body>
 	<div id="framework_main">welcome to bookingNow management!</div>
+	<div class="zxx_main_con">
+		<div class="zxx_test_list">
+			<div>
+				<span>添加图片</span>
+				<input id="selectPicture" type="file" name="selectPicture" />
+			</div>
+			<div class="rel mb20">
+				<img id="xuwanting" src="images/user/test.jpg" /> 
+				<span id="preview_box" class="crop_preview">
+					<img id="crop_preview" src="images/user/test.jpg" />
+				</span>
+			</div>
+			<form action="crop.php" method="post" id="crop_form">
+				<input type="hidden" id="x" name="x" /> 
+				<input type="hidden" id="y"	name="y" /> 
+				<input type="hidden" id="w" name="w" /> 
+				<input type="hidden" id="h" name="h" /> 
+				<input type="button" value="确认剪裁"	id="crop_submit" />
+			</form>
+			
+		</div>
+	</div>
 
+
+	<div id="uploadPictureDiv">
+		<div id="selectPictureButtonDiv"></div>
+		<div id="cropPictureDiv">
+			<div id="cropLargePictureDiv"></div>
+			<div id="cropSmallPictureDiv"></div>
+		</div>
+		<div id="uploadButtonDiv"></div>
+	</div>
 </body>
 </html>
