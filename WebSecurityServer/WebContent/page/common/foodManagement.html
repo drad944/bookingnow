@@ -16,7 +16,10 @@
     <script type="text/javascript" src="../../js/widget/jqxdropdownlist.js"></script>
     <script type="text/javascript" src="../../js/widget/jqxlistbox.js"></script>
     <script type="text/javascript" src="../../js/widget/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxnumberinput.js"></script>
     <script type="text/javascript" src="../../js/widget/jqxmenu.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxcheckbox.js"></script>
+    <script type="text/javascript" src="../../js/widget/jqxcombobox.js"></script>
     <script type="text/javascript" src="../../js/widget/jqxgrid.js"></script>
     <script type="text/javascript" src="../../js/widget/jqxgrid.filter.js"></script>
     <script type="text/javascript" src="../../js/widget/jqxgrid.sort.js"></script>
@@ -42,7 +45,7 @@
 	   	}
     
     	$(document).ready(function () {
-	    	
+    		var theme = getDemoTheme();
 	    	var data = [];
 	    	var categories = ['中餐', '西餐', '点心'];
 	    	for(var i=0; i < 30; i++){
@@ -51,6 +54,7 @@
 	    		rowdata.category = categories[i%3];
 	    		rowdata.desc = "i" + i + "'desc";
 	    		rowdata.price = i;
+	    		rowdata.available = true;
 	    		data.push(rowdata);
 	    	}
 	    	
@@ -59,16 +63,69 @@
     			datatype: "array"
 	    	}
 	    	
-
+	    	$("#popupWindow").jqxWindow({width: '250px', height: '260px', theme: theme, autoOpen: false});
+	    	$("#category").jqxComboBox({source: categories, selectedIndex: 0, width: '120px', height: '25px', theme: theme});
+	    	$("#price").jqxNumberInput({symbol: 'rmb', width: 120, height: 23, theme: theme, spinButtons: true });
+    	 	$("#status").jqxCheckBox({ width: 120, theme: theme });
 	    	$("#jqxgrid").jqxGrid(
    			{
 	    			height: 600,
+	    			width: 600,
+	    			showgroupmenuitems: false,
+	                sortable: true,
+	                pageable: true,
 	    		    source: source,
 	    		    columns: [
 	    		        { text: '菜名', datafield: 'name', width: 250 },
 	    		        { text: '类别', datafield: 'category', width: 100 },
 	    		        { text: '描述', datafield: 'desc' },
-	    		        { text: '价格', datafield: 'price' }
+	    		        { text: '价格', datafield: 'price' },
+	    		        { text: '状态', datafield: 'available',columntype: 'checkbox'},
+	    		        { text: '编辑', datafield: 'Edit', columntype: 'button', 
+	    		        	cellsrenderer: function () {
+	                        	return "Edit";
+	                     	}, 
+	                     	buttonclick: function (row) {
+		                        // open the popup window when the user clicks a button.
+		                        editrow = row;
+		                        var offset = $("#jqxgrid").offset();
+		                        $("#popupWindow").jqxWindow({ position: { x: parseInt(offset.left) + 175, y: parseInt(offset.top) + 170 } });
+		                        // get the clicked row's data and initialize the input fields.
+		                        var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', editrow);
+		                        
+		                        $("#name").val(dataRecord.name);
+		                        var idx = 0;
+		                        for(var i = 0; i < categories.length; i++){
+		                        	if(dataRecord.category == categories[i]){
+		                        		idx = i;
+		                        		break;
+		                        	}
+		                        }
+		                        $("#category").jqxComboBox({ selectedIndex: idx });
+		            	    	$("#category").on('change', function(event){
+		            	    		if(event.args){
+		            	    			dataRecord.category = event.args.item.value;
+		            	    		} else {
+		            	    			var newcategory = $("#category").val();
+		            	    			if(newcategory != null && newcategory.trim() != ""){
+		            	    				for(var i=0; i < categories.length; i++){
+		            	    					if(categories[i] == newcategory){
+		            	    						return;
+		            	    					}
+		            	    				}
+		            	    				categories.push(newcategory);
+		            	    				$("#category").jqxComboBox('addItem', newcategory);
+		            	    				$("#category").jqxComboBox('selectIndex', categories.length - 1);
+		            	    			}
+		            	    		}
+		            	    	});
+		                        $("#desc").val(dataRecord.desc);
+		                        $("#price").jqxNumberInput({ decimal: dataRecord.price });
+		                        $("#status").jqxCheckBox({ checked : dataRecord.available });
+		                        // show the popup window.
+		                        $("#popupWindow").jqxWindow('open');
+	                    	}
+	                    }
 	    		    ],
 	    		    groupable: true,
 	    		    showgroupsheader : false,
@@ -90,10 +147,15 @@
 	
 <body class='default'>
 	<div id="content">
-	   	<div id='jqxWidget' style="font-size: 13px; font-family: Verdana; float: left;">
-        	<div id="jqxgrid"></div>
-    	</div>
+
    		<table>
+   			<tr>
+   				<td>
+				   	<div id='jqxWidget' style="font-size: 13px; font-family: Verdana; float: left;">
+        				<div id="jqxgrid"></div>
+    				</div>
+   				</td>
+   			</tr>
     		<tr>
 				<td>
 			    	<div id="controlbar">
@@ -119,6 +181,37 @@
 	    		</td>
     		</tr>
    		</table>
+   		<div id="popupWindow">
+            <div>编辑</div>
+            <div style="overflow: hidden;">
+                <table>
+                    <tr style="weight:200px; height:25px">
+                        <td align="right" width="30%">菜名:</td>
+                        <td align="left"><input id="name" style="width: 120px"/></td>
+                    </tr>
+                    <tr style="weight:200px; height:25px">
+                        <td align="right" width="30%">分类:</td>
+                        <td align="left"><div id="category"></div></td>
+                    </tr>
+                    <tr style="weight:200px; height:25px">
+                        <td align="right" width="30%">描述:</td>
+                        <td align="left"><input id="desc" style="width: 120px"/></td>
+                    </tr>
+                    <tr style="weight:200px; height:25px">
+                        <td align="right" width="30%">价格:</td>
+                        <td align="left"><div id="price"></div></td>
+                    </tr>
+                    <tr style="weight:200px; height:25px">
+                        <td align="right" width="30%">状态:</td>
+                        <td align="left"><div id="status"></div></td>
+                    </tr>
+                    <tr style="weight:200px; height:25px">
+                        <td align="right"></td>
+                        <td style="padding-top: 10px;" align="right"><input style="margin-right: 5px;" type="button" id="Save" value="Save" /><input id="Cancel" type="button" value="Cancel" /></td>
+                    </tr>
+                </table>
+            </div>
+       </div>
 	</div>
 </body>
 </html>
