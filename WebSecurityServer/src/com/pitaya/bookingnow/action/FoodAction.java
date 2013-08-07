@@ -14,6 +14,7 @@ public class FoodAction extends BaseAction{
 	private IFoodService foodService;
 	private Food food;
 	private List<Food> clientMenuFoods;
+	private List<Food> foodList;
 	private Map<String, List<Food>> newMenuFood;
 	
 	private InputStream largeImageStream;
@@ -57,11 +58,24 @@ public class FoodAction extends BaseAction{
 		this.food = food;
 	}
 	
+	public void setFoodList(List<Food> foods){
+		this.foodList = foods;
+	}
+	
+	public List<Food> getFoodList(){
+		return this.foodList;
+	}
+
 	public String searchFood() {
 		if (food != null) {
 			foodService.searchFoods(food);
 			
 			return "findSuccess";
+		} else {
+			this.foodList = foodService.searchALLFoods();
+			if(this.foodList != null){
+				return "findAllFoodsSuccess";
+			}
 		}
 		
 		return "findFail";
