@@ -1,6 +1,7 @@
 package com.pitaya.bookingnow.action;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,6 +109,30 @@ public class UserAction extends BaseAction{
 		return "logoutUserSuccess";
 	}
 	
+	public String findWithIDUser() {
+		if(user != null && user.getId() != null) {
+        	user = userService.searchUserById(user.getId());
+        	if (user != null) {
+        		if (matchedUsers == null) {
+					matchedUsers = new HashMap<String, List<User>>();
+				}
+        		List<User> users = new ArrayList<User>();
+				users.add(user);
+				matchedUsers.put("result", users);
+        		return "findWithIDUserSuccess";
+			}
+        	return "Fail";
+        }else {
+			if (result == null) {
+				result = new MyResult();
+			}
+			result.setErrorType(Constants.FAIL);
+			result.setExecuteResult(false);
+			result.getErrorDetails().put("user_exist", "can not find user in client data.");
+			return "Fail";
+		}
+	}
+	
 	public String findUser() {
 		if(user != null) {
         	List<User> users = userService.searchUsers(user);
@@ -191,6 +216,24 @@ public class UserAction extends BaseAction{
 		}
     	matchedUsers.put("result", users);
     	return "findAllUserSuccess";
+	}
+	
+	public String cropPictureForUser() {
+		if(params != null) {
+			result = userService.cropPicture(params);
+			
+			if(result.isExecuteResult()){ 
+				
+	            return "removeUserSuccess";  
+	        }else{  
+	            return "Fail";  
+	        }  
+        }
+		if (result == null) {
+			result = new MyResult();
+			result.setErrorType(Constants.FAIL);
+		}
+        return "removeFail";
 	}
 	
 }

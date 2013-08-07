@@ -289,4 +289,29 @@ public class Food {
 			}
 		}
     }
+    
+    public void parseImageSize() {
+    	File file = null;
+    	
+    	String pathprefix = ServletActionContext.getServletContext().getRealPath("/");
+    	if (this.getLarge_image_relative_path() != null && this.getLarge_image_relative_path().length() > 0) {
+    		file = new File(pathprefix + this.getLarge_image_relative_path());
+			if (file.exists()) {
+				this.setLarge_image_size((int) file.length());
+				file = null;
+			}else {
+				logger.info(file.toString() + " -------------------- large picture is not exist.");
+			}
+		}
+    	
+    	if (this.getSmall_image_relative_path() != null && this.getSmall_image_relative_path().length() > 0) {
+    		file = new File(pathprefix + this.getSmall_image_relative_path());
+			if (file.exists()) {
+				this.setSmall_image_size((int) file.length());
+				file = null;
+			}else {
+				logger.info(file.toString() + " -------------------- small picture is not exist.");
+			}
+		}
+    }
 }

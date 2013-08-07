@@ -62,6 +62,11 @@
 				<param name="root">matchedUsers</param>
 	        </result>
 	        
+	        <result name="findWithIDUserSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">matchedUsers</param>
+	        </result>
+	        
 	        <result name="registerUserSuccess" type="json">
 			    <param name="excludeNullProperties">true</param>
 				<param name="root">user</param>
