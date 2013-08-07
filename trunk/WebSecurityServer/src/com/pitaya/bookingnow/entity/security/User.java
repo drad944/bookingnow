@@ -207,6 +207,21 @@ public class User {
         this.sub_system = sub_system;
     }
     
+    public void parseImageSize() {
+    	File file = null;
+    	
+    	String pathprefix = ServletActionContext.getServletContext().getRealPath("/");
+    	if (this.getImage_relative_path() != null && this.getImage_relative_path().length() > 0) {
+    		file = new File(pathprefix + this.getImage_relative_path());
+			if (file.exists()) {
+				this.setImage_size((int) file.length());
+				file = null;
+			}else {
+				logger.info(file.toString() + " -------------------- large picture is not exist.");
+			}
+		}
+    }
+    
     public void renderePicture() {
     	FileInputStream fis = null;
     	File file = null;

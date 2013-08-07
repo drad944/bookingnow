@@ -16,8 +16,27 @@
 	<script src="js/AppUtil.js" type="text/javascript"></script>
 	<script type="text/javascript">
 	$(document).ready(function(){
+		$.post("findWithIDUser.action", 
+    			{"user.id": 5}, 
+    			function(matchedusers){
+    				if(matchedusers != null && matchedusers.result != null){
+    					users = matchedusers.result;
+    				}
+    				var user = null;
+					if(users != null){
+						user = users[0];
+					}
+					if(user != null && user.id != null) {
+						$("#crop_now").attr("src",user.image_relative_path);
+						$("#crop_preview").attr("src",user.image_relative_path);
+						
+						$("#user_id").val(user.id);
+						$("#image_relative_path").val(user.image_relative_path);
+					}
+					
+    			});
 		//记得放在jQuery(window).load(...)内调用，否则Jcrop无法正确初始化
-		$("#xuwanting").Jcrop({
+		$("#crop_now").Jcrop({
 			aspectRatio:4/4,
 			onChange:showCoords,
 			onSelect:showCoords
@@ -34,8 +53,8 @@
 				var ry = $("#preview_box").height() / obj.h;
 				//通过比例值控制图片的样式与显示
 				$("#crop_preview").css({
-					width:Math.round(rx * $("#xuwanting").width()) + "px",	//预览图片宽度为计算比例值与原图片宽度的乘积
-					height:Math.round(rx * $("#xuwanting").height()) + "px",	//预览图片高度为计算比例值与原图片高度的乘积
+					width:Math.round(rx * $("#crop_now").width()) + "px",	//预览图片宽度为计算比例值与原图片宽度的乘积
+					height:Math.round(rx * $("#crop_now").height()) + "px",	//预览图片高度为计算比例值与原图片高度的乘积
 					marginLeft:"-" + Math.round(rx * obj.x) + "px",
 					marginTop:"-" + Math.round(ry * obj.y) + "px"
 				});
@@ -51,8 +70,8 @@
 		
 		$("#selectPicture").change(function(){
 			var imagePath = "file:///" + $("#selectPicture").val();
-			$("#xuwanting").attr("src","");
-	        $("#xuwanting").attr("src","file:///" + $("#selectPicture").val());
+			$("#crop_now").attr("src","");
+	        $("#crop_now").attr("src","file:///" + $("#selectPicture").val());
 		});
 	});
 	
@@ -66,27 +85,34 @@
 
 <body>
 	<div id="framework_main">welcome to bookingNow management!</div>
-	<div class="zxx_main_con">
-		<div class="zxx_test_list">
+	<div class="crop_main">
 			<div>
 				<span>添加图片</span>
 				<input id="selectPicture" type="file" name="selectPicture" />
 			</div>
-			<div class="rel mb20">
-				<img id="xuwanting" src="images/user/test.jpg" /> 
+			<div>
+				<img id="crop_now" src="images/user/test.jpg"/> 
 				<span id="preview_box" class="crop_preview">
-					<img id="crop_preview" src="images/user/test.jpg" />
+					<img id="crop_preview"  />
 				</span>
 			</div>
-			<form action="crop.php" method="post" id="crop_form">
-				<input type="hidden" id="x" name="x" /> 
-				<input type="hidden" id="y"	name="y" /> 
-				<input type="hidden" id="w" name="w" /> 
-				<input type="hidden" id="h" name="h" /> 
+			<form  id="crop_form" action="cropPictureForUser.action" method="post">
+			<!-- 
+				<input type="hidden" id="user_id" name="params.user_id" />
+				<input type="hidden" id="image_relative_path" name="params.imagePath" /> 
+				<input type="hidden" id="x" name="params.x" /> 
+				<input type="hidden" id="y"	name="params.y" /> 
+				<input type="hidden" id="w" name="params.w" /> 
+				<input type="hidden" id="h" name="params.h" /> 
+				 -->
+				<input type="text" id="user_id" name="params.user_id" />
+				<input type="text" id="image_relative_path" name="params.imagePath" /> 
+				<input type="text" id="x" name="params.x" /> 
+				<input type="text" id="y"	name="params.y" /> 
+				<input type="text" id="w" name="params.w" /> 
+				<input type="text" id="h" name="params.h" />
 				<input type="button" value="确认剪裁"	id="crop_submit" />
 			</form>
-			
-		</div>
 	</div>
 
 
