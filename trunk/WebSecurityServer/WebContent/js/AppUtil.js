@@ -7,6 +7,41 @@ var AppUtil = {
 		 for(var p in parameters){ 
 			 domObj.style[p] = parameters[p];
 		 }
+	},
+
+	request : function(url, parameter, success, fail, method){
+		if(method == null || method == "post"){
+			$.post(url, parameter, function(data){
+				if(success){
+					success(data);
+				}
+			}, "json").fail(function(){
+				if(fail){
+				  fail();
+				}
+			});
+		} else {
+			$.get(url, parameter, function(data){
+				if(success){
+					success(data);
+				}
+			}, "json").fail(function(){
+				if(fail){
+				  fail();
+				}
+			});
+		}
+	},
+	
+	getFoodStatus : function(status){
+		switch(status){
+			case Constants.FOOD_STATUS_OK:
+				return "在售";
+			case Constants.FOOD_STATUS_NO:
+				return "售完";
+			default:
+				return "未知";
+		};
 	}
 };
 

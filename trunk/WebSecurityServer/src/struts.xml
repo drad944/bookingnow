@@ -211,6 +211,11 @@
 				<param name="root">newMenuFood</param>
 	        </result>
 	        
+	        <result name="findAllFoodsSuccess" type="json">
+        		<param name="excludeNullProperties">true</param>
+				<param name="root">foodList</param>
+	        </result>
+	        
 	        <result name="Fail" type="json">
 				<param name="root">result</param>
 	        </result>
