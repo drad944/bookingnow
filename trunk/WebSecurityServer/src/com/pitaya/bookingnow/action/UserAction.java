@@ -1,15 +1,21 @@
 package com.pitaya.bookingnow.action;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.struts2.ServletActionContext;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.pitaya.bookingnow.entity.security.User;
 import com.pitaya.bookingnow.service.security.IUserService;
 import com.pitaya.bookingnow.util.Constants;
+import com.pitaya.bookingnow.util.ImageUtil;
 import com.pitaya.bookingnow.util.MyResult;
 import com.pitaya.bookingnow.util.SearchParams;
 
@@ -30,6 +36,28 @@ public class UserAction extends BaseAction{
 	private User user;
 	private User loginUser;
 	
+	private File uploadImage; //上传的文件
+    private String uploadImageFileName; //文件名称
+    private String uploadImageContentType; //文件类型
+	
+	public File getUploadImage() {
+		return uploadImage;
+	}
+	public void setUploadImage(File uploadImage) {
+		this.uploadImage = uploadImage;
+	}
+	public String getUploadImageFileName() {
+		return uploadImageFileName;
+	}
+	public void setUploadImageFileName(String uploadImageFileName) {
+		this.uploadImageFileName = uploadImageFileName;
+	}
+	public String getUploadImageContentType() {
+		return uploadImageContentType;
+	}
+	public void setUploadImageContentType(String uploadImageContentType) {
+		this.uploadImageContentType = uploadImageContentType;
+	}
 	public Map<String, List<User>> getMatchedUsers() {
 		return matchedUsers;
 	}
@@ -236,4 +264,52 @@ public class UserAction extends BaseAction{
         return "removeFail";
 	}
 	
+	
+	public String uploadImageForUser() {
+		
+		String realpath = ServletActionContext.getServletContext().getRealPath("/images/user");
+        if (uploadImage != null) {
+        	String imageTypeString = ImageUtil.parseImageType(uploadImageFileName);
+        	String targetPath = ImageUtil.generateImagePath(realpath, imageTypeString);
+        	
+            File savefile = new File(targetPath);
+            if (!savefile.getParentFile().exists()){
+            	savefile.getParentFile().mkdirs();
+            }
+                
+            try {
+				FileUtils.copyFile(uploadImage, savefile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+            Map<String,Object> session = ActionContext.getContext().getSession();
+            
+    		loginUser = (User) session.get("loginUser");
+    		
+    		//workaround here ,need to delete when project is ready.
+    		if (loginUser == null) {
+				loginUser = userService.searchUserById((long) 1);
+			}
+    		
+    		User newUser = new User();
+    		newUser.setId(loginUser.getId());
+    		String relativePath = ImageUtil.generateRelativePath(targetPath);
+    		newUser.setImage_relative_path(relativePath);
+    		newUser.setImage_absolute_path(targetPath);
+    		newUser.setImage_size((int) savefile.length());
+    		result = userService.modify(newUser);
+    		if(result.isExecuteResult()){ 
+				loginUser = result.getUser();
+    			return "uploadImageForUserSuccess";
+	        }else{  
+	            return "Fail";  
+	        }  
+        }
+        
+		if (result == null) {
+			result = new MyResult();
+			result.setErrorType(Constants.FAIL);
+		}
+        return "Fail";
+	}
 }
