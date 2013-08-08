@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONObject;
+
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.service.IFoodService;
 import com.pitaya.bookingnow.util.Constants;
@@ -16,6 +18,9 @@ public class FoodAction extends BaseAction{
 	private List<Food> clientMenuFoods;
 	private List<Food> foodList;
 	private Map<String, List<Food>> newMenuFood;
+	
+	private boolean isSuccess;
+	private String detail;
 	
 	private InputStream largeImageStream;
 	
@@ -58,6 +63,22 @@ public class FoodAction extends BaseAction{
 		this.food = food;
 	}
 	
+	public void setIsSuccess(boolean b){
+		this.isSuccess = b;
+	}
+	
+	public boolean getIsSuccess(){
+		return this.isSuccess;
+	}
+	
+	public void setDetail(String detail){
+		this.detail = detail;
+	}
+	
+	public String getDetail(){
+		return this.detail;
+	}
+	
 	public void setFoodList(List<Food> foods){
 		this.foodList = foods;
 	}
@@ -84,31 +105,36 @@ public class FoodAction extends BaseAction{
 	public String addFood() {
 		if (food != null) {
 			foodService.add(food);
-			
-			return "addSuccess";
+			this.setIsSuccess(true);
+			return "Success";
 		}
-		
-		return "addFail";
+		this.setIsSuccess(false);
+		this.setDetail("Fail to add food.");
+		return "Fail";
 	}
 	
 	public String removeFood() {
 		if (food != null) {
 			foodService.removeFoodById(food.getId());
-			
-			return "removeSuccess";
+			this.setIsSuccess(true);
+			return "Success";
 		}
-		
-		return "removeFail";
+		this.setIsSuccess(false);
+		this.setDetail("Fail to remove food.");
+		return "Fail";
 	}
 	
 	public String updateFood() {
 		if (food != null) {
-			foodService.modify(food);
-			
-			return "updateSuccess";
+			this.result = foodService.modify(food);
+			if(this.result.isExecuteResult()){
+				this.setIsSuccess(true);
+				return "Success";
+			}
 		}
-		
-		return "updateFail";
+		this.setIsSuccess(false);
+		this.setDetail("Fail to update food.");
+		return "Fail";
 	}
 	
 	public String updateMenuFood() {

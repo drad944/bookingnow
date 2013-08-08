@@ -20,4 +20,7 @@ var Constants = {
 	FOOD_STATUS_OK : 1,
 	FOOD_STATUS_NO : 0,
 	
+	SUCCESS : 1,
+	FAIL : 2,
+	
 };

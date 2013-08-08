@@ -63,9 +63,15 @@ public class FoodService implements IFoodService{
 		MyResult result = new MyResult();
 		
 		if(food != null && food.getId() != null) {
+			Long version = System.currentTimeMillis();
+			food.setVersion(version);
+			if(food.getLarge_image_relative_path() != null){
+				//TODO save image
+				food.setImage_version(version);
+			}
 			if(foodDao.updateByPrimaryKeySelective(food) == 1) {
 				result.setExecuteResult(true);
-				result.setFood(foodDao.selectFullByPrimaryKey(food.getId()));
+				//result.setFood(foodDao.selectFullByPrimaryKey(food.getId()));
 			}else {
 				throw new RuntimeException("fail to update food into DB.");
 			}

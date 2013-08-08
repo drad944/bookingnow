@@ -216,8 +216,14 @@
 				<param name="root">foodList</param>
 	        </result>
 	        
+	        <result name="Success" type="json">
+	        	<param name="includeProperties">isSuccess</param>
+	        	<param name="excludeNullProperties">true</param>
+	        </result>
+	        
 	        <result name="Fail" type="json">
-				<param name="root">result</param>
+				<param name="includeProperties">isSuccess, detail</param>
+				<param name="excludeNullProperties">true</param>
 	        </result>
 	        
 		</action>
