@@ -4,37 +4,34 @@
 <meta charset="UTF-8">
 <title>食品管理</title>
 	<link rel="stylesheet" type="text/css" href="../../css/head.css">
-	<link rel="stylesheet" href="../../css/jqx.base.css" type="text/css" />
-	<link rel="stylesheet" href="../../css/jqx.energyblue.css" type="text/css" />
+	<link rel="stylesheet" href="../../css/jqwidgets/styles/jqx.base.css" type="text/css" />
+	<link rel="stylesheet" href="../../css/jqwidgets/styles/jqx.energyblue.css" type="text/css" />
 	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
 	<script type="text/javascript" src="../../js/AppUtil.js"></script>
 	<script type="text/javascript" src="../../js/Constants.js"></script>
 	
-    <script type="text/javascript" src="../../js/widget/jqxcore.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxdata.js"></script>
-    
-    <script type="text/javascript" src="../../js/widget/jqxbuttons.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxdropdownlist.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxlistbox.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxscrollbar.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxnumberinput.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxmenu.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxcheckbox.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxcombobox.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxgrid.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxgrid.filter.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxgrid.sort.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxgrid.pager.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxgrid.selection.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxgrid.grouping.js"></script> 
-    <script type="text/javascript" src="../../js/widget/jqxgrid.columnsresize.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxgrid.columnsreorder.js"></script> 
-    
-    <script type="text/javascript" src="../../js/widget/jqxnumberinput.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxwindow.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxinput.js"></script>
-    
-    <script type="text/javascript" src="../../js/widget/gettheme.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxdata.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxdropdownlist.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxlistbox.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxnumberinput.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxmenu.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxcheckbox.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxcombobox.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.filter.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.sort.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.pager.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.selection.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.grouping.js"></script> 
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.columnsresize.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.columnsreorder.js"></script> 
+    <script type="text/javascript" src="../../js/jqwidgets/jqxnumberinput.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxwindow.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxinput.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/gettheme.js"></script>
     
     <script type="text/javascript">
     
@@ -80,7 +77,32 @@
                     commit(true);
                 },
                 updaterow: function (rowid, newdata, commit) {
-                    commit(true);
+                	var status = newdata.available == true? Constants.FOOD_STATUS_OK : Constants.FOOD_STATUS_NO;
+                	var param = {
+                		"food.id" : newdata.id,
+                		"food.name" : newdata.name,
+                		"food.category" : newdata.category,
+                		"food.description" : newdata.desc,
+                		"food.price" : newdata.price,
+                		"food.status" : status
+                	};
+                	AppUtil.request("updateFood.action", param, function(data){
+                		if(data){
+                			var result = data.isSuccess;
+                			if(result == true){
+                				commit(true);
+                			} else {
+                				alert(data.detail);
+                			}
+                		} else {
+                			alert("操作失败");
+                		}
+                		commit(false);
+                		
+                	}, function(){
+                		alert("操作失败");
+                		commit(false);
+                	});
                 }
 	    	}
 	   		
