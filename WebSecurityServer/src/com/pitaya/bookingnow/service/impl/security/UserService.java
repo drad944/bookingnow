@@ -158,7 +158,7 @@ public class UserService implements IUserService {
 						&& realUser.getImage_relative_path() != null 
 						&& realUser.getImage_relative_path().equals(params.getImagePath())) {
 					String imageType = ImageUtil.parseImageType(params.getImagePath());
-					String targetImagePath = ImageUtil.generateImagePath("images/user/u", imageType);
+					String targetImagePath = ImageUtil.generateImagePath("images/user/", imageType);
 					String pathprefix = ServletActionContext.getServletContext().getRealPath("/");
 					if (ImageUtil.cut(pathprefix + params.getImagePath(), imageType, pathprefix + targetImagePath, params.getX(), params.getY(), params.getW(), params.getH())) {
 						
@@ -166,13 +166,12 @@ public class UserService implements IUserService {
 						User newUser = new User();
 						newUser.setId(realUser.getId());
 						newUser.setImage_relative_path(targetImagePath);
+						newUser.setImage_absolute_path(pathprefix + targetImagePath);
 						newUser.parseImageSize();
 						
 						if (userDao.updateByPrimaryKeySelective(newUser) == 1) {
 							result.setExecuteResult(true);
 							result.setUser(userDao.selectByPrimaryKey(newUser.getId()));
-							
-							//delete old user picture
 							
 							return result;
 						}else {

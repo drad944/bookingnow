@@ -40,8 +40,23 @@ public class ImageUtil {
 	}
 	
 	public static String generateImagePath(String basicPath,String imageType) {
+		if (basicPath.endsWith("/") || basicPath.endsWith("\\")) {
+			return basicPath + new Date().getTime() + "_" + generateRandomString(10) + "." + imageType;
+		}else {
+			return basicPath + "/" + new Date().getTime() + "_" + generateRandomString(10) + "." + imageType;
+		}
+	}
+	
+	public static String generateRelativePath(String absolutePath) {
+		File file = new File(absolutePath);
+		if (file.exists()) {
+			
+			String parentPath = file.getParentFile().getParentFile().getParentFile().getAbsolutePath();
+			String relativePath = absolutePath.substring(parentPath.length() + 1);
+			return relativePath;
+		}
 		
-		return basicPath + "_" + new Date().getTime() + "_" + generateRandomString(10) + "." + imageType;
+		return null;
 	}
 			
 	/** */
