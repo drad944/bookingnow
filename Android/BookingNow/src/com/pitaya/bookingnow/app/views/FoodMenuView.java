@@ -91,6 +91,10 @@ public class FoodMenuView extends FrameLayout{
         addView(view);
     }
     
+    public void updateFoodList(ArrayList<Food> foodList){
+    	this.foodList = foodList;
+    }
+    
     public void refresh(){
     	mFoodMenuAdapter.notifyDataSetChanged();
     }
@@ -138,7 +142,6 @@ public class FoodMenuView extends FrameLayout{
 	         }
 			 RelativeLayout fooditemRL = (RelativeLayout) view.findViewById(R.id.fooditem);
 	         ImageView image = (ImageView) fooditemRL.findViewById(R.id.image);
-	         
 	         boolean needReload = true;
 	         AsyncImageTask previousTask = AsyncDrawable.getTask(image);
 	         if (previousTask != null) {
