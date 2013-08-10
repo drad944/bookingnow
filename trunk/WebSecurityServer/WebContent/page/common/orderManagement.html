@@ -5,20 +5,33 @@
 <title>order management</title>
 
 	<link rel="stylesheet" type="text/css" href="../../css/head.css">
-	<link rel="stylesheet" href="../../css/jqx.base.css" type="text/css" />
+	<link rel="stylesheet" href="../../css/jqwidgets/styles/jqx.base.css" type="text/css" />
 	
 	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
 	<script type="text/javascript" src="../../js/AppUtil.js"></script>
 	
-    <script type="text/javascript" src="../../js/widget/jqxcore.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxbuttons.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxscrollbar.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxmenu.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxgrid.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxgrid.selection.js"></script> 
-    <script type="text/javascript" src="../../js/widget/jqxgrid.columnsresize.js"></script> 
-    <script type="text/javascript" src="../../js/widget/jqxdata.js"></script> 
-    <script type="text/javascript" src="../../js/widget/gettheme.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxdata.js"></script>
+    
+     
+    <script type="text/javascript" src="../../js/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxdropdownlist.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxlistbox.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxmenu.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.filter.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.sort.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.pager.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.selection.js"></script> 
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.columnsresize.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.columnsreorder.js"></script> 
+    
+     <script type="text/javascript" src="../../js/jqwidgets/jqxnumberinput.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxwindow.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxinput.js"></script>
+    
+    <script type="text/javascript" src="../../js/jqwidgets/gettheme.js"></script>
     <script type="text/javascript">
          $(document).ready(function () {
          		$.post("searchOrder.action", 
@@ -50,7 +63,7 @@
 					
 				}else if(item == "allowance") {
 					datafield["type"] = "number";
-					column["text"] = "Id";
+					column["text"] = "Allowance";
 					
 				}else if(item == "customer_count") {
 					datafield["type"] = "number";
@@ -154,50 +167,56 @@
             };
             var dataAdapter = new $.jqx.dataAdapter(source);
             // initialize jqxGrid
-            $("#jqxgrid").jqxGrid(
+            $("#orderDataGrid").jqxGrid(
             {
                 width: 1000,
                 height: 350,
                 source: dataAdapter,
                 theme: theme,
-                columns: columns
+                columns: columns,
+                selectionmode: 'multiplerowsextended',
+                sortable: true,
+                pageable: true,
+                autoheight: true,
+                columnsresize: true,
+              //  columnsreorder: true,
             });
-            $("#addrowbutton").jqxButton({ theme: theme });
+            $("#addOrderRowButton").jqxButton({ theme: theme });
             $("#addmultiplerowsbutton").jqxButton({ theme: theme });
-            $("#deleterowbutton").jqxButton({ theme: theme });
-            $("#updaterowbutton").jqxButton({ theme: theme });
+            $("#deleteOrderRowButton").jqxButton({ theme: theme });
+            $("#updateOrderRowButton").jqxButton({ theme: theme });
             // update row.
-            $("#updaterowbutton").on('click', function () {
+            $("#updateOrderRowButton").on('click', function () {
                 var datarow = generaterow();
-                var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
-                var rowscount = $("#jqxgrid").jqxGrid('getdatainformation').rowscount;
+                var selectedrowindex = $("#orderDataGrid").jqxGrid('getselectedrowindex');
+                var rowscount = $("#orderDataGrid").jqxGrid('getdatainformation').rowscount;
                 if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
-                    var id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
-                    var commit = $("#jqxgrid").jqxGrid('updaterow', id, datarow);
-                    $("#jqxgrid").jqxGrid('ensurerowvisible', selectedrowindex);
+                    var id = $("#orderDataGrid").jqxGrid('getrowid', selectedrowindex);
+                    var commit = $("#orderDataGrid").jqxGrid('updaterow', id, datarow);
+                    $("#orderDataGrid").jqxGrid('ensurerowvisible', selectedrowindex);
                 }
             });
             // create new row.
-            $("#addrowbutton").on('click', function () {
+            $("#addOrderRowButton").on('click', function () {
                 var datarow = generaterow();
-                var commit = $("#jqxgrid").jqxGrid('addrow', null, datarow);
+                var commit = $("#orderDataGrid").jqxGrid('addrow', null, datarow);
             });
             // create new rows.
             $("#addmultiplerowsbutton").on('click', function () {
-                $("#jqxgrid").jqxGrid('beginupdate');
+                $("#orderDataGrid").jqxGrid('beginupdate');
                 for (var i = 0; i < 10; i++) {
                     var datarow = generaterow();
-                    var commit = $("#jqxgrid").jqxGrid('addrow', null, datarow);
+                    var commit = $("#orderDataGrid").jqxGrid('addrow', null, datarow);
                 }
-                $("#jqxgrid").jqxGrid('endupdate');
+                $("#orderDataGrid").jqxGrid('endupdate');
             });
             // delete row.
-            $("#deleterowbutton").on('click', function () {
-                var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
-                var rowscount = $("#jqxgrid").jqxGrid('getdatainformation').rowscount;
+            $("#deleteOrderRowButton").on('click', function () {
+                var selectedrowindex = $("#orderDataGrid").jqxGrid('getselectedrowindex');
+                var rowscount = $("#orderDataGrid").jqxGrid('getdatainformation').rowscount;
                 if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
-                    var id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
-                    var commit = $("#jqxgrid").jqxGrid('deleterow', id);
+                    var id = $("#orderDataGrid").jqxGrid('getrowid', selectedrowindex);
+                    var commit = $("#orderDataGrid").jqxGrid('deleterow', id);
                 }
             });
         });
@@ -207,24 +226,30 @@
 	
 <body>
 	<div id="content">
-		order management.haha.
-		<div id="framework_main">welcome to bookingNow management!</div>
 		<div id='jqxWidget' style="font-size: 13px; font-family: Verdana; float: left;">
-        	<div style="float: left;" id="jqxgrid"></div>
-	        <div style="margin-left: 10px; float: left;">
-	            <div>
-	                <input id="addrowbutton" type="button" value="Add New Row" />
-	            </div>
-	            <div style="margin-top: 10px;">
-	                <input id="addmultiplerowsbutton" type="button" value="Add Multiple New Rows" />
-	            </div>
-	            <div style="margin-top: 10px;">
-	                <input id="deleterowbutton" type="button" value="Delete Selected Row" />
-	            </div>
-	            <div style="margin-top: 10px;">
-	                <input id="updaterowbutton" type="button" value="Update Selected Row" />
-	            </div>
-	        </div>
+			<div id="J_Nav" class="main-nav">
+				<ul>
+					<li class="J_nav_1">
+						<div>
+		                	<input id="addOrderRowButton" type="button" value="Add New Row" />
+		            	</div>
+					</li>
+					
+					<li class="J_nav_1">
+						<div>
+		                	<input id="updateOrderRowButton" type="button" value="Update Selected Row" />
+		            	</div>
+					</li>
+					
+					<li class="J_nav_1">
+						<div>
+		                	<input id="deleteOrderRowButton" type="button" value="Delete Selected Row" />
+		            	</div>
+					</li>
+					
+				</ul>
+			</div>
+        	<div style="float: left;" id="orderDataGrid"></div>
     	</div>
 		
 	</div>
