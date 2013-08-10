@@ -164,7 +164,7 @@ function parseOrderToGrid(matchedOrders) {
 	
 } 
 
-function parseMenu() {
+function parseMenuHtml() {
     var theme = getDemoTheme();
     var data = [
     {
@@ -221,7 +221,7 @@ function parseMenu() {
         	openContentPage('page/common/foodManagement.html');
         }else if(event.args.id == 3) {
         	openContentPage('page/common/userManagement.html');
-        	parseUserGrid();
+        	parseUserGridHtml();
         	
         }else if(event.args.id == 4) {
         	openContentPage('page/common/tableManagement.html');
@@ -246,7 +246,7 @@ function parseMenu() {
     });
 }
 
-function parseUserGrid() {
+function parseUserGridHtml() {
 		$.post("findUser.action", 
 			{"user.enabled": true}, 
 			function(matchedusers){
