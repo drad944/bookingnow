@@ -117,7 +117,7 @@
    			{		
    				theme : theme,
 				autoheight: true,
-    			width: 750,
+    			width: 800,
     			showgroupmenuitems: false,
                 sortable: true,
                 pageable: true,
@@ -128,7 +128,7 @@
     		        { text: '菜名', datafield: 'name', width: 250 },
     		        { text: '类别', datafield: 'category', width: 100 },
     		        { text: '描述', datafield: 'desc', width: 200 },
-    		        { text: '价格', datafield: 'price', width: 40 },
+    		        { text: '价格', datafield: 'price', width: 100 },
     		        { text: '状态', datafield: 'status', width: 60},
     		        { text: '操作', datafield: 'Edit', columntype: 'button', 
     		        	cellsrenderer: function () {
@@ -139,7 +139,7 @@
 	                        editrow = row;
 	                        var offset = $("#jqxgrid").offset();
 	                        var height = ($("#jqxgrid").jqxGrid('height')- 260)/2;
-	                        $("#popupWindow").jqxWindow({ position: { x: parseInt(offset.left) + 250, y: parseInt(offset.top) + height } });
+	                        $("#popupWindow").jqxWindow({ position: { x: parseInt(offset.left) + 275, y: parseInt(offset.top) + height } });
 	                        // get the clicked row's data and initialize the input fields.
 	                        var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', editrow);
 	                        $("#name").val(dataRecord.name);
@@ -215,6 +215,7 @@
 	    	$("#groupbtn").jqxButton({theme: theme, width: '80', height: '25'});
 	    	$("#addbtn").jqxButton({ theme: theme, width: '50', height: '25' });
             $("#delbtn").jqxButton({ theme: theme, width: '50', height: '25' });
+            $("#updatemenubtn").jqxButton({ theme: theme, width: '80', height: '25' });
             
             $("#groupbtn").bind('click', function () {
             	if($("#groupbtn")[0].value == "按分类显示"){
@@ -234,6 +235,14 @@
             	$("#price").jqxNumberInput({ decimal: 0 });
                 $("#status").jqxCheckBox({ checked : true });
                 $("#popupWindow").jqxWindow('open');
+            });
+            
+            $("#updatemenubtn").bind('click', function () {
+           		AppUtil.request("updateClientsFood.action", null, function(result){
+           			if(result && result.isSuccess == true){
+           				alert("客户端将在收到通知后开始更新菜单!");
+           			}
+           		});
             });
             
 	   	}
@@ -271,11 +280,10 @@
 	
 <body class='default'>
 	<div id="content">
-
-   		<table>
-    		<tr>
-				<td>
-			    	<div id="controlbar">
+   		<table style="width:100%">
+    		<tr style="width:100%">
+				<td style="width:100%" align="center">
+			    	<div id="controlbar" style="width:800px">
 			    		<div style="float:left">
 		                	<input id="addbtn" type="button" value="新增" />
 		            	</div>
@@ -285,12 +293,15 @@
 		            	<div style="float:left; padding-left:10px">
 		                	<input id="groupbtn" type="button" value="按分类显示" />
 		            	</div>
+		            	<div style="float:right">
+		                	<input id="updatemenubtn" type="button" value="一键更新" />
+		            	</div>
 			    	</div>
 	    		</td>
     		</tr>
-   			<tr>
-   				<td>
-				   	<div id='jqxWidget' style="font-size: 13px; font-family: Verdana; float: left;">
+   			<tr style="width:100%">
+   				<td style="width:100%" align="center">
+				   	<div id='jqxWidget' style="font-size: 13px; font-family: Verdana;">
         				<div id="jqxgrid"></div>
     				</div>
    				</td>
