@@ -26,4 +26,6 @@ public interface IUserService{
 	User getUserRole(Long id);
 	
 	MyResult cropPicture(SearchParams params);
+	
+	boolean existUser(User user);
 }

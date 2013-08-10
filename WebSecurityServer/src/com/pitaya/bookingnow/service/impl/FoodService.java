@@ -124,7 +124,12 @@ public class FoodService implements IFoodService{
 				Food DBFood = allDBFoods.get(i);
 				if(DBFood.getId().equals(clientFood.getId())){
 					if(DBFood.getVersion() > clientFood.getVersion()){
-						if (DBFood.getImage_version() > clientFood.getImage_version()) {
+						//this food need update
+						//for one food,version is always >= image_version.
+						//when food info changed,version change,image_version do nothing,version > image_version
+						//when food picture changed,version and image_version change,version == image_version
+						
+						if (DBFood.getImage_version() >= clientFood.getImage_version()) {
 							
 						}else {
 							DBFood.setImage_version(0L);
