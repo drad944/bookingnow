@@ -9,11 +9,13 @@ import net.sf.json.JSONObject;
 
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.service.IFoodService;
+import com.pitaya.bookingnow.service.impl.MessageService;
 import com.pitaya.bookingnow.util.Constants;
 
 public class FoodAction extends BaseAction{
 	private static final long serialVersionUID = -675955597630577906L;
 	private IFoodService foodService;
+	private MessageService messageService;
 	private Food food;
 	private List<Food> clientMenuFoods;
 	private List<Food> foodList;
@@ -55,6 +57,12 @@ public class FoodAction extends BaseAction{
 	}
 	public void setFoodService(IFoodService foodService) {
 		this.foodService = foodService;
+	}
+	public MessageService getMessageService(){
+		return this.messageService;
+	}
+	public void setMessageService(MessageService ms){
+		this.messageService = ms;
 	}
 	public Food getFood() {
 		return food;
@@ -145,6 +153,12 @@ public class FoodAction extends BaseAction{
 		this.getResult().setExecuteResult(false);
 		this.getResult().setErrorType(Constants.FAIL);
 		return "Fail";
+	}
+	
+	public String updateClientsFood(){
+		this.messageService.updateAllClientsMenuData();
+		this.isSuccess = true;
+		return "Success";
 	}
 	
 	public String findSmallPictureOfFood() {

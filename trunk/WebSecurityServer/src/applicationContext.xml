@@ -87,6 +87,7 @@
 
 	<bean id="foodAction" class="com.pitaya.bookingnow.action.FoodAction" scope="prototype">
 		<property name="foodService" ref="foodService" />
+		<property name="messageService" ref="messageService" />
 	</bean>
 	
 	<bean id="food_detailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">

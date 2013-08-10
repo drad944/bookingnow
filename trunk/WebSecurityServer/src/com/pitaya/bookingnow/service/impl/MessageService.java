@@ -26,6 +26,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.pitaya.bookingnow.entity.security.User;
 import com.pitaya.bookingnow.entity.security.User_Role_Detail;
+import com.pitaya.bookingnow.message.FoodMessage;
 import com.pitaya.bookingnow.message.Message;
 import com.pitaya.bookingnow.message.RegisterMessage;
 import com.pitaya.bookingnow.message.ResultMessage;
@@ -256,6 +257,17 @@ public class MessageService {
 		return true;
 	}
 	
+	public boolean updateAllClientsMenuData(){
+		Message message = new FoodMessage();
+		boolean success = true;
+		for(Entry<Integer, Map<Long, ClientAgent>> entry : this.groups.entrySet()){
+			for(Entry<Long, ClientAgent> subentry : entry.getValue().entrySet()){
+				subentry.getValue().sendMessage(parseMessage(message));
+			}
+		}
+		return success;
+	}
+	
 	public boolean sendMessageToGroup(int groupType, Message message){
 		String msgstring = parseMessage(message);
 		Map<Long, ClientAgent> group = this.groups.get(groupType);
@@ -307,7 +319,6 @@ public class MessageService {
 	}
 	
 	void removeClient(ClientAgent clientAgent){
-		
 		if(clientAgent.userId == null && clientAgent.role == null){
 			logger.info("Remove a unautherized clientAgent");
 			return;
