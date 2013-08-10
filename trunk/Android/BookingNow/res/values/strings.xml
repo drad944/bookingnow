@@ -69,6 +69,8 @@
     <string name="cancelfreebtn">取消赠送</string>
     <string name="seatavailable">找到符合条件的座位:</string>
     <string name="loading">数据加载中...</string>
+    <string name="updatemenumessage">检测到菜单有更新，点击确定开始升级菜单</string>
+    <string name="updatemenutitle">菜单更新</string>
     <drawable name="common_background">#4e72b8</drawable>
     <drawable name="menu_background">#494e8f</drawable>
     

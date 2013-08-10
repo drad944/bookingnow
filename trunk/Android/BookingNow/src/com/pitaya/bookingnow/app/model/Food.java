@@ -155,12 +155,10 @@ public class Food implements Serializable, IJSONTransition{
 
 	@Override
 	public void toJSONObject(JSONObject jfood) {
-		JSONObject jpic = new JSONObject();
 		try {
 			jfood.put("id", Long.parseLong(getKey()));
 			jfood.put("version", getVersion());
-			jpic.put("version", getImageVersion());
-			jfood.put("picture", jpic);
+			jfood.put("image_version", this.getImageVersion());
 		} catch (NumberFormatException e) {
 			Log.w(TAG, "Fail to parse food to json object");
 			e.printStackTrace();

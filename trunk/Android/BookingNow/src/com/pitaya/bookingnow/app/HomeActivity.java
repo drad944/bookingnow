@@ -70,6 +70,7 @@ public class HomeActivity extends FragmentActivity {
 	private View mLeftMenu;
 	
 	private AlertDialog loginDialog;
+	private AlertDialog menuUpdateDialog;
 	
 	private SoftReference<MessageService> msRef;
 	private MessageHandler mMessageHandler;
@@ -95,10 +96,13 @@ public class HomeActivity extends FragmentActivity {
 	            	} else if(resultmsg.getRequestType() == Constants.SOCKET_CONNECTION){
 	            		handleConnectResultMsg(resultmsg);
 	            	}
+	            } else if(message instanceof FoodMessage){
+	            	HomeActivity.this.checkMenuUpdate();
 	            }
 			}
 		});
 		this.getMessageService().registerHandler(Constants.RESULT_MESSAGE, mMessageHandler);
+		this.getMessageService().registerHandler(Constants.FOOD_MESSAGE, mMessageHandler);
 		setOrder();
 	}
 	
@@ -158,6 +162,7 @@ public class HomeActivity extends FragmentActivity {
 		super.onDestroy();
 		Log.i(TAG, "onDestroy");
 		this.getMessageService().unregisterHandler(Constants.RESULT_MESSAGE, mMessageHandler);
+		this.getMessageService().unregisterHandler(Constants.FOOD_MESSAGE, mMessageHandler);
     }
 	
 	private synchronized void refreshMenuByRole(){
@@ -284,22 +289,20 @@ public class HomeActivity extends FragmentActivity {
 	}
 	
 	private void showLoginDialog(){
-         LayoutInflater factory = LayoutInflater.from(HomeActivity.this);  
-         final View dialogView = factory.inflate(R.layout.logindialog, null);
-         loginDialog = new AlertDialog.Builder(HomeActivity.this)
-                .setTitle(getResources().getString(R.string.login_title))
-                .setView(dialogView)
-                .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener(){
-                     @Override  
-                     public void onClick(DialogInterface dialog, int which) {
-                    	 final ProgressDialog progressingDialog  = ProgressDialog.show(HomeActivity.this, getResources().getString(R.string.waiting), getResources().getString(R.string.logining), true);  
-                    	 HomeActivity.this.username = ((EditText)dialogView.findViewById(R.id.username)).getText().toString();
-                    	 HomeActivity.this.password = ((EditText)dialogView.findViewById(R.id.password)).getText().toString();
-                    	 HomeActivity.this.isRemeberMe = ((CheckBox)dialogView.findViewById(R.id.autologin)).isChecked();
-//                    	 if(!messageService.sendMessage(new LoginMessage(messageKey, username, password))){
-//                    		 handleLoginError("请检查连接");
-//                    	 }
-                    	 UserManager.login(username, password, new HttpHandler(){
+         if(loginDialog == null){
+        	 LayoutInflater factory = LayoutInflater.from(HomeActivity.this);  
+             final View dialogView = factory.inflate(R.layout.logindialog, null);
+             loginDialog = new AlertDialog.Builder(HomeActivity.this)
+             .setTitle(getResources().getString(R.string.login_title))
+             .setView(dialogView)
+             .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener(){
+                  @Override  
+                  public void onClick(DialogInterface dialog, int which) {
+                 	 final ProgressDialog progressingDialog  = ProgressDialog.show(HomeActivity.this, getResources().getString(R.string.waiting), getResources().getString(R.string.logining), true);  
+                 	 HomeActivity.this.username = ((EditText)dialogView.findViewById(R.id.username)).getText().toString();
+                 	 HomeActivity.this.password = ((EditText)dialogView.findViewById(R.id.password)).getText().toString();
+                 	 HomeActivity.this.isRemeberMe = ((CheckBox)dialogView.findViewById(R.id.autologin)).isChecked();
+                 	 UserManager.login(username, password, new HttpHandler(){
 	                    		@Override
 	                 			public void onSuccess(String action, String response){
 	                    			progressingDialog.dismiss();
@@ -322,10 +325,11 @@ public class HomeActivity extends FragmentActivity {
 	                 				Log.e(TAG, "Fail to login with error code: " + errorcode);
 	                 				handleLoginError("请检查网络连接");
 	                 			}
-                    	 });
-                     }  
-                 })
-                 .create();  
+                 	 });
+                  }  
+              })
+              .create();
+         }
          loginDialog.show();
     }
 	
@@ -438,10 +442,13 @@ public class HomeActivity extends FragmentActivity {
 					Log.i(TAG, "No need to update menu, response is blank");
 				} else{
 					try {
-						executeUpdateMenu(FoodService.getUpdatedFoodsList(response));
+						notifyUpdateMenu(FoodService.getUpdatedFoodsList(response));
 					} catch (JSONException e) {
 						Log.e(TAG, "Fail to parse menu update response: " + response);
 						e.printStackTrace();
+						synchronized(HomeActivity.this) {
+							HomeActivity.this.isUpdating = false;
+						}
 					}
 				}
 			}
@@ -472,7 +479,7 @@ public class HomeActivity extends FragmentActivity {
 		
 	};
 	
-	private void executeUpdateMenu(Map<String, ArrayList<Food>> foodsToUpdate){
+	private void notifyUpdateMenu(final Map<String, ArrayList<Food>> foodsToUpdate){
 		if(foodsToUpdate == null){
 			return;
 		}
@@ -481,51 +488,68 @@ public class HomeActivity extends FragmentActivity {
 			total += entry.getValue().size();
 		}
 		if(total > 0){
-			final ProgressDialog updateProgressDialog=new ProgressDialog(this);
-			updateProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			updateProgressDialog.setTitle("菜单更新中");
-			updateProgressDialog.setMax(total);
-			updateProgressDialog.setProgress(0);
-			updateProgressDialog.setCancelable(true);
-			updateProgressDialog.setIndeterminate(false);
-			updateProgressDialog.setCanceledOnTouchOutside(false);
-			updateProgressDialog.show();
-			final int max = total;
-			FoodService.updateMenuFoods(this, foodsToUpdate, new ProgressHandler(total){
+			final int t = total;
+			menuUpdateDialog = new AlertDialog.Builder(HomeActivity.this)
+			.setTitle(getResources().getString(R.string.updatemenutitle))
+			.setMessage(getResources().getString(R.string.updatemenumessage))
+			.setCancelable(false)
+			.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener(){
 
 				@Override
-				public void onSuccess(String action, String response){
-					Log.i(TAG, "Success to update food " + this.index);
-					updateProgressDialog.setProgress(this.index);
-					if(this.index == max){
-						synchronized(HomeActivity.this) {
-							HomeActivity.this.isUpdating = false;
-						}
-						updateProgressDialog.dismiss();
-						onUpdateMenuFinish();
-					}
+				public void onClick(DialogInterface dialog, int which) {
+					executeUpdateMenu(t, foodsToUpdate);
 				}
 				
-				@Override
-				public void onFail(String action, int errorcode){
-					Log.w(TAG, "Fail to update food " + (this.index) +" with error code:" + errorcode);
-					updateProgressDialog.setProgress(this.index);
-					if(this.index == max){
-						synchronized(HomeActivity.this) {
-							HomeActivity.this.isUpdating = false;
-						}
-						updateProgressDialog.dismiss();
-						onUpdateMenuFinish();
-					}
-				}
-				
-			});
+			}).create();
+			menuUpdateDialog.show();
 		} else {
+			Log.i(TAG, "The menu is latest.");
 			synchronized(HomeActivity.this) {
 				HomeActivity.this.isUpdating = false;
 			}
-			Log.i(TAG, "The menu is latest.");
 		}
+	}
+	
+	private void executeUpdateMenu(int total, Map<String, ArrayList<Food>> foodsToUpdate){
+		final ProgressDialog updateProgressDialog=new ProgressDialog(this);
+		updateProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		updateProgressDialog.setTitle("菜单更新中");
+		updateProgressDialog.setMax(total);
+		updateProgressDialog.setProgress(0);
+		updateProgressDialog.setCancelable(true);
+		updateProgressDialog.setIndeterminate(false);
+		updateProgressDialog.setCanceledOnTouchOutside(false);
+		updateProgressDialog.show();
+		final int max = total;
+		FoodService.updateMenuFoods(this, foodsToUpdate, new ProgressHandler(total){
+
+			@Override
+			public void onSuccess(String action, String response){
+				Log.i(TAG, "Success to update food " + this.index);
+				updateProgressDialog.setProgress(this.index);
+				if(this.index == max){
+					updateProgressDialog.dismiss();
+					onUpdateMenuFinish();
+					synchronized(HomeActivity.this) {
+						HomeActivity.this.isUpdating = false;
+					}
+				}
+			}
+			
+			@Override
+			public void onFail(String action, int errorcode){
+				Log.w(TAG, "Fail to update food " + (this.index) +" with error code:" + errorcode);
+				updateProgressDialog.setProgress(this.index);
+				if(this.index == max){
+					updateProgressDialog.dismiss();
+					onUpdateMenuFinish();
+					synchronized(HomeActivity.this) {
+						HomeActivity.this.isUpdating = false;
+					}
+				}
+			}
+			
+		});
 	}
 	
 }
