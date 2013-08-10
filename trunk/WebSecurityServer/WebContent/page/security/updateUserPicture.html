@@ -2,25 +2,26 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>testUploadPicture.html</title>
-	<link rel="stylesheet" type="text/css" href="css/head.css">
-	<link rel="stylesheet" type="text/css" href="css/jquery.Jcrop.css">
+<title>updateUserPicture.html</title>
+	<link rel="stylesheet" type="text/css" href="../../css/head.css">
+	<link rel="stylesheet" type="text/css" href="../../css/jquery.Jcrop.css">
 
-	<link rel="stylesheet" type="text/css" href="css/uploadify.css">
+	<link rel="stylesheet" type="text/css" href="../../css/uploadify.css">
 
 	<style type="text/css">
 		.crop_preview{position:absolute; left:520px; top:0; width:150px; height:150px; overflow:hidden;}
 	</style>
-	<script src="js/jquery-1.10.2.js" type="text/javascript"></script>
-	<script src="js/jquery.color.js" type="text/javascript"></script>
-	<script src="js/jquery.Jcrop.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../../js/jquery.color.js"></script>
+	<script type="text/javascript" src="../../js/jquery.Jcrop.js"></script>
 	
-	<script type="text/javascript" src="js/swfobject.js"></script>  
-	<script type="text/javascript" src="js/jquery.uploadify.js"></script>
+	<script type="text/javascript" src="../../js/swfobject.js"></script>  
+	<script type="text/javascript" src="../../js/jquery.uploadify.js"></script>
 	
-	<script src="js/AppUtil.js" type="text/javascript"></script>
 	<script type="text/javascript">
 	$(document).ready(function(){
+		
+		
 		$("#file_upload").uploadify({
 	        //开启调试
 	        'debug' : false,
@@ -35,7 +36,7 @@
 	            'rnd':'加密密文'
 	        },
 	        //flash
-	        'swf': "js/uploadify.swf",
+	        'swf': "../../js/uploadify.swf",
 	        //不执行默认的onSelect事件
 	        'overrideEvents' : ['onDialogClose'],
 	        //文件选择后的容器ID
@@ -45,15 +46,15 @@
 	        //上传处理程序
 	        'uploader':'uploadImageForUser.action',
 	        //浏览按钮的背景图片路径
-	        'buttonImage':'css/upbutton.png',
+	        'buttonImage':'../../css/upbutton.png',
 	        
 	        //浏览按钮的宽度
 	        'width':'100',
 	        //浏览按钮的高度
 	        'height':'32',
-	        'cancelImg': 'css/uploadify-cancel.png',//取消图片路径
+	        'cancelImg': '../../css/uploadify-cancel.png',//取消图片路径
 	        //expressInstall.swf文件的路径。
-	        'expressInstall':'js/expressInstall.swf',
+	        'expressInstall':'../../js/expressInstall.swf',
 	        //在浏览窗口底部的文件类型下拉菜单中显示的文本
 	        'fileTypeDesc':'支持的格式：',
 	        //允许上传的文件后缀
@@ -99,8 +100,9 @@
 	        	
 	            if(jsonData != null && jsonData.image_relative_path != null) {
 	            	var user = jsonData;
-	            	$("#crop_now").attr("src",user.image_relative_path);
-	            	$("#crop_preview").attr("src",user.image_relative_path);
+	            	$("#crop_now").attr("src","../../" + user.image_relative_path);
+	            	$("#crop_preview").attr("src","../../" + user.image_relative_path);
+	            	$("#image_relative_path").val("../../" + user.image_relative_path);
 	            	$("#user_id").val(user.id);
 	            	
 	            }else {
@@ -110,26 +112,18 @@
 	        }
 	    });
 		
-		
-		$.post("findWithIDUser.action", 
-    			{"user.id": 3}, 
-    			function(matchedusers){
-    				if(matchedusers != null && matchedusers.result != null){
-    					users = matchedusers.result;
-    				}
-    				var user = null;
-					if(users != null){
-						user = users[0];
-					}
+		$.post("findLoginUser.action", 
+	   			function(user){
 					if(user != null && user.id != null) {
-						$("#crop_now").attr("src",user.image_relative_path);
-						$("#crop_preview").attr("src",user.image_relative_path);
+						$("#crop_now").attr("src","../../" + user.image_relative_path);
+						$("#crop_preview").attr("src","../../" + user.image_relative_path);
 						
 						$("#user_id").val(user.id);
-						$("#image_relative_path").val(user.image_relative_path);
+						$("#image_relative_path").val("../../" + user.image_relative_path);
 					}
-					
-    			});
+						
+	    	});
+		
 		//记得放在jQuery(window).load(...)内调用，否则Jcrop无法正确初始化
 		$("#crop_now").Jcrop({
 			aspectRatio:4/4,
@@ -163,6 +157,8 @@
 			}
 		});
 		
+
+		
 	});
 	
 	
@@ -171,7 +167,6 @@
 </head>
 
 <body>
-	<div id="framework_main">welcome to bookingNow management!</div>
 	<div id="content">
 		<div class="uploadPictureDiv">
 			<input id="file_upload" type="file" name="uploadImage" />
@@ -184,7 +179,7 @@
 		
 		<div class="crop_main">
 			<div>
-				<img id="crop_now" src="images/user/test.jpg"/> 
+				<img id="crop_now" src="../../images/user/test.jpg"/> 
 				<span id="preview_box" class="crop_preview">
 					<img id="crop_preview"  />
 				</span>

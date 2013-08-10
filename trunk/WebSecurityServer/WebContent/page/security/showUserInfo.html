@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>register user</title>
+	<link rel="stylesheet" type="text/css" href="../../css/head.css">
+	<link rel="stylesheet" href="../../css/jqwidgets/styles/jqx.base.css" type="text/css" />
+	
+	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../../js/AppUtil.js"></script>
+	
+    <script type="text/javascript" src="../../js/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxdata.js"></script>
+    
+     
+    <script type="text/javascript" src="../../js/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxdropdownlist.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxlistbox.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxscrollbar.js"></script>
+    
+    <script type="text/javascript" src="../../js/jqwidgets/jqxnumberinput.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxwindow.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxinput.js"></script>
+    
+    <script type="text/javascript" src="../../js/jqwidgets/gettheme.js"></script>
+    <script type="text/javascript">
+         $(document).ready(function () {
+            
+        	 $.post("findLoginUser.action", 
+         			function(user){
+     					if(user != null && user.id != null) {
+     						$("#showUsreTable #account").text(user["account"]);
+     						$("#showUsreTable #name").text(user["name"]);
+     						$("#showUsreTable #password").text(user["password"]);
+     						$("#showUsreTable #address").text(user["address"]);
+     						$("#showUsreTable #birthday").text(user["birthday"]);
+     						$("#showUsreTable #department").text(user["department"]);
+     						$("#showUsreTable #email").text(user["email"]);
+     						$("#showUsreTable #image_relative_path").attr("src","../../" + user["image_relative_path"]);
+     						
+     						$("#showUsreTable #phone").text(user["phone"]);
+     						$("#showUsreTable #sex").text(user["sex"]);
+     					}
+     					
+         			});
+            
+            
+    });
+	</script>
+</head>
+	
+<body>
+	<div id="content">
+			<div id="showUserPanel">
+				<div>
+					User Detail information:
+				</div>
+				<div id="userTable">
+						<table id="showUsreTable">
+							<tr>
+								<td align="right">
+									Account:
+								</td>
+								<td id="account" align="left">
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Name:
+								</td>
+								<td id="name" align="left">
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Picture:
+								</td>
+								<td align="left">
+									<img id="image_relative_path" style="margin-left: 5px;" height="60" width="60" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Password:
+								</td>
+								<td id="password" align="left">
+								</td>
+							</tr>
+							
+							
+							<tr>
+								<td align="right">
+									Address:
+								</td>
+								<td id="address" align="left">
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Birthday:
+								</td>
+								<td id="birthday" align="left">
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Department:
+								</td>
+								<td id="department" align="left">
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Email:
+								</td>
+								<td  id="email" align="left">
+								</td>
+							</tr>
+							<tr>
+								<td align="right">
+									Phone:
+								</td>
+								<td id="phone" align="left">
+								</td>
+							</tr>
+							
+							<tr>
+								<td align="right">
+									Sex:
+								</td>
+								<td id="sex" align="left">
+								</td>
+							</tr>
+							
+						</table>
+				</div>
+			</div>
+	</div>
+</body>
+</html>

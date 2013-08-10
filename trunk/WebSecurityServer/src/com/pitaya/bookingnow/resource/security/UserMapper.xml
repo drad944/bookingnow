@@ -134,6 +134,13 @@
 		R.type as R_type
 	</sql>
 	
+	<select id="existUser" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">
+		select
+			account, 
+			name
+		from pitaya_user 
+		where account = #{account,jdbcType=VARCHAR} 
+	</select>
 	
 	<select id="login" resultMap="User_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">
 		select

@@ -27,16 +27,21 @@ public class UserService implements IUserService {
 	public MyResult add(User user) {
 		MyResult result = new MyResult();
 		if (user != null && user.getAccount() != null) {
-			if (user.getModifyTime() == null) {
-				user.setModifyTime(new Date().getTime());
-			}
-			if (userDao.insert(user) == 1) {
-				result.setExecuteResult(true);
-				result.setUser(userDao.selectByPrimaryKey(user.getId()));
-				return result;
+			if (existUser(user)) {
+				result.getErrorDetails().put("user_exist", "user have been registered.");
 			}else {
-				throw new RuntimeException("fail to insert user to DB.");
+				if (user.getModifyTime() == null) {
+					user.setModifyTime(new Date().getTime());
+				}
+				if (userDao.insert(user) == 1) {
+					result.setExecuteResult(true);
+					result.setUser(userDao.selectByPrimaryKey(user.getId()));
+					return result;
+				}else {
+					throw new RuntimeException("fail to insert user to DB.");
+				}
 			}
+			
 		}else {
 			result.getErrorDetails().put("user_exist", "can not find user info in client data.");
 		}
@@ -193,6 +198,15 @@ public class UserService implements IUserService {
 		}
 		
 		return result;
+	}
+
+	@Override
+	public boolean existUser(User user) {
+		User existedUser = userDao.existUser(user);
+		if (existedUser != null && existedUser.getAccount() != null) {
+			return true;
+		}
+		return false;
 	}
 	
 	

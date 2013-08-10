@@ -26,4 +26,7 @@ public interface UserMapper {
     List<User> searchAllUsers();
     
     User login(User user);
+    
+    User existUser(User user);
+    
 }

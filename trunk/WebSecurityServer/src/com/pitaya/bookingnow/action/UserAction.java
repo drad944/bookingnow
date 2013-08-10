@@ -113,6 +113,28 @@ public class UserAction extends BaseAction{
 		
 	}
 	
+	public String findLoginUser() {
+		Map<String,Object> session = ActionContext.getContext().getSession();
+		loginUser = (User) session.get("loginUser");
+		//test code here,please delete when project is ready
+		if (loginUser == null) {
+			loginUser = userService.searchUserById(2L);
+		}
+		
+		
+		if (loginUser != null && loginUser.getId() != null) {
+			return "findLoginUserSuccess";
+		}
+        
+		if (result == null) {
+			result = new MyResult();
+		}
+		result.setErrorType(Constants.FAIL);
+		result.setExecuteResult(false);
+		result.getErrorDetails().put("user_exist", "can not find user in client data.");
+		return "Fail";
+	}
+	
 	public String loginUser() {
 		
 		if(user != null) {
@@ -288,7 +310,7 @@ public class UserAction extends BaseAction{
     		
     		//workaround here ,need to delete when project is ready.
     		if (loginUser == null) {
-				loginUser = userService.searchUserById((long) 1);
+				loginUser = userService.searchUserById((long) 2);
 			}
     		
     		User newUser = new User();
@@ -299,6 +321,14 @@ public class UserAction extends BaseAction{
     		newUser.setImage_size((int) savefile.length());
     		result = userService.modify(newUser);
     		if(result.isExecuteResult()){ 
+    			String rootpath = ServletActionContext.getServletContext().getRealPath("/");
+    			File oldImage = new File(rootpath + loginUser.getImage_relative_path());
+    			if (oldImage.exists()) {
+					oldImage.delete();
+				}else {
+					result.getErrorDetails().put("file_delete", "failed to delete file in server side.");
+				}
+    			
 				loginUser = result.getUser();
     			return "uploadImageForUserSuccess";
 	        }else{  

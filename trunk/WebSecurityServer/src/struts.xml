@@ -62,6 +62,11 @@
 				<param name="root">loginUser</param>
 	        </result>
 	        
+	        <result name="findLoginUserSuccess" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">loginUser</param>
+	        </result>
+	        
 	        <result name="findUserSuccess" type="json">
 			    <param name="excludeNullProperties">true</param>
 				<param name="root">matchedUsers</param>
