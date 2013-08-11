@@ -8,7 +8,7 @@
 	<constant name="struts.objectFactory.spring.useClassCache" value="true"></constant>
 	<constant name="struts.locale" value="zh_CN"></constant>
 	<constant name="struts.configuration.xmlreload" value="true"/>
-	<constant name="struts.devMode" value="true"/>
+	<constant name="struts.devMode" value="false"/>
 	
 	<!-- set user common-fileUpload parser  -->
 	<constant name="struts.multipart.parser" value="jakarta"></constant>

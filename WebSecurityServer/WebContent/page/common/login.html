@@ -2,7 +2,7 @@
 <html>
   <head>
     
-    <title>My JSP 'index.jsp' starting page</title>
+    <title>login.html</title>
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">    
@@ -11,51 +11,52 @@
 	<!--
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
-	<script src="${pageContext.request.contextPath}/JS/jquery-1.6.4.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../js/AppUtil.js"></script>
+	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../../js/jquery.i18n.properties-min-1.0.9.js"></script>
+	
 	<script language="javascript">
-			function loginSubmit(){
-				var user = new Object();
-				user.account = $("#account").val();
-				user.password = $("#password").val();
-
-				
-			    	$.post("loginUser.action", 
-			    			user, 
-			    		    function(data){
-			    				var len = data.length;
-			    				alert("len:" + len);
-			    				
-			    		        $.each(data, function(areaIdx, area) {
-			    		            //alert(area.radius);
-			    		        });
-			    		    },
-			    		    "json");
-			}
+	 $(document).ready(function (){
+			jQuery.i18n.properties({
+				name:'bookingNow',
+				path:'../../resources/i18n/',
+				language:'zh_CN',
+				mode:'map',
+				callback: function() {
+					$('#user_account').text($.i18n.prop('user_account')); 
+					$('#user_password').text($.i18n.prop('user_password')); 
+					$('#user_login').val($.i18n.prop('user_login'));
+					$('#user_reset').val($.i18n.prop('user_reset'));
+				} 
+			});
+			
+			
+			
+			
+		}		
+);
+	 
 	</script>
   </head>
   
   <body>
-    This is my JSP page. <br>
-    
-    	<table>
-    		<tr>
-    			<td>username:</td>
-    			<td><input type="text" id="account" name="account" value="" /></td>
-    		</tr>
-    		<tr>
-    			<td>password:</td>
-    			<td><input type="text" id="password" name="password" value="" /></td>
-    		</tr>
-    		<tr>
-    			<td><input type="button" name="submit" value="submit" onclick="loginSubmit();"/></td>
-    			<td><input type="reset" name="reset" value="reset" /></td>
-    		</tr>
-    		<tr>
-    			<td></td>
-    			<td></td>
-    		</tr>
-    	</table>
-    
-    <h2><a href="Page/Common/registerUser.jsp">register account</a></h2>
+	<div id="content">
+		<div id="userLoginPanel">
+	    	<table>
+	    		<tr>
+	    			<td id="user_account">username:</td>
+	    			<td><input type="text" id="account" name="account" value="" /></td>
+	    		</tr>
+	    		<tr>
+	    			<td id="user_password">password:</td>
+	    			<td><input type="text" id="password" name="password" value="" /></td>
+	    		</tr>
+	    		<tr>
+	    			<td><input id="user_login" type="button" name="submit" value="submit" onclick="userlogin();"/></td>
+	    			<td><input id="user_reset" type="reset" name="reset" value="reset" /></td>
+	    		</tr>
+	    	</table>
+    	</div>
+    </div>
   </body>
 </html>

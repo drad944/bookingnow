@@ -1,4 +1,5 @@
 package com.pitaya.bookingnow.service.impl.security;
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import com.pitaya.bookingnow.service.security.IUserService;
 import com.pitaya.bookingnow.util.ImageUtil;
 import com.pitaya.bookingnow.util.MyResult;
 import com.pitaya.bookingnow.util.SearchParams;
+import com.pitaya.bookingnow.util.SystemUtils;
 
 public class UserService implements IUserService {
 
@@ -160,32 +162,42 @@ public class UserService implements IUserService {
 					&& params.getH() != null) {
 				User realUser = userDao.selectByPrimaryKey(params.getUser_id());
 				if (realUser != null 
-						&& realUser.getImage_relative_path() != null 
-						&& realUser.getImage_relative_path().equals(params.getImagePath())) {
-					String imageType = ImageUtil.parseImageType(params.getImagePath());
-					String targetImagePath = ImageUtil.generateImagePath("images/user/", imageType);
-					String pathprefix = ServletActionContext.getServletContext().getRealPath("/");
-					if (ImageUtil.cut(pathprefix + params.getImagePath(), imageType, pathprefix + targetImagePath, params.getX(), params.getY(), params.getW(), params.getH())) {
-						
-						
-						User newUser = new User();
-						newUser.setId(realUser.getId());
-						newUser.setImage_relative_path(targetImagePath);
-						newUser.setImage_absolute_path(pathprefix + targetImagePath);
-						newUser.parseImageSize();
-						
-						if (userDao.updateByPrimaryKeySelective(newUser) == 1) {
-							result.setExecuteResult(true);
-							result.setUser(userDao.selectByPrimaryKey(newUser.getId()));
+						&& realUser.getImage_relative_path() != null) {
+					
+					File dBFile = new File(realUser.getImage_relative_path());
+					File clientFile = new File(params.getImagePath());
+					if (dBFile.exists() && clientFile.exists() && dBFile.getPath().equals(clientFile.getPath())) {
+						System.out.println(dBFile.getPath());
+						String imageType = ImageUtil.parseImageType(params.getImagePath());
+						String targetImagePath = ImageUtil.generateImagePath("images" + SystemUtils.getSystemDelimiter() + "user" + SystemUtils.getSystemDelimiter(), imageType);
+						String pathprefix = ServletActionContext.getServletContext().getRealPath("/");
+						if (ImageUtil.cut(pathprefix + params.getImagePath(), imageType, pathprefix + targetImagePath, params.getX(), params.getY(), params.getW(), params.getH())) {
 							
-							return result;
+							
+							User newUser = new User();
+							newUser.setId(realUser.getId());
+							newUser.setImage_relative_path(targetImagePath);
+							newUser.setImage_absolute_path(pathprefix + targetImagePath);
+							newUser.parseImageSize();
+							
+							if (userDao.updateByPrimaryKeySelective(newUser) == 1) {
+								result.setExecuteResult(true);
+								result.setUser(userDao.selectByPrimaryKey(newUser.getId()));
+								
+								return result;
+							}else {
+								throw new RuntimeException("can not update user info in DB");
+							}
+							
 						}else {
-							throw new RuntimeException("can not update user info in DB");
+							
+							result.getErrorDetails().put("crop_error", "can not crop image in server side");
 						}
-						
 					}else {
-						result.getErrorDetails().put("crop_error", "can not crop image in server side");
+						System.out.println(dBFile.getPath());
+						result.getErrorDetails().put("image_exist", "image path in DB data is not the same with client data.");
 					}
+					
 				}else {
 					result.getErrorDetails().put("image_exist", "can not find image path in DB data.");
 				}
