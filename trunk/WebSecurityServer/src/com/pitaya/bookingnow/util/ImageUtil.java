@@ -43,7 +43,7 @@ public class ImageUtil {
 		if (basicPath.endsWith("/") || basicPath.endsWith("\\")) {
 			return basicPath + new Date().getTime() + "_" + generateRandomString(10) + "." + imageType;
 		}else {
-			return basicPath + "/" + new Date().getTime() + "_" + generateRandomString(10) + "." + imageType;
+			return basicPath + SystemUtils.getSystemDelimiter() + new Date().getTime() + "_" + generateRandomString(10) + "." + imageType;
 		}
 	}
 	
