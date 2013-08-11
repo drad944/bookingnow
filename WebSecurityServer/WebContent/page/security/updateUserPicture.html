@@ -9,9 +9,6 @@
 
 	<link rel="stylesheet" type="text/css" href="../../css/uploadify.css">
 
-	<style type="text/css">
-		.crop_preview{position:absolute; left:520px; top:0; width:150px; height:150px; overflow:hidden;}
-	</style>
 	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
 	<script type="text/javascript" src="../../js/jquery.color.js"></script>
 	<script type="text/javascript" src="../../js/jquery.Jcrop.js"></script>
@@ -84,7 +81,7 @@
 	        },
 	        //选择上传文件后调用
 	        'onSelect' : function(file) {
-	                   
+	                alert(file);   
 	        },
 	        //返回一个错误，选择文件的时候触发
 	        'onSelectError':function(file, errorCode, errorMsg){
@@ -226,7 +223,7 @@
 		<div class="crop_main">
 			<div>
 				<img id="crop_now" src="../../css/no_image.jpg"/> 
-				<span id="preview_box" class="crop_preview">
+				<span id="preview_box" class="preview_box">
 					<img id="crop_preview"  src="../../css/no_image.jpg" />
 				</span>
 			</div>
