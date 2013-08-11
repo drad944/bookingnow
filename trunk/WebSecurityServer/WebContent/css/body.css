@@ -1,0 +1,21 @@
+
+.browser_file {
+	color:White;
+}
+
+#crop_now {
+	width:200px; 
+	height:200px;
+}
+
+.preview_box {
+	position:relative;
+	top:-100px;
+	left:100px;
+}
+
+#crop_preview {
+	width:100px; 
+	height:100px;
+}
+
