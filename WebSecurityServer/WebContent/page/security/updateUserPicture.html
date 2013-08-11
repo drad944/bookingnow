@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>updateUserPicture.html</title>
 	<link rel="stylesheet" type="text/css" href="../../css/head.css">
+	<link rel="stylesheet" type="text/css" href="../../css/body.css">
 	<link rel="stylesheet" type="text/css" href="../../css/jquery.Jcrop.css">
 
 	<link rel="stylesheet" type="text/css" href="../../css/uploadify.css">
@@ -57,9 +58,11 @@
 	        //上传处理程序
 	        'uploader':'uploadImageForUser.action',
 	        //浏览按钮的背景图片路径
-	        'buttonImage':'../../css/upbutton.png',
-	        
+	    //    'buttonImage':'../../css/upbutton.png',
 	        //浏览按钮的宽度
+	        'buttonText': '选择图片',
+			'buttonClass': 'browser_file',
+			'removeCompleted': true,
 	        'width':'100',
 	        //浏览按钮的高度
 	        'height':'32',
@@ -111,11 +114,40 @@
 	        	
 	            if(jsonData != null && jsonData.image_relative_path != null) {
 	            	var user = jsonData;
+	            	
+	            	//reload jcrop
+	            	//jcrop_api.disable();
+	            	if(jcrop_api == null || jcrop_api == undefined) {
+	            		jQuery('#crop_now').Jcrop({
+		        			aspectRatio:4/4,
+		        			onChange:showCoords,
+		        			onSelect:showCoords,
+		        			onRelease:releaseCrop,
+		        			maxSize:[200,200]
+		        		},function(){
+		        		    jcrop_api = this;
+		        		  });	
+	            	}
+	            	
+	            	jcrop_api.destroy();
+	            	
+	            	
 	            	$("#crop_now").attr("src","../../" + user.image_relative_path);
 	            	$("#crop_preview").attr("src","../../" + user.image_relative_path);
 	            	$("#image_relative_path").val("../../" + user.image_relative_path);
 	            	$("#user_id").val(user.id);
 	            	
+	            	//init again
+	            	jQuery('#crop_now').Jcrop({
+	        			aspectRatio:4/4,
+	        			onChange:showCoords,
+	        			onSelect:showCoords,
+	        			onRelease:releaseCrop,
+	        			maxSize:[200,200]
+	        		},function(){
+	        		    jcrop_api = this;
+	        		  });	
+	            	jcrop_api.enable();
 	            }else {
 	            	//failed to upload image.
 	            	
@@ -124,13 +156,17 @@
 	    });
 		
 		
-		
+		var jcrop_api;
 		//记得放在jQuery(window).load(...)内调用，否则Jcrop无法正确初始化
 		$("#crop_now").Jcrop({
 			aspectRatio:4/4,
 			onChange:showCoords,
-			onSelect:showCoords
-		});	
+			onSelect:showCoords,
+			onRelease:releaseCrop,
+			maxSize:[200,200]
+		},function(){
+		    jcrop_api = this;
+		  });	
 		//简单的事件处理程序，响应自onChange,onSelect事件，按照上面的Jcrop调用
 		function showCoords(obj){
 			$("#x").val(obj.x);
@@ -150,8 +186,14 @@
 				});
 			}
 		}
+		
+		function releaseCrop(obj){
+			
+		}
+		
 		$("#crop_submit").click(function(){
 			if(parseInt($("#x").val())){
+				jcrop_api.release();
 				$("#crop_form").submit();	
 			}else{
 				alert("要先在图片上划一个选区再单击确认剪裁的按钮哦！");	
@@ -170,19 +212,22 @@
 <body>
 	<div id="content">
 		<div class="uploadPictureDiv">
-			<input id="file_upload" type="file" name="uploadImage" />
-			<div id="file_uploadQueue" class="uploadifyQueue"></div>
-				<div>
-					<a href="javascript:$('#file_upload').uploadify('upload')">开始上传</a>&nbsp;
-	        		<a href="javascript:$('#file_upload').uploadify('cancel')">取消所有上传</a>
-				</div>
+			<div id="uploadfileQueue" class="uploadifyQueue"></div>
+			<div>
+				<input id="file_upload" type="file" name="uploadImage" />
+			</div>
+			
+			<div>
+				<a href="javascript:$('#file_upload').uploadify('upload')">开始上传</a>&nbsp;
+        		<a href="javascript:$('#file_upload').uploadify('cancel')">取消上传</a>
+			</div>
 		</div>
 		
 		<div class="crop_main">
 			<div>
-				<img id="crop_now" src="../../images/user/test.jpg"/> 
+				<img id="crop_now" src="../../css/no_image.jpg"/> 
 				<span id="preview_box" class="crop_preview">
-					<img id="crop_preview"  />
+					<img id="crop_preview"  src="../../css/no_image.jpg" />
 				</span>
 			</div>
 			<form  id="crop_form" action="cropPictureForUser.action" method="post">
