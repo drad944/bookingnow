@@ -166,7 +166,7 @@ public class UserService implements IUserService {
 					
 					File dBFile = new File(realUser.getImage_relative_path());
 					File clientFile = new File(params.getImagePath());
-					if (dBFile.exists() && clientFile.exists() && dBFile.getPath().equals(clientFile.getPath())) {
+					if (dBFile.getPath().equals(clientFile.getPath())) {
 						System.out.println(dBFile.getPath());
 						String imageType = ImageUtil.parseImageType(params.getImagePath());
 						String targetImagePath = ImageUtil.generateImagePath("images" + SystemUtils.getSystemDelimiter() + "user" + SystemUtils.getSystemDelimiter(), imageType);
