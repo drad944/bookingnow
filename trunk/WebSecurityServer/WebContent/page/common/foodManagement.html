@@ -6,9 +6,17 @@
 	<link rel="stylesheet" type="text/css" href="../../css/head.css">
 	<link rel="stylesheet" href="../../css/jqwidgets/styles/jqx.base.css" type="text/css" />
 	<link rel="stylesheet" href="../../css/jqwidgets/styles/jqx.energyblue.css" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="../../css/jquery.Jcrop.css">
+	<link rel="stylesheet" type="text/css" href="../../css/uploadify.css">
+
 	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../../js/jquery.color.js"></script>
+	<script type="text/javascript" src="../../js/jquery.Jcrop.js"></script>
+	<script type="text/javascript" src="../../js/swfobject.js"></script>  
+	<script type="text/javascript" src="../../js/jquery.uploadify.min.js"></script>
 	<script type="text/javascript" src="../../js/AppUtil.js"></script>
 	<script type="text/javascript" src="../../js/Constants.js"></script>
+	<script type="text/javascript" src="../../js/uploader.js"></script>
 	
     <script type="text/javascript" src="../../js/jqwidgets/jqxcore.js"></script>
     <script type="text/javascript" src="../../js/jqwidgets/jqxdata.js"></script>
@@ -272,7 +280,8 @@
     		}, function(){
     			alert("Fail to get data!");
     		});
-
+			
+    		Uploader.init("file_upload", null);
 	    });
 	    
     </script>
@@ -304,6 +313,36 @@
 				   	<div id='jqxWidget' style="font-size: 13px; font-family: Verdana;">
         				<div id="jqxgrid"></div>
     				</div>
+   				</td>
+   			</tr>
+   			<tr>
+   				<td style="width:100%" align="center">
+	   				<div class="uploadPictureDiv"  style="width:800px">
+						<div id="uploadfileQueue" class="uploadifyQueue"></div>
+						<div>
+							<input id="file_upload" type="file" name="uploadFile" />
+						</div>
+						<div>
+							<a href="javascript:$('#file_upload').uploadify('upload')">开始上传</a>&nbsp;
+			        		<a href="javascript:$('#file_upload').uploadify('cancel')">取消上传</a>
+						</div>
+					</div>
+		
+					<div class="crop_main"  style="width:800px">
+						<div>
+							<img id="crop_now" style="width:640px;height:400px" src="../../css/no_image.jpg"/> 
+							<!--span id="preview_box" style="width:640px;height:400px">
+								<img id="crop_preview" style="width:640px;height:400px" src="../../css/no_image.jpg" />
+							</span-->
+						</div>
+						<form id="crop_form" action="cropPictureForUser.action" method="post">
+							<input type="text" id="x" name="params.x" /> 
+							<input type="text" id="y"	name="params.y" /> 
+							<input type="text" id="w" name="params.w" /> 
+							<input type="text" id="h" name="params.h" />
+							<input type="button" value="确认剪裁" id="crop_submit" />
+						</form>
+					</div>
    				</td>
    			</tr>
    		</table>
