@@ -1,10 +1,25 @@
 package com.pitaya.bookingnow.util;
 
+import java.io.File;
 import java.util.Date;
 
 public class FileUtil {
 	
 	public static String allChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	
+
+	public static void removeFiles(String dir, String pattern){
+		File directory = new File(dir);
+		if(!directory.isDirectory()){
+			return;
+		} else {
+			for(File file : directory.listFiles()){
+				if(file.getName().matches(pattern)){
+					file.delete();
+				}
+			}
+		}
+	}
 	
 	public static String getType(String path) {
 		if (path != null && path.length() > 0) {
