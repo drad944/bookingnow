@@ -53,6 +53,11 @@
 				<param name="includeProperties">fileId</param>
 	        </result>
 	        
+            <result name="uploadImageSuccess" type="json">
+                <param name="excludeNullProperties">true</param>
+                <param name="includeProperties">fileId, width, height</param>
+            </result>
+	        
   			<result name="Fail" type="json">
 			    <param name="excludeNullProperties">true</param>
 				<param name="includeProperties">fileId</param>

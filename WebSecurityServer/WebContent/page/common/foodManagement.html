@@ -39,6 +39,7 @@
     <script type="text/javascript" src="../../js/jqwidgets/jqxnumberinput.js"></script>
     <script type="text/javascript" src="../../js/jqwidgets/jqxwindow.js"></script>
     <script type="text/javascript" src="../../js/jqwidgets/jqxinput.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxdragdrop.js"></script>
     <script type="text/javascript" src="../../js/jqwidgets/gettheme.js"></script>
     
     <script type="text/javascript">
@@ -281,6 +282,10 @@
     			alert("Fail to get data!");
     		});
 			
+    		AppUtil.setStyle($("#preview_box")[0], {
+    			width : Constants.PREVIEW_WIDTH, 
+    			height : Constants.PREVIEW_HEIGHT,
+    			overflow : "hidden"});
     		Uploader.init("file_upload", null);
 	    });
 	    
@@ -329,11 +334,11 @@
 					</div>
 		
 					<div class="crop_main"  style="width:800px">
-						<div>
-							<img id="crop_now" style="width:640px;height:400px" src="../../css/no_image.jpg"/> 
-							<!--span id="preview_box" style="width:640px;height:400px">
-								<img id="crop_preview" style="width:640px;height:400px" src="../../css/no_image.jpg" />
-							</span-->
+							<!--img id="crop_now" style="width:640px;height:360px" src="../../css/no_image.jpg"/--> 
+						<div id="preview_box">
+						    <div id="drag_box">
+							 <img id="img_preview" style="width:100%;height:100%" src="../../css/no_image.jpg" />
+						    </div>
 						</div>
 						<form id="crop_form" action="cropPictureForUser.action" method="post">
 							<input type="text" id="x" name="params.x" /> 

@@ -82,16 +82,31 @@ var Uploader = {
 	        	//data is string here,need to parse to json object.
 	        	 var jsonData = eval('(' + data + ')');
 	        	
-	             if(jsonData != null && jsonData.fileId != "null") {
-	            	if(me.jcrop_api != null ) {
-	            		me.jcrop_api.disable();
-	            		me.jcrop_api.destroy();
-	            	}
-	            	$("#crop_now").attr("src", "../../images/temp/" + jsonData.fileId);
+	             if(jsonData != null && jsonData.fileId && jsonData.fileId != "null") {
+//	            	if(me.jcrop_api != null ) {
+//	            		me.jcrop_api.disable();
+//	            		me.jcrop_api.destroy();
+//	            	}
+	            	var imgobj = $("#img_preview");
+	            	var drag_box = $("#drag_box");
+	            	imgobj.attr("src", "../../images/temp/" + jsonData.fileId);
 	            	me.fileId = jsonData.fileId;
-	            	me.initJCrop();
+	            	if(jsonData.width && jsonData.height){
+	            		AppUtil.setStyle(imgobj[0], {
+	            			width : jsonData.width*2 + "px",
+	            			height : jsonData.height*2 + "px",
+	            		});
+	            		AppUtil.setStyle(drag_box[0], {
+	            			width : jsonData.width*2 + "px",
+	            			height : jsonData.height*2 + "px",
+            			});
+	            	}
+	            	drag_box.jqxDragDrop();
+	            	drag_box.jqxDragDrop({restricter:'parent'});
+	            	drag_box.jqxDragDrop({feedback:'original'});
+//	            	me.initJCrop();
 	            	if(callback){
-	            		callback();
+	            	   callback();
 	            	}
 	            }else {
 	            	//failed to upload image.
