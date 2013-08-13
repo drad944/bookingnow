@@ -23,4 +23,7 @@ var Constants = {
 	SUCCESS : 1,
 	FAIL : 2,
 	
+	PREVIEW_WIDTH : "640px",
+	PREVIEW_HEIGHT : "360px",
+	
 };
