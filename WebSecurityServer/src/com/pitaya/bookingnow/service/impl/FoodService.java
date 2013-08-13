@@ -1,13 +1,20 @@
 package com.pitaya.bookingnow.service.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.struts2.ServletActionContext;
+
 import com.pitaya.bookingnow.dao.FoodMapper;
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.service.IFoodService;
+import com.pitaya.bookingnow.util.FileUtil;
+import com.pitaya.bookingnow.util.ImageUtil;
 import com.pitaya.bookingnow.util.MyResult;
 
 public class FoodService implements IFoodService{
@@ -65,8 +72,23 @@ public class FoodService implements IFoodService{
 		if(food != null && food.getId() != null) {
 			Long version = System.currentTimeMillis();
 			food.setVersion(version);
-			if(food.getLarge_image_relative_path() != null){
-				//TODO save image
+			if(food.getLarge_image_relative_path() != null && !food.getLarge_image_relative_path().equals("")){
+				String fileid = food.getLarge_image_relative_path();
+				String tempbasepath = ServletActionContext.getServletContext().getRealPath("/images/temp");
+				File tempimage = new File(FileUtil.getSavePath(tempbasepath, fileid));
+				String filetype = FileUtil.getType(fileid);
+				String foodbasepath = ServletActionContext.getServletContext().getRealPath("/images/food");
+				FileUtil.removeFiles(foodbasepath, "^"+food.getId()+"_.*");
+				File newlargeimg = new File(FileUtil.getSavePath(foodbasepath, food.getId() + "_l." + filetype));
+				try {
+					FileUtils.copyFile(tempimage, newlargeimg);
+					ImageUtil.scale(FileUtil.getSavePath(tempbasepath, fileid), 
+							FileUtil.getSavePath(foodbasepath, food.getId() + "_s." + filetype), filetype, 200, 150);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				food.setLarge_image_relative_path("images/food/" + food.getId() + "_l." + filetype);
+				food.setSmall_image_relative_path("images/food/" + food.getId() + "_s." + filetype);
 				food.setImage_version(version);
 			}
 			if(foodDao.updateByPrimaryKeySelective(food) == 1) {

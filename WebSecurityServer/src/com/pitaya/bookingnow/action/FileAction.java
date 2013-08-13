@@ -86,17 +86,19 @@ public class FileAction extends BaseAction{
 		String basepath = ServletActionContext.getServletContext().getRealPath("/images/temp");
         if (uploadFile != null) {
         	File savefile  = null;
-        	String filetype = null;
+        	String filetype = FileUtil.getType(uploadFileFileName);
         	if(this.fileId == null || this.fileId.equals("")){
-            	filetype = FileUtil.getType(uploadFileFileName);
             	String [] saveinfos = FileUtil.generateFilePath(basepath, filetype);
                 savefile = new File(saveinfos[0]);
                 this.fileId = saveinfos[1];
         	} else {
-        		filetype = FileUtil.getType(this.fileId);
         		savefile = new File(FileUtil.getSavePath(basepath, fileId));
         		if(savefile.exists()){
         			savefile.delete();
+        		}
+        		String oldfiletype = FileUtil.getType(this.fileId);
+        		if(!oldfiletype.equals(filetype)){
+        			this.fileId = this.fileId.substring(0, this.fileId.lastIndexOf(".") + 1) + filetype;
         		}
         	}
 
@@ -111,16 +113,7 @@ public class FileAction extends BaseAction{
 				return "Fail";
 			}
             uploadFile.delete();
-            if(ImageUtil.isImage(filetype)){
-            	this.imageInfo = ImageUtil.getImageInfo(savefile, 0.5f);
-            	if(this.imageInfo != null){
-                	this.width = this.imageInfo.getWidth();
-                	this.height = this.imageInfo.getHeight();
-            	}
-        		return "uploadImageSuccess";
-            } else {
-            	return "uploadSuccess";
-            }
+        	return "uploadSuccess";
         }else{
         	this.setFileId("null");
             return "Fail";  

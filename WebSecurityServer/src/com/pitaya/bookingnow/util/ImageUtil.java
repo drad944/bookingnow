@@ -203,7 +203,7 @@ public class ImageUtil {
 		return imageInfo;
 	}
 	
-	public static boolean scale(String srcfile, String destfile, int widths, int heights) {
+	public static boolean scale(String srcfile, String destfile, String type, int widths, int heights) {
 		boolean result = true;
         try {  
             BufferedImage src = ImageIO.read(new File(srcfile));
@@ -212,7 +212,7 @@ public class ImageUtil {
             Graphics g = tag.getGraphics();
             g.drawImage(image, 0, 0, null);
             g.dispose();  
-            ImageIO.write(tag, "JPEG", new File(destfile));
+            ImageIO.write(tag, type.toUpperCase(), new File(destfile));
         } catch (IOException e) {
             e.printStackTrace();
             result = false;

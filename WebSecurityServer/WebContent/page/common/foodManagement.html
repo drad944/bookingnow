@@ -14,8 +14,8 @@
 	<script type="text/javascript" src="../../js/jquery.Jcrop.js"></script>
 	<script type="text/javascript" src="../../js/swfobject.js"></script>  
 	<script type="text/javascript" src="../../js/jquery.uploadify.min.js"></script>
-	<script type="text/javascript" src="../../js/AppUtil.js"></script>
-	<script type="text/javascript" src="../../js/Constants.js"></script>
+	<script type="text/javascript" src="../../js/pitaya/AppUtil.js"></script>
+	<script type="text/javascript" src="../../js/pitaya/Constants.js"></script>
 	<script type="text/javascript" src="../../js/uploader.js"></script>
 	
     <script type="text/javascript" src="../../js/jqwidgets/jqxcore.js"></script>
@@ -93,12 +93,17 @@
                 		"food.category" : newdata.category,
                 		"food.description" : newdata.desc,
                 		"food.price" : newdata.price,
-                		"food.status" : status
+                		"food.status" : status,
+                		"food.large_image_relative_path" : newdata.fileId
                 	};
                 	AppUtil.request("updateFood.action", param, function(data){
                 		if(data){
                 			var result = data.isSuccess;
                 			if(result == true){
+                				if(newdata.fileId != null){
+                					newdata.imgpath = newdata.imgpath.substring(0, newdata.imgpath.lastIndexOf(".")) 
+                					+ newdata.fileId.substring(newdata.fileId.lastIndexOf("."));
+                				}
                 				commit(true);
                 			} else {
                 				alert(data.detail);
@@ -107,17 +112,20 @@
                 			alert("操作失败");
                 		}
                 		commit(false);
-                		
+                		newdata.fileId = null;
+                		$("#popupWindow").jqxWindow('hide');
                 	}, function(){
                 		alert("操作失败");
                 		commit(false);
+                		newdata.fileId = null;
+                		$("#popupWindow").jqxWindow('hide');
                 	});
                 }
 	    	}
 	   		
-	    	$("#popupWindow").jqxWindow({width: '250px', height: '260px', theme: theme, autoOpen: false, isModal: true});
-	    	$("#category").jqxComboBox({source: categories, selectedIndex: 0, width: '120px', height: '25px', theme: theme});
-	    	$("#price").jqxNumberInput({symbol: 'rmb', width: 120, height: 23, theme: theme, spinButtons: true });
+	    	$("#popupWindow").jqxWindow({width: 700, height: 630, maxHeight: 750, resizable: false, theme: theme, autoOpen: false, isModal: true});
+	    	$("#category").jqxComboBox({source: categories, selectedIndex: 0, width: '160px', height: '25px', theme: theme});
+	    	$("#price").jqxNumberInput({symbol: 'rmb', width: 200, height: 23, theme: theme, spinButtons: true });
     	 	$("#status").jqxCheckBox({ width: 120, theme: theme });
     	 	
     	 	var dataAdapter = new $.jqx.dataAdapter(source);
@@ -156,6 +164,9 @@
 	                        $("#desc").val(dataRecord.desc);
 	                        $("#price").jqxNumberInput({ decimal: dataRecord.price });
 	                        $("#status").jqxCheckBox({ checked : dataRecord.available });
+	                        Uploader.init("picture", "../../"+dataRecord.imgpath, function(picid){
+	                        	dataRecord.fileId = picid;
+	                        });
 	                        $("#popupWindow").jqxWindow('open');
                     	}
                     }
@@ -199,14 +210,22 @@
                     	price : price,
                     	status : status,
                     	available : available,
-                    	id : rowData.id
+                    	id : rowData.id,
+                    	imgpath : rowData.imgpath,
                     };
+                    if(rowData.fileId != null){
+                    	newData.fileId = rowData.fileId;
+                    }
                 	$('#jqxgrid').jqxGrid('updaterow', rowID, newData);
-                    $("#popupWindow").jqxWindow('hide');
             	}
             });
             
 	    	$("#cancelbtn").click(function () {
+	    		if(editrow >= 0){
+	    			var rowID = $('#jqxgrid').jqxGrid('getrowid', editrow);
+                    var rowData = $('#jqxgrid').jqxGrid('getrowdata', rowID);
+                    rowData.fileId = null;
+	    		}
             	$("#popupWindow").jqxWindow('hide');
             });
             
@@ -269,6 +288,7 @@
     		    		rowdata.desc = item.description;
     		    		rowdata.price = item.price;
     		    		rowdata.status = AppUtil.getFoodStatus(item.status);
+    		    		rowdata.imgpath = item.large_image_relative_path;
     		    		if(item.status == 1){
     		    			rowdata.available = true;
     		    		} else {
@@ -282,11 +302,6 @@
     			alert("Fail to get data!");
     		});
 			
-    		AppUtil.setStyle($("#preview_box")[0], {
-    			width : Constants.PREVIEW_WIDTH, 
-    			height : Constants.PREVIEW_HEIGHT,
-    			overflow : "hidden"});
-    		Uploader.init("file_upload", null);
 	    });
 	    
     </script>
@@ -320,63 +335,37 @@
     				</div>
    				</td>
    			</tr>
-   			<tr>
-   				<td style="width:100%" align="center">
-	   				<div class="uploadPictureDiv"  style="width:800px">
-						<div id="uploadfileQueue" class="uploadifyQueue"></div>
-						<div>
-							<input id="file_upload" type="file" name="uploadFile" />
-						</div>
-						<div>
-							<a href="javascript:$('#file_upload').uploadify('upload')">开始上传</a>&nbsp;
-			        		<a href="javascript:$('#file_upload').uploadify('cancel')">取消上传</a>
-						</div>
-					</div>
-		
-					<div class="crop_main"  style="width:800px">
-							<!--img id="crop_now" style="width:640px;height:360px" src="../../css/no_image.jpg"/--> 
-						<div id="preview_box">
-						    <div id="drag_box">
-							 <img id="img_preview" style="width:100%;height:100%" src="../../css/no_image.jpg" />
-						    </div>
-						</div>
-						<form id="crop_form" action="cropPictureForUser.action" method="post">
-							<input type="text" id="x" name="params.x" /> 
-							<input type="text" id="y"	name="params.y" /> 
-							<input type="text" id="w" name="params.w" /> 
-							<input type="text" id="h" name="params.h" />
-							<input type="button" value="确认剪裁" id="crop_submit" />
-						</form>
-					</div>
-   				</td>
-   			</tr>
    		</table>
    		<div id="popupWindow">
-            <div>编辑</div>
+            <div>更新菜单</div>
             <div style="overflow: hidden;">
                 <table style="width:100%">
                     <tr style="width:100%; height:25px">
-                        <td align="right" width="30%">菜名:</td>
-                        <td align="left"><input id="name" style="width: 120px"/></td>
+                        <td align="right" width="15%">菜名:</td>
+                        <td align="left" width="35%"><input id="name" style="width: 100%"/></td>
+                        <td align="right" width="15%">分类:</td>
+                        <td align="left" width="35%"><div id="category"></div></td>
+                    </tr>
+                    <tr style="width:100%;">
+                        <td align="right" width="15%">描述:</td>
+                        <td align="left" colspan="3">
+                        	<textarea id="desc" style="width: 500px"></textarea>
+                       	</td>
                     </tr>
                     <tr style="width:100%; height:25px">
-                        <td align="right" width="30%">分类:</td>
-                        <td align="left"><div id="category"></div></td>
+                        <td align="right" width="15%">价格:</td>
+                        <td align="left" width="35%"><div id="price"></div></td>
+                        <td align="right" width="15%">状态:</td>
+                        <td align="left" width="35%"><div id="status"></div></td>
+                    </tr>
+                    <tr style="width:100%;">
+                    	<td colspan="4">
+	                    	<div id="picture">
+							</div>
+                    	</td>
                     </tr>
                     <tr style="width:100%; height:25px">
-                        <td align="right" width="30%">描述:</td>
-                        <td align="left"><input id="desc" style="width: 120px"/></td>
-                    </tr>
-                    <tr style="width:100%; height:25px">
-                        <td align="right" width="30%">价格:</td>
-                        <td align="left"><div id="price"></div></td>
-                    </tr>
-                    <tr style="width:100%; height:25px">
-                        <td align="right" width="30%">状态:</td>
-                        <td align="left"><div id="status"></div></td>
-                    </tr>
-                    <tr style="width:100%; height:25px">
-                        <td style="padding-top: 10px;" align="center" colspan="2">
+                        <td style="padding-top: 10px;" align="center" colspan="4">
 	                       <input style="margin-right: 5px;" type="button" id="savebtn" value="保存" />
 	                       <input id="cancelbtn" type="button" value="取消" />
                         </td>
