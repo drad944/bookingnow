@@ -35,7 +35,7 @@
     </appender>
       
     <logger name="com.pitaya.bookingnow" additivity="false">    
-        <level value ="info"/>
+        <level value ="debug"/>
         <appender-ref ref="consoleAppender" />
         <appender-ref ref="activeAppender"/>
         <appender-ref ref="fileAppender"/>

@@ -8,6 +8,7 @@ import java.util.Map;
 import net.sf.json.JSONObject;
 
 import com.pitaya.bookingnow.entity.Food;
+import com.pitaya.bookingnow.message.FoodMessage;
 import com.pitaya.bookingnow.service.IFoodService;
 import com.pitaya.bookingnow.service.impl.MessageService;
 import com.pitaya.bookingnow.util.Constants;
@@ -180,7 +181,9 @@ public class FoodAction extends BaseAction{
 	}
 	
 	public String updateClientsFood(){
-		this.messageService.updateAllClientsMenuData();
+		FoodMessage message = new FoodMessage();
+		message.setHasNew(true);
+		this.messageService.sendMessageToAll(message);
 		this.isSuccess = true;
 		return "Success";
 	}
