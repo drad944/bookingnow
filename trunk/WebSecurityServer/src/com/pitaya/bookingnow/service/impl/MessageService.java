@@ -59,7 +59,7 @@ class ClientAgent extends Thread{
 			out = new PrintWriter(client_socket.getOutputStream());   
 			String message = null;
 			while((message = in.readLine()) != null){
-				logger.info("Receive message from client: ["+this.userId+"], content:" + message);
+				logger.debug("Receive message from client: ["+this.userId+"], content:" + message);
 				this.service.onMessage(message, this);
 			}
 		 } catch (Exception e) {
@@ -71,10 +71,11 @@ class ClientAgent extends Thread{
 				 if(client_socket != null && !client_socket.isClosed()){
 					 client_socket.close();
 				 }
-				 this.service.removeClient(this);
 			} catch (IOException ex) {
-				ex.printStackTrace();
+				 ex.printStackTrace();
 			}
+	        logger.debug("Connection to client [" + this.userId +"] is broken");
+	        this.service.removeClient(this, true);
 		 }
 	}
 	
@@ -115,11 +116,11 @@ class ClientAgent extends Thread{
 			 if(client_socket != null && !client_socket.isClosed()){
 				 client_socket.close();
 			 }
-			 this.service.removeClient(this);
-			 logger.info("Success to close connection to " + this.userId);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		this.service.removeClient(this, true);
+		logger.debug("Success to shutdown connection to client [" + this.userId + "]");
 	}
 }
 
@@ -139,7 +140,9 @@ class MessageServerThread extends Thread{
         try {
         	while(flag){
                 client_socket = service.serverSocket.accept( );  
-                pool.execute(new ClientAgent(this.service, client_socket));
+                ClientAgent client = new ClientAgent(this.service, client_socket);
+                pool.execute(client);
+                this.service.addClient(client);
         	}
         } catch(Exception e) {
         	logger.error("Message server thread is crashed");
@@ -182,18 +185,21 @@ public class MessageService {
 	private int port;
 	private boolean hasStarted;
 	private Map<Integer, Map<Long, ClientAgent>> groups;
+	private List<ClientAgent> clients;
 	
 	private IUserService userService;
 	
 	public MessageService(){
 		this.hasStarted = false;
 		this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientAgent>>();
+		this.clients = Collections.synchronizedList(new ArrayList<ClientAgent>());
 	}
 	
 	private MessageService(int port){
 		this.hasStarted = false;
 		this.port = port;
 		this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientAgent>>();
+		this.clients = Collections.synchronizedList(new ArrayList<ClientAgent>());
 		this.start();
 	}
 
@@ -208,13 +214,13 @@ public class MessageService {
         			if(this.serverSocket != null && this.serverSocket.isClosed()){
         				this.serverSocket.close();
         			}
-        			this.hasStarted = false;
-					for(Entry<Integer, Map<Long, ClientAgent>> entry : this.groups.entrySet()){
-						for(Entry<Long, ClientAgent> subentry : ((Map<Long, ClientAgent>)entry.getValue()).entrySet()){
-							subentry.getValue().shutdown();
-						}
-					}
+        			for(ClientAgent client : this.clients){
+        				client.shutdown();
+        			}
 					this.serverThread.shutdown();
+					this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientAgent>>();
+					this.clients = Collections.synchronizedList(new ArrayList<ClientAgent>());
+					this.hasStarted = false;
 					logger.info("Success to shutdown message service.");
 					return true;
 			} catch (IOException e) {
@@ -257,15 +263,11 @@ public class MessageService {
 		return true;
 	}
 	
-	public boolean updateAllClientsMenuData(){
-		Message message = new FoodMessage();
-		boolean success = true;
-		for(Entry<Integer, Map<Long, ClientAgent>> entry : this.groups.entrySet()){
-			for(Entry<Long, ClientAgent> subentry : entry.getValue().entrySet()){
-				subentry.getValue().sendMessage(parseMessage(message));
-			}
+	public boolean sendMessageToAll(Message message){
+		for(ClientAgent client : this.clients){
+			client.sendMessage(parseMessage(message));
 		}
-		return success;
+		return true;
 	}
 	
 	public boolean sendMessageToGroup(int groupType, Message message){
@@ -284,48 +286,76 @@ public class MessageService {
 	synchronized void onMessage(String msgstring, ClientAgent clientAgent){
 		Message message = unparseMessage(msgstring);
 		if(message instanceof RegisterMessage){
-			Long id = ((RegisterMessage)message).getUserId();
-			ResultMessage resultmsg = null;
-			User user  = userService.getUserRole(id);
-			if(user != null && user.getRole_Details() != null && user.getRole_Details().size() > 0){
-				clientAgent.userId = id;
-				clientAgent.role = user.getRole_Details().get(0).getRole().getType();
-				if(this.addClient(clientAgent)){
-					resultmsg = new ResultMessage(Constants.REGISTER_REQUEST, 
-							Constants.SUCCESS, String.valueOf(clientAgent.role));
-				} else {
-					resultmsg = new ResultMessage(Constants.REGISTER_REQUEST, 
-							Constants.FAIL, "Can't login two clients with same user!");
+			if(((RegisterMessage)message).getAction().equals("register")){
+				Long id = ((RegisterMessage)message).getUserId();
+				ResultMessage resultmsg = null;
+				User user  = userService.getUserRole(id);
+				if(user != null && user.getRole_Details() != null && user.getRole_Details().size() > 0){
+					clientAgent.userId = id;
+					clientAgent.role = user.getRole_Details().get(0).getRole().getType();
+					if(this.addClient(clientAgent)){
+						resultmsg = new ResultMessage(Constants.REGISTER_REQUEST, 
+								Constants.SUCCESS, String.valueOf(clientAgent.role));
+					} else {
+						resultmsg = new ResultMessage(Constants.REGISTER_REQUEST, 
+								Constants.FAIL, "Can't login two clients with same user!");
+					}
+					clientAgent.sendMessage(parseMessage(resultmsg));
 				}
-				clientAgent.sendMessage(parseMessage(resultmsg));
+			} else {
+				this.removeClient(clientAgent, false);
 			}
 		}
 	}
 	
 	boolean addClient(ClientAgent clientAgent){
-		Map<Long, ClientAgent> group = this.groups.get(clientAgent.role);
-		if(group == null){
-			group = new ConcurrentHashMap<Long, ClientAgent>();
-			this.groups.put(clientAgent.role, group);
+		boolean hasAdded = false;
+		for(int i=0; i < this.clients.size(); i++){
+			if(this.clients.get(i) == clientAgent){
+				logger.debug("Client already added");
+				hasAdded = true;
+				break;
+			}
 		}
-		if(group.get(clientAgent.userId) == null){
-			group.put(clientAgent.userId, clientAgent);
-			logger.info("Add client into server thread pool [user id: " + clientAgent.userId + "; role type: " + clientAgent.role + "]");
-			return true;
-		}else{
-			logger.info("Client already registered [user id: " + clientAgent.userId + "]");
-			return false;
+		if(!hasAdded){
+			this.clients.add(clientAgent);
+			logger.info("Add client");
 		}
+		if(clientAgent.userId != null && clientAgent.role != null){
+			Map<Long, ClientAgent> group = this.groups.get(clientAgent.role);
+			if(group == null){
+				group = new ConcurrentHashMap<Long, ClientAgent>();
+				this.groups.put(clientAgent.role, group);
+			}
+			if(group.get(clientAgent.userId) == null){
+				group.put(clientAgent.userId, clientAgent);
+				logger.info("Register client [user id: " + clientAgent.userId + " and role type: " + clientAgent.role + "]");
+				return true;
+			} else {
+				logger.debug("Client already registered [user id: " + clientAgent.userId + "]");
+				return false;
+			}
+		}
+		return true;
 	}
 	
-	void removeClient(ClientAgent clientAgent){
-		if(clientAgent.userId == null && clientAgent.role == null){
-			logger.info("Remove a unautherized clientAgent");
-			return;
+	void removeClient(ClientAgent clientAgent, boolean isRemoved){
+		//Remove it from registered clients queue first
+		if(clientAgent.userId != null && clientAgent.role != null){
+			if(this.groups.get(clientAgent.role) != null && this.groups.get(clientAgent.role).get(clientAgent.userId) != null){
+				this.groups.get(clientAgent.role).remove(clientAgent.userId);
+				logger.info("Unregister client [user id: " + clientAgent.userId + " and role type: " + clientAgent.role + "]");
+			}
 		}
-		if(this.groups.get(clientAgent.role) != null && this.groups.get(clientAgent.role).get(clientAgent.userId) != null){
-			this.groups.get(clientAgent.role).remove(clientAgent.userId);
-			logger.info("Remove client from server thread pool [user id: " + clientAgent.userId + "; role type: " + clientAgent.role + "]");
+		if(isRemoved){
+			//Remove it from all clients queue
+			for(int i=0; i < this.clients.size(); i++){
+				if(this.clients.get(i) == clientAgent){
+					logger.info("Remove client");
+					this.clients.remove(i);
+					break;
+				}
+			}
 			clientAgent = null;
 		}
 	}

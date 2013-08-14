@@ -203,12 +203,7 @@
                         	return "修改";
                      	}, 
                      	buttonclick: function (row) {
-	                        // open the popup window when the user clicks a button.
 	                        editrow = row;
-	                        var offset = $("#jqxgrid").offset();
-	                        var height = ($("#jqxgrid").jqxGrid('height')- 260)/2;
-	                        $("#popupWindow").jqxWindow({ position: { x: parseInt(offset.left) + 275, y: parseInt(offset.top) + height } });
-	                        // get the clicked row's data and initialize the input fields.
 	                        var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', editrow);
 	                        $("#name").val(dataRecord.name);
 	                        $("#category").val(dataRecord.category);
