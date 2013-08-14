@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <title>register user</title>
 	<link rel="stylesheet" type="text/css" href="../../css/head.css">
+	<link rel="stylesheet" type="text/css" href="../../css/body.css">
 	<link rel="stylesheet" href="../../css/jqwidgets/styles/jqx.base.css" type="text/css" />
 	
 	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
 	<script type="text/javascript" src="../../js/pitaya/AppUtil.js"></script>
-	
+	<script type="text/javascript" src="../../js/pitaya/Constants.js"></script>
 	
     <script type="text/javascript" src="../../js/jqwidgets/jqxcore.js"></script>
     <script type="text/javascript" src="../../js/jqwidgets/jqxdata.js"></script>
@@ -36,23 +37,29 @@
     <script type="text/javascript" src="../../js/jqwidgets/jqxdatetimeinput.js"></script> 
     <script type="text/javascript" src="../../js/jqwidgets/jqxmaskedinput.js"></script>
     <script type="text/javascript" src="../../js/jqwidgets/jqxradiobutton.js"></script> 
+    
+    <script type="text/javascript" src="../../js/jqwidgets/jqxcombobox.js"></script> 
+    
     <script type="text/javascript">
         $(document).ready(function () {
             var theme = getDemoTheme()
-            $("#register").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
+            $("#registerUserDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
             $('#userRegisterButton').jqxButton({ width: 60, height: 25, theme: theme });
+            $('#userResetButton').jqxButton({ width: 60, height: 25, theme: theme });
+            
             $('#acceptInput').jqxCheckBox({ width: 130, theme: theme });
             $('#userRegisterButton').on('click', function () {
                 $('#userInfoForm').jqxValidator('validate');
             });
+            
             $("#userAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
-            $("#userPhoneInput").jqxMaskedInput({ mask: '(###)###-####', width: 150, height: 22, theme: theme });
-            $('.text-input').jqxInput({ theme: theme });
+            $("#userPhoneInput").jqxMaskedInput({ mask: '(###)####-####', width: 150, height: 22, theme: theme });
+            $('.userTextInput').jqxInput({ theme: theme });
             var date = new Date();
             date.setFullYear(2000, 0, 1);
             $('#userBirthdayInput').jqxDateTimeInput({ theme: theme, height: 22,formatString: "yyyy/MM/dd", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
-            $("#userSexRadioButton1").jqxRadioButton({ width: 250, height: 25, checked: true, theme: theme });
-            $("#userSexRadioButton2").jqxRadioButton({ width: 250, height: 25, theme: theme });
+            $("#userSexRadioButton1").jqxRadioButton({ width: 150, height: 25, checked: true, theme: theme });
+            $("#userSexRadioButton2").jqxRadioButton({ width: 150, height: 25, theme: theme });
             
             $("#userSexRadioButton1").on('change', function (event) {
                 var checked = event.args.checked;
@@ -67,6 +74,36 @@
                 }
             });
             
+            var userDepartmentData = [
+                  //  { value: 1, label: "USER_DEPARTMENT" },
+                    { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
+                    { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
+                    { value: 4, label: "USER_DEPARTMENT_FINANCE" },
+                    { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
+                    { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
+                    { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
+                ];
+            
+			// Create a jqxComboBox
+			$("#userDepartmentCombobox").jqxComboBox({ 
+				selectedIndex: 0, 
+				source: userDepartmentData, 
+				displayMember: "label", 
+				valueMember: "value", 
+				width: 150, 
+				height: 25, 
+				theme: theme 
+			});
+                
+            $("#userDepartmentCombobox").on('select', function (event) {
+                    if (event.args) {
+                        var item = event.args.item;
+                        if (item) {
+                        	$("#userDepartmentInput").val(item.value);
+                        }
+                    }
+                });
+            
             $('#userInfoForm').on('validationSuccess', function (event) { 
             	// Some code here. 
             	registerUser();
@@ -80,58 +117,34 @@
                     { input: '#userRealNameInput', message: 'Real Name is required!', action: 'keyup, blur', rule: 'required' },
                     { input: '#userRealNameInput', message: 'Your real name must contain only letters!', action: 'keyup', rule: 'notNumber' },
                     { input: '#userRealNameInput', message: 'Your real name must be between 3 and 12 characters!', action: 'keyup', rule: 'length=3,12' },
-                    { input: '#userBirthdayInput', message: 'Your birth date must be between 1/1/1900 and 1/1/2012.', action: 'valuechanged', rule: function (input, commit) {
+                    
+                    { input: '#userPasswordInput', message: 'Password is required!', action: 'keyup, blur', rule: 'required' },
+                    { input: '#userPasswordInput', message: 'Your password must be between 6 and 20 characters!', action: 'keyup, blur', rule: 'length=6,20' },
+                    { input: '#userPasswordConfirmInput', message: 'Confirm Password is required!', action: 'keyup, blur', rule: 'required' },
+                    { input: '#userPasswordConfirmInput', message: 'Confirm Passwords doesn\'t match!', action: 'keyup, focus', rule: function (input, commit) {
+                        // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
+	                        if (input.val() === $('#userPasswordInput').val()) {
+	                            return true;
+	                        }
+	                        return false;
+                    	}
+                    },
+                    { input: '#userBirthdayInput', message: 'Your birth date must be between 1/1/1900 and ' + ((new Date()).getFullYear() + 1), action: 'valuechanged', rule: function (input, commit) {
                         var date = $('#userBirthdayInput').jqxDateTimeInput('value');
-                        var result = date.getFullYear() >= 1900 && date.getFullYear() <= 2012;
+                        var result = date.getFullYear() >= 1900 && date.getFullYear() <= (new Date()).getFullYear();
                         // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
                         return result;
                     	}
                     },
-                    { input: '#userPasswordInput', message: 'Password is required!', action: 'keyup, blur', rule: 'required' },
-                    { input: '#userPasswordInput', message: 'Your password must be between 6 and 20 characters!', action: 'keyup, blur', rule: 'length=6,20' },
-                    { input: '#userPasswordConfirmInput', message: 'Password is required!', action: 'keyup, blur', rule: 'required' },
-                    { input: '#userPasswordConfirmInput', message: 'Passwords doesn\'t match!', action: 'keyup, focus', rule: function (input, commit) {
-                        // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
-                        if (input.val() === $('#userPasswordInput').val()) {
-                            return true;
-                        }
-                        return false;
-                    }
-                    },
                     { input: '#userEmailInput', message: 'E-mail is required!', action: 'keyup, blur', rule: 'required' },
                     { input: '#userEmailInput', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' },
                     { input: '#userPhoneInput', message: 'Invalid phone number!', action: 'valuechanged, blur', rule: 'phone' },
-                    { input: '#acceptInput', message: 'You have to accept the terms', action: 'change', rule: 'required', position: 'right:0,0'}], theme: theme
+                    { input: '#acceptInput', message: 'You have to accept the terms', action: 'change', rule: 'required', position: 'right:0,0'}
+                    ], 
+                    theme: theme
             });
         });
     </script>
-    <style type="text/css">
-        .text-input
-        {
-            height: 21px;
-            width: 150px;
-        }
-        .register-table
-        {
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-        .register-table td, 
-        .register-table tr
-        {
-            margin: 0px;
-            padding: 2px;
-            border-spacing: 0px;
-            border-collapse: collapse;
-            font-family: Verdana;
-            font-size: 12px;
-        }
-        h3 
-        {
-            display: inline-block;
-            margin: 0px;
-        }
-    </style>
     
     <script type="text/javascript">
          function registerUser() {
@@ -146,7 +159,7 @@
                         "user.password": $("#userPasswordConfirmInput").val(),
                        	"user.address": $("#userAddressInput").val(),
                         "user.birthday": d1.getTime(),
-              //          "user.department": $("#addUserTable #department").val(),
+                        "user.department": $("#userDepartmentInput").val(),
                         "user.email": $("#userEmailInput").val(),
                         "user.phone": $("#userPhoneInput").val(),
                         "user.sex": $("#userSexInput").val()
@@ -166,26 +179,33 @@
 	
 <body>
 	<div id="content">
-		<div id="register">
+		<div id="registerUserDiv">
 	        <div><h3>Register User</h3></div>
 	        <div>
 	            <form id="userInfoForm" action="./">
-	                <table class="register-table">
+	                <table class="registerUserTable">
 	                    <tr>
 	                        <td>Account:</td>
-	                        <td><input type="text" id="userAccountInput" class="text-input" /></td>
+	                        <td><input type="text" id="userAccountInput" class="userTextInput" /></td>
 	                    </tr>
 	                    <tr>
 	                        <td>Password:</td>
-	                        <td><input type="password" id="userPasswordInput" class="text-input" /></td>
+	                        <td><input type="password" id="userPasswordInput" class="userTextInput" /></td>
 	                    </tr>
 	                    <tr>
 	                        <td>Confirm password:</td>
-	                        <td><input type="password" id="userPasswordConfirmInput" class="text-input" /></td>
+	                        <td><input type="password" id="userPasswordConfirmInput" class="userTextInput" /></td>
 	                    </tr>
 	                    <tr>
 	                        <td>Real name:</td>
-	                        <td><input type="text" id="userRealNameInput" class="text-input" /></td>
+	                        <td><input type="text" id="userRealNameInput" class="userTextInput" /></td>
+	                    </tr>
+	                    <tr>
+	                        <td>Department:</td>
+	                        <td>
+	                        	<div id='userDepartmentCombobox'></div>
+	                        	<input id="userDepartmentInput" type="hidden" value="2" />
+        					</td>
 	                    </tr>
 	                    <tr>
 	                        <td>Birth date:</td>
@@ -193,7 +213,7 @@
 	                    </tr>
 	                    <tr>
 	                        <td>E-mail:</td>
-	                        <td><input type="text" id="userEmailInput" placeholder="someone@mail.com" class="text-input" /></td>
+	                        <td><input type="text" id="userEmailInput" placeholder="someone@mail.com" class="userTextInput" /></td>
 	                    </tr>
 	                    <tr>
 	                        <td>Address:</td>
@@ -214,10 +234,17 @@
 	                        </td>
 	                    </tr>
 	                    <tr>
-	                        <td colspan="2" style="padding: 5px;"><div id="acceptInput" style="margin-left: 50px;">I accept terms</div></td>
+	                        <td colspan="2" style="padding: 5px;">
+	                        	<div id="acceptInput" style="margin-left: 50px;">I accept terms</div>
+	                        </td>
 	                    </tr>
-	                    <tr>
-	                        <td colspan="2" style="text-align: center;"><input type="button" value="Register" id="userRegisterButton" /></td>
+	                    <tr style="text-align: center;">
+	                        <td>
+	                        	<input type="button" value="Register" id="userRegisterButton" />
+	                        </td>
+	                        <td>
+	                        	<input type="reset" value="Reset" id="userResetButton" />
+	                        </td>
 	                    </tr>
 	                </table>
 	            </form>

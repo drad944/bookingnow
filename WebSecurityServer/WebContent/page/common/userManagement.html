@@ -549,118 +549,86 @@
 			</div>
 			
 			<div id="addUserPopupWindow"  style="overflow: hidden;">
-				<div>
-					Add User
-				</div>
-				<div id="popupTable" style="overflow: hidden;">
-					<form id="testForm" action="./">
-						<table id="addUserTable">
-							<tr>
-								<td align="right">
-									Account:
-								</td>
-								<td align="left">
-									<input id="account" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Name:
-								</td>
-								<td align="left">
-									<input id="name" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Password:
-								</td>
-								<td align="left">
-									<input id="password" />
-								</td>
-							</tr>
-							
-							
-							<tr>
-								<td align="right">
-									Address:
-								</td>
-								<td align="left">
-									<input id="address" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Birthday:
-								</td>
-								<td align="left">
-									<input id="birthday" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Department:
-								</td>
-								<td align="left">
-									<input id="department" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Email:
-								</td>
-								<td align="left">
-									<input id="email" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Image_relative_path:
-								</td>
-								<td align="left">
-									
-									<input id="image_relative_path" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Image_size:
-								</td>
-								<td align="left">
-									<input id="image_size" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Phone:
-								</td>
-								<td align="left">
-									<input id="phone" />
-								</td>
-							</tr>
-							
-							<tr>
-								<td align="right">
-									Sex:
-								</td>
-								<td align="left">
-									<input id="sex" />
-								</td>
-							</tr>
-							
-							
-							<tr>
-								<td align="right"></td>
-								<td style="padding-top: 10px;" align="right">
-									<input style="margin-right: 5px;" type="button" id="addUserButton"
-										value="Add" />
-									<input id="cancel" type="button" value="Cancel" />
-								</td>
-							</tr>
-						</table>
-					</form>
-				</div>
+				<div><h3>Register User</h3></div>
+				<div id="registerUserDiv">
+	        		
+			        <div>
+			            <form id="userInfoForm" action="./">
+			                <table class="registerUserTable">
+			                    <tr>
+			                        <td>Account:</td>
+			                        <td><input type="text" id="userAccountInput" class="userTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td>Password:</td>
+			                        <td><input type="password" id="userPasswordInput" class="userTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td>Confirm password:</td>
+			                        <td><input type="password" id="userPasswordConfirmInput" class="userTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td>Real name:</td>
+			                        <td><input type="text" id="userRealNameInput" class="userTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td>Department:</td>
+			                        <td>
+			                        	<div id='userDepartmentCombobox'></div>
+			                        	<input id="userDepartmentInput" type="hidden" value="2" />
+		        					</td>
+			                    </tr>
+			                    <tr>
+			                        <td>Birth date:</td>
+			                        <td><div id="userBirthdayInput"></div></td>
+			                    </tr>
+			                    <tr>
+			                        <td>E-mail:</td>
+			                        <td><input type="text" id="userEmailInput" placeholder="someone@mail.com" class="userTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td>Address:</td>
+			                        <td><div id="userAddressInput"></div></td>
+			                    </tr>
+			                    <tr>
+			                        <td>Phone:</td>
+			                        <td><div id="userPhoneInput"></div></td>
+			                    </tr>
+			                    <tr>
+			                        <td>Sex:</td>
+			                        <td>
+			                        	<div style='margin-top: 10px;'>
+							            	<span id='userSexRadioButton1'>男</span>
+							            	<span id='userSexRadioButton2'>女</span>
+							            	<input id="userSexInput" type="hidden" value="2" />
+							            </div>
+			                        </td>
+			                    </tr>
+			                    <tr>
+			                        <td colspan="2" style="padding: 5px;">
+			                        	<div id="acceptInput" style="margin-left: 50px;">I accept terms</div>
+			                        </td>
+			                    </tr>
+			                    <tr style="text-align: center;">
+			                        <td>
+			                        	<input id="userRegisterButton" type="button" value="Register" />
+			                        </td>
+			                        <td>
+			                        	<input id="userResetButton" type="reset" value="Reset" />
+			                        	<input id="userCancelButton" type="button" value="Cancel" />
+			                        </td>
+			                    </tr>
+			                </table>
+			            </form>
+			        </div>
+			        <div id="registerUserResult"></div>
+	    		</div>
+	    		
+	    		
 			</div>
+			
+		
+			
 		</div>
 	</div>
 </body>
