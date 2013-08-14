@@ -32,16 +32,44 @@ public class FoodService implements IFoodService{
 	@Override
 	public MyResult add(Food food) {
 		MyResult result = new MyResult();
-		
 		if(food != null) {
+			Long version = System.currentTimeMillis();
+			food.setVersion(version);
+			food.setImage_version(version);
+			food.setEnabled(true);
 			if(foodDao.insertSelective(food) == 1) {
-				result.setExecuteResult(true);
-				result.setFood(foodDao.selectFullByPrimaryKey(food.getId()));
+				if(food.getLarge_image_relative_path() != null && !food.getLarge_image_relative_path().equals("")){
+					String fileid = food.getLarge_image_relative_path();
+					String tempbasepath = ServletActionContext.getServletContext().getRealPath("/images/temp");
+					String foodbasepath = ServletActionContext.getServletContext().getRealPath("/images/food");
+					final File tempimage = new File(FileUtil.getSavePath(tempbasepath, fileid));
+					String filetype = FileUtil.getType(fileid);
+					File newlargeimg = new File(FileUtil.getSavePath(foodbasepath, food.getId() + "_l." + filetype));
+					try {
+						FileUtils.copyFile(tempimage, newlargeimg);
+						ImageUtil.scale(FileUtil.getSavePath(tempbasepath, fileid), 
+								FileUtil.getSavePath(foodbasepath, food.getId() + "_s." + filetype), filetype, 200, 150);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					food.setLarge_image_relative_path("images/food/" + food.getId() + "_l." + filetype);
+					food.setSmall_image_relative_path("images/food/" + food.getId() + "_s." + filetype);
+				} else {
+					food.setLarge_image_relative_path("css/no_image.jpg");
+					food.setSmall_image_relative_path("css/no_image.jpg");
+				}
+				if(foodDao.updateByPrimaryKeySelective(food) == 1){
+					result.setExecuteResult(true);
+					//result.setFood(foodDao.selectFullByPrimaryKey(food.getId()));
+					result.setShortDetail(food.getId() + "###" + food.getLarge_image_relative_path());
+				} else {
+					throw new RuntimeException("Fail to update food image info.");
+				}
 			}else {
-				throw new RuntimeException("fail to insert food into DB.");
+				throw new RuntimeException("Fail to insert food into DB.");
 			}
 		}else {
-			result.getErrorDetails().put("food_exist", "can not find food in client data.");
+			result.getErrorDetails().put("Error", "can not find food in client data.");
 		}
 		
 		return result;
@@ -59,7 +87,7 @@ public class FoodService implements IFoodService{
 				throw new RuntimeException("fail to delete food into DB.");
 			}
 		}else {
-			result.getErrorDetails().put("food_exist", "can not find food in client data.");
+			result.getErrorDetails().put("Error", "can not find food in client data.");
 		}
 		
 		return result;
@@ -73,11 +101,14 @@ public class FoodService implements IFoodService{
 			Long version = System.currentTimeMillis();
 			food.setVersion(version);
 			if(food.getLarge_image_relative_path() != null && !food.getLarge_image_relative_path().equals("")){
+				//The temp file id
 				String fileid = food.getLarge_image_relative_path();
 				String tempbasepath = ServletActionContext.getServletContext().getRealPath("/images/temp");
-				File tempimage = new File(FileUtil.getSavePath(tempbasepath, fileid));
-				String filetype = FileUtil.getType(fileid);
 				String foodbasepath = ServletActionContext.getServletContext().getRealPath("/images/food");
+				
+				final File tempimage = new File(FileUtil.getSavePath(tempbasepath, fileid));
+				String filetype = FileUtil.getType(fileid);
+				//remove old files
 				FileUtil.removeFiles(foodbasepath, "^"+food.getId()+"_.*");
 				File newlargeimg = new File(FileUtil.getSavePath(foodbasepath, food.getId() + "_l." + filetype));
 				try {
@@ -90,6 +121,17 @@ public class FoodService implements IFoodService{
 				food.setLarge_image_relative_path("images/food/" + food.getId() + "_l." + filetype);
 				food.setSmall_image_relative_path("images/food/" + food.getId() + "_s." + filetype);
 				food.setImage_version(version);
+				result.setShortDetail(food.getLarge_image_relative_path());
+				new Thread(){
+					
+					@Override 
+					public void run(){
+						if(tempimage.exists()){
+							tempimage.delete();
+						}
+					}
+					
+				}.start();
 			}
 			if(foodDao.updateByPrimaryKeySelective(food) == 1) {
 				result.setExecuteResult(true);
@@ -98,7 +140,7 @@ public class FoodService implements IFoodService{
 				throw new RuntimeException("fail to update food into DB.");
 			}
 		}else {
-			result.getErrorDetails().put("food_exist", "can not find food in client data.");
+			result.getErrorDetails().put("Error", "can not find food in client data.");
 		}
 		
 		return result;
@@ -111,13 +153,35 @@ public class FoodService implements IFoodService{
 	}
 
 	@Override
+	public MyResult disableFood(Food food) {
+		MyResult result = new MyResult();
+		
+		if(food != null && food.getId() != null) {
+			food.setEnabled(false);
+			if(foodDao.updateByPrimaryKeySelective(food) == 1) {
+				String foodbasepath = ServletActionContext.getServletContext().getRealPath("/images/food");
+				FileUtil.removeFiles(foodbasepath, "^"+food.getId()+"_.*");
+				result.setExecuteResult(true);
+			} else {
+				throw new RuntimeException("fail to disable food into DB.");
+			}
+		}else {
+			result.getErrorDetails().put("food_exist", "can not find food in client data.");
+		}
+		
+		return result;
+	}
+	
+	@Override
 	public MyResult removeFoodById(Long id) {
 		MyResult result = new MyResult();
 		
 		if(id != null) {
 			if(foodDao.deleteByPrimaryKey(id) == 1) {
+				String foodbasepath = ServletActionContext.getServletContext().getRealPath("/images/food");
+				FileUtil.removeFiles(foodbasepath, "^"+id+"_.*");
 				result.setExecuteResult(true);
-			}else {
+			} else {
 				throw new RuntimeException("fail to delete food into DB.");
 			}
 		}else {

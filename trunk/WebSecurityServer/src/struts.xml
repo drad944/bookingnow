@@ -245,7 +245,7 @@
 	        </result>
 	        
 	        <result name="Success" type="json">
-	        	<param name="includeProperties">isSuccess</param>
+	        	<param name="includeProperties">isSuccess, detail</param>
 	        	<param name="excludeNullProperties">true</param>
 	        </result>
 	        

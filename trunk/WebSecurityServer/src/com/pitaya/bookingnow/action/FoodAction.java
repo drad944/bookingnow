@@ -112,36 +112,60 @@ public class FoodAction extends BaseAction{
 	
 	public String addFood() {
 		if (food != null) {
-			foodService.add(food);
-			this.setIsSuccess(true);
-			return "Success";
+			try {
+				this.result = foodService.add(food);
+				if(this.result.isExecuteResult()){
+					this.setIsSuccess(true);
+					this.setDetail(this.result.getShortDetail());
+					return "Success";
+				}
+			} catch (RuntimeException e){
+				this.setIsSuccess(false);
+				this.setDetail(e.getMessage());
+				return "Fail";
+			}
 		}
 		this.setIsSuccess(false);
-		this.setDetail("Fail to add food.");
+		this.setDetail(this.result.getErrorDetails().get("Error"));
 		return "Fail";
 	}
 	
 	public String removeFood() {
 		if (food != null) {
-			foodService.removeFoodById(food.getId());
-			this.setIsSuccess(true);
-			return "Success";
+			try {
+				this.result = foodService.disableFood(food);
+				if(this.result.isExecuteResult()){
+					this.setIsSuccess(true);
+					return "Success";
+				}
+			} catch (RuntimeException e){
+				this.setIsSuccess(false);
+				this.setDetail(e.getMessage());
+				return "Fail";
+			}
 		}
 		this.setIsSuccess(false);
-		this.setDetail("Fail to remove food.");
+		this.setDetail(this.result.getErrorDetails().get("Error"));
 		return "Fail";
 	}
 	
 	public String updateFood() {
 		if (food != null) {
-			this.result = foodService.modify(food);
-			if(this.result.isExecuteResult()){
-				this.setIsSuccess(true);
-				return "Success";
+			try {
+				this.result = foodService.modify(food);
+				if(this.result.isExecuteResult()){
+					this.setIsSuccess(true);
+					this.setDetail(this.result.getShortDetail());
+					return "Success";
+				}
+			} catch (RuntimeException e){
+				this.setIsSuccess(false);
+				this.setDetail(e.getMessage());
+				return "Fail";
 			}
 		}
 		this.setIsSuccess(false);
-		this.setDetail("Fail to update food.");
+		this.setDetail(this.result.getErrorDetails().get("Error"));
 		return "Fail";
 	}
 	
