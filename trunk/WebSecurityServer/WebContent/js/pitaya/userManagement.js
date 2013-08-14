@@ -1,43 +1,179 @@
 /**
  * 
  */
-
-
-function showUserDetailInfo() {
-	 $.post("findLoginUser.action", 
-			function(user){
-				if(user != null && user.id != null) {
-					$("#showUsreTable #account").text(user["account"]);
-					$("#showUsreTable #name").text(user["name"]);
-					$("#showUsreTable #password").text(user["password"]);
-					$("#showUsreTable #address").text(user["address"]);
-					$("#showUsreTable #birthday").text(user["birthday"]);
-					$("#showUsreTable #department").text(user["department"]);
-					$("#showUsreTable #email").text(user["email"]);
-					$("#showUsreTable #image_relative_path").attr("src",user["image_relative_path"]);
-					
-					$("#showUsreTable #phone").text(user["phone"]);
-					$("#showUsreTable #sex").text(user["sex"]);
-				}
-			});
+function initRegisterUserWindow() {
+    var theme = getDemoTheme()
+    $("#registerUserDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
+    $('#userRegisterButton').jqxButton({ width: 60, height: 25, theme: theme });
+    $('#userResetButton').jqxButton({ width: 60, height: 25, theme: theme });
+    $('#userCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
+    
+    $('#acceptInput').jqxCheckBox({ width: 130, theme: theme });
+    $('#userRegisterButton').on('click', function () {
+        $('#userInfoForm').jqxValidator('validate');
+    });
+    
+    $("#userAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
+    $("#userPhoneInput").jqxMaskedInput({ mask: '(###)####-####', width: 150, height: 22, theme: theme });
+    $('.userTextInput').jqxInput({ theme: theme });
+    var date = new Date();
+    date.setFullYear(2000, 0, 1);
+    $('#userBirthdayInput').jqxDateTimeInput({ theme: theme, height: 22,formatString: "yyyy/MM/dd", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
+    $("#userSexRadioButton1").jqxRadioButton({ width: 150, height: 25, checked: true, theme: theme });
+    $("#userSexRadioButton2").jqxRadioButton({ width: 150, height: 25, theme: theme });
+    
+    $("#userSexRadioButton1").on('change', function (event) {
+        var checked = event.args.checked;
+        if (checked) {
+        	 $("#userSexInput").val("2");
+        }
+    });
+    $("#userSexRadioButton2").on('change', function (event) {
+        var checked = event.args.checked;
+        if (checked) {
+        	$("#userSexInput").val("3");
+        }
+    });
+    
+    $("#userCancelButton").on('click', function (event) {
+    	$('#userInfoForm').jqxValidator('hide');
+        $('#addUserPopupWindow').jqxWindow('close');
+    });
+    
+    var userDepartmentData = [
+          //  { value: 1, label: "USER_DEPARTMENT" },
+            { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
+            { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
+            { value: 4, label: "USER_DEPARTMENT_FINANCE" },
+            { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
+            { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
+            { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
+        ];
+    
+	// Create a jqxComboBox
+	$("#userDepartmentCombobox").jqxComboBox({ 
+		selectedIndex: 0, 
+		source: userDepartmentData, 
+		displayMember: "label", 
+		valueMember: "value", 
+		width: 150, 
+		height: 25, 
+		theme: theme 
+	});
+        
+    $("#userDepartmentCombobox").on('select', function (event) {
+            if (event.args) {
+                var item = event.args.item;
+                if (item) {
+                	$("#userDepartmentInput").val(item.value);
+                }
+            }
+        });
+    
+    $('#userInfoForm').on('validationSuccess', function (event) { 
+    	// Some code here. 
+    	registerUser();
+    });
+    
+    // initialize validator.
+    $('#userInfoForm').jqxValidator({
+     rules: [
+            { input: '#userAccountInput', message: 'Username is required!', action: 'keyup, blur', rule: 'required' },
+            { input: '#userAccountInput', message: 'Your username must be between 3 and 12 characters!', action: 'keyup, blur', rule: 'length=3,12' },
+            { input: '#userRealNameInput', message: 'Real Name is required!', action: 'keyup, blur', rule: 'required' },
+            { input: '#userRealNameInput', message: 'Your real name must contain only letters!', action: 'keyup', rule: 'notNumber' },
+            { input: '#userRealNameInput', message: 'Your real name must be between 3 and 12 characters!', action: 'keyup', rule: 'length=3,12' },
+            
+            { input: '#userPasswordInput', message: 'Password is required!', action: 'keyup, blur', rule: 'required' },
+            { input: '#userPasswordInput', message: 'Your password must be between 6 and 20 characters!', action: 'keyup, blur', rule: 'length=6,20' },
+            { input: '#userPasswordConfirmInput', message: 'Confirm Password is required!', action: 'keyup, blur', rule: 'required' },
+            { input: '#userPasswordConfirmInput', message: 'Confirm Passwords doesn\'t match!', action: 'keyup, focus', rule: function (input, commit) {
+                // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
+                    if (input.val() === $('#userPasswordInput').val()) {
+                        return true;
+                    }
+                    return false;
+            	}
+            },
+            { input: '#userBirthdayInput', message: 'Your birth date must be between 1/1/1900 and ' + ((new Date()).getFullYear() + 1), action: 'valuechanged', rule: function (input, commit) {
+                var date = $('#userBirthdayInput').jqxDateTimeInput('value');
+                var result = date.getFullYear() >= 1900 && date.getFullYear() <= (new Date()).getFullYear();
+                // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
+                return result;
+            	}
+            },
+            { input: '#userEmailInput', message: 'E-mail is required!', action: 'keyup, blur', rule: 'required' },
+            { input: '#userEmailInput', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' },
+            { input: '#userPhoneInput', message: 'Invalid phone number!', action: 'valuechanged, blur', rule: 'phone' },
+            { input: '#acceptInput', message: 'You have to accept the terms', action: 'change', rule: 'required', position: 'right:0,0'}
+            ], 
+            theme: theme
+    });
 }
 
-function uploadUserImage(){
-	$.post("findLoginUser.action", 
-   			function(user){
-				if(user != null && user.id != null) {
-					$("#crop_now").attr("src",user.image_relative_path);
-					$("#crop_preview").attr("src",user.image_relative_path);
-					
-					$("#user_id").val(user.id);
-					$("#image_relative_path").val(user.image_relative_path);
-					
-					initUploadUserImage();
-					initJCrop();
-				}
-					
-    		}
-	);
+
+function registerUser() {
+	var d1 = {};
+	if ($("#userBirthdayInput").val() != null) {
+		d1 = new Date($("#userBirthdayInput").val());
+	}
+
+	var registerUserData = {
+		"user.account" : $("#userAccountInput").val(),
+		"user.name" : $("#userRealNameInput").val(),
+		"user.password" : $("#userPasswordConfirmInput").val(),
+		"user.address" : $("#userAddressInput").val(),
+		"user.birthday" : d1.getTime(),
+		"user.department" : $("#userDepartmentInput").val(),
+		"user.email" : $("#userEmailInput").val(),
+		"user.phone" : $("#userPhoneInput").val(),
+		"user.sex" : $("#userSexInput").val()
+	};
+
+	$.post("registerUser.action", registerUserData, function(result) {
+		if (result != null && result["id"] != null) {
+			$("#registerUserResult").text("register user successfully!");
+
+		} else if (result != null && result["executeResult"] != null
+				&& result["executeResult"] == false) {
+			$("#registerUserResult").text("register user failed,please check user info!");
+		}
+	});
+}
+
+function showUserDetailInfo() {
+	$.post("findLoginUser.action", function(user) {
+		if (user != null && user.id != null) {
+			$("#showUsreTable #account").text(user["account"]);
+			$("#showUsreTable #name").text(user["name"]);
+			$("#showUsreTable #password").text(user["password"]);
+			$("#showUsreTable #address").text(user["address"]);
+			$("#showUsreTable #birthday").text(user["birthday"]);
+			$("#showUsreTable #department").text(user["department"]);
+			$("#showUsreTable #email").text(user["email"]);
+			$("#showUsreTable #image_relative_path").attr("src",
+					user["image_relative_path"]);
+
+			$("#showUsreTable #phone").text(user["phone"]);
+			$("#showUsreTable #sex").text(user["sex"]);
+		}
+	});
+}
+
+function uploadUserImage() {
+	$.post("findLoginUser.action", function(user) {
+		if (user != null && user.id != null) {
+			$("#crop_now").attr("src", user.image_relative_path);
+			$("#crop_preview").attr("src", user.image_relative_path);
+
+			$("#user_id").val(user.id);
+			$("#image_relative_path").val(user.image_relative_path);
+
+			initUploadUserImage();
+			initJCrop();
+		}
+
+	});
 };
 
 function initUploadUserImage(){
@@ -384,10 +520,28 @@ function parseUserGridHtml() {
 	$("#addUserRowButton").jqxButton({ theme: theme });
 	$("#deleteUserRowButton").jqxButton({ theme: theme });
 	$("#updateUserRowButton").jqxButton({ theme: theme });
-	$("#addUserTable #cancel").jqxButton({ theme: theme });
+	
+	
 	$("#updateUserTable #cancel").jqxButton({ theme: theme });
 	$("#saveUserButton").jqxButton({ theme: theme });
 	$("#addUserButton").jqxButton({ theme: theme });
+	
+	// initialize the popup window and buttons.
+	$("#addUserPopupWindow").jqxWindow({
+	    width: 320, height: 450,resizable: true, theme: theme, isModal: true, autoOpen: false, cancelButton: $("userCancelButton"), modalOpacity: 0.01           
+	});
+	$("#addUserPopupWindow").on('open', function () {
+	    //$("#id").jqxInput('selectAll');
+	});
+	
+	 // initialize the popup window and buttons.
+	$("#updateUserPopupWindow").jqxWindow({
+	    width: 320, height: 450, resizable: true, theme: theme, isModal: true, autoOpen: false, cancelButton: $("userCancelButton"), modalOpacity: 0.01           
+	});
+	$("#updateUserPopupWindow").on('open', function () {
+	    $("#id").jqxInput('selectAll');
+	});
+	
 	// update row.
 	$("#updateUserRowButton").on('click', function () {
 		selectedupdaterowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
@@ -408,7 +562,7 @@ function parseUserGridHtml() {
 			$("#updateUserTable #birthday").val(rowData["birthday"]);
 			$("#updateUserTable #department").val(rowData["department"]);
 			$("#updateUserTable #email").val(rowData["email"]);
-			$("#updateUserTable #user_image").attr("src","../../" + rowData["image_relative_path"]);
+			$("#updateUserTable #user_image").attr("src",rowData["image_relative_path"]);
 			
 			$("#updateUserTable #image_relative_path").val(rowData["image_relative_path"]);
 			$("#updateUserTable #image_size").val(rowData["image_size"]);
@@ -424,70 +578,12 @@ function parseUserGridHtml() {
 	// show the popup window
 	$("#addUserRowButton").on('click', function () {
 		var offset = $("#userDataGrid").offset();
-			$("#addUserPopupWindow").jqxWindow({ position: { x: parseInt(offset.left) + 60, y: parseInt(offset.top) + 60 } });
+			$("#addUserPopupWindow").jqxWindow({ position: { x: parseInt(offset.left) + 200, y: parseInt(offset.top) + -200 } });
 			
 			// show the popup window.
+			initRegisterUserWindow();
 			$("#addUserPopupWindow").jqxWindow('open');
-	});
-	
-	// create new row
-	$("#addUserButton").on('click', function () {
-	    if($("#addUserTable #account").val() != null && $("#addUserTable #password").val() != null){
-	    	var newrow = {
-	    		"account": $("#addUserTable #account").val(), 
-	        	"name": $("#addUserTable #name").val(),
-	            "password": $("#addUserTable #password").val(),
-	           	"address": $("#addUserTable #address").val(),
-	            "birthday": $("#addUserTable #birthday").val(),
-	            "department": $("#addUserTable #department").val(),
-	            "email": $("#addUserTable #email").val(),
-	            "image_relative_path": $("#addUserTable #image_relative_path").val(),
-	            "image_size": $("#addUserTable #image_size").val(),
-	            "phone": $("#addUserTable #phone").val(),
-	            "sex": $("#addUserTable #sex").val()
-	        };
-	        var addUserData = { 
-	        	"user.account": $("#addUserTable #account").val(), 
-	        	"user.name": $("#addUserTable #name").val(),
-	            "user.password": $("#addUserTable #password").val(),
-	           	"user.address": $("#addUserTable #address").val(),
-	            "user.birthday": $("#addUserTable #birthday").val(),
-	            "user.department": $("#addUserTable #department").val(),
-	            "user.email": $("#addUserTable #email").val(),
-	            "user.image_relative_path": $("#addUserTable #image_relative_path").val(),
-	            "user.image_size": $("#addUserTable #image_size").val(),
-	            "user.phone": $("#addUserTable #phone").val(),
-	            "user.sex": $("#addUserTable #sex").val()
-	        };
-	        
-	        $.post("registerUser.action", addUserData,function(result){
-				if(result != null && result["id"] != null){
-	            	//var rowID = $('#userDataGrid').jqxGrid('getrowid', rowData);
-	            	newrow["id"] = result["id"];
-	                $('#userDataGrid').jqxGrid('addrow', null, newrow);
-	                $("#addUserPopupWindow").jqxWindow('hide');
-	                
-	                addUserData = null;
-	                newrow = null;
-	                
-	                //empty input value
-	                $("#addUserTable #account").val("");
-	                $("#addUserTable #name").val("");
-	                $("#addUserTable #password").val("");
-	                $("#addUserTable #address").val("");
-	                $("#addUserTable #birthday").val("");
-	                $("#addUserTable #department").val("");
-	                $("#addUserTable #email").val("");
-	                $("#addUserTable #image_relative_path").val("");
-	                $("#addUserTable #image_size").val("");
-	                $("#addUserTable #phone").val("");
-	                $("#addUserTable #sex").val("");
-	                
-	            }else if(result != null && result["executeResult"] != null && result["executeResult"] == false){
-	            	//do nothing
-	            }
-			});
-	    }
+			
 	});
 	
 	// delete row.
@@ -507,68 +603,8 @@ function parseUserGridHtml() {
 	    }
 	});
 	
-	 // initialize the popup window and buttons.
-	$("#addUserPopupWindow").jqxWindow({
-	    width: 350, resizable: false, theme: theme, isModal: true, autoOpen: false, cancelButton: $("#addUserTable #cancel"), modalOpacity: 0.01           
-	});
-	$("#addUserPopupWindow").on('open', function () {
-	    //$("#id").jqxInput('selectAll');
-	});
 	
-	 // initialize the popup window and buttons.
-	$("#updateUserPopupWindow").jqxWindow({
-	    width: 350, resizable: false, theme: theme, isModal: true, autoOpen: false, cancelButton: $("#updateUserTable #cancel"), modalOpacity: 0.01           
-	});
-	$("#updateUserPopupWindow").on('open', function () {
-	    $("#id").jqxInput('selectAll');
-	});
 	
-	// update the edited row when the user clicks the 'Save' button.
-	$("#saveUserButton").click(function () {
-	    if (rowData != null && rowData["id"] != null) {
-			
-	        var newrow = { 
-	        	"id": $("#updateUserTable #id").val(), 
-	        	"account": $("#updateUserTable #account").val(), 
-	        	"name": $("#updateUserTable #name").val(),
-	            "password": $("#updateUserTable #password").val(),
-	           	"address": $("#updateUserTable #address").val(),
-	            "birthday": $("#updateUserTable #birthday").val(),
-	            "department": $("#updateUserTable #department").val(),
-	            "email": $("#updateUserTable #email").val(),
-	            "image_relative_path": $("#updateUserTable #image_relative_path").val(),
-	            "image_size": $("#updateUserTable #image_size").val(),
-	            "phone": $("#updateUserTable #phone").val(),
-	            "sex": $("#updateUserTable #sex").val()
-	        };
-	        var updateUserData = { 
-	        	"user.id": $("#updateUserTable #id").val(), 
-	        	"user.account": $("#updateUserTable #account").val(), 
-	        	"user.name": $("#updateUserTable #name").val(),
-	            "user.password": $("#updateUserTable #password").val(),
-	           	"user.address": $("#updateUserTable #address").val(),
-	            "user.birthday": $("#updateUserTable #birthday").val(),
-	            "user.department": $("#updateUserTable #department").val(),
-	            "user.email": $("#updateUserTable #email").val(),
-	            "user.image_relative_path": $("#updateUserTable #image_relative_path").val(),
-	            "user.image_size": $("#updateUserTable #image_size").val(),
-	            "user.phone": $("#updateUserTable #phone").val(),
-	            "user.sex": $("#updateUserTable #sex").val()
-	        };
-	        
-	        $.post("updateUser.action", updateUserData,function(result){
-				if(result != null && result["id"] != null){
-	            	//var rowID = $('#userDataGrid').jqxGrid('getrowid', rowData);
-	                $('#userDataGrid').jqxGrid('updaterow', selectedupdaterowindex, newrow);
-	                $("#updateUserPopupWindow").jqxWindow('hide');
-	            }else if(result != null && result["executeResult"] != null && result["executeResult"] == false){
-	            	//do nothing
-	            }
-			});
-	         
-	        
-	    }
-	});
 	/*
 	 $("#userDataGrid").on('columnreordered', function (event) {
 	    var column = event.args.columntext;
