@@ -71,6 +71,18 @@ public class CookingItem implements IJSONTransition{
 		return this.submit_time;
 	}
 	
+	public void setQuantity(int q){
+		this.quantity = q;
+	}
+	
+	public void setFree(boolean b){
+		this.free = b;
+	}
+	
+	public void setPreference(String p){
+		this.preference = p;
+	}
+	
 	public void setStatus(int newstatus){
 		if(this.status != newstatus){
 			int old_status = this.status;

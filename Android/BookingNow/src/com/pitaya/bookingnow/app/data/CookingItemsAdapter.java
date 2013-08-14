@@ -1,12 +1,14 @@
 package com.pitaya.bookingnow.app.data;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.data.OrderDetailAdapter.Item;
 import com.pitaya.bookingnow.app.model.CookingItem;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.views.CookingItemsListView;
 
 
 import android.content.Context;
@@ -22,21 +24,23 @@ import android.widget.TextView;
 
 public class CookingItemsAdapter extends BaseAdapter {
 	
-	private ArrayList<CookingItem> cookingItems;
+	private CookingItemsListView mParent;
+	private List<CookingItem> cookingItems;
 	private ListView mView;
 	private Context mContext;
 	
-	public CookingItemsAdapter(ListView view){
-		this.cookingItems = new ArrayList<CookingItem>();
+	public CookingItemsAdapter(ListView view, CookingItemsListView parent){
+		cookingItems = new ArrayList<CookingItem>();
+		this.mParent = parent;
 		this.mView = view;
 		this.mContext = view.getContext();
 	}
 	
-	public ArrayList<CookingItem> getCookingItems(){
+	public List<CookingItem> getCookingItems(){
 		return this.cookingItems;
 	}
 	
-	public void setCookingItems(ArrayList<CookingItem> items){
+	public void setCookingItems(List<CookingItem> items){
 		if(this.cookingItems != null){
 			this.cookingItems = null;
 		}
@@ -61,7 +65,6 @@ public class CookingItemsAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View itemView = View.inflate(mContext, R.layout.cookingitem, null);
-		final int index = position;
 		final CookingItem item = (CookingItem)this.getItem(position);
 		final RelativeLayout fooditemRL = (RelativeLayout) itemView.findViewById(R.id.fooditemdetail);
 		
@@ -84,6 +87,7 @@ public class CookingItemsAdapter extends BaseAdapter {
 			}
 	        	
         });
+        
         if(item.getStatus() != Constants.FOOD_FINISHED){
         	timerText.setVisibility(View.VISIBLE);
         	unavailableBtn.setVisibility(View.VISIBLE);
@@ -180,6 +184,14 @@ public class CookingItemsAdapter extends BaseAdapter {
 					@Override
 					public void onClick(View v) {
 						item.setStatus(Constants.FOOD_FINISHED);
+						for(int i = 0; i < cookingItems.size(); i++){
+							if(item == cookingItems.get(i)){
+								cookingItems.remove(i);
+								break;
+							}
+						}
+						CookingItemsAdapter.this.notifyDataSetChanged();
+						CookingItemsAdapter.this.mParent.getNextCookingItems(false);
 					}
 					
 				});

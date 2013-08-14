@@ -21,6 +21,7 @@ public class KitchenOrderLeftView extends OrderLeftView{
 	private static final String TAG = "KitchenOrderLeftView";
 	private SoftReference<MessageService> msRef;
 	private MessageHandler mMessageHandler;
+	private CookingItemsListFragment mContent;
 
 	public KitchenOrderLeftView(){
 		super();
@@ -37,6 +38,7 @@ public class KitchenOrderLeftView extends OrderLeftView{
 			public void onMessage(Message message) {
 				if(message instanceof OrderDetailMessage){
 					OrderDetailMessage orderDetailMsg = (OrderDetailMessage)message;
+					mContent.updateView(orderDetailMsg.getHasNew(), orderDetailMsg.getUpdateItems(), orderDetailMsg.getRemoveItems());
 				}
 			}
 			
@@ -48,13 +50,14 @@ public class KitchenOrderLeftView extends OrderLeftView{
 	@Override
 	public void onDestroyView(){
 		super.onDestroyView();
-		getMessageService().unregisterHandler(Constants.ORDER_MESSAGE, mMessageHandler);
+		getMessageService().unregisterHandler(mMessageHandler);
 	}
 	
 	public void showCookingItemsList(){
 		FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		fragmentTransaction.replace(R.id.orderdetail, CookingItemsListFragment.newInstance());
+		mContent = CookingItemsListFragment.newInstance();
+		fragmentTransaction.replace(R.id.orderdetail, mContent);
 		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		fragmentTransaction.commit();
 	}

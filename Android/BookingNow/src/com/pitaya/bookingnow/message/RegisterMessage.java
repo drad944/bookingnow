@@ -12,12 +12,14 @@ public class RegisterMessage extends Message{
 	private static final long serialVersionUID = 6185409247446469881L;
 	
 	private Long userId;
+	private String action;
 	
 	public RegisterMessage(){}
 	
-	public RegisterMessage(Long id) {
+	public RegisterMessage(Long id, String action) {
 		super(Constants.REGISTER_MESSAGE);
 		this.userId = id;
+		this.action = action;
 	}
 
 	public void setUserId(Long id){
@@ -28,11 +30,20 @@ public class RegisterMessage extends Message{
 		return this.userId;
 	}
 	
+	public void setAction(String act){
+		this.action = act;
+	}
+	
+	public String getAction(){
+		return this.action;
+	}
+	
 	@Override
 	public void toJSONObject(JSONObject jsonObj) {
 		try {
 			super.toJSONObject(jsonObj);
 			jsonObj.put("userId", this.getUserId());
+			jsonObj.put("action", this.getAction());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -43,6 +54,7 @@ public class RegisterMessage extends Message{
 		try {
 			super.fromJSONObject(jsonObj);
 			this.setUserId(jsonObj.getLong("userId"));
+			this.setType(jsonObj.getString("action"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
