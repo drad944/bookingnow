@@ -79,14 +79,65 @@
 	   		var source = {
     			localdata : data,
     			datatype: "array",
-                addrow: function (rowid, rowdata, position, commit) {
-                    commit(true);
+                addrow: function (rowid, newdata, position, commit) {
+                	var status = newdata.available == true? Constants.FOOD_STATUS_OK : Constants.FOOD_STATUS_NO;
+                    var param = {
+                        "food.name" : newdata.name,
+                        "food.category" : newdata.category,
+                        "food.description" : newdata.desc,
+                        "food.price" : newdata.price,
+                        "food.status" : status,
+                        "food.large_image_relative_path" : newdata.fileId
+                    };
+                    AppUtil.request("addFood.action", param, function(data){
+                    	if(data){
+                            var result = data.isSuccess;
+                            if(result == true && data.detail && data.detail != ""){
+                            	var details = data.detail.split("###");
+                            	newdata.id = details[0];
+                                newdata.imgpath = details[1];
+                                commit(true);
+                            } else {
+                                alert("操作失败:" + data.detail);
+                            }
+                        } else {
+                            alert("操作失败");
+                        }
+                        commit(false);
+                        newdata.fileId = null;
+                        $("#popupWindow").jqxWindow('hide');
+                    }, function(){
+                        alert("操作失败");
+                        commit(false);
+                        newdata.fileId = null;
+                        $("#popupWindow").jqxWindow('hide');
+                    });
                 },
                 deleterow: function (rowid, commit) {
-                    commit(true);
+                    var rowData = $('#jqxgrid').jqxGrid('getrowdata', rowid);
+                    var param = {
+                   		"food.id" : rowData.id,
+                    };
+                    AppUtil.request("removeFood.action", param, function(data){
+                        if(data){
+                            var result = data.isSuccess;
+                            if(result == true){
+                                commit(true);
+                            } else {
+                                alert("操作失败:" + data.detail);
+                            }
+                        } else {
+                            alert("操作失败");
+                        }
+                        commit(false);
+                    }, 
+                    function(){
+                        alert("操作失败");
+                        commit(false);
+                    });
                 },
                 updaterow: function (rowid, newdata, commit) {
-                	var status = newdata.available == true? Constants.FOOD_STATUS_OK : Constants.FOOD_STATUS_NO;
+                    var status = newdata.available == true? Constants.FOOD_STATUS_OK : Constants.FOOD_STATUS_NO;
                 	var param = {
                 		"food.id" : newdata.id,
                 		"food.name" : newdata.name,
@@ -100,13 +151,12 @@
                 		if(data){
                 			var result = data.isSuccess;
                 			if(result == true){
-                				if(newdata.fileId != null){
-                					newdata.imgpath = newdata.imgpath.substring(0, newdata.imgpath.lastIndexOf(".")) 
-                					+ newdata.fileId.substring(newdata.fileId.lastIndexOf("."));
-                				}
+                			    if(data.detail && data.detail != ""){
+                			    	newdata.imgpath = data.detail;
+                			    }
                 				commit(true);
                 			} else {
-                				alert(data.detail);
+                				alert("操作失败:" + data.detail);
                 			}
                 		} else {
                 			alert("操作失败");
@@ -130,6 +180,7 @@
     	 	
     	 	var dataAdapter = new $.jqx.dataAdapter(source);
     	 	var editrow = -1;
+    	 	var newaddimgid = null;
 	    	$("#jqxgrid").jqxGrid(
    			{		
    				theme : theme,
@@ -187,36 +238,39 @@
             $("#cancelbtn").jqxButton({ theme: theme, width: '50', height: '25' });
 	    	
             $("#savebtn").bind('click', function(event){
+                var name = $("#name").val();
+                var category = $("#category").val();
+                var desc = $("#desc").val();
+                var price = $('#price').jqxNumberInput('decimal');
+                var status = -1;
+                var available = true;
+                if($("#status").jqxCheckBox('checked') == true){
+                    status = AppUtil.getFoodStatus(Constants.FOOD_STATUS_OK);
+                    available = true;
+                } else {
+                    status = AppUtil.getFoodStatus(Constants.FOOD_STATUS_NO);
+                    available = false;
+                }
+                var newData = {
+                     name : name,
+                     category : category,
+                     desc : desc,
+                     price : price,
+                     status : status,
+                     available : available,
+                };
             	if(editrow >= 0){
-                	var name = $("#name").val();
-                	var category = $("#category").val();
-                	var desc = $("#desc").val();
-                	var price = $('#price').jqxNumberInput('decimal');
-                	var status = -1;
-                	var available = true;
-                	if($("#status").jqxCheckBox('checked') == true){
-                		status = AppUtil.getFoodStatus(Constants.FOOD_STATUS_OK);
-                		available = true;
-                	} else {
-                		status = AppUtil.getFoodStatus(Constants.FOOD_STATUS_NO);
-                		available = false;
-                	}
                 	var rowID = $('#jqxgrid').jqxGrid('getrowid', editrow);
                     var rowData = $('#jqxgrid').jqxGrid('getrowdata', rowID);
-                    var newData = {
-                    	name : name,
-                    	category : category,
-                    	desc : desc,
-                    	price : price,
-                    	status : status,
-                    	available : available,
-                    	id : rowData.id,
-                    	imgpath : rowData.imgpath,
-                    };
+                    newData.id = rowData.id;
+                    newData.imgpath = rowData.imgpath;
                     if(rowData.fileId != null){
                     	newData.fileId = rowData.fileId;
                     }
                 	$('#jqxgrid').jqxGrid('updaterow', rowID, newData);
+            	} else {
+           		    newData.fileId = newaddimgid;
+           		    $('#jqxgrid').jqxGrid('addrow', null, newData);
             	}
             });
             
@@ -257,12 +311,21 @@
             
             $("#addbtn").bind('click', function () {
             	editrow = -1;
+            	newaddimgid = null;
             	$("#name").val("");
             	$("#desc").val("");
             	$("#category").jqxComboBox('selectIndex', 0);
             	$("#price").jqxNumberInput({ decimal: 0 });
                 $("#status").jqxCheckBox({ checked : true });
+                Uploader.init("picture", null, function(picid){
+                	newaddimgid = picid;
+                });
                 $("#popupWindow").jqxWindow('open');
+            });
+            
+            $("#delbtn").bind('click', function () {
+               	var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
+                $('#jqxgrid').jqxGrid('deleterow', selectedrowindex);
             });
             
             $("#updatemenubtn").bind('click', function () {

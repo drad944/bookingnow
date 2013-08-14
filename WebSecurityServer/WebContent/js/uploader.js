@@ -44,10 +44,10 @@ var Uploader = {
 		
 		var img = document.createElement("img");
 		img.id = "image";
-		if(imgsrc != ""){
-			img.src = imgsrc;
+		if(imgsrc && imgsrc != ""){
+			img.src = imgsrc + "?r=" + new Date().getTime();
 		} else {
-			img.src = "../../css/no_image.jpg";
+			img.src = "../../css/no_image.jpg?r=" + new Date().getTime();
 		}
 		AppUtil.setStyle(img,{width:"640px", height:"360px"});
 		previewDiv.appendChild(img);
@@ -107,7 +107,6 @@ var Uploader = {
 	        },
 	        //选择上传文件后调用
 	        'onSelect' : function(file) {
-	        	$('#picker').uploadify('clearQueue');
 	        },
 	        //返回一个错误，选择文件的时候触发
 	        'onSelectError':function(file, errorCode, errorMsg){
@@ -139,7 +138,7 @@ var Uploader = {
 	        	//data is string here,need to parse to json object.
 	        	 var jsonData = eval('(' + data + ')');
 	             if(jsonData != null && jsonData.fileId && jsonData.fileId != "null") {
-	            	$("#image").attr("src", "../../images/temp/" + jsonData.fileId);
+	            	$("#image").attr("src", "../../images/temp/" + jsonData.fileId + "?r=" + new Date().getTime());
 	            	me.fileId = jsonData.fileId;
 	            	if(callback){
 	            	   callback(me.fileId);

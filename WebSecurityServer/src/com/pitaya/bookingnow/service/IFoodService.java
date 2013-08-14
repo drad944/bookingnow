@@ -13,6 +13,8 @@ public interface IFoodService {
 	
 	MyResult removeFoodById(Long id);
 	
+	MyResult disableFood(Food food);
+	
 	MyResult remove(Food food);
 
 	MyResult modify(Food food);

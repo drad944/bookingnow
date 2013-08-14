@@ -98,10 +98,11 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   
-    <select id="selectAllFoods" resultMap="BaseResultMap" >
+  <select id="selectAllFoods" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
     from pitaya_food
+    where enabled = true
   </select>
   
   <select id="selectAllFullFoods" resultMap="BaseResultMap" >
