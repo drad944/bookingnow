@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +24,7 @@ public class MessageService {
 	private Map<String, List<Handler>> handlers;
 	
 	private MessageService(String ip, int port){
-		this.handlers = new HashMap<String, List<Handler>>();
+		this.handlers = new ConcurrentHashMap<String, List<Handler>>();
 		this.start(ip, port);
 	}
 	
@@ -51,17 +52,21 @@ public class MessageService {
 			handlerList = new ArrayList<Handler>();
 			this.handlers.put(key, handlerList);
 		}
+		for(Handler h : handlerList){
+			if(h == handler){
+				return;
+			}
+		}
 		handlerList.add(handler);
 		Log.i(TAG, "Register message handler with key: " + key);
 	}
 	
-	public void unregisterHandler(String key, Handler handler){
-		List<Handler> handlerList = this.handlers.get(key);
-		if(handlerList != null){
-			for(int i=0; i < handlerList.size(); i++){
-				if(handlerList.get(i) == handler){
-					handlerList.remove(i);
-					Log.i(TAG, "Register message handler with key: " + key);
+	public void unregisterHandler(Handler handler){
+		for(Entry<String, List<Handler>> entry : this.handlers.entrySet()){
+			List<Handler> handlers = entry.getValue(); 
+			for(int i = 0; i < handlers.size(); i++){
+				if(handlers.get(i) == handler){
+					handlers.remove(i);
 					break;
 				}
 			}

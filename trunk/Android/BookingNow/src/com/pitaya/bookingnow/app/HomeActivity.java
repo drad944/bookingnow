@@ -161,8 +161,7 @@ public class HomeActivity extends FragmentActivity {
 	public void onDestroy() {
 		super.onDestroy();
 		Log.i(TAG, "onDestroy");
-		this.getMessageService().unregisterHandler(Constants.RESULT_MESSAGE, mMessageHandler);
-		this.getMessageService().unregisterHandler(Constants.FOOD_MESSAGE, mMessageHandler);
+		this.getMessageService().unregisterHandler(mMessageHandler);
     }
 	
 	private synchronized void refreshMenuByRole(){
@@ -226,6 +225,9 @@ public class HomeActivity extends FragmentActivity {
 			menuitem.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view) {
+	           	 	if(!HomeActivity.this.getMessageService().sendMessage(new RegisterMessage(UserManager.getUserId(), "unregister"))){
+	           	 		Log.e(TAG, "Fail to send unregister message");
+	           	 	}
 					UserManager.setUserRole(null);
 					SharedPreferences settings = getSharedPreferences(UserManager.SETTING_INFOS, 0);
 					settings.edit().remove(UserManager.NAME).remove(UserManager.PASSWORD).commit();
@@ -351,6 +353,9 @@ public class HomeActivity extends FragmentActivity {
 		if(message.getResult() == Constants.SUCCESS){
 			this.doAutoLogin();
 			this.checkMenuUpdate();
+		} else {
+			UserManager.setUserRole(null);
+			this.refreshMenuByRole();
 		}
 	}
 	
@@ -378,7 +383,7 @@ public class HomeActivity extends FragmentActivity {
 				ToastUtil.showToast(this, "登录成功", Toast.LENGTH_SHORT);
 				this.refreshMenuByRole();
 				this.homecontent.selectItem("menu");
-           	 	if(!this.getMessageService().sendMessage(new RegisterMessage(id))){
+           	 	if(!this.getMessageService().sendMessage(new RegisterMessage(id, "register"))){
            	 		Log.e(TAG, "Fail to send register message");
            	 	}
 			}

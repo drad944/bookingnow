@@ -80,24 +80,6 @@ public class WaiterOrderLeftView extends OrderLeftView{
 		View view = inflater.inflate(R.layout.orderleftview4waiter, null);
 		mOrdersViewPager = (OrderListsViewPager)view.findViewById(R.id.waitororderviewpager);
 		mOrdersViewPager.setParentFragment(this);
-		mOrdersViewPager.setOnPageChangeListener(new OnPageChangeListener(){
-
-			@Override
-			public void onPageScrollStateChanged(int arg0) {
-				
-			}
-
-			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {
-				
-			}
-
-			@Override
-			public void onPageSelected(int index) {
-				//Clean the selected item in the last page
-			}
-			
-		});
 		ArrayList<Integer> listTypes = new ArrayList<Integer>();
 		listTypes.add(MYORDERS);
 		listTypes.add(WAITING_ORDERS);
@@ -118,7 +100,7 @@ public class WaiterOrderLeftView extends OrderLeftView{
 	@Override
 	public void onDestroyView(){
 		super.onDestroyView();
-		getMessageService().unregisterHandler(Constants.ORDER_MESSAGE, mMessageHandler);
+		getMessageService().unregisterHandler(mMessageHandler);
 	}
 	
 	public void moveOrderToMineList(Order order){

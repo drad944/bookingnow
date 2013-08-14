@@ -1,6 +1,8 @@
 package com.pitaya.bookingnow.app.views;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +39,7 @@ public class CookingItemsListView extends RelativeLayout{
 	protected View mHeaderView;
 	protected ListView mListView;
 	protected View mBottomView;
-	protected ArrayList<CookingItem> mCookingItemsList;
+	protected List<CookingItem> mCookingItemsList;
 	protected CookingItemsAdapter mAdapter;
 	
 	private Long mBeginId;
@@ -52,7 +54,7 @@ public class CookingItemsListView extends RelativeLayout{
 	
 	public CookingItemsListView(Context context){
         super(context);
-        mCookingItemsList = new ArrayList<CookingItem>();
+        mCookingItemsList = Collections.synchronizedList(new ArrayList<CookingItem>());
         mStatusList = new ArrayList<Integer>();
         mStatusList.add(Constants.FOOD_CONFIRMED);
         mStatusList.add(Constants.FOOD_COOKING);
@@ -72,6 +74,26 @@ public class CookingItemsListView extends RelativeLayout{
     
     public void refresh(){
     	this.mAdapter.notifyDataSetChanged();
+    }
+    
+    public void updateItems(List<CookingItem> items){
+    	for(CookingItem updateItem : items){
+        	for(CookingItem currentItem : this.mCookingItemsList){
+        		if(currentItem.getId().equals(updateItem.getId())){
+        			currentItem.setQuantity(updateItem.getQuantity());
+        		}
+        	}	
+    	}
+    }
+    
+    public void removeItems(List<CookingItem> items){
+    	for(CookingItem removeItem : items){
+    		for(int i =this.mCookingItemsList.size() - 1; i >=0; i--){
+    			if(removeItem.getId().equals(this.mCookingItemsList.get(i))){
+    				this.mCookingItemsList.remove(i);
+    			}
+    		}
+    	}
     }
     
     public void setupViews(){
@@ -204,7 +226,7 @@ public class CookingItemsListView extends RelativeLayout{
     
     private void onGetCookingItems(){
     	if(mAdapter == null){
-    		mAdapter = new CookingItemsAdapter(this.mListView);
+    		mAdapter = new CookingItemsAdapter(this.mListView, this);
     		mAdapter.setCookingItems(mCookingItemsList);
     		this.mListView.setAdapter(mAdapter);
     	} else {
