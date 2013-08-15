@@ -19,7 +19,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_food_material_detail
-		where id = #{id,jdbcType=BIGINT}
+		where id = #{id,jdbcType=BIGINT} and enabled = true
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		update pitaya_food_material_detail

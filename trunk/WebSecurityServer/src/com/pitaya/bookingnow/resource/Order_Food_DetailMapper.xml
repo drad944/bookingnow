@@ -274,7 +274,7 @@
 		<include refid="Food_Without_Image_Column_List" />
 		from pitaya_order_food_detail FD
 			left outer join pitaya_food F on FD.food_id = F.id
-		where F.id = #{id,jdbcType=BIGINT}
+		where F.id = #{id,jdbcType=BIGINT} and F.enabled = true
 	</select>
 	
 	<select id="selectFullByPrimaryKey" resultMap="Food_Detail_BaseResultMap" parameterType="java.lang.Long">
@@ -284,7 +284,7 @@
 		<include refid="Food_Without_Image_Column_List" />
 		from pitaya_order_food_detail FD
 			left outer join pitaya_food F on FD.food_id = F.id
-		where FD.id = #{id,jdbcType=BIGINT}
+		where FD.id = #{id,jdbcType=BIGINT} and F.enabled = true
 	</select>
 	
 	<select id="selectFullByPrimaryKeyAndOrderId" resultMap="Food_Detail_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
@@ -295,8 +295,9 @@
 		from pitaya_order_food_detail FD
 			left outer join pitaya_food F on FD.food_id = F.id
 		<where>
+		 	F.enabled = true
 		    <if test="food_detail_id != null">
-		        FD.id = #{food_detail_id,jdbcType=BIGINT}
+		        and FD.id = #{food_detail_id,jdbcType=BIGINT}
 		    </if>
 		    <if test="order_id != null">
 		        and FD.order_id = #{order_id,jdbcType=BIGINT}
@@ -319,7 +320,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_order_food_detail
-		where food_id = #{id,jdbcType=BIGINT}
+		where food_id = #{id,jdbcType=BIGINT} and enabled = true
 	</select>
 	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
@@ -327,7 +328,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_order_food_detail
-		where id = #{id,jdbcType=BIGINT}
+		where id = #{id,jdbcType=BIGINT} and enabled = true
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		update pitaya_order_food_detail

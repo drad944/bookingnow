@@ -88,14 +88,14 @@
     select 
     <include refid="Base_Column_List" />
     from pitaya_food
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT} and enabled = true
   </select>
   
   <select id="selectFullByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Max_Base_Column_List" />
     from pitaya_food
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT} and enabled = true
   </select>
   
   <select id="selectAllFoods" resultMap="BaseResultMap" >
@@ -123,13 +123,13 @@
     select id,status,image_version,small_image_size,small_image_relative_path,enabled
     
     from pitaya_food
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT} and enabled = true
   </select>
   
   <select id="selectLargeImageByFoodId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select id,status,image_version,large_image_size,large_image_relative_path,enabled
     from pitaya_food
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT} and enabled = true
   </select>
   
   <select id="selectFoods" resultMap="BaseResultMap" parameterType="Food" >
@@ -219,7 +219,6 @@
     select 
     <include refid="NoPicture_Base_Column_List" />
     from pitaya_food
-    
     <where>
       		<if test="recommendation != null">
 				recommendation = #{recommendation,jdbcType=INTEGER}

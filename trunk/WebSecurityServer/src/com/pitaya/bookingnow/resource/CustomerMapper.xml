@@ -39,7 +39,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_customer
-		where id = #{id,jdbcType=BIGINT}
+		where id = #{id,jdbcType=BIGINT} and enabled = true
 	</select>
 	
 	<select id="login" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Customer">
@@ -47,6 +47,7 @@
 		<include refid="Base_Column_List" />
 		from pitaya_customer
 		<where>
+			enabled = true
 			<if test="name != null">
 				and name = #{name,jdbcType=VARCHAR}
 			</if>
@@ -66,6 +67,9 @@
 		<where>
 		   <if test="enabled != null">
 				enabled = #{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+				enabled = true
 			</if>
 			<if test="modifyTime != null">
 				and modifyTime = #{modifyTime,jdbcType=BIGINT}
@@ -111,6 +115,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_customer
+		where enabled = true
 	</select>
 	
 	<select id="searchCustomers" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Customer">
@@ -120,6 +125,9 @@
 		<where>
 		   <if test="enabled != null">
 				enabled = #{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+				enabled = true
 			</if>
 			<if test="modifyTime != null">
 				and modifyTime = #{modifyTime,jdbcType=BIGINT}
