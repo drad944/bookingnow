@@ -109,12 +109,14 @@
     select 
     <include refid="Max_Base_Column_List" />
     from pitaya_food
+    where enabled = true
   </select>
   
   <select id="selectAllFoodsWithoutImage" resultMap="BaseResultMap" >
     select 
     <include refid="NoPicture_Base_Column_List" />
     from pitaya_food
+    where enabled = true
   </select>
   
   <select id="selectSmallImageByFoodId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -165,6 +167,9 @@
 			<if test="enabled != null">
 				and enabled = #{enabled,jdbcType=BIT}
 			</if>
+			<if test="enabled == null">
+				and enabled = true
+			</if>
     </where>
     </select>
   
@@ -203,6 +208,9 @@
 			<if test="enabled != null">
 				and enabled = #{enabled,jdbcType=BIT}
 			</if>
+			<if test="enabled == null">
+				and enabled = true
+			</if>
     	
     </where>
     </select>
@@ -240,12 +248,16 @@
     		<if test="enabled != null">
 				and enabled = #{enabled,jdbcType=BIT}
 			</if>
+			<if test="enabled == null">
+				and enabled = true
+			</if>
     </where>
     </select>
     
     
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from pitaya_food
+		update pitaya_food
+		set enabled = true
 		where id = #{id,jdbcType=BIGINT}
 	</delete>
 	

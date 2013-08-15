@@ -30,7 +30,8 @@
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from pitaya_order_table_detail
+		update pitaya_order_table_detail
+		set enabled = false
 		where id = #{id,jdbcType=BIGINT}
 	</delete>
 	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Order_Table_Detail">

@@ -63,8 +63,8 @@ public class TestTableService {
 	 public void testRemove() {
 		 //table have not id
 		 Table newTable = new Table();
-		 newTable.setAddress("P1");
-		 newTable.setIndoorPrice(55.0);
+		 newTable.setAddress("A8");
+		 newTable.setIndoorPrice(80.0);
 		 Table realTable = tableService.searchTables(newTable).get(0);
 		 
 		 showTable(realTable);

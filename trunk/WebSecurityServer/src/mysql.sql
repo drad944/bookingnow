@@ -27,6 +27,7 @@ drop table pitaya_table;
 
 create table pitaya_table(
 	id bigint not null auto_increment primary key,
+	enabled boolean,
 	status integer,
 	minCustomerCount integer,
 	maxCustomerCount integer,
@@ -34,16 +35,16 @@ create table pitaya_table(
 	indoorPrice double
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_table values (1,2,1,2,'in the first floor',60);	
-insert into pitaya_table values (2,2,1,2,'in the second floor',50);
-insert into pitaya_table values (3,2,2,5,'in the first floor',0);
-insert into pitaya_table values (4,3,2,5,'in the second floor',50);
-insert into pitaya_table values (5,3,4,7,'in the first floor',0);
-insert into pitaya_table values (6,3,4,7,'in the second floor',60);
-insert into pitaya_table values (7,4,6,9,'in the first floor',0);
-insert into pitaya_table values (8,4,6,9,'in the second floor',80);
-insert into pitaya_table values (9,4,8,11,'in the second floor',0);
-insert into pitaya_table values (10,2,8,11,'in the first floor',0);
+insert into pitaya_table values (1,1,2,1,2,'A1',60);	
+insert into pitaya_table values (2,1,2,1,2,'A2',50);
+insert into pitaya_table values (3,1,2,2,5,'B3',0);
+insert into pitaya_table values (4,1,3,2,5,'A4',50);
+insert into pitaya_table values (5,1,3,4,7,'B5',0);
+insert into pitaya_table values (6,1,3,4,7,'A6',60);
+insert into pitaya_table values (7,1,4,6,9,'B7',0);
+insert into pitaya_table values (8,1,4,6,9,'A8',80);
+insert into pitaya_table values (9,1,4,8,11,'A9',0);
+insert into pitaya_table values (10,1,2,8,11,'B10',0);
 
 
 create table pitaya_order(
@@ -240,16 +241,17 @@ insert into pitaya_user values (20,true,1375286400000,0,'images/user/10_u_134563
 
 create table pitaya_material(
 	id bigint not null auto_increment primary key,
+	enabled boolean,
 	name varchar(50),
 	description varchar(100),
 	category integer
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_material values (1,'Garlic','big garlic,haha',901);
-insert into pitaya_material values (2,'Onions','big garlic,haha',901);
-insert into pitaya_material values (3,'salt','big garlic,haha',901);
-insert into pitaya_material values (4,'Soy sauce','big garlic,haha',901);
-insert into pitaya_material values (5,'huajiao','big garlic,haha',901);
+insert into pitaya_material values (1,true,'Garlic','big garlic,haha',901);
+insert into pitaya_material values (2,true,'Onions','big garlic,haha',901);
+insert into pitaya_material values (3,true,'salt','big garlic,haha',901);
+insert into pitaya_material values (4,true,'Soy sauce','big garlic,haha',901);
+insert into pitaya_material values (5,true,'huajiao','big garlic,haha',901);
 
 
 create table pitaya_food_material_detail(
@@ -281,6 +283,7 @@ insert into pitaya_food_material_detail values (10,1,10,0,true,10,1);
 
 create table pitaya_role(
 	id bigint not null auto_increment primary key,
+	enabled boolean,
 	type integer,
 	name varchar(50),
 	description varchar(100),
@@ -288,22 +291,23 @@ create table pitaya_role(
 	module integer
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_role values (1,6,'ROLE_WELCOME','welcome',false,1101);	
-insert into pitaya_role values (2,8,'ROLE_WAITER','waiter',false,1101);
-insert into pitaya_role values (3,7,'ROLE_CHEF','chef',false,1101);
-insert into pitaya_role values (4,4,'ROLE_CUSTOMER_VIP2','customer',false,1101);
-insert into pitaya_role values (5,5,'ROLE_WELCOME','welcome',false,1101);
-insert into pitaya_role values (6,6,'ROLE_CHEF','chef',false,1101);
-insert into pitaya_role values (7,7,'ROLE_WAITER','waiter',false,1101);
-insert into pitaya_role values (8,8,'ROLE_CASHIER','cashier',false,1101);
-insert into pitaya_role values (9,9,'ROLE_MANAGER','manager',false,1101);
-insert into pitaya_role values (10,10,'ROLE_ADMIN','administrator',1,1101);
+insert into pitaya_role values (1,true,6,'ROLE_WELCOME','welcome',false,1101);	
+insert into pitaya_role values (2,true,8,'ROLE_WAITER','waiter',false,1101);
+insert into pitaya_role values (3,true,7,'ROLE_CHEF','chef',false,1101);
+insert into pitaya_role values (4,true,4,'ROLE_CUSTOMER_VIP2','customer',false,1101);
+insert into pitaya_role values (5,true,5,'ROLE_WELCOME','welcome',false,1101);
+insert into pitaya_role values (6,true,6,'ROLE_CHEF','chef',false,1101);
+insert into pitaya_role values (7,true,7,'ROLE_WAITER','waiter',false,1101);
+insert into pitaya_role values (8,true,8,'ROLE_CASHIER','cashier',false,1101);
+insert into pitaya_role values (9,true,9,'ROLE_MANAGER','manager',false,1101);
+insert into pitaya_role values (10,true,10,'ROLE_ADMIN','administrator',1,1101);
 
 
 
 
 create table pitaya_authority(
 	id bigint not null auto_increment primary key,
+	enabled boolean,
 	type integer,
 	name varchar(50),
 	description varchar(100),
@@ -311,20 +315,21 @@ create table pitaya_authority(
 	module integer
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_authority values (1,2,'AUTHORITY_ANONYMOUS','authority Anonymous',false,1101);	
-insert into pitaya_authority values (2,2,'AUTHORITY_CUSTOMER','authority customer',false,1101);
-insert into pitaya_authority values (3,3,'AUTHORITY_CUSTOMER_VIP1','authority customer',false,1101);
-insert into pitaya_authority values (4,4,'AUTHORITY_CUSTOMER_VIP2','authority customer',false,1101);
-insert into pitaya_authority values (5,5,'AUTHORITY_WELCOME','authority welcome',false,1101);
-insert into pitaya_authority values (6,6,'AUTHORITY_CHEF','authority chef',false,1101);
-insert into pitaya_authority values (7,7,'AUTHORITY_WAITER','authority waiter',false,1101);
-insert into pitaya_authority values (8,8,'AUTHORITY_CASHIER','authority cashier',false,1101);
-insert into pitaya_authority values (9,9,'AUTHORITY_MANAGER','authority manager',false,1101);
-insert into pitaya_authority values (10,10,'AUTHORITY_ADMIN','authority administrator',1,1101);
+insert into pitaya_authority values (1,true,2,'AUTHORITY_ANONYMOUS','authority Anonymous',false,1101);	
+insert into pitaya_authority values (2,true,2,'AUTHORITY_CUSTOMER','authority customer',false,1101);
+insert into pitaya_authority values (3,true,3,'AUTHORITY_CUSTOMER_VIP1','authority customer',false,1101);
+insert into pitaya_authority values (4,true,4,'AUTHORITY_CUSTOMER_VIP2','authority customer',false,1101);
+insert into pitaya_authority values (5,true,5,'AUTHORITY_WELCOME','authority welcome',false,1101);
+insert into pitaya_authority values (6,true,6,'AUTHORITY_CHEF','authority chef',false,1101);
+insert into pitaya_authority values (7,true,7,'AUTHORITY_WAITER','authority waiter',false,1101);
+insert into pitaya_authority values (8,true,8,'AUTHORITY_CASHIER','authority cashier',false,1101);
+insert into pitaya_authority values (9,true,9,'AUTHORITY_MANAGER','authority manager',false,1101);
+insert into pitaya_authority values (10,true,10,'AUTHORITY_ADMIN','authority administrator',1,1101);
 
 
 create table pitaya_resource(
 	id bigint not null auto_increment primary key,
+	enabled boolean,
 	name varchar(50),
 	type integer,
 	priority integer,
@@ -334,16 +339,16 @@ create table pitaya_resource(
 	module integer
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 	
-insert into pitaya_resource values (1,'order resource',4,1,'/Page/Common/error.jsp','error pages',true,1101);
-insert into pitaya_resource values (2,'login resource',4,1,'/Page/Common/login.jsp','order pages',true,1101);
-insert into pitaya_resource values (3,'register user resource',4,1,'/Page/Common/registerUser.jsp','order pages',true,1101);
-insert into pitaya_resource values (4,'session time out resource',4,1,'/Page/Common/sessionTimeout.jsp','order pages',true,1101);
-insert into pitaya_resource values (5,'success resource',4,1,'/Page/Common/success.jsp','order pages',true,1101);
-insert into pitaya_resource values (6,'delete resource',4,1,'/Page/Common/deleteUser.jsp','order pages',true,1101);
-insert into pitaya_resource values (7,'food resource',4,1,'/Page/Common/food.jsp','order pages',true,1101);
-insert into pitaya_resource values (8,'menu resource',4,1,'/Page/Common/menu.jsp','order pages',true,1101);
-insert into pitaya_resource values (9,'table resource',4,1,'/Page/Common/table.jsp','order pages',true,1101);
-insert into pitaya_resource values (10,'update user resource',4,1,'/Page/Common/updateUser.jsp','order pages',true,1101);
+insert into pitaya_resource values (1,true,'order resource',4,1,'/Page/Common/error.jsp','error pages',true,1101);
+insert into pitaya_resource values (2,true,'login resource',4,1,'/Page/Common/login.jsp','order pages',true,1101);
+insert into pitaya_resource values (3,true,'register user resource',4,1,'/Page/Common/registerUser.jsp','order pages',true,1101);
+insert into pitaya_resource values (4,true,'session time out resource',4,1,'/Page/Common/sessionTimeout.jsp','order pages',true,1101);
+insert into pitaya_resource values (5,true,'success resource',4,1,'/Page/Common/success.jsp','order pages',true,1101);
+insert into pitaya_resource values (6,true,'delete resource',4,1,'/Page/Common/deleteUser.jsp','order pages',true,1101);
+insert into pitaya_resource values (7,true,'food resource',4,1,'/Page/Common/food.jsp','order pages',true,1101);
+insert into pitaya_resource values (8,true,'menu resource',4,1,'/Page/Common/menu.jsp','order pages',true,1101);
+insert into pitaya_resource values (9,true,'table resource',4,1,'/Page/Common/table.jsp','order pages',true,1101);
+insert into pitaya_resource values (10,true,'update user resource',4,1,'/Page/Common/updateUser.jsp','order pages',true,1101);
 
 
 

@@ -3,6 +3,7 @@
 <mapper namespace="com.pitaya.bookingnow.dao.TableMapper">
 	<resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.Table">
 		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="enabled" property="enabled" jdbcType="BIT" />
 		<result column="status" property="status" jdbcType="INTEGER" />
 		<result column="minCustomerCount" property="minCustomerCount" jdbcType="INTEGER" />
 		<result column="maxCustomerCount" property="maxCustomerCount" jdbcType="INTEGER" />
@@ -10,7 +11,7 @@
 		<result column="indoorPrice" property="indoorPrice" jdbcType="DOUBLE" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, status, minCustomerCount, maxCustomerCount, address,indoorPrice
+		id, status, minCustomerCount, maxCustomerCount, address,indoorPrice,enabled
 	</sql>
 	
 	
@@ -20,9 +21,10 @@
 		<include refid="Base_Column_List" />
 		from pitaya_table
 		<where>
+			enabled = true
 			<if test="customer_count != null">
 				<![CDATA[
-				minCustomerCount <= #{customer_count,jdbcType=INTEGER} and maxCustomerCount >= #{customer_count,jdbcType=INTEGER}
+				and minCustomerCount <= #{customer_count,jdbcType=INTEGER} and maxCustomerCount >= #{customer_count,jdbcType=INTEGER}
 				]]>
 			</if>
 			<if test="status != null">
@@ -38,6 +40,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_table
+		where enabled = true
 	</select>
 	
 	<select id="searchTables" resultMap="BaseResultMap"
@@ -46,8 +49,9 @@
 		<include refid="Base_Column_List" />
 		from pitaya_table
 		<where>
+			enabled = true
 			<if test="status != null">
-				status = #{status,jdbcType=INTEGER}
+				and status = #{status,jdbcType=INTEGER}
 			</if>
 			<if test="minCustomerCount != null">
 				and minCustomerCount = #{minCustomerCount,jdbcType=INTEGER}
@@ -75,7 +79,8 @@
 	
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from pitaya_table
+		update pitaya_table
+		set enabled = false
 		where id = #{id,jdbcType=BIGINT}
 	</delete>
 	

@@ -3,6 +3,8 @@ package com.pitaya.bookingnow.entity;
 public class Table {
     private Long id;
 
+    private Boolean enabled;
+    
     private Integer status;
 
     private Integer minCustomerCount;
@@ -13,7 +15,15 @@ public class Table {
     
     private Double indoorPrice;
 
-    public Integer getMinCustomerCount() {
+    public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public Integer getMinCustomerCount() {
 		return minCustomerCount;
 	}
 

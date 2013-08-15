@@ -161,7 +161,8 @@
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from pitaya_customer
+		update pitaya_customer
+		set enabled = false
 		where id = #{id,jdbcType=BIGINT}
 	</delete>
 	
