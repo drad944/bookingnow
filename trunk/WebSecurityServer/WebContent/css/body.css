@@ -19,7 +19,7 @@
 	height:100px;
 }
 
-.userTextInput
+.registerUserTextInput
 {
     height: 21px;
     width: 150px;
@@ -44,3 +44,27 @@ h3
     display: inline-block;
     margin: 0px;
 }
+
+
+
+.updateUserTextInput
+{
+    height: 21px;
+    width: 150px;
+}
+.updateUserTable
+{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.updateUserTable td, 
+.updateUserTable tr
+{
+    margin: 0px;
+    padding: 2px;
+    border-spacing: 0px;
+    border-collapse: collapse;
+    font-family: Verdana;
+    font-size: 12px;
+}
+
