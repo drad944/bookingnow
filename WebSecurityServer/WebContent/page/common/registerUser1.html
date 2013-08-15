@@ -34,7 +34,8 @@
      
     <script type="text/javascript" src="../../js/jqwidgets/globalization/globalize.js"></script> 
     <script type="text/javascript" src="../../js/jqwidgets/jqxcalendar.js"></script> 
-    <script type="text/javascript" src="../../js/jqwidgets/jqxdatetimeinput.js"></script> 
+    <script type="text/javascript" src="../../js/jqwidgets/jqxdatetimeinput.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxtooltip.js"></script> 
     <script type="text/javascript" src="../../js/jqwidgets/jqxmaskedinput.js"></script>
     <script type="text/javascript" src="../../js/jqwidgets/jqxradiobutton.js"></script> 
     
@@ -53,11 +54,11 @@
             });
             
             $("#userAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
-            $("#userPhoneInput").jqxMaskedInput({ mask: '(###)####-####', width: 150, height: 22, theme: theme });
+            $("#userPhoneInput").jqxMaskedInput({ mask: '(###)###-####', width: 150, height: 22, theme: theme });
             $('.userTextInput').jqxInput({ theme: theme });
             var date = new Date();
-            date.setFullYear(2000, 0, 1);
-            $('#userBirthdayInput').jqxDateTimeInput({ theme: theme, height: 22,formatString: "yyyy/MM/dd", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
+            date.setFullYear(1988, 0, 1);
+            $('#userBirthdayInput').jqxDateTimeInput({ theme: theme, height: 22,formatString: "yyyy/MM/dd", value: date });
             $("#userSexRadioButton1").jqxRadioButton({ width: 150, height: 25, checked: true, theme: theme });
             $("#userSexRadioButton2").jqxRadioButton({ width: 150, height: 25, theme: theme });
             
@@ -209,7 +210,7 @@
 	                    </tr>
 	                    <tr>
 	                        <td>Birth date:</td>
-	                        <td><div id="userBirthdayInput"></div></td>
+	                        <td><div id="userBirthdayInput" ></div></td>
 	                    </tr>
 	                    <tr>
 	                        <td>E-mail:</td>
