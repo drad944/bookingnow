@@ -4,6 +4,7 @@
 	<resultMap id="BaseResultMap"
 		type="com.pitaya.bookingnow.entity.security.Resource">
 		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="enabled" property="enabled" jdbcType="BIT" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="type" property="type" jdbcType="INTEGER" />
 		<result column="priority" property="priority" jdbcType="INTEGER" />
@@ -23,7 +24,8 @@
 		where id = #{id,jdbcType=BIGINT}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from pitaya_resource
+		update pitaya_resource
+		set enabled = false
 		where id = #{id,jdbcType=BIGINT}
 	</delete>
 	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.security.Resource">

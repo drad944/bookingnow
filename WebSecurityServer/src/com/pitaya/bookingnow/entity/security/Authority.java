@@ -2,6 +2,8 @@ package com.pitaya.bookingnow.entity.security;
 
 public class Authority {
     private Long id;
+    
+    private Boolean enabled;
 
     private String name;
 
@@ -13,7 +15,15 @@ public class Authority {
     
     private Integer type;
     
-    public Integer getType() {
+    public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public Integer getType() {
 		return type;
 	}
 

@@ -399,12 +399,13 @@
 			left outer join pitaya_order_food_detail FD on FD.order_id = O.id
 			left outer join pitaya_food F on FD.food_id = F.id
 		<where>
+			O.enabled = true
 			<if test="user_id != null">
-				O.user_id = #{user_id,jdbcType=INTEGER} and
+				and O.user_id = #{user_id,jdbcType=INTEGER}
 			</if>
 			
 			<if test="orderStatusList != null">
-				O.status in 
+				and O.status in 
 				<foreach item="item" index="index" collection="orderStatusList"
 					open="(" separator="," close=")"> 
 					#{item} 
@@ -466,6 +467,9 @@
 			</if>
 			<if test="enabled != null">
 				and O.enabled = #{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+				and O.enabled = true
 			</if>
 			
 			<if test="user != null">
@@ -638,12 +642,13 @@
 			left outer join pitaya_order_food_detail FD on FD.order_id = O.id
 			left outer join pitaya_food F on FD.food_id = F.id
 		<where>
+			O.enabled = true
 			<if test="user_id != null">
-				O.user_id = #{user_id,jdbcType=INTEGER} and
+				and O.user_id = #{user_id,jdbcType=INTEGER}
 			</if>
 			
 			<if test="orderStatusList != null">
-				O.status in 
+				and O.status in 
 				<foreach item="item" index="index" collection="orderStatusList"
 					open="(" separator="," close=")"> 
 					#{item} 
@@ -669,12 +674,13 @@
 			left outer join pitaya_order_table_detail TD on TD.order_id = O.id
 			left outer join pitaya_table T on TD.table_id = T.id
 		<where>
+			O.enabled = true
 			<if test="user_id != null">
-				O.user_id = #{user_id,jdbcType=INTEGER} and
+				and O.user_id = #{user_id,jdbcType=INTEGER} 
 			</if>
 			
 			<if test="orderStatusList != null">
-				O.status in 
+				and O.status in 
 				<foreach item="item" index="index" collection="orderStatusList"
 					open="(" separator="," close=")"> 
 					#{item} 
@@ -737,7 +743,9 @@
 			<if test="enabled != null">
 				and O.enabled = #{enabled,jdbcType=BIT}
 			</if>
-			
+			<if test="enabled == null">
+				and O.enabled = true
+			</if>
 			<if test="user != null">
 				<if test="user.id != null">
 					and U.id = #{user.id,jdbcType=BIGINT}
@@ -881,7 +889,9 @@
 			<if test="enabled != null">
 				and O.enabled = #{enabled,jdbcType=BIT}
 			</if>
-			
+			<if test="enabled == null">
+				and O.enabled = true
+			</if>
 			<if test="user != null">
 				<if test="user.id != null">
 					and U.id = #{user.id,jdbcType=BIGINT}
@@ -1018,6 +1028,9 @@
 			<if test="enabled != null">
 				and enabled = #{enabled,jdbcType=BIT}
 			</if>
+			<if test="enabled == null">
+				and enabled = true
+			</if>
 		</where>
 	</select>
 	
@@ -1031,7 +1044,8 @@
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from pitaya_order
+		update pitaya_order
+		set enabled = false
 		where id = #{id,jdbcType=BIGINT}
 	</delete>
 	

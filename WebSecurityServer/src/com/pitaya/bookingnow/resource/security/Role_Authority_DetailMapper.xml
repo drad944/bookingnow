@@ -19,7 +19,8 @@
 		where id = #{id,jdbcType=BIGINT}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from pitaya_role_authority_detail
+		update pitaya_role_authority_detail
+		set enabled = false
 		where id = #{id,jdbcType=BIGINT}
 	</delete>
 	<insert id="insert"

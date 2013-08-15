@@ -8,8 +8,18 @@ public class Material {
     private String description;
 
     private Integer category;
+    
+    private Boolean enabled;
 
-    public Long getId() {
+    public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public Long getId() {
         return id;
     }
 

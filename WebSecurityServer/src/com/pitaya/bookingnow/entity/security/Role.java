@@ -2,6 +2,8 @@ package com.pitaya.bookingnow.entity.security;
 
 public class Role {
     private Long id;
+    
+    private Boolean enabled;
 
     private Integer type;
     
@@ -13,7 +15,15 @@ public class Role {
 
     private Integer module;
 
-    public Integer getType() {
+    public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public Integer getType() {
 		return type;
 	}
 

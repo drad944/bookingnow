@@ -112,8 +112,9 @@
 		from pitaya_order_food_detail FD 
 			left outer join pitaya_food F on FD.food_id = F.id
 		<where>
+			FD.enabled = true
 		    <if test="food_detailStatusList != null">
-				FD.status in 
+				and FD.status in 
 				<foreach item="item" index="index" collection="food_detailStatusList"
 					open="(" separator="," close=")"> 
 					#{item} 
@@ -131,7 +132,6 @@
 					limit 0,#{rowCount,jdbcType=INTEGER}
 				</if>
 			</if>
-			
 		</where>
 	</select>
 	
@@ -155,6 +155,9 @@
 			</if>
 			<if test="enabled != null">
 				and enabled = #{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+				and enabled = true
 			</if>
 			<if test="isFree != null">
 				and isFree = #{isFree,jdbcType=BIT}
@@ -193,6 +196,9 @@
 			</if>
 			<if test="enabled != null">
 				and FD.enabled = #{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+				and enabled = true
 			</if>
 			<if test="isFree != null">
 				and FD.isFree = #{isFree,jdbcType=BIT}
@@ -324,7 +330,8 @@
 		where id = #{id,jdbcType=BIGINT}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from pitaya_order_food_detail
+		update pitaya_order_food_detail
+		set enabled = false
 		where id = #{id,jdbcType=BIGINT}
 	</delete>
 	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Order_Food_Detail">
