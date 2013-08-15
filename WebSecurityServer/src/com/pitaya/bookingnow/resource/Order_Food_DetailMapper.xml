@@ -243,6 +243,9 @@
 				<if test="food.enabled != null">
 					and F.enabled = #{food.enabled,jdbcType=BIT}
 				</if>
+				<if test="food.enabled == null">
+					and F.enabled = true
+				</if>
 				<if test="food.large_image_relative_path != null">
 					and F.large_image_relative_path = #{food.large_image_relative_path,jdbcType=VARCHAR}
 				</if>
@@ -340,13 +343,26 @@
 			order="AFTER">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
-		insert into pitaya_order_food_detail (status, count, preference,
-		last_modify_time, enabled, isFree, food_id,
-		order_id)
-		values (#{status,jdbcType=INTEGER}, #{count,jdbcType=INTEGER},
+		insert into pitaya_order_food_detail (
+		status, 
+		count, 
+		preference,
+		last_modify_time, 
+		enabled, 
+		isFree, 
+		food_id,
+		order_id
+		)
+		values (
+		#{status,jdbcType=INTEGER}, 
+		#{count,jdbcType=INTEGER},
 		#{preference,jdbcType=INTEGER},
-		#{last_modify_time,jdbcType=BIGINT}, #{enabled,jdbcType=BIT}, #{isFree,jdbcType=BIT}, #{food_id,jdbcType=BIGINT},
-		#{order_id,jdbcType=BIGINT})
+		#{last_modify_time,jdbcType=BIGINT},
+		#{enabled,jdbcType=BIT}, 
+		#{isFree,jdbcType=BIT}, 
+		#{food_id,jdbcType=BIGINT},
+		#{order_id,jdbcType=BIGINT}
+		)
 	</insert>
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Order_Food_Detail">
 		<selectKey resultType="java.lang.Long" keyProperty="id"
@@ -367,9 +383,7 @@
 			<if test="last_modify_time != null">
 				last_modify_time,
 			</if>
-			<if test="enabled != null">
-				enabled,
-			</if>
+			
 			<if test="isFree != null">
 				isFree,
 			</if>
@@ -379,6 +393,7 @@
 			<if test="order_id != null">
 				order_id,
 			</if>
+				enabled
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="status != null">
@@ -393,9 +408,7 @@
 			<if test="last_modify_time != null">
 				#{last_modify_time,jdbcType=BIGINT},
 			</if>
-			<if test="enabled != null">
-				#{enabled,jdbcType=BIT},
-			</if>
+			
 			<if test="isFree != null">
 				#{isFree,jdbcType=BIT},
 			</if>
@@ -404,6 +417,12 @@
 			</if>
 			<if test="order_id != null">
 				#{order_id,jdbcType=BIGINT},
+			</if>
+			<if test="enabled != null">
+				#{enabled,jdbcType=BIT},
+			</if>
+			<if test="enabled == null">
+				true
 			</if>
 		</trim>
 	</insert>
@@ -439,14 +458,15 @@
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Order_Food_Detail">
 		update pitaya_order_food_detail
-		set status = #{status,jdbcType=INTEGER},
-		count = #{count,jdbcType=INTEGER},
-		preference = #{preference,jdbcType=INTEGER},
-		last_modify_time = #{last_modify_time,jdbcType=BIGINT},
-		enabled = #{enabled,jdbcType=BIT},
-		isFree = #{isFree,jdbcType=BIT},
-		food_id = #{food_id,jdbcType=BIGINT},
-		order_id = #{order_id,jdbcType=BIGINT}
+		set 
+			status = #{status,jdbcType=INTEGER},
+			count = #{count,jdbcType=INTEGER},
+			preference = #{preference,jdbcType=INTEGER},
+			last_modify_time = #{last_modify_time,jdbcType=BIGINT},
+			enabled = #{enabled,jdbcType=BIT},
+			isFree = #{isFree,jdbcType=BIT},
+			food_id = #{food_id,jdbcType=BIGINT},
+			order_id = #{order_id,jdbcType=BIGINT}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 </mapper>

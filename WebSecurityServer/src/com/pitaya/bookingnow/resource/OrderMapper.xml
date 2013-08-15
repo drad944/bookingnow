@@ -74,6 +74,7 @@
 			
 			<association property="table" javaType="com.pitaya.bookingnow.entity.Table">
 				<id column="T_id" property="id" jdbcType="BIGINT" />
+				<result column="T_enabled" property="enabled" jdbcType="BIT" />
 				<result column="T_status" property="status" jdbcType="INTEGER" />
 				<result column="T_minCustomerCount" property="minCustomerCount" jdbcType="INTEGER" />
 				<result column="T_maxCustomerCount" property="maxCustomerCount" jdbcType="INTEGER" />
@@ -175,7 +176,8 @@
 	</sql>
 	
 	<sql id="Max_Table_Base_Column_List">
-		T.id as T_id, 
+		T.id as T_id,
+		T.enabled as T_enabled,  
 		T.status as T_status, 
 		T.minCustomerCount as T_minCustomerCount,
 		T.maxCustomerCount as T_maxCustomerCount, 
@@ -372,7 +374,7 @@
 			left outer join pitaya_table T on TD.table_id = T.id
 			left outer join pitaya_order_food_detail FD on FD.order_id = O.id
 			left outer join pitaya_food F on FD.food_id = F.id
-		where O.id = #{id,jdbcType=BIGINT}
+		where O.id = #{id,jdbcType=BIGINT} and O.enabled = true
 	</select>
 	
 	
@@ -526,6 +528,9 @@
 				<if test="user.enabled != null">
 					and U.enabled = #{user.enabled,jdbcType=BIT}
 				</if>
+				<if test="user.enabled == null">
+					and U.enabled = true
+				</if>
 			</if>
 				
 			<if test="customer != null"> 	
@@ -573,6 +578,9 @@
 				<if test="customer.enabled != null">
 					and C.enabled = #{customer.enabled,jdbcType=BIT}
 				</if>
+				<if test="customer.enabled == null">
+					and C.enabled = true
+				</if>
 			</if>	
 				
 		</where>
@@ -589,7 +597,7 @@
 		from pitaya_order O 
 			left outer join pitaya_order_food_detail FD on FD.order_id = O.id
 			left outer join pitaya_food F on FD.food_id = F.id
-		where O.id = #{id,jdbcType=BIGINT}
+		where O.id = #{id,jdbcType=BIGINT} and O.enabled = true
 	</select>
 	
 	 
@@ -616,7 +624,7 @@
 			left outer join pitaya_table T on TD.table_id = T.id
 			left outer join pitaya_order_food_detail FD on FD.order_id = O.id
 			left outer join pitaya_food F on FD.food_id = F.id
-		where O.id = #{id,jdbcType=BIGINT}
+		where O.id = #{id,jdbcType=BIGINT} and O.enabled = true
 	</select>
 	
 	<select id="searchFullOrders" resultMap="Order_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
@@ -798,6 +806,9 @@
 				<if test="user.enabled != null">
 					and U.enabled = #{user.enabled,jdbcType=BIT}
 				</if>
+				<if test="user.enabled == null">
+					and U.enabled = true
+				</if>
 			</if>
 				
 			<if test="customer != null"> 	
@@ -842,6 +853,9 @@
 				</if>
 				<if test="customer.enabled != null">
 					and C.enabled = #{customer.enabled,jdbcType=BIT}
+				</if>
+				<if test="customer.enabled != null">
+					and C.enabled = true
 				</if>
 			</if>	
 				
@@ -944,6 +958,9 @@
 				<if test="user.enabled != null">
 					and U.enabled = #{user.enabled,jdbcType=BIT}
 				</if>
+				<if test="user.enabled != null">
+					and U.enabled = true
+				</if>
 			</if>
 				
 			<if test="customer != null"> 	
@@ -988,6 +1005,9 @@
 				</if>
 				<if test="customer.enabled != null">
 					and C.enabled = #{customer.enabled,jdbcType=BIT}
+				</if>
+				<if test="customer.enabled == null">
+					and C.enabled = true
 				</if>
 			</if>	
 		</where>
@@ -1040,7 +1060,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_order
-		where id = #{id,jdbcType=BIGINT}
+		where id = #{id,jdbcType=BIGINT} and enabled = true
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -1100,9 +1120,7 @@
 			<if test="submit_time != null">
 				submit_time,
 			</if>
-			<if test="enabled != null">
-				enabled,
-			</if>
+				enabled
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="status != null">
@@ -1134,6 +1152,9 @@
 			</if>
 			<if test="enabled != null">
 				#{enabled,jdbcType=BIT},
+			</if>
+			<if test="enabled == null">
+				true
 			</if>
 		</trim>
 	</insert>

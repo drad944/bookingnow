@@ -51,12 +51,8 @@
 			<if test="name != null">
 				and name = #{name,jdbcType=VARCHAR}
 			</if>
-			<if test="account != null">
 				and account = #{account,jdbcType=VARCHAR}
-			</if>
-			<if test="password != null">
 				and password = #{password,jdbcType=VARCHAR}
-			</if>
 		</where>
 	</select>
 	
@@ -201,9 +197,7 @@
 		</selectKey>
 		insert into pitaya_customer
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="enabled != null">
-				enabled,
-			</if>
+				enabled
 			<if test="modifyTime != null">
 				modifyTime,
 			</if>
@@ -244,6 +238,9 @@
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="enabled != null">
 				#{enabled,jdbcType=BIT},
+			</if>
+			<if test="enabled == null">
+				true
 			</if>
 			<if test="modifyTime != null">
 				#{modifyTime,jdbcType=BIGINT},
@@ -332,19 +329,20 @@
 	
 	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Customer">
 		update pitaya_customer
-		set enabled = #{enabled,jdbcType=BIT},
-		modifyTime = #{modifyTime,jdbcType=BIGINT},
-		image_size = #{image_size,jdbcType=INTEGER},
-		image_relative_path = #{image_relative_path,jdbcType=VARCHAR},
-		image_absolute_path = #{image_absolute_path,jdbcType=VARCHAR},
-		name = #{name,jdbcType=VARCHAR},
-		account = #{account,jdbcType=VARCHAR},
-		password = #{password,jdbcType=VARCHAR},
-		phone = #{phone,jdbcType=VARCHAR},
-		sex = #{sex,jdbcType=INTEGER},
-		email = #{email,jdbcType=VARCHAR},
-		address = #{address,jdbcType=VARCHAR},
-		birthday = #{birthday,jdbcType=BIGINT}
+		set 
+			enabled = #{enabled,jdbcType=BIT},
+			modifyTime = #{modifyTime,jdbcType=BIGINT},
+			image_size = #{image_size,jdbcType=INTEGER},
+			image_relative_path = #{image_relative_path,jdbcType=VARCHAR},
+			image_absolute_path = #{image_absolute_path,jdbcType=VARCHAR},
+			name = #{name,jdbcType=VARCHAR},
+			account = #{account,jdbcType=VARCHAR},
+			password = #{password,jdbcType=VARCHAR},
+			phone = #{phone,jdbcType=VARCHAR},
+			sex = #{sex,jdbcType=INTEGER},
+			email = #{email,jdbcType=VARCHAR},
+			address = #{address,jdbcType=VARCHAR},
+			birthday = #{birthday,jdbcType=BIGINT}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 </mapper>

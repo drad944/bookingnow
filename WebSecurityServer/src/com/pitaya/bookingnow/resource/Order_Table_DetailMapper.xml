@@ -18,7 +18,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_order_table_detail
-		where table_id = #{id,jdbcType=BIGINT}
+		where table_id = #{id,jdbcType=BIGINT} and enabled = true
 	</select>
 	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
@@ -26,7 +26,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_order_table_detail
-		where id = #{id,jdbcType=BIGINT}
+		where id = #{id,jdbcType=BIGINT} and enabled = true
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -39,12 +39,18 @@
 			order="AFTER">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
-		insert into pitaya_order_table_detail (realCustomerCount, enabled,
+		insert into pitaya_order_table_detail (
+		realCustomerCount, 
+		enabled,
 		table_id,
-		order_id)
-		values (#{realCustomerCount,jdbcType=INTEGER}, #{enabled,jdbcType=BIT},
+		order_id
+		)
+		values (
+		#{realCustomerCount,jdbcType=INTEGER}, 
+		#{enabled,jdbcType=BIT},
 		#{table_id,jdbcType=BIGINT},
-		#{order_id,jdbcType=BIGINT})
+		#{order_id,jdbcType=BIGINT}
+		)
 	</insert>
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Order_Table_Detail">
 		<selectKey resultType="java.lang.Long" keyProperty="id"
@@ -56,28 +62,30 @@
 			<if test="realCustomerCount != null">
 				realCustomerCount,
 			</if>
-			<if test="enabled != null">
-				enabled,
-			</if>
 			<if test="table_id != null">
 				table_id,
 			</if>
 			<if test="order_id != null">
 				order_id,
 			</if>
+				enabled
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="realCustomerCount != null">
 				#{realCustomerCount,jdbcType=INTEGER},
 			</if>
-			<if test="enabled != null">
-				#{enabled,jdbcType=BIT},
-			</if>
+			
 			<if test="table_id != null">
 				#{table_id,jdbcType=BIGINT},
 			</if>
 			<if test="order_id != null">
 				#{order_id,jdbcType=BIGINT},
+			</if>
+			<if test="enabled != null">
+				#{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+				true
 			</if>
 		</trim>
 	</insert>
@@ -101,10 +109,11 @@
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Order_Table_Detail">
 		update pitaya_order_table_detail
-		set realCustomerCount = #{realCustomerCount,jdbcType=INTEGER},
-		enabled = #{enabled,jdbcType=BIT},
-		table_id = #{table_id,jdbcType=BIGINT},
-		order_id = #{order_id,jdbcType=BIGINT}
+		set
+			realCustomerCount = #{realCustomerCount,jdbcType=INTEGER},
+			enabled = #{enabled,jdbcType=BIT},
+			table_id = #{table_id,jdbcType=BIGINT},
+			order_id = #{order_id,jdbcType=BIGINT}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 </mapper>

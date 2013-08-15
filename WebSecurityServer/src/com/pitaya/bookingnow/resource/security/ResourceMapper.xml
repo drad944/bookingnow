@@ -14,14 +14,14 @@
 		<result column="module" property="module" jdbcType="INTEGER" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, name, type, priority, string, description, issys, module
+		id, name, type, priority, string, description, issys, module,enabled
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Long">
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_resource
-		where id = #{id,jdbcType=BIGINT}
+		where id = #{id,jdbcType=BIGINT} and enabled = true
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		update pitaya_resource
@@ -35,11 +35,11 @@
 		</selectKey>
 		insert into pitaya_resource (name, type, priority,
 		string, description, issys,
-		module)
+		module,enabled)
 		values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
 		#{priority,jdbcType=INTEGER},
 		#{string,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{issys,jdbcType=BIT},
-		#{module,jdbcType=INTEGER})
+		#{module,jdbcType=INTEGER},#{enabled,jdbcType=BIT})
 	</insert>
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.security.Resource">
 		<selectKey resultType="java.lang.Long" keyProperty="id"
@@ -69,6 +69,7 @@
 			<if test="module != null">
 				module,
 			</if>
+			enabled
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="name != null">
@@ -91,6 +92,12 @@
 			</if>
 			<if test="module != null">
 				#{module,jdbcType=INTEGER},
+			</if>
+			<if test="enabled != null">
+				#{enabled,jdbcType=BIT},
+			</if>
+			<if test="enabled == null">
+				true
 			</if>
 		</trim>
 	</insert>
@@ -118,6 +125,9 @@
 			<if test="module != null">
 				module = #{module,jdbcType=INTEGER},
 			</if>
+			<if test="enabled != null">
+				enabled = #{enabled,jdbcType=BIT},
+			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
@@ -129,7 +139,8 @@
 		string = #{string,jdbcType=VARCHAR},
 		description = #{description,jdbcType=VARCHAR},
 		issys = #{issys,jdbcType=BIT},
-		module = #{module,jdbcType=INTEGER}
+		module = #{module,jdbcType=INTEGER},
+		enabled = #{enabled,jdbcType=BIT}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 </mapper>

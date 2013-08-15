@@ -340,9 +340,6 @@
 				description,
 			</if>
 			
-			<if test="enabled != null">
-				enabled,
-			</if>
 			<if test="large_image_size != null">
 				large_image_size,
 			</if>
@@ -361,6 +358,7 @@
 			<if test="small_image_absolute_path != null">
 				small_image_absolute_path,
 			</if>
+				enabled
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="recommendation != null">
@@ -391,9 +389,6 @@
 				#{description,jdbcType=VARCHAR},
 			</if>
 			
-			<if test="enabled != null">
-			    #{enabled,jdbcType=BIT},
-			</if>
 			<if test="large_image_size != null">
 			    #{large_image_size,jdbcType=INTEGER},
 			</if>
@@ -411,6 +406,12 @@
 			</if>
 			<if test="small_image_absolute_path != null">
 			    #{small_image_absolute_path,jdbcType=VARCHAR},
+			</if>
+			<if test="enabled != null">
+			    #{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+			    true
 			</if>
 		</trim>
 	</insert>
