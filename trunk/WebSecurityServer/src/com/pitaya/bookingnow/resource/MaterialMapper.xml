@@ -28,10 +28,17 @@
 			order="AFTER">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
-		insert into pitaya_material (name, description, category
+		insert into pitaya_material (
+		name, 
+		description, 
+		category,
+		enabled
 		)
-		values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
-		#{category,jdbcType=INTEGER}
+		values (
+		#{name,jdbcType=VARCHAR}, 
+		#{description,jdbcType=VARCHAR},
+		#{category,jdbcType=INTEGER},
+		#{enabled,jdbcType=BIT}
 		)
 	</insert>
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Material">
@@ -50,6 +57,7 @@
 			<if test="category != null">
 				category,
 			</if>
+			enabled
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="name != null">
@@ -60,6 +68,12 @@
 			</if>
 			<if test="category != null">
 				#{category,jdbcType=INTEGER},
+			</if>
+			<if test="enabled != null">
+				#{enabled,jdbcType=BIT},
+			</if>
+			<if test="enabled == null">
+				true
 			</if>
 		</trim>
 	</insert>
@@ -75,14 +89,19 @@
 			<if test="category != null">
 				category = #{category,jdbcType=INTEGER},
 			</if>
+			<if test="enabled != null">
+				enabled = #{enabled,jdbcType=BIT},
+			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Material">
 		update pitaya_material
-		set name = #{name,jdbcType=VARCHAR},
-		description = #{description,jdbcType=VARCHAR},
-		category = #{category,jdbcType=INTEGER}
+		set 
+			name = #{name,jdbcType=VARCHAR},
+			description = #{description,jdbcType=VARCHAR},
+			category = #{category,jdbcType=INTEGER},
+			enabled = #{enabled,jdbcType=BIT}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 </mapper>

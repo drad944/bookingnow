@@ -74,7 +74,7 @@
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_table
-		where id = #{id,jdbcType=BIGINT}
+		where id = #{id,jdbcType=BIGINT} and enabled = true
 	</select>
 	
 	
@@ -89,11 +89,15 @@
 			order="AFTER">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
-		insert into pitaya_table (status, minCustomerCount, maxCustomerCount,
-		address,indoorPrice)
-		values (#{status,jdbcType=INTEGER}, #{minCustomerCount,jdbcType=INTEGER},
+		insert into pitaya_table (
+		status, minCustomerCount, maxCustomerCount,
+		address,indoorPrice,enabled
+		)
+		values (
+		#{status,jdbcType=INTEGER}, #{minCustomerCount,jdbcType=INTEGER},
 		#{maxCustomerCount,jdbcType=INTEGER},
-		#{address,jdbcType=VARCHAR}),#{indoorPrice,jdbcType=DOUBLE})
+		#{address,jdbcType=VARCHAR},#{indoorPrice,jdbcType=DOUBLE},#{enabled,jdbcType=BIT}
+		)
 	</insert>
 	
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Table">
@@ -118,6 +122,7 @@
 			<if test="indoorPrice != null">
 				indoorPrice,
 			</if>
+				enabled
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="status != null">
@@ -134,6 +139,12 @@
 			</if>
 			<if test="indoorPrice != null">
 				#{indoorPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="enabled != null">
+				#{enabled,jdbcType=BIT},
+			</if>
+			<if test="enabled == null">
+				true
 			</if>
 		</trim>
 	</insert>
@@ -156,6 +167,9 @@
 			<if test="indoorPrice != null">
 				indoorPrice = #{indoorPrice,jdbcType=DOUBLE},
 			</if>
+			<if test="enabled != null">
+				enabled = #{enabled,jdbcType=BIT},
+			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
@@ -166,7 +180,8 @@
 		minCustomerCount = #{minCustomerCount,jdbcType=INTEGER},
 		maxCustomerCount = #{maxCustomerCount,jdbcType=INTEGER},
 		address = #{address,jdbcType=VARCHAR},
-		indoorPrice = #{indoorPrice,jdbcType=DOUBLE}
+		indoorPrice = #{indoorPrice,jdbcType=DOUBLE},
+		enabled = #{enabled,jdbcType=BIT}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 </mapper>
