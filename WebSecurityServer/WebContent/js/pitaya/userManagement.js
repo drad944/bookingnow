@@ -1,9 +1,8 @@
 /**
  * 
  */
-
-function initUpdateUserWindow(rowData) {
-    var theme = getDemoTheme()
+function initUpdateUserElements(rowData) {
+	var theme = getDemoTheme();
     $("#updateUserDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
     $('#updateUserUpdateButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#updateUserResetButton').jqxButton({ width: 60, height: 25, theme: theme });
@@ -104,7 +103,10 @@ function initUpdateUserWindow(rowData) {
             theme: theme
     });
     
-    $('#updateUserUpdateButton').on('click', function () {
+}
+
+function addUpdateUserEventListeners() {
+	$('#updateUserUpdateButton').on('click', function () {
         $('#updateUserInfoForm').jqxValidator('validate');
     });
     
@@ -141,6 +143,25 @@ function initUpdateUserWindow(rowData) {
     });
 }
 
+function initUpdateUserWindow(rowData,position) {
+	$("#updateUserPopupWindow").removeAttr("style");
+	
+	var theme = getDemoTheme();
+	initUpdateUserElements(rowData);
+	addUpdateUserEventListeners();
+	
+	
+	// initialize the popup window and buttons.
+    $("#updateUserPopupWindow").jqxWindow({
+    	position:position, width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
+    	initContent: function () {
+            $('#updateUserPopupWindow').jqxWindow('focus');
+        }
+    });
+    
+    $("#updateUserPopupWindow").jqxWindow('open');
+}
+
 function updateUser() {
 	var d1 = {};
 	if ($('#updateUserBirthdayInput').jqxDateTimeInput('value') != null) {
@@ -170,9 +191,8 @@ function updateUser() {
 		}
 	});
 }
-
-function initRegisterUserWindow() {
-    var theme = getDemoTheme()
+function initRegisterUserElements() {
+	var theme = getDemoTheme();
     $("#registerUserDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
     $('#registerUserRegisterButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#registerUserResetButton').jqxButton({ width: 60, height: 25, theme: theme });
@@ -189,6 +209,27 @@ function initRegisterUserWindow() {
     $('#registerUserBirthdayInput').jqxDateTimeInput({ theme: theme, height: 22,formatString: "yyyy/MM/dd", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
     $("#registerUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
     $("#registerUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
+    
+    var userDepartmentData = [
+                              //  { value: 1, label: "USER_DEPARTMENT" },
+                                { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
+                                { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
+                                { value: 4, label: "USER_DEPARTMENT_FINANCE" },
+                                { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
+                                { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
+                                { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
+                            ];
+                        
+	// Create a jqxComboBox
+	$("#registerUserDepartmentCombobox").jqxComboBox({ 
+		selectedIndex: 0, 
+		source: userDepartmentData, 
+		displayMember: "label", 
+		valueMember: "value", 
+		width: 150, 
+		height: 25, 
+		theme: theme 
+	});
     
     // initialize validator.
     $('#registerUserInfoForm').jqxValidator({
@@ -224,28 +265,9 @@ function initRegisterUserWindow() {
             ], 
             theme: theme
     });
-    
-    var userDepartmentData = [
-          //  { value: 1, label: "USER_DEPARTMENT" },
-            { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
-            { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
-            { value: 4, label: "USER_DEPARTMENT_FINANCE" },
-            { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
-            { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
-            { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
-        ];
-    
-	// Create a jqxComboBox
-	$("#registerUserDepartmentCombobox").jqxComboBox({ 
-		selectedIndex: 0, 
-		source: userDepartmentData, 
-		displayMember: "label", 
-		valueMember: "value", 
-		width: 150, 
-		height: 25, 
-		theme: theme 
-	});
-	
+};
+
+function addRegisterUserEventListeners() {
 	$('#registerUserRegisterButton').on('click', function () {
         $('#registerUserInfoForm').jqxValidator('validate');
     });
@@ -266,6 +288,8 @@ function initRegisterUserWindow() {
     $("#registerUserCancelButton").on('click', function (event) {
     	$('#registerUserInfoForm').jqxValidator('hide');
         $('#addUserPopupWindow').jqxWindow('close');
+     //   removeElementFromPage("addUserPopupWindow");
+        
     });
         
     $("#registerUserDepartmentCombobox").on('select', function (event) {
@@ -281,8 +305,23 @@ function initRegisterUserWindow() {
     	// Some code here. 
     	registerUser();
     });
+}
+function initRegisterUserWindow(position) {
+	$("#addUserPopupWindow").removeAttr("style");
+	
+	var theme = getDemoTheme();
+	initRegisterUserElements();
+	addRegisterUserEventListeners();
+	
+    // initialize the popup window and buttons.
+    $("#addUserPopupWindow").jqxWindow({
+    	position:position, width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#registerUserCancelButton"), modalOpacity: 0.01,
+    	initContent: function () {
+            $('#addUserPopupWindow').jqxWindow('focus');
+        }
+    });
     
-    
+    $("#addUserPopupWindow").jqxWindow('open');
 }
 
 
@@ -694,22 +733,6 @@ function parseUserGridHtml() {
 	$("#updateUserRowButton").jqxButton({ theme: theme });
 	
 	
-	// initialize the popup window and buttons.
-	$("#addUserPopupWindow").jqxWindow({
-	    width: 310, height: 440,resizable: false, theme: theme, isModal: true, autoOpen: false, cancelButton: $("userCancelButton"), modalOpacity: 0.01           
-	});
-	$("#addUserPopupWindow").on('open', function () {
-	    //$("#id").jqxInput('selectAll');
-	});
-	
-	 // initialize the popup window and buttons.
-	$("#updateUserPopupWindow").jqxWindow({
-	    width: 310, height: 440, resizable: false, theme: theme, isModal: true, autoOpen: false, cancelButton: $("userCancelButton"), modalOpacity: 0.01           
-	});
-	$("#updateUserPopupWindow").on('open', function () {
-	    //$("#id").jqxInput('selectAll');
-	});
-	
 	// update row.
 	$("#updateUserRowButton").on('click', function () {
 		selectedupdaterowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
@@ -719,25 +742,27 @@ function parseUserGridHtml() {
 		
 		if(rowData != null) {
 			var offset = $("#userDataGrid").offset();
+			var position = {};
+			position.x = parseInt(offset.left) + 200;
+			position.y = parseInt(offset.top) - 200;
 			
-			$("#updateUserPopupWindow").jqxWindow({ position: { x: parseInt(offset.left) + 200, y: parseInt(offset.top) - 200 } });
+			initUpdateUserWindow(rowData,position);
 			
-			initUpdateUserWindow(rowData);
-			
-			// show the popup window.
-			$("#updateUserPopupWindow").jqxWindow('open');
 		}
 	    
 	    
 	});
 	// show the popup window
 	$("#addUserRowButton").on('click', function () {
+		openContentPage('addUserPopupWindowDiv','page/common/addUserPopupWindow.html','content');
+		
 		var offset = $("#userDataGrid").offset();
-			$("#addUserPopupWindow").jqxWindow({ position: { x: parseInt(offset.left) + 200, y: parseInt(offset.top) - 200 } });
-			
-			// show the popup window.
-			initRegisterUserWindow();
-			$("#addUserPopupWindow").jqxWindow('open');
+		var position = {};
+		position.x = parseInt(offset.left) + 200;
+		position.y = parseInt(offset.top) - 200;
+		// show the popup window.
+		initRegisterUserWindow(position);
+		
 			
 	});
 	
@@ -752,6 +777,9 @@ function parseUserGridHtml() {
 	        $.post("removeUser.action", {"user.id": rowData["id"]},function(result){
 				if(result != null && result["executeResult"] != null && result["executeResult"] == true){
 	            	var commit = $("#userDataGrid").jqxGrid('deleterow', selectedrowindex);
+	            	if(commit != null) {
+	            		
+	            	}
 	            }
 			});
 	        

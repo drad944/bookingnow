@@ -82,16 +82,22 @@ String.prototype.startWith=function(str){
 	return true;
 	};
 
-function openContentPage(url) {
-	var contentPage = $('#framework_main');
+function openContentPage(sourceDiv,url,targetDiv) {
+	var contentPage = $('#' + sourceDiv);
 	$.post(url,function(data) {
         var tmp = $('<div></div>').html(data);
  
-        data = tmp.find('#content').html();
+        data = tmp.find('#' + targetDiv).html();
         tmp.remove();
          
         contentPage.html(data);
+        data = null;
     });
+}
+
+function removeElementFromPage(targetDiv) {
+	var contentPage = $('#' + targetDiv);
+	contentPage.remove();
 }
 
 function parseOrderToGridData(matchedOrders) {
@@ -226,13 +232,17 @@ function parseMenuHtml() {
     }, {
         "id": "6",
         "parentid": "3",
-        "text": "注册用户"
+        "text": "查看用户"
     }, {
         "id": "7",
         "parentid": "3",
-        "text": "用户详情"
+        "text": "注册用户"
     }, {
         "id": "8",
+        "parentid": "3",
+        "text": "用户详情"
+    }, {
+        "id": "9",
         "parentid": "3",
         "text": "修改头像"
     }];
@@ -257,29 +267,39 @@ function parseMenuHtml() {
     // the sub items collection name. Each jqxTree item has a 'label' property, but in the JSON data, we have a 'text' field. The last parameter 
     // specifies the mapping between the 'text' and 'label' fields.  
     var records = dataAdapter.getRecordsHierarchy('id', 'parentid', 'items', [{ name: 'text', map: 'label'}]);
-    $('#myMenu').jqxMenu({ source: records, height: 30, theme: theme, width: '800px' });
+    $('#myMenu').jqxMenu({ source: records, height: 30, autoOpen: false, theme: theme, width: '800px' });
     $("#myMenu").on('itemclick', function (event) {
         $("#eventLog").text("Id: " + event.args.id + ", Text: " + $(event.args).text());
         if(event.args.id == 1) {
-        	openContentPage('page/common/orderManagement.html');
+        	openContentPage('framework_main','page/common/orderManagement.html','content');
         }else if(event.args.id == 2) {
-        	openContentPage('page/common/foodManagement.html');
+        	openContentPage('framework_main','page/common/foodManagement.html','content');
         }else if(event.args.id == 3) {
-        	openContentPage('page/common/userManagement.html');
-        	parseUserGridHtml();
+        	/*
+        	var bodyhtml = $("body").html();
+        	bodyhtml = null;
+        	$("table+div").remove();
+        	
+        	var bodyhtml = $("body").html();
+        	bodyhtml = null;
+        	 */
+        	
         	
         }else if(event.args.id == 4) {
-        	openContentPage('page/common/tableManagement.html');
+        	openContentPage('framework_main','page/common/tableManagement.html','content');
         }else if(event.args.id == 5) {
         	//openContentPage('page/common/map.html')
         }else if(event.args.id == 6) {
-        	openContentPage('page/common/registerUser.html');
-        	
+        	openContentPage('framework_main','page/common/userManagement.html','content');
+        	parseUserGridHtml();
         }else if(event.args.id == 7) {
-        	openContentPage('page/security/showUserInfo.html');
-        	showUserDetailInfo();
+        	openContentPage('framework_main','page/common/registerUser.html','content');
+        	
         }else if(event.args.id == 8) {
-        	openContentPage('page/security/updateUserPicture.html');
+        	openContentPage('framework_main','page/security/showUserInfo.html','content');
+        	showUserDetailInfo();
+        }else if(event.args.id == 9) {
+        	openContentPage('framework_main','page/security/updateUserPicture.html','content');
         	uploadUserImage();
         }
     });
