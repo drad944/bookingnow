@@ -10,7 +10,7 @@ public class Message implements Serializable{
 	private static final long serialVersionUID = 6356895567978585140L;
 	
 	private String category;
-	private String type; 
+	private String type;
 	
 	public Message(){}
 	

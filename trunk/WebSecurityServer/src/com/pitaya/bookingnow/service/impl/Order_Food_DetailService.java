@@ -13,8 +13,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.pitaya.bookingnow.dao.FoodMapper;
+import com.pitaya.bookingnow.dao.OrderMapper;
 import com.pitaya.bookingnow.dao.Order_Food_DetailMapper;
 import com.pitaya.bookingnow.entity.Food;
+import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.entity.Order_Food_Detail;
 import com.pitaya.bookingnow.message.OrderDetailMessage;
 import com.pitaya.bookingnow.service.IOrder_Food_DetailService;
@@ -28,6 +30,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 	private Order_Food_DetailMapper food_detailDao;
 	
 	private FoodMapper foodDao;
+	private OrderMapper orderDao;
 	private MessageService messageService;
 
 	public FoodMapper getFoodDao() {
@@ -84,7 +87,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 				List<Order_Food_Detail> realFood_Details = food_detailDao.selectFullBySelective(food_detail);
 				return realFood_Details;
 		}else {
-			System.out.println("can not find food detail in client data");
+			logger.error("can not find food detail in client data");
 		}
 		return null;
 	}
@@ -98,10 +101,10 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 				List<Order_Food_Detail> realFood_Details = food_detailDao.selectByParams(params);
 				return realFood_Details;
 			}else {
-				logger.info("search food_detail params is not enough.");
+				logger.error("searchFood_Details:missing food_detail id in parameters");
 			}
 		}else {
-			logger.info("can not find food detail in client data");
+			logger.error("searchFood_Details: missing parameters");
 		}
 		return null;
 	}
@@ -120,22 +123,38 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 				
 				if (realFood_Detail != null && realFood_Detail.getStatus() != null) {
 					realFood_Detail.setStatus(food_detail.getStatus());
-					realFood_Detail.setLast_modify_time(new Date().getTime());
+					/*
+					 *  Comment out by runmeng, this time will be used to compute waiting time in UI,
+					 *  so can not be update at this time
+					 */
+					//realFood_Detail.setLast_modify_time(new Date().getTime());
 						
 					if (food_detailDao.updateByPrimaryKeySelective(realFood_Detail) == 1) {
 						result.setFood_Detail(realFood_Detail);
 						result.setExecuteResult(true);
-					}else {
+						Order order = orderDao.selectByPrimaryKey(realFood_Detail.getOrder_id());
+						if(order != null){
+							//Send message to notify user that the status update of cooking item
+							List<Order_Food_Detail> detailist = new ArrayList<Order_Food_Detail>();
+							Order_Food_Detail detail = new Order_Food_Detail();
+							detail.setId(realFood_Detail.getId());
+							detail.setStatus(realFood_Detail.getStatus());
+							detailist.add(detail);
+							OrderDetailMessage message = new OrderDetailMessage();
+							message.setUpdateItems(detailist);
+							this.messageService.sendMessageToOne(order.getUser_id(), message);
+						}
+					} else {
 						throw new RuntimeException("failed to update food detail status in DB");
 					}
 					
-				}else {
+				} else {
 					result.getErrorDetails().put("food_status", "can not find food status in DB data");
 				}
-			}else {
+			} else {
 				result.getErrorDetails().put("food_status", "can not find food status in client data");
 			}
-		}else {
+		} else {
 			result.getErrorDetails().put("food_detail_exist", "can not find food in client data");
 		}
 		return result;

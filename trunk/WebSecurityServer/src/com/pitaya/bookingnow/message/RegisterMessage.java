@@ -9,7 +9,9 @@ public class RegisterMessage extends Message{
 	private Long userId;
 	private String action;
 	
-	public RegisterMessage(){}
+	public RegisterMessage(){
+		super(Constants.REGISTER_MESSAGE);
+	}
 	
 	public RegisterMessage(Long id) {
 		super(Constants.REGISTER_MESSAGE);
