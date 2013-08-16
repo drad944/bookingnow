@@ -19,6 +19,7 @@ import com.pitaya.bookingnow.entity.Order_Table_Detail;
 import com.pitaya.bookingnow.entity.Table;
 import com.pitaya.bookingnow.entity.security.User;
 import com.pitaya.bookingnow.message.OrderDetailMessage;
+import com.pitaya.bookingnow.message.OrderMessage;
 import com.pitaya.bookingnow.service.IOrderService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
@@ -447,13 +448,19 @@ public class OrderService implements IOrderService{
 		return result;
 	}
 	
-
+	
+	private void sendNewOrderMessage(Order order){
+		if(order.getId() != null){
+			OrderMessage message = new OrderMessage(Constants.ACTION_ADD, order);
+			this.messageService.sendMessageToGroup(Constants.ROLE_WAITER, message);
+		}
+	}
 
 	@Override
 	public MyResult addWaitingOrder(Order order) {
 		/*
 		 * welcomer add a new order for waiting customer outside
-		 * in:name,phone,customer count,order status:new
+		 * in:name,phone,customer count,order status:welcomer_new
 		 * 
 		 */
 		
@@ -474,9 +481,12 @@ public class OrderService implements IOrderService{
 								order.setCustomer_id(realCustomer.getId());
 								order.setModifyTime(new Date().getTime());
 								order.setStatus(Constants.ORDER_WELCOMER_NEW);
-								
+								order.setEnabled(true);
 								if(orderDao.insert(order) == 1) {
+									result.setOrder(order);
 									result.setExecuteResult(true);
+									//Send message to notify waiter that new waiting order submitted
+									this.sendNewOrderMessage(order);
 								}else {
 									throw new RuntimeException("failed to exec method updateWaitingOrderToConfirmed in OrderService.java");
 								}
@@ -503,12 +513,14 @@ public class OrderService implements IOrderService{
 								order.setSubmit_time(new Date().getTime());
 								order.setModifyTime(order.getSubmit_time());
 								order.setStatus(Constants.ORDER_WELCOMER_NEW);
-								
+								order.setEnabled(true);
 								
 								if (orderDao.insert(order) == 1) {
-									result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(order.getId()));
+									//result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(order.getId()));
+									result.setOrder(order);
 									result.setExecuteResult(true);
-									
+									//Send message to notify waiter that new waiting order submitted
+									this.sendNewOrderMessage(order);
 								}else {
 									throw new RuntimeException("failed to insert order in DB");
 								}

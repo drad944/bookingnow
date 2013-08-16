@@ -259,7 +259,7 @@
 		<action name="*Food_Detail" class="com.pitaya.bookingnow.action.Order_Food_DetailAction" method="{1}Food_Detail">
 	        <result name="updateStatusOfFood_DetailSuccess" type="json">
 	            <param name="excludeNullProperties">true</param>
-				<param name="root">food_detail</param>
+				<param name="root">result.executeResult</param>
 	        </result>
 	        
 	        <result name="searchFoodsInFood_DetailSuccess" type="json">
