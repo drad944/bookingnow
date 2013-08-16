@@ -3,403 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>user management</title>
-<link rel="stylesheet" type="text/css" href="../../css/head.css">
-	<link rel="stylesheet" href="../../css/jqwidgets/styles/jqx.base.css" type="text/css" />
-	
-	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
-	<script type="text/javascript" src="../../js/AppUtil.js"></script>
-	
-    <script type="text/javascript" src="../../js/jqwidgets/jqxcore.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxdata.js"></script>
-    
-     
-    <script type="text/javascript" src="../../js/jqwidgets/jqxbuttons.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxdropdownlist.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxlistbox.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxscrollbar.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxmenu.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.filter.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.sort.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.pager.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.selection.js"></script> 
-    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.columnsresize.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.columnsreorder.js"></script> 
-    
-     <script type="text/javascript" src="../../js/jqwidgets/jqxnumberinput.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxwindow.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxinput.js"></script>
-    
-    <script type="text/javascript" src="../../js/jqwidgets/gettheme.js"></script>
-    <script type="text/javascript">
-         $(document).ready(function () {
-         		$.post("findUser.action", 
-		    			{"user.enabled": true}, 
-		    			function(matchedusers){
-	if(matchedusers != null && matchedusers.result != null){
-		users = matchedusers.result;
-	}
-	
-	var imageRenderer = function (row, datafield, value) {
-        return '<img style="margin-left: 5px;" height="60" width="50" src="../../' + value + '"/>';
-    }
-	var userSize = users.length;
-	var userData = {};
-	
-	var columns = {};
-	
-	var datafields = {};
-	for(var i = 0;i < userSize; i++) {
-		user = users[i];
-		if(i==0) {
-			var j=0;
-			
-			for(var item in user) {
-				var datafield = {};
-				var column = {};
-				
-				if(item == "id"){
-					datafield["type"] = "number";
-					column["text"] = "Id";
-					
-				}else if(item == "modifyTime") {
-					datafield["type"] = "number";
-					column["text"] = "ModifyTime";
-					
-				}else if(item == "image_size") {
-					datafield["type"] = "number";
-					column["text"] = "Image_size";
-					
-				}else if(item == "image_relative_path") {
-					datafield["type"] = "string";
-					column["text"] = "Image_relative_path";
-					column["cellsrenderer"] = imageRenderer;
-				}else if(item == "account") {
-					datafield["type"] = "string";
-					column["text"] = "Account";
-					
-				}else if(item == "name") {
-					datafield["type"] = "string";
-					column["text"] = "Name";
-					
-				}else if(item == "password") {
-					datafield["type"] = "string";
-					column["text"] = "Password";
-					
-				}else if(item == "phone") {
-					datafield["type"] = "string";
-					column["text"] = "Phone";
-					
-				}else if(item == "sex") {
-					datafield["type"] = "number";
-					column["text"] = "Sex";
-					
-				}else if(item == "email") {
-					datafield["type"] = "string";
-					column["text"] = "Email";
-					
-				}else if(item == "address") {
-					datafield["type"] = "string";
-					column["text"] = "Address";
-					
-				}else if(item == "birthday") {
-					datafield["type"] = "number";
-					column["text"] = "Birthday";
-					
-				}else if(item == "description") {
-					datafield["type"] = "string";
-					column["text"] = "Description";
-					
-				}else if(item == "department") {
-					datafield["type"] = "number";
-					column["text"] = "Department";
-					
-				}else if(item == "sub_system") {
-					datafield["type"] = "number";
-					column["text"] = "Sub_system";
-					
-				}else if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
-					//do nothing
-				}else {
-					datafield["type"] = "string";
-					column["text"] = "XX";
-				}
-				
-				if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
-					
-				}else {
-					column["datafield"] = item;
-					if(item == "id") {
-						column["width"] = "50";
-					}
-					
-					columns[j] = column;
-					
-					datafields[j] = datafield;
-					j++;
-				}
-			}
-		}
-		
-		var rowData = {};
-		for(var item in user) {
-			if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
-					
-			}else {
-				rowData[item] = user[item];
-			}
-			
-		}
-		
-		userData[i] = rowData;
-	}
-	
-	
-            var theme = getDemoTheme();
-            
-            var source =
-            {
-                localdata: userData,
-                datatype: "local",
-                datafields:datafields,
-                addrow: function (rowid, rowdata, position, commit) {
-                    // synchronize with the server - send insert command
-                    // call commit with parameter true if the synchronization with the server is successful 
-                    //and with parameter false if the synchronization failed.
-                    // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
-                    commit(true);
-                },
-                deleterow: function (rowid, commit) {
-                    // synchronize with the server - send delete command
-                    // call commit with parameter true if the synchronization with the server is successful 
-                    //and with parameter false if the synchronization failed.
-                    commit(true);
-                },
-                updaterow: function (rowid, newdata, commit) {
-                    // synchronize with the server - send update command
-                    // call commit with parameter true if the synchronization with the server is successful 
-                    // and with parameter false if the synchronization failed.
-                    commit(true);
-                }
-            };
-            var dataAdapter = new $.jqx.dataAdapter(source);
-            // initialize jqxGrid
-            $("#userDataGrid").jqxGrid(
-            {
-                width: 1000,
-                height: 350,
-                source: dataAdapter,
-                theme: theme,
-                selectionmode: 'multiplerowsextended',
-                sortable: true,
-                pageable: true,
-                autoheight: true,
-                columnsresize: true,
-              //  columnsreorder: true,
-                columns: columns
-            });
-            $("#addUserRowButton").jqxButton({ theme: theme });
-            $("#deleteUserRowButton").jqxButton({ theme: theme });
-            $("#updateUserRowButton").jqxButton({ theme: theme });
-            $("#addUserTable #cancel").jqxButton({ theme: theme });
-            $("#updateUserTable #cancel").jqxButton({ theme: theme });
-            $("#saveUserButton").jqxButton({ theme: theme });
-            $("#addUserButton").jqxButton({ theme: theme });
-            // update row.
-            $("#updateUserRowButton").on('click', function () {
-            	selectedupdaterowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
-            	//id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
-                rowData = $('#userDataGrid').jqxGrid('getrowdata', selectedupdaterowindex);
-                
-				
-				if(rowData != null) {
-					var offset = $("#userDataGrid").offset();
-					$("#updateUserPopupWindow").jqxWindow({ position: { x: parseInt(offset.left) + 60, y: parseInt(offset.top) + 60 } });
-					
-					//get old data in popupwindow
-					$("#updateUserTable #userIdInput").val(rowData["id"]);
-					$("#updateUserTable #userAccountInput").val(rowData["account"]);
-					$("#updateUserTable #userRealNameInput").val(rowData["name"]);
-					$("#updateUserTable #userPasswordInput").val(rowData["password"]);
-					$("#updateUserTable #userPasswordConfirmInput").val(rowData["password"]);
-					$("#updateUserTable #userAddressInput").val(rowData["address"]);
-					$("#updateUserTable #userBirthdayInput").val(rowData["birthday"]);
-					$("#updateUserTable #userDepartmentInput").val(rowData["department"]);
-					//show combobox
-					
-					$("#updateUserTable #userEmailInput").val(rowData["email"]);
-			//		$("#updateUserTable #user_image").attr("src","../../" + rowData["image_relative_path"]);
-					
-			//		$("#updateUserTable #image_relative_path").val(rowData["image_relative_path"]);
-			//		$("#updateUserTable #image_size").val(rowData["image_size"]);
-					$("#updateUserTable #userPhoneInput").val(rowData["phone"]);
-					$("#updateUserTable #userSexInput").val(rowData["sex"]);
-					// ratio button
-					
-					// show the popup window.
-					$("#updateUserPopupWindow").jqxWindow('open');
-				}
-                
-                
-            });
-            // show the popup window
-            $("#addUserRowButton").on('click', function () {
-            	var offset = $("#userDataGrid").offset();
-					$("#addUserPopupWindow").jqxWindow({ position: { x: parseInt(offset.left) + 60, y: parseInt(offset.top) + 60 } });
-					
-					// show the popup window.
-					$("#addUserPopupWindow").jqxWindow('open');
-            });
-            
-            // create new row
-            $("#addUserButton").on('click', function () {
-                if($("#addUserTable #account").val() != null && $("#addUserTable #password").val() != null){
-                	var newrow = {
-                		"account": $("#addUserTable #account").val(), 
-                    	"name": $("#addUserTable #name").val(),
-                        "password": $("#addUserTable #password").val(),
-                       	"address": $("#addUserTable #address").val(),
-                        "birthday": $("#addUserTable #birthday").val(),
-                        "department": $("#addUserTable #department").val(),
-                        "email": $("#addUserTable #email").val(),
-                        "image_relative_path": $("#addUserTable #image_relative_path").val(),
-                        "image_size": $("#addUserTable #image_size").val(),
-                        "phone": $("#addUserTable #phone").val(),
-                        "sex": $("#addUserTable #sex").val()
-                    };
-                    var addUserData = { 
-                    	"user.account": $("#addUserTable #account").val(), 
-                    	"user.name": $("#addUserTable #name").val(),
-                        "user.password": $("#addUserTable #password").val(),
-                       	"user.address": $("#addUserTable #address").val(),
-                        "user.birthday": $("#addUserTable #birthday").val(),
-                        "user.department": $("#addUserTable #department").val(),
-                        "user.email": $("#addUserTable #email").val(),
-                        "user.image_relative_path": $("#addUserTable #image_relative_path").val(),
-                        "user.image_size": $("#addUserTable #image_size").val(),
-                        "user.phone": $("#addUserTable #phone").val(),
-                        "user.sex": $("#addUserTable #sex").val()
-                    };
-                    
-                    $.post("registerUser.action", addUserData,function(result){
-						if(result != null && result["id"] != null){
-	                    	//var rowID = $('#userDataGrid').jqxGrid('getrowid', rowData);
-	                    	newrow["id"] = result["id"];
-		                    $('#userDataGrid').jqxGrid('addrow', null, newrow);
-		                    $("#addUserPopupWindow").jqxWindow('hide');
-		                    
-		                    addUserData = null;
-		                    newrow = null;
-		                    
-		                    //empty input value
-		                    $("#addUserTable #account").val("");
-		                    $("#addUserTable #name").val("");
-		                    $("#addUserTable #password").val("");
-		                    $("#addUserTable #address").val("");
-		                    $("#addUserTable #birthday").val("");
-		                    $("#addUserTable #department").val("");
-		                    $("#addUserTable #email").val("");
-		                    $("#addUserTable #image_relative_path").val("");
-		                    $("#addUserTable #image_size").val("")
-		                    $("#addUserTable #phone").val("");
-		                    $("#addUserTable #sex").val("");
-		                    
-	                    }else if(result != null && result["executeResult"] != null && result["executeResult"] == false){
-	                    	//do nothing
-	                    }
-					});
-                }
-            });
-            
-            // delete row.
-            $("#deleteUserRowButton").on('click', function () {
-                var selectedrowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
-                var rowscount = $("#userDataGrid").jqxGrid('getdatainformation').rowscount;
-                if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
-                    //var id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
-                    
-                    var rowData = $('#userDataGrid').jqxGrid('getrowdata', selectedrowindex);
-                    $.post("removeUser.action", {"user.id": rowData["id"]},function(result){
-						if(result != null && result["executeResult"] != null && result["executeResult"] == true){
-	                    	var commit = $("#userDataGrid").jqxGrid('deleterow', selectedrowindex);
-	                    }
-					});
-                    
-                }
-            });
-            
-             // initialize the popup window and buttons.
-            $("#addUserPopupWindow").jqxWindow({
-                width: 350, resizable: false, theme: theme, isModal: true, autoOpen: false, cancelButton: $("#addUserTable #cancel"), modalOpacity: 0.01           
-            });
-            $("#addUserPopupWindow").on('open', function () {
-                //$("#id").jqxInput('selectAll');
-            });
-            
-             // initialize the popup window and buttons.
-            $("#updateUserPopupWindow").jqxWindow({
-                width: 350, resizable: false, theme: theme, isModal: true, autoOpen: false, cancelButton: $("#updateUserTable #cancel"), modalOpacity: 0.01           
-            });
-            $("#updateUserPopupWindow").on('open', function () {
-                $("#id").jqxInput('selectAll');
-            });
-            
-            // update the edited row when the user clicks the 'Save' button.
-            $("#saveUserButton").click(function () {
-                if (rowData != null && rowData["id"] != null) {
-					
-                    var newrow = { 
-                    	"id": $("#updateUserTable #id").val(), 
-                    	"account": $("#updateUserTable #account").val(), 
-                    	"name": $("#updateUserTable #name").val(),
-                        "password": $("#updateUserTable #password").val(),
-                       	"address": $("#updateUserTable #address").val(),
-                        "birthday": $("#updateUserTable #birthday").val(),
-                        "department": $("#updateUserTable #department").val(),
-                        "email": $("#updateUserTable #email").val(),
-                        "image_relative_path": $("#updateUserTable #image_relative_path").val(),
-                        "image_size": $("#updateUserTable #image_size").val(),
-                        "phone": $("#updateUserTable #phone").val(),
-                        "sex": $("#updateUserTable #sex").val()
-                    };
-                    var updateUserData = { 
-                    	"user.id": $("#updateUserTable #id").val(), 
-                    	"user.account": $("#updateUserTable #account").val(), 
-                    	"user.name": $("#updateUserTable #name").val(),
-                        "user.password": $("#updateUserTable #password").val(),
-                       	"user.address": $("#updateUserTable #address").val(),
-                        "user.birthday": $("#updateUserTable #birthday").val(),
-                        "user.department": $("#updateUserTable #department").val(),
-                        "user.email": $("#updateUserTable #email").val(),
-                        "user.image_relative_path": $("#updateUserTable #image_relative_path").val(),
-                        "user.image_size": $("#updateUserTable #image_size").val(),
-                        "user.phone": $("#updateUserTable #phone").val(),
-                        "user.sex": $("#updateUserTable #sex").val()
-                    };
-                    
-                    $.post("updateUser.action", updateUserData,function(result){
-						if(result != null && result["id"] != null){
-	                    	//var rowID = $('#userDataGrid').jqxGrid('getrowid', rowData);
-		                    $('#userDataGrid').jqxGrid('updaterow', selectedupdaterowindex, newrow);
-		                    $("#updateUserPopupWindow").jqxWindow('hide');
-	                    }else if(result != null && result["executeResult"] != null && result["executeResult"] == false){
-	                    	//do nothing
-	                    }
-					});
-                     
-                    
-                }
-            });
-            /*
-             $("#userDataGrid").on('columnreordered', function (event) {
-                var column = event.args.columntext;
-                var newindex = event.args.newindex
-                var oldindex = event.args.oldindex;
-            });
-            */
-        });
-    });
-	</script>
+
 </head>
 	
 <body>
@@ -432,162 +36,158 @@
 	        
         	<div id="userDataGrid" style="float: left;" ></div>
 
-			<div id="updateUserPopupWindow">
-				<div><h3>Update User</h3></div>
-				<div id="updateUserDiv">
-			        <div>
-			            <form id="updateUserInfoForm" action="./">
-			                <table class="updateUserTable">
-			                	<tr style="display:none">
-			                        <td>Id:</td>
-			                        <td><input type="text" id="updateUserIdInput" class="updateUserTextInput" /></td>
-			                    </tr>
-			                    <tr>
-			                        <td>Account:</td>
-			                        <td><input type="text" id="updateUserAccountInput" class="updateUserTextInput" /></td>
-			                    </tr>
-			                    <tr>
-			                        <td>Password:</td>
-			                        <td><input type="password" id="updateUserPasswordInput" class="updateUserTextInput" /></td>
-			                    </tr>
-			                    <tr>
-			                        <td>Confirm password:</td>
-			                        <td><input type="password" id="updateUserPasswordConfirmInput" class="updateUserTextInput" /></td>
-			                    </tr>
-			                    <tr>
-			                        <td>Real name:</td>
-			                        <td><input type="text" id="updateUserRealNameInput" class="updateUserTextInput" /></td>
-			                    </tr>
-			                    <tr>
-			                        <td>Department:</td>
-			                        <td>
-			                        	<div id='updateUserDepartmentCombobox'></div>
-			                        	<input id="updateUserDepartmentInput" type="hidden" value="2" />
-		        					</td>
-			                    </tr>
-			                    <tr>
-			                        <td>Birth date:</td>
-			                        <td><div id="updateUserBirthdayInput"></div></td>
-			                    </tr>
-			                    <tr>
-			                        <td>E-mail:</td>
-			                        <td><input type="text" id="updateUserEmailInput" placeholder="someone@mail.com" class="updateUserTextInput" /></td>
-			                    </tr>
-			                    <tr>
-			                        <td>Address:</td>
-			                        <td><input type="text" id="updateUserAddressInput" placeholder="省-市-区-街道-小区-门牌号" class="updateUserTextInput" /></td>
-			                    </tr>
-			                    <tr>
-			                        <td>Phone:</td>
-			                        <td><div id="updateUserPhoneInput"></div></td>
-			                    </tr>
-			                    <tr>
-			                        <td>Sex:</td>
-			                        <td>
-			                        	<div style='margin-top: 10px;'>
-							            	<span id='updateUserSexRadioButton1' style='float:left;'>男</span>
-							            	<span id='updateUserSexRadioButton2' style='float:right;'>女</span>
-							            	<input id="updateUserSexInput" type="hidden" value="2" />
-							            </div>
-			                        </td>
-			                    </tr>
-			                    <tr style="text-align: center;">
-			                        <td>
-			                        	<input id="updateUserUpdateButton" type="button" value="Update" />
-			                        </td>
-			                        <td>
-			                        	<input id="updateUserResetButton" type="reset" value="Reset" />
-			                        	<input id="updateUserCancelButton" type="button" value="Cancel" />
-			                        </td>
-			                    </tr>
-			                </table>
-			            </form>
-			        </div>
-			        <div id="updateUserResult"></div>
-	    		</div>
-			</div>
+				<div id="updateUserPopupWindow" style="overflow:hidden;display:none;">
+					<div><h3>Update User</h3></div>
+					<div id="updateUserDiv">
+				        <div>
+				            <form id="updateUserInfoForm" action="./">
+				                <table class="updateUserTable">
+				                	<tr style="display:none">
+				                        <td>Id:</td>
+				                        <td><input type="text" id="updateUserIdInput" class="updateUserTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Account:</td>
+				                        <td><input type="text" id="updateUserAccountInput" class="updateUserTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Password:</td>
+				                        <td><input type="password" id="updateUserPasswordInput" class="updateUserTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Confirm password:</td>
+				                        <td><input type="password" id="updateUserPasswordConfirmInput" class="updateUserTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Real name:</td>
+				                        <td><input type="text" id="updateUserRealNameInput" class="updateUserTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Department:</td>
+				                        <td>
+				                        	<div id='updateUserDepartmentCombobox'></div>
+				                        	<input id="updateUserDepartmentInput" type="hidden" value="2" />
+			        					</td>
+				                    </tr>
+				                    <tr>
+				                        <td>Birth date:</td>
+				                        <td><div id="updateUserBirthdayInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>E-mail:</td>
+				                        <td><input type="text" id="updateUserEmailInput" placeholder="someone@mail.com" class="updateUserTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Address:</td>
+				                        <td><input type="text" id="updateUserAddressInput" placeholder="省-市-区-街道-小区-门牌号" class="updateUserTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Phone:</td>
+				                        <td><div id="updateUserPhoneInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Sex:</td>
+				                        <td>
+				                        	<div style='margin-top: 10px;'>
+								            	<span id='updateUserSexRadioButton1' style='float:left;'>男</span>
+								            	<span id='updateUserSexRadioButton2' style='float:right;'>女</span>
+								            	<input id="updateUserSexInput" type="hidden" value="2" />
+								            </div>
+				                        </td>
+				                    </tr>
+				                    <tr style="text-align: center;">
+				                        <td>
+				                        	<input id="updateUserUpdateButton" type="button" value="Update" />
+				                        </td>
+				                        <td>
+				                        	<input id="updateUserResetButton" type="reset" value="Reset" />
+				                        	<input id="updateUserCancelButton" type="button" value="Cancel" />
+				                        </td>
+				                    </tr>
+				                </table>
+				            </form>
+				        </div>
+				        <div id="updateUserResult"></div>
+		    		</div>
+				</div>
 			
-			<div id="addUserPopupWindow"  style="overflow: hidden;">
-				<div><h3>Register User</h3></div>
-				<div id="registerUserDiv">
-	        		
-			        <div>
-			            <form id="registerUserInfoForm" action="./">
-			                <table class="registerUserTable">
-			                    <tr>
-			                        <td>Account:</td>
-			                        <td><input type="text" id="registerUserAccountInput" class="registerUserTextInput" /></td>
-			                    </tr>
-			                    <tr>
-			                        <td>Password:</td>
-			                        <td><input type="password" id="registerUserPasswordInput" class="registerUserTextInput" /></td>
-			                    </tr>
-			                    <tr>
-			                        <td>Confirm password:</td>
-			                        <td><input type="password" id="registerUserPasswordConfirmInput" class="registerUserTextInput" /></td>
-			                    </tr>
-			                    <tr>
-			                        <td>Real name:</td>
-			                        <td><input type="text" id="registerUserRealNameInput" class="registerUserTextInput" /></td>
-			                    </tr>
-			                    <tr>
-			                        <td>Department:</td>
-			                        <td>
-			                        	<div id='registerUserDepartmentCombobox'></div>
-			                        	<input id="registerUserDepartmentInput" type="hidden" value="2" />
-		        					</td>
-			                    </tr>
-			                    <tr>
-			                        <td>Birth date:</td>
-			                        <td><div id="registerUserBirthdayInput"></div></td>
-			                    </tr>
-			                    <tr>
-			                        <td>E-mail:</td>
-			                        <td><input type="text" id="registerUserEmailInput" placeholder="someone@mail.com" class="registerUserTextInput" /></td>
-			                    </tr>
-			                    <tr>
-			                        <td>Address:</td>
-			                        <td><div id="registerUserAddressInput"></div></td>
-			                    </tr>
-			                    <tr>
-			                        <td>Phone:</td>
-			                        <td><div id="registerUserPhoneInput"></div></td>
-			                    </tr>
-			                    <tr>
-			                        <td>Sex:</td>
-			                        <td>
-			                        	<div style='margin-top: 10px;'>
-							            	<span id='registerUserSexRadioButton1' style='float:left;'>男</span>
-							            	<span id='registerUserSexRadioButton2' style='float:right;'>女</span>
-							            	<input id="registerUserSexInput" type="hidden" value="2" />
-							            </div>
-			                        </td>
-			                    </tr>
-			                    <tr>
-			                        <td colspan="2" style="padding: 5px;">
-			                        	<div id="acceptInput" style="margin-left: 50px;">I accept terms</div>
-			                        </td>
-			                    </tr>
-			                    <tr style="text-align: center;">
-			                        <td>
-			                        	<input id="registerUserRegisterButton" type="button" value="Register" />
-			                        </td>
-			                        <td>
-			                        	<input id="registerUserResetButton" type="reset" value="Reset" />
-			                        	<input id="registerUserCancelButton" type="button" value="Cancel" />
-			                        </td>
-			                    </tr>
-			                </table>
-			            </form>
-			        </div>
-			        <div id="registerUserResult"></div>
-	    		</div>
-	    		
-	    		
-			</div>
-			
-		
-			
+				<div id="addUserPopupWindow" style="overflow:hidden;display:none;">
+					<div><h3>Register User</h3></div>
+					<div id="registerUserDiv">
+		        		
+				        <div>
+				            <form id="registerUserInfoForm" action="./">
+				                <table class="registerUserTable">
+				                    <tr>
+				                        <td>Account:</td>
+				                        <td><input type="text" id="registerUserAccountInput" class="registerUserTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Password:</td>
+				                        <td><input type="password" id="registerUserPasswordInput" class="registerUserTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Confirm password:</td>
+				                        <td><input type="password" id="registerUserPasswordConfirmInput" class="registerUserTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Real name:</td>
+				                        <td><input type="text" id="registerUserRealNameInput" class="registerUserTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Department:</td>
+				                        <td>
+				                        	<div id='registerUserDepartmentCombobox'></div>
+				                        	<input id="registerUserDepartmentInput" type="hidden" value="2" />
+			        					</td>
+				                    </tr>
+				                    <tr>
+				                        <td>Birth date:</td>
+				                        <td><div id="registerUserBirthdayInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>E-mail:</td>
+				                        <td><input type="text" id="registerUserEmailInput" placeholder="someone@mail.com" class="registerUserTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Address:</td>
+				                        <td><div id="registerUserAddressInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Phone:</td>
+				                        <td><div id="registerUserPhoneInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Sex:</td>
+				                        <td>
+				                        	<div style='margin-top: 10px;'>
+								            	<span id='registerUserSexRadioButton1' style='float:left;'>男</span>
+								            	<span id='registerUserSexRadioButton2' style='float:right;'>女</span>
+								            	<input id="registerUserSexInput" type="hidden" value="2" />
+								            </div>
+				                        </td>
+				                    </tr>
+				                    <tr>
+				                        <td colspan="2" style="padding: 5px;">
+				                        	<div id="acceptInput" style="margin-left: 50px;">I accept terms</div>
+				                        </td>
+				                    </tr>
+				                    <tr style="text-align: center;">
+				                        <td>
+				                        	<input id="registerUserRegisterButton" type="button" value="Register" />
+				                        </td>
+				                        <td>
+				                        	<input id="registerUserResetButton" type="reset" value="Reset" />
+				                        	<input id="registerUserCancelButton" type="button" value="Cancel" />
+				                        </td>
+				                    </tr>
+				                </table>
+				            </form>
+				        </div>
+				        <div id="registerUserResult"></div>
+		    		</div>
+				</div>
+				
 		</div>
 	</div>
 </body>
