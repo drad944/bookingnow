@@ -147,13 +147,12 @@ function initUpdateUserWindow(rowData,position) {
 	$("#updateUserPopupWindow").removeAttr("style");
 	
 	var theme = getDemoTheme();
-	initUpdateUserElements(rowData);
-	addUpdateUserEventListeners();
 	
+	initUpdateUserElements(rowData);
 	
 	// initialize the popup window and buttons.
     $("#updateUserPopupWindow").jqxWindow({
-    	position:position, width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
+    	position:position, isModal: true,width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
     	initContent: function () {
             $('#updateUserPopupWindow').jqxWindow('focus');
         }
@@ -265,6 +264,8 @@ function initRegisterUserElements() {
             ], 
             theme: theme
     });
+    
+	
 };
 
 function addRegisterUserEventListeners() {
@@ -288,6 +289,7 @@ function addRegisterUserEventListeners() {
     $("#registerUserCancelButton").on('click', function (event) {
     	$('#registerUserInfoForm').jqxValidator('hide');
         $('#addUserPopupWindow').jqxWindow('close');
+    //    $('#addUserPopupWindow').jqxWindow('destroy');
      //   removeElementFromPage("addUserPopupWindow");
         
     });
@@ -308,19 +310,18 @@ function addRegisterUserEventListeners() {
 }
 function initRegisterUserWindow(position) {
 	$("#addUserPopupWindow").removeAttr("style");
+	$("#addUserPopupWindow").attr("style","overflow:hidden");
 	
 	var theme = getDemoTheme();
-	initRegisterUserElements();
-	addRegisterUserEventListeners();
-	
-    // initialize the popup window and buttons.
-    $("#addUserPopupWindow").jqxWindow({
-    	position:position, width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#registerUserCancelButton"), modalOpacity: 0.01,
+	$("#addUserPopupWindow").jqxWindow({
+		position:position,isModal: true,width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#registerUserCancelButton"), 
+    	modalOpacity: 0.01,
+    	
     	initContent: function () {
             $('#addUserPopupWindow').jqxWindow('focus');
         }
+        
     });
-    
     $("#addUserPopupWindow").jqxWindow('open');
 }
 
@@ -733,6 +734,9 @@ function parseUserGridHtml() {
 	$("#updateUserRowButton").jqxButton({ theme: theme });
 	
 	
+	
+	addUpdateUserEventListeners();
+	
 	// update row.
 	$("#updateUserRowButton").on('click', function () {
 		selectedupdaterowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
@@ -752,14 +756,23 @@ function parseUserGridHtml() {
 	    
 	    
 	});
+	
+	// initialize the popup window and buttons.
+	initRegisterUserElements();
+	addRegisterUserEventListeners();
+	
+    
+    
 	// show the popup window
 	$("#addUserRowButton").on('click', function () {
-		openContentPage('addUserPopupWindowDiv','page/common/addUserPopupWindow.html','content');
+	//	openContentPage('addUserPopupWindowDiv','page/common/addUserPopupWindow.html','content');
 		
 		var offset = $("#userDataGrid").offset();
 		var position = {};
 		position.x = parseInt(offset.left) + 200;
 		position.y = parseInt(offset.top) - 200;
+		
+		
 		// show the popup window.
 		initRegisterUserWindow(position);
 		
