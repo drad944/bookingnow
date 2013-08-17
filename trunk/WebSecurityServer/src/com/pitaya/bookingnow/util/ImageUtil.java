@@ -18,6 +18,8 @@ import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
+import org.apache.struts2.ServletActionContext;
+
 public class ImageUtil {
 	
 	public static String allChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -78,11 +80,11 @@ public class ImageUtil {
 	}
 	
 	public static String generateRelativePath(String absolutePath) {
+		
 		File file = new File(absolutePath);
 		if (file.exists()) {
-			
-			String parentPath = file.getParentFile().getParentFile().getParentFile().getAbsolutePath();
-			String relativePath = absolutePath.substring(parentPath.length() + 1);
+			String rootpath = ServletActionContext.getServletContext().getRealPath("/");
+			String relativePath = absolutePath.substring(rootpath.length() + 1);
 			return relativePath;
 		}
 		

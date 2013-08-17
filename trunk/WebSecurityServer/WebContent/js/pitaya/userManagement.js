@@ -11,7 +11,7 @@ function initUpdateUserElements(rowData) {
 
     
   //  $("#updateUserAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
-    $("#updateUserPhoneInput").jqxMaskedInput({ mask: '(###)###-####', width: 150, height: 25, theme: theme });
+    $("#updateUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 25, theme: theme });
     $('.updateUserTextInput').jqxInput({ theme: theme });
     
     var d1 = {};
@@ -97,8 +97,7 @@ function initUpdateUserElements(rowData) {
             	}
             },
             { input: '#updateUserEmailInput', message: 'E-mail is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateUserEmailInput', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' },
-            { input: '#updateUserPhoneInput', message: 'Invalid phone number!', action: 'valuechanged, blur', rule: 'phone' }
+            { input: '#updateUserEmailInput', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' }
             ], 
             theme: theme
     });
@@ -187,6 +186,18 @@ function updateUser() {
 	$.post("updateUser.action", updateUserData, function(result) {
 		if (result != null && result["id"] != null) {
 			$("#updateUserResult").text("update user successfully!");
+			$("#updateUserPopupWindow").jqxWindow('close');
+			
+			//update row in grid
+			var selectedrowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
+            var rowscount = $("#userDataGrid").jqxGrid('getdatainformation').rowscount;
+            if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
+            	var id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
+                var commit = $("#userDataGrid").jqxGrid('updaterow', id, result);
+                $("#userDataGrid").jqxGrid('ensurerowvisible', selectedrowindex);
+            }
+			
+			$("#eventLog").text("update user successfully!");
 
 		} else if (result != null && result["executeResult"] != null
 				&& result["executeResult"] == false) {
@@ -205,7 +216,7 @@ function initRegisterUserElements() {
     
     
     $("#registerUserAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
-    $("#registerUserPhoneInput").jqxMaskedInput({ mask: '(###)####-####', width: 150, height: 22, theme: theme });
+    $("#registerUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 22, theme: theme });
     $('.registerUserTextInput').jqxInput({ theme: theme });
     var date = new Date();
     date.setFullYear(2000, 0, 1);
@@ -263,7 +274,6 @@ function initRegisterUserElements() {
             },
             { input: '#registerUserEmailInput', message: 'E-mail is required!', action: 'keyup, blur', rule: 'required' },
             { input: '#registerUserEmailInput', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' },
-            { input: '#registerUserPhoneInput', message: 'Invalid phone number!', action: 'valuechanged, blur', rule: 'phone' },
             { input: '#acceptInput', message: 'You have to accept the terms', action: 'change', rule: 'required', position: 'right:0,0'}
             ], 
             theme: theme
@@ -356,7 +366,11 @@ function registerUser() {
 	$.post("registerUser.action", registerUserData, function(result) {
 		if (result != null && result["id"] != null) {
 			$("#registerUserResult").text("register user successfully!");
-
+			$('#addUserPopupWindow').jqxWindow('close');
+			
+			var commit = $("#userDataGrid").jqxGrid('addrow', null, result);
+			
+			$("#eventLog").text("register user successfully!");
 		} else if (result != null && result["executeResult"] != null
 				&& result["executeResult"] == false) {
 			$("#registerUserResult").text("register user failed,please check user info!");
@@ -404,7 +418,7 @@ function initUploadUserImage(){
 	        //开启调试
 	        'debug' : false,
 	        //是否自动上传
-	        'auto':false,
+	        'auto':true,
 	        //超时时间
 	        'successTimeout':99999,
 	        //附带值
@@ -419,20 +433,21 @@ function initUploadUserImage(){
 	        'overrideEvents' : ['onDialogClose'],
 	        //文件选择后的容器ID
 	        'queueID':'uploadfileQueue',
+	        'uploadLimit':100,
 	        //服务器端脚本使用的文件对象的名称 $_FILES个['upload']
-	        'fileObjName':'uploadImage',
+	        'fileObjName':'uploadFile',
 	        //上传处理程序
-	        'uploader':'uploadImageForUser.action',
+	        'uploader':'uploadFile.action',
 	        //浏览按钮的背景图片路径
 	    //    'buttonImage':'../../css/upbutton.png',
 	        //浏览按钮的宽度
 	        'buttonText': '选择图片',
 			'buttonClass': 'browser_file',
 			'removeCompleted': true,
+			'removeTimeout':1,
 	        'width':'100',
 	        //浏览按钮的高度
-	        'height':'32',
-	        'cancelImg': 'WebSecurityServer/css/uploadify-cancel.png',//取消图片路径
+	        'height':'25',
 	        //expressInstall.swf文件的路径。
 	        'expressInstall':'js/expressInstall.swf',
 	        //在浏览窗口底部的文件类型下拉菜单中显示的文本
@@ -443,14 +458,22 @@ function initUploadUserImage(){
 	        'fileSizeLimit':'3MB',
 	        //上传数量
 	        'queueSizeLimit' : 1,
+	        'multi':false,
 	        //每次更新上载的文件的进展
 	        'onUploadProgress' : function(file, bytesUploaded, bytesTotal, totalBytesUploaded, totalBytesTotal) {
 	             //有时候上传进度什么想自己个性化控制，可以利用这个方法
 	             //使用方法见官方说明
 	        },
+	        'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+	            alert('The file ' + file.name + ' could not be uploaded: ' + errorString);
+	        },
 	        //选择上传文件后调用
 	        'onSelect' : function(file) {
 	              //  alert(file);   
+	        },
+	        'onCancel': function(file) {
+	        	//clear all upload files in queue
+	        	$('#file_upload').uploadify('cancel','*');
 	        },
 	        //返回一个错误，选择文件的时候触发
 	        'onSelectError':function(file, errorCode, errorMsg){
@@ -478,30 +501,22 @@ function initUploadUserImage(){
 	        	//data is string here,need to parse to json object.
 	        	 var jsonData = eval('(' + data + ')');
 	        	
-	            if(jsonData != null && jsonData.image_relative_path != null) {
+	            if(jsonData != null && jsonData.fileRelativePath != null && response == true) {
 	            	var user = jsonData;
 	            	
 	            	//reload jcrop
 	            	//jcrop_api.disable();
 	            	if(jcrop_api == null || jcrop_api == undefined) {
-	            		jQuery('#crop_now').Jcrop({
-		        			aspectRatio:4/4,
-		        			onChange:showPreview,
-		        			onSelect:showPreview,
-		        			onRelease:releaseCrop,
-		        			maxSize:[200,200]
-		        		},function(){
-		        		    jcrop_api = this;
-		        		  });	
+	            		initJCrop();
 	            	}
 	            	
 	            	jcrop_api.destroy();
 	            	
 	            	
-	            	$("#crop_now").attr("src",user.image_relative_path);
-	            	$("#crop_preview").attr("src",user.image_relative_path);
-	            	$("#image_relative_path").val(user.image_relative_path);
-	            	$("#user_id").val(user.id);
+	            	$("#crop_now").attr("src",user.fileRelativePath);
+	            	$("#crop_preview").attr("src",user.fileRelativePath);
+	            	$("#image_relative_path").val(user.fileRelativePath);
+	 //           	$("#user_id").val(user.id);
 	            	
 	            	//init again
 	            	jQuery('#crop_now').Jcrop({
@@ -624,7 +639,9 @@ function addOperateUserGridEventListeners() {
 	        var rowData = $('#userDataGrid').jqxGrid('getrowdata', selectedrowindex);
 	        $.post("removeUser.action", {"user.id": rowData["id"]},function(result){
 				if(result != null && result["executeResult"] != null && result["executeResult"] == true){
-	            	var commit = $("#userDataGrid").jqxGrid('deleterow', selectedrowindex);
+					var id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
+                    var commit = $("#userDataGrid").jqxGrid('deleterow', id);
+	            	
 	            	if(commit != null) {
 	            		
 	            	}
@@ -797,10 +814,16 @@ function parseUserGridHtml() {
 	    sortable: true,
 	    pageable: true,
 	    autoheight: true,
+	    selectionmode:'singlerow',
 	    columnsresize: true,
 	  //  columnsreorder: true,
 	    columns: columns
 	});
+	
+	// display selected row index.
+    $("#userDataGrid").on('rowselect', function (event) {
+        $("#eventLog").text("select row index : " + event.args.rowindex);
+    });
 	
 	initOperateUserGridElements();
 	addOperateUserGridEventListeners();

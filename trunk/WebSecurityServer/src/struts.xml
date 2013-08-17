@@ -50,7 +50,7 @@
 	        
 	        <result name="uploadSuccess" type="json">
 			    <param name="excludeNullProperties">true</param>
-				<param name="includeProperties">fileId</param>
+				<param name="includeProperties">fileId,fileRelativePath</param>
 	        </result>
 	        
             <result name="uploadImageSuccess" type="json">

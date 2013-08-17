@@ -3,6 +3,8 @@ package com.pitaya.bookingnow.util;
 import java.io.File;
 import java.util.Date;
 
+import org.apache.struts2.ServletActionContext;
+
 public class FileUtil {
 	
 	public static String allChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -54,5 +56,17 @@ public class FileUtil {
 			basePath += SystemUtils.getSystemDelimiter();
 		}
 		return basePath + id;
+	}
+	
+	public static String generateRelativePath(String absolutePath) {
+		
+		File file = new File(absolutePath);
+		if (file.exists()) {
+			String rootpath = ServletActionContext.getServletContext().getRealPath("/");
+			String relativePath = absolutePath.substring(rootpath.length());
+			return relativePath;
+		}
+		
+		return null;
 	}
 }
