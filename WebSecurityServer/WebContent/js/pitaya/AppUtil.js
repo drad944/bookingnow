@@ -267,7 +267,7 @@ function parseMenuHtml() {
     // the sub items collection name. Each jqxTree item has a 'label' property, but in the JSON data, we have a 'text' field. The last parameter 
     // specifies the mapping between the 'text' and 'label' fields.  
     var records = dataAdapter.getRecordsHierarchy('id', 'parentid', 'items', [{ name: 'text', map: 'label'}]);
-    $('#myMenu').jqxMenu({ source: records, height: 30, autoOpen: false, theme: theme, width: '800px' });
+    $('#myMenu').jqxMenu({ source: records, height: 30, autoOpen: true, theme: theme, width: '800px' });
     $("#myMenu").on('itemclick', function (event) {
         $("#eventLog").text("Id: " + event.args.id + ", Text: " + $(event.args).text());
         if(event.args.id == 1) {

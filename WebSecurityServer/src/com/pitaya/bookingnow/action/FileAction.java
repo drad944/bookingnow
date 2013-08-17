@@ -7,7 +7,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.struts2.ServletActionContext;
 
 import com.pitaya.bookingnow.util.FileUtil;
-import com.pitaya.bookingnow.util.ImageUtil;
 import com.pitaya.bookingnow.util.ImageUtil.ImageInfo;
 
 public class FileAction extends BaseAction{
@@ -21,11 +20,20 @@ public class FileAction extends BaseAction{
     private String uploadFileFileName; //文件名称
     private String uploadFileContentType; //文件类型
     
+    private String fileRelativePath;
     private String fileId;
     private int height;
     private int width;
     private ImageInfo imageInfo;
     
+	public String getFileRelativePath() {
+		return fileRelativePath;
+	}
+
+	public void setFileRelativePath(String fileRelativePath) {
+		this.fileRelativePath = fileRelativePath;
+	}
+
 	public File getUploadFile() {
 		return this.uploadFile;
 	}
@@ -112,6 +120,7 @@ public class FileAction extends BaseAction{
 				this.setFileId("null");
 				return "Fail";
 			}
+            fileRelativePath = FileUtil.generateRelativePath(savefile.getAbsolutePath());
             uploadFile.delete();
         	return "uploadSuccess";
         }else{
