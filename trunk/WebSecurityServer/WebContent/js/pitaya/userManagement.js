@@ -106,6 +106,10 @@ function initUpdateUserElements(rowData) {
 }
 
 function addUpdateUserEventListeners() {
+	$('#updateUserPopupWindow').on('close', function (event) { 
+		$('#updateUserInfoForm').jqxValidator('hide');
+      //  $('#updateUserPopupWindow').jqxWindow('close');
+	});
 	$('#updateUserUpdateButton').on('click', function () {
         $('#updateUserInfoForm').jqxValidator('validate');
     });
@@ -269,6 +273,11 @@ function initRegisterUserElements() {
 };
 
 function addRegisterUserEventListeners() {
+	$('#addUserPopupWindow').on('close', function (event) { 
+		$('#registerUserInfoForm').jqxValidator('hide');
+      //  $('#updateUserPopupWindow').jqxWindow('close');
+	});
+	
 	$('#registerUserRegisterButton').on('click', function () {
         $('#registerUserInfoForm').jqxValidator('validate');
     });
@@ -561,7 +570,70 @@ function releaseCrop(obj){
 	
 }
 
+function initOperateUserGridElements() {
+	var theme = getDemoTheme();
+	$("#addUserRowButton").jqxButton({ theme: theme });
+	$("#deleteUserRowButton").jqxButton({ theme: theme });
+	$("#updateUserRowButton").jqxButton({ theme: theme });
+}	
+
+function addOperateUserGridEventListeners() {
+	// update row.
+	$("#updateUserRowButton").on('click', function () {
+		selectedupdaterowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
+		//id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
+	    rowData = $('#userDataGrid').jqxGrid('getrowdata', selectedupdaterowindex);
+	    
+		
+		if(rowData != null) {
+			var offset = $("#userDataGrid").offset();
+			var position = {};
+			position.x = parseInt(offset.left) + 200;
+			position.y = parseInt(offset.top) - 200;
+			
+			initUpdateUserWindow(rowData,position);
+			
+		}
+	    
+	    
+	});
+    
+	// show the popup window
+	$("#addUserRowButton").on('click', function () {
+	//	openContentPage('addUserPopupWindowDiv','page/common/addUserPopupWindow.html','content');
+		
+		var offset = $("#userDataGrid").offset();
+		var position = {};
+		position.x = parseInt(offset.left) + 200;
+		position.y = parseInt(offset.top) - 200;
+		
+		
+		// show the popup window.
+		initRegisterUserWindow(position);
+		
+			
+	});
 	
+	// delete row.
+	$("#deleteUserRowButton").on('click', function () {
+	    var selectedrowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
+	    var rowscount = $("#userDataGrid").jqxGrid('getdatainformation').rowscount;
+	    if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
+	        //var id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
+	        
+	        var rowData = $('#userDataGrid').jqxGrid('getrowdata', selectedrowindex);
+	        $.post("removeUser.action", {"user.id": rowData["id"]},function(result){
+				if(result != null && result["executeResult"] != null && result["executeResult"] == true){
+	            	var commit = $("#userDataGrid").jqxGrid('deleterow', selectedrowindex);
+	            	if(commit != null) {
+	            		
+	            	}
+	            }
+			});
+	        
+	    }
+	});
+}
 
 function parseUserGridHtml() {
 		$.post("findUser.action", 
@@ -729,77 +801,15 @@ function parseUserGridHtml() {
 	  //  columnsreorder: true,
 	    columns: columns
 	});
-	$("#addUserRowButton").jqxButton({ theme: theme });
-	$("#deleteUserRowButton").jqxButton({ theme: theme });
-	$("#updateUserRowButton").jqxButton({ theme: theme });
 	
-	
+	initOperateUserGridElements();
+	addOperateUserGridEventListeners();
 	
 	addUpdateUserEventListeners();
-	
-	// update row.
-	$("#updateUserRowButton").on('click', function () {
-		selectedupdaterowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
-		//id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
-	    rowData = $('#userDataGrid').jqxGrid('getrowdata', selectedupdaterowindex);
-	    
-		
-		if(rowData != null) {
-			var offset = $("#userDataGrid").offset();
-			var position = {};
-			position.x = parseInt(offset.left) + 200;
-			position.y = parseInt(offset.top) - 200;
-			
-			initUpdateUserWindow(rowData,position);
-			
-		}
-	    
-	    
-	});
 	
 	// initialize the popup window and buttons.
 	initRegisterUserElements();
 	addRegisterUserEventListeners();
-	
-    
-    
-	// show the popup window
-	$("#addUserRowButton").on('click', function () {
-	//	openContentPage('addUserPopupWindowDiv','page/common/addUserPopupWindow.html','content');
-		
-		var offset = $("#userDataGrid").offset();
-		var position = {};
-		position.x = parseInt(offset.left) + 200;
-		position.y = parseInt(offset.top) - 200;
-		
-		
-		// show the popup window.
-		initRegisterUserWindow(position);
-		
-			
-	});
-	
-	// delete row.
-	$("#deleteUserRowButton").on('click', function () {
-	    var selectedrowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
-	    var rowscount = $("#userDataGrid").jqxGrid('getdatainformation').rowscount;
-	    if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
-	        //var id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
-	        
-	        var rowData = $('#userDataGrid').jqxGrid('getrowdata', selectedrowindex);
-	        $.post("removeUser.action", {"user.id": rowData["id"]},function(result){
-				if(result != null && result["executeResult"] != null && result["executeResult"] == true){
-	            	var commit = $("#userDataGrid").jqxGrid('deleterow', selectedrowindex);
-	            	if(commit != null) {
-	            		
-	            	}
-	            }
-			});
-	        
-	    }
-	});
-	
-	
 	
 	/*
 	 $("#userDataGrid").on('columnreordered', function (event) {
