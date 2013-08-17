@@ -591,13 +591,16 @@
 		select
 			<include refid="Max_Order_Base_Column_List" />
 			,
+			FDF.* from pitaya_order O 
+			left outer join 
+			(select
 			<include refid="Max_Food_Detail_Base_Column_List" />
 			,
 			<include refid="Max_Food_Base_Column_List" />
-		from pitaya_order O 
-			left outer join pitaya_order_food_detail FD on FD.order_id = O.id
-			left outer join pitaya_food F on FD.food_id = F.id
-		where O.id = #{id,jdbcType=BIGINT} and O.enabled = true
+ 			from pitaya_order_food_detail FD 
+ 			left outer join (select F.* from pitaya_food F where F.enabled = true) as F on FD.food_id = F.id where FD.enabled = true)
+ 			as FDF on O.id = FDF.FD_order_id
+			where O.id = #{id,jdbcType=BIGINT} and O.enabled = true
 	</select>
 	
 	 

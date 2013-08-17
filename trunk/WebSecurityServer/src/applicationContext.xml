@@ -97,6 +97,7 @@
     
 	<bean id="food_detailService" class="com.pitaya.bookingnow.service.impl.Order_Food_DetailService">
 	    <property name="foodDao" ref="foodDao" />
+	    <property name="orderDao" ref="orderDao" />
         <property name="food_detailDao" ref="food_detailDao" />
         <property name="messageService" ref="messageService"/>
     </bean>

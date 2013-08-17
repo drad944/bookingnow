@@ -48,6 +48,14 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 	public void setFood_detailDao(Order_Food_DetailMapper food_detailDao) {
 		this.food_detailDao = food_detailDao;
 	}
+	
+	public void setOrderDao(OrderMapper m){
+		this.orderDao = m;
+	}
+	
+	public OrderMapper getOrderDao(){
+		return this.orderDao;
+	}
 
 	public void setMessageService(MessageService ms){
 		this.messageService = ms;
@@ -122,15 +130,14 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 				Order_Food_Detail realFood_Detail = food_detailDao.selectByPrimaryKey(food_detail.getId());
 				
 				if (realFood_Detail != null && realFood_Detail.getStatus() != null) {
-					realFood_Detail.setStatus(food_detail.getStatus());
 					/*
 					 *  Comment out by runmeng, this time will be used to compute waiting time in UI,
 					 *  so can not be update at this time
 					 */
 					//realFood_Detail.setLast_modify_time(new Date().getTime());
 						
-					if (food_detailDao.updateByPrimaryKeySelective(realFood_Detail) == 1) {
-						result.setFood_Detail(realFood_Detail);
+					if (food_detailDao.updateByPrimaryKeySelective(food_detail) == 1) {
+						result.setFood_Detail(food_detail);
 						result.setExecuteResult(true);
 						Order order = orderDao.selectByPrimaryKey(realFood_Detail.getOrder_id());
 						if(order != null){
@@ -138,7 +145,8 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 							List<Order_Food_Detail> detailist = new ArrayList<Order_Food_Detail>();
 							Order_Food_Detail detail = new Order_Food_Detail();
 							detail.setId(realFood_Detail.getId());
-							detail.setStatus(realFood_Detail.getStatus());
+							detail.setOrder_id(realFood_Detail.getOrder_id());
+							detail.setStatus(food_detail.getStatus());
 							detailist.add(detail);
 							OrderDetailMessage message = new OrderDetailMessage();
 							message.setUpdateItems(detailist);
