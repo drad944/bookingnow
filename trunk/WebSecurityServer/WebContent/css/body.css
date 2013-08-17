@@ -4,14 +4,14 @@
 }
 
 #crop_now {
-	width:200px; 
-	height:200px;
+	width:400px; 
+	height:250px;
 }
 
 .preview_box {
 	position:relative;
 	top:-100px;
-	left:300px;
+	left:500px;
 }
 
 #crop_preview {
