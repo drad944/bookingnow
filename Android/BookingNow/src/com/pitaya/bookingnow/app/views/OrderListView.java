@@ -44,7 +44,7 @@ public class OrderListView extends RelativeLayout{
     public void recycle(){}
     
     public void refresh(){
-    	this.mAdapter.notifyDataSetInvalidated();
+    	this.mAdapter.notifyDataSetChanged();
     }
     
     public void setupViews(){
@@ -53,14 +53,19 @@ public class OrderListView extends RelativeLayout{
 		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		addView(this.mHeaderView, lp);
+		
+		lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        this.mControlbar = View.inflate(this.getContext(), R.layout.ordercontrolbar, null);
+        this.mControlbar.setId(2);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        addView(this.mControlbar, lp);
+
         this.mListView = new ListView(this.getContext());
         lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         lp.addRule(RelativeLayout.BELOW, this.mHeaderView.getId());
+        lp.addRule(RelativeLayout.ABOVE, this.mControlbar.getId());
         addView(mListView, lp);
-        lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        this.mControlbar = View.inflate(this.getContext(), R.layout.ordercontrolbar, null);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        addView(this.mControlbar, lp);
+        
         
         OrderService.getOrderByStatus(this.isGetOrderByUser(), this.getOrderStatus(), new HttpHandler(){
 			@Override
@@ -84,6 +89,10 @@ public class OrderListView extends RelativeLayout{
 				Log.e(TAG, "[OrderService.getOrderByStatus] Network error:" + statuscode);
 			}
 		});
+    }
+    
+    public ArrayList<Order> getOrderList(){
+    	return this.mOrderList;
     }
     
     protected void onGetOrders(JSONObject jresp){

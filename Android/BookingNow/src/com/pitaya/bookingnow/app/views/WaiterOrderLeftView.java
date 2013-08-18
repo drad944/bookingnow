@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.OrderDetailActivity;
+import com.pitaya.bookingnow.app.model.CookingItem;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.model.Order.Food;
 import com.pitaya.bookingnow.app.data.GetOrderFoodsHandler;
@@ -30,11 +31,14 @@ import com.pitaya.bookingnow.message.*;
 
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -55,8 +59,24 @@ public class WaiterOrderLeftView extends OrderLeftView{
 	
 	private OrderListsViewPagerAdapter mAdapter;
 	private OrderListsViewPager mOrdersViewPager;
-	private SoftReference<MessageService> msRef;
 	private MessageHandler mMessageHandler;
+	private MessageService mMessageService;
+	private boolean mIsBound = false;
+	
+	private ServiceConnection mConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			mMessageService = ((MessageService.MessageBinder)service).getService();
+			mMessageService.registerHandler(Constants.ORDER_MESSAGE, mMessageHandler);
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			mMessageService = null;
+		}
+
+	};
 	
 	public WaiterOrderLeftView(){
 		super();
@@ -74,6 +94,7 @@ public class WaiterOrderLeftView extends OrderLeftView{
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		doBindService();
 		if(this.mContentContainer.getStatus() != null){
 			this.lastSelectItem = (String)this.mContentContainer.getStatus();
 		}
@@ -90,17 +111,33 @@ public class WaiterOrderLeftView extends OrderLeftView{
 
 			@Override
 			public void onMessage(Message message) {
+				if(message instanceof OrderMessage){
+					OrderMessage msg = (OrderMessage)message;
+					if(msg.getAction().equals(Constants.ACTION_ADD)){
+						//Can only be new welcomer_new order
+						Order order =  new Order(msg.getOrderId(), null, null, 
+								msg.getPhone(), msg.getCustomer(), msg.getPeopleCount(), msg.getTimestamp());
+						order.setSubmitTime(msg.getTimestamp());
+						order.setStatus(Constants.ORDER_WELCOMER_NEW);
+						mAdapter.addNewWaitingOrder(order);
+					}
+				} else if(message instanceof OrderDetailMessage){
+					OrderDetailMessage msg = (OrderDetailMessage)message;
+					if(msg.getUpdateItems() != null && msg.getUpdateItems().size() > 0){
+						updateOrderDetailStatus(msg.getUpdateItems().get(0));
+					}
+				}
 			}
 			
 		});
-		getMessageService().registerHandler(Constants.ORDER_MESSAGE, mMessageHandler);
 		return view;
 	}
 	
 	@Override
 	public void onDestroyView(){
 		super.onDestroyView();
-		getMessageService().unregisterHandler(mMessageHandler);
+		mMessageService.unregisterHandler(mMessageHandler);
+		this.doUnbindService();
 	}
 	
 	public void moveOrderToMineList(Order order){
@@ -162,6 +199,19 @@ public class WaiterOrderLeftView extends OrderLeftView{
 		return this.mOrdersViewPager.getCurrentItem();
 	}
 
+	void doBindService() {
+		this.getActivity().bindService(new Intent(this.getActivity(), MessageService.class), mConnection, Context.BIND_AUTO_CREATE);
+	    mIsBound = true;
+	}
+	
+	void doUnbindService() {
+	    if (mIsBound) {
+	        // Detach our existing connection.
+	    	this.getActivity().unbindService(mConnection);
+	        mIsBound = false;
+	    }
+	}
+	
 	private String getTitleByType(int type){
 		switch(type){
 			case MYORDERS:
@@ -172,11 +222,16 @@ public class WaiterOrderLeftView extends OrderLeftView{
 		return "unknow order list type";
 	}
 	
-	private MessageService getMessageService(){
-		if(this.msRef == null){
-			msRef = new SoftReference<MessageService>(MessageService.getService());
+	private void updateOrderDetailStatus(CookingItem item){
+		Order currentOrder = this.getCurrentOrder();
+		if(currentOrder != null && String.valueOf(item.getOrderId()).equals(currentOrder.getOrderKey())){
+			for(Order.Food food : currentOrder.getFoods().keySet()){
+				if(food.getId().equals(item.getId())){
+					food.setStatus(item.getStatus());
+					return;
+				}
+			}
 		}
-		return (MessageService)msRef.get();
 	}
 	
 	class OrderListsViewPagerAdapter extends PagerAdapter {
@@ -238,6 +293,14 @@ public class WaiterOrderLeftView extends OrderLeftView{
 		public boolean isViewFromObject(View arg0, Object arg1) {
 			return arg0 == arg1;
 		}
+		
+		private void addNewWaitingOrder(Order order){
+			if(this.getCount() > 1){
+				mOrderListViews.get(1).getOrderList().add(order);
+				mOrderListViews.get(1).refresh();
+			}
+		}
+		
 	} //end of OrderListsViewPagerAdapter
 	
 }

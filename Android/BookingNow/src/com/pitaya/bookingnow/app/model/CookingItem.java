@@ -94,6 +94,9 @@ public class CookingItem implements IJSONTransition{
 	}
 	
 	public void setOnStatusChangedListener(OnStatusChangedListener listener){
+		if(this.mListener != null){
+			this.mListener = null;
+		}
 		this.mListener = listener;
 	}
 	
@@ -129,6 +132,12 @@ public class CookingItem implements IJSONTransition{
 	public void fromJSONObject(JSONObject jsonObj) {
 		try {
 			this.id = jsonObj.getLong("id");
+			if(jsonObj.has("order_id")){
+				this.order_id = jsonObj.getLong("order_id");
+			}
+			if(jsonObj.has("status")){
+				this.status = jsonObj.getInt("status");
+			}
 			if(jsonObj.has("isFree")){
 				this.free = jsonObj.getBoolean("isFree");
 			}

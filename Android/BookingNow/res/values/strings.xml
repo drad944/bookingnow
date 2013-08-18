@@ -71,6 +71,9 @@
     <string name="loading">数据加载中...</string>
     <string name="updatemenumessage">检测到菜单有更新，点击确定开始升级菜单</string>
     <string name="updatemenutitle">菜单更新</string>
+    
+    <string name="service_name">BookingMessageService</string>
+    
     <drawable name="common_background">#4e72b8</drawable>
     <drawable name="menu_background">#494e8f</drawable>
     

@@ -21,7 +21,7 @@ public class HttpHandler extends Handler implements AsyncCallBack{
         if(result == Constants.SUCCESS){
         	this.onSuccess(bundle.getString(ACTION_TYPE), bundle.getString(RESPONSE));
         } else if(result == Constants.FAIL){
-        	Log.e(TAG, "Error in http service, code is " + bundle.getInt("statusCode"));
+        	Log.e(TAG, "Error in http service, code is " + bundle.getInt(ERROR_CODE));
         	this.onFail(bundle.getString(ACTION_TYPE), bundle.getInt(ERROR_CODE));
         }
 	}

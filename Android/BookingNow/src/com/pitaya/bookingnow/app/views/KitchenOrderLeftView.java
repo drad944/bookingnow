@@ -9,9 +9,15 @@ import com.pitaya.bookingnow.app.util.Constants;
 import com.pitaya.bookingnow.message.Message;
 import com.pitaya.bookingnow.message.OrderDetailMessage;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,16 +25,33 @@ import android.view.ViewGroup;
 public class KitchenOrderLeftView extends OrderLeftView{
 	
 	private static final String TAG = "KitchenOrderLeftView";
-	private SoftReference<MessageService> msRef;
 	private MessageHandler mMessageHandler;
 	private CookingItemsListFragment mContent;
-
+	private MessageService mMessageService;
+	private boolean mIsBound = false;
+	
 	public KitchenOrderLeftView(){
 		super();
 	}
 	
+	private ServiceConnection mConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			mMessageService = ((MessageService.MessageBinder)service).getService();
+			mMessageService.registerHandler(Constants.ORDER_MESSAGE, mMessageHandler);
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			mMessageService = null;
+		}
+
+	};
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		doBindService();
 		View view = inflater.inflate(R.layout.orderleftview4kitchen, null);
 		this.showCookingItemsList();
 		mMessageHandler = new MessageHandler();
@@ -43,14 +66,14 @@ public class KitchenOrderLeftView extends OrderLeftView{
 			}
 			
 		});
-		getMessageService().registerHandler(Constants.ORDER_MESSAGE, mMessageHandler);
 		return view;
 	}
 	
 	@Override
 	public void onDestroyView(){
 		super.onDestroyView();
-		getMessageService().unregisterHandler(mMessageHandler);
+		mMessageService.unregisterHandler(mMessageHandler);
+		this.doUnbindService();
 	}
 	
 	public void showCookingItemsList(){
@@ -62,11 +85,16 @@ public class KitchenOrderLeftView extends OrderLeftView{
 		fragmentTransaction.commit();
 	}
 	
-	private MessageService getMessageService(){
-		if(this.msRef == null){
-			msRef = new SoftReference<MessageService>(MessageService.getService());
-		}
-		return (MessageService)msRef.get();
+	void doBindService() {
+		this.getActivity().bindService(new Intent(this.getActivity(), MessageService.class), mConnection, Context.BIND_AUTO_CREATE);
+	    mIsBound = true;
 	}
 	
+	void doUnbindService() {
+	    if (mIsBound) {
+	        // Detach our existing connection.
+	    	this.getActivity().unbindService(mConnection);
+	        mIsBound = false;
+	    }
+	}
 }

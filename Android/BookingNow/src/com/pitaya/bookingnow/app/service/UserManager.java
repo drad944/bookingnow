@@ -20,6 +20,7 @@ public class UserManager {
 	public static final String PASSWORD = "PASSWORD";
 	public static Integer ROLE = null;
 	public static Long userId = null;
+	public static String username = null;
 
 	private static final String TAG = "UserManager";
 	
@@ -37,6 +38,14 @@ public class UserManager {
 	
 	public static void setUserId(Long id){
 		userId = id;
+	}
+	
+	public static void setUsername(String name){
+		username = name;
+	}
+	
+	public static String getUsername(){
+		return username;
 	}
 	
 	public static String[] getUsernameAndPassword(Context context){

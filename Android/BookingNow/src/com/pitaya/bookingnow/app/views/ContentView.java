@@ -39,21 +39,31 @@ public class ContentView extends ViewGroup {
 	public ContentView(Context context) {
 		super(context);
 		this.context = context;
+		final float scale = getContext().getResources().getDisplayMetrics().density;
+		this.menuWidth =  (int) (200 * scale + 0.5f);
 		init();
 	}
 
 	public ContentView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.context = context;
+		final float scale = getContext().getResources().getDisplayMetrics().density;
+		this.menuWidth =  (int) (200 * scale + 0.5f);
 		init();
 	}
 
 	public ContentView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		this.context = context;
+		final float scale = getContext().getResources().getDisplayMetrics().density;
+		this.menuWidth =  (int) (200 * scale + 0.5f);
 		init();
 	}
 
+	public int getMenuWidth(){
+		return this.menuWidth;
+	}
+	
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -169,7 +179,7 @@ public class ContentView extends ViewGroup {
 				}
 				mLastMotionX = x;
 				mLastMotionY = y;
-				if (getScrollX() == -200 && mLastMotionX < 200) {
+				if (getScrollX() == - this.menuWidth && mLastMotionX < this.menuWidth) {
 					return false;
 				}
 				break;

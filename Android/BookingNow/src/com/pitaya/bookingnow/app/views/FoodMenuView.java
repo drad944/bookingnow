@@ -341,7 +341,6 @@ public class FoodMenuView extends FrameLayout{
 	         	});
 	        }
             return view;
-            
         }
           
     }

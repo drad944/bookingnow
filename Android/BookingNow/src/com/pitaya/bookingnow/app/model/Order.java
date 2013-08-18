@@ -358,6 +358,17 @@ public class Order implements Serializable{
 		this.mOnStatusChangedListeners = null;
 	}
 	
+	public void removeOnStatusChangedListener(OnOrderStatusChangedListener listener){
+		if(this.mOnStatusChangedListeners != null){
+			for(int i = this.mOnStatusChangedListeners.size() - 1; i >= 0; i--){
+				OnOrderStatusChangedListener l = this.mOnStatusChangedListeners.get(i);
+				if(l == listener){
+					this.mOnStatusChangedListeners.remove(i);
+				}
+			}
+		}
+	}
+	
 	public void addOnDirtyChangedListener(OnDirtyChangedListener listener){
 		if(this.mOnDirtyChangedListeners == null){
 			this.mOnDirtyChangedListeners = new ArrayList<OnDirtyChangedListener>();

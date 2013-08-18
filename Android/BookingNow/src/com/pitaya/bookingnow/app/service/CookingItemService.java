@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.pitaya.bookingnow.app.data.HttpHandler;
+import com.pitaya.bookingnow.app.model.CookingItem;
 
 public class CookingItemService {
 	
@@ -26,7 +27,21 @@ public class CookingItemService {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-
+	}
+	
+	public static void updateStatus(Long id, int status, HttpHandler callback){
+		JSONObject jreq = new JSONObject();
+		JSONObject jfood_detail = new JSONObject();
+		try {
+			jfood_detail.put("id", id);
+			jfood_detail.put("status", status);
+			jreq.put("food_detail", jfood_detail);
+			HttpService.post("updateStatusOfFood_Detail.action", new StringEntity(jreq.toString()), callback);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

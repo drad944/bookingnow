@@ -246,12 +246,11 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 						allCategory.add(new Food(firstFood.getKey(), entry.getKey(), 0f, "", null, false));
 					}
 				}
-				if(mFoodMenuAdapter == null){
-					mFoodMenuAdapter = new FoodMenuAdapter(mFoodMenuContentView.getContext(),  foods);
-				} else {
-					mFoodMenuViewPager.invalidate();
-					mFoodMenuAdapter.updateFoods(foods);
+				if(mFoodMenuAdapter != null){
+					mFoodMenuAdapter = null;
+					System.gc();
 				}
+				mFoodMenuAdapter = new FoodMenuAdapter(mFoodMenuContentView.getContext(),  foods);
 				mFoodMenuViewPager.setAdapter(mFoodMenuAdapter);
 			}
 		}

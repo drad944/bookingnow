@@ -31,6 +31,7 @@ public class Client extends Thread{
 	    }
 	    
 	    public void run(){
+	    	boolean error = false;
 	        try {
 		    	isConnecting = true;
 				setupConnection();
@@ -51,60 +52,65 @@ public class Client extends Thread{
             	}
 	        } catch (UnknownHostException e) {
 	        	if(this.service != null){
-    				this.service.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "无法连接到服务器"));
+    				this.service.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "无法识别的服务器"));
     			}
+	        	error = true;
 	        	Log.e(LOGTAG, "Fail to connect to web server");
 	            e.printStackTrace();
 	        } catch (IOException e) {
 	        	if(this.service != null){
-    				this.service.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "无法连接到服务器或连接断开"));
+    				this.service.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "无法连接到服务器或连接中断"));
     			}
+	        	error = true;
 	        	Log.e(LOGTAG, "Fail to connect to web server");
 				e.printStackTrace();
 			} finally {
-	        	try {
-	        		 if(in != null){
-					    in.close();
-					    in = null;
-	        		 }
-	        		 if(out != null){
-					    out.close();
-					    out = null;
-	        		 } 
-					 if (socket != null && !socket.isClosed()){
-						 socket.close();
-						 socket = null;
-					 }
-				} catch (IOException e) {
-					e.printStackTrace();
+				if(in != null){
+		        	try {
+						in.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
+	       		if(out != null){
+					out.close();
+	       		} 
+	       		if (socket != null && !socket.isClosed()){
+					try {
+						socket.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+	       		}
+	       		socket = null;
 		    	isConnecting = false;
+	        	if(this.service != null && error == false){
+    				this.service.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "与服务器连接中断"));
+    			}
 	        }
 	    }
 
 	    public void shutdown(){
+	    	 if(in != null){
 				try {
-	        		 if(in != null){
-					    in.close();
-					    in = null;
-	        		 }
-	        		 if(out != null){
-					    out.close();
-					    out = null;
-	        		 } 
-					 if (socket != null && !socket.isClosed()){
-						 try {
-							socket.close();
-							socket = null;
-							Log.i(LOGTAG, "Success to shutdown the connection to server");
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					 }
-					 this.interrupt();
+	        		 in.close();
 				} catch (IOException e) {
 					 e.printStackTrace();
+				}	 
+	    	 }
+   		     if(out != null){
+			    out.close();
+   		     }
+			 if (socket != null && !socket.isClosed()){
+				try {
+					socket.close();
+					Log.i(LOGTAG, "Success to shutdown the connection to server");
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
+			 }
+			 socket = null;
+			 this.interrupt();
 	    }
 
 	    public synchronized boolean sendMessage(String msg) {
