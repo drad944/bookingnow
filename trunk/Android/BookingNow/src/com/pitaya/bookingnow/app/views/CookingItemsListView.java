@@ -19,6 +19,7 @@ import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.util.Constants;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -89,7 +90,7 @@ public class CookingItemsListView extends RelativeLayout{
     public void removeItems(List<CookingItem> items){
     	for(CookingItem removeItem : items){
     		for(int i =this.mCookingItemsList.size() - 1; i >=0; i--){
-    			if(removeItem.getId().equals(this.mCookingItemsList.get(i))){
+    			if(removeItem.getId().equals(this.mCookingItemsList.get(i).getId())){
     				this.mCookingItemsList.remove(i);
     			}
     		}
@@ -118,8 +119,8 @@ public class CookingItemsListView extends RelativeLayout{
 					return;
 				}
 				if(view == mListView){
-					Log.i(TAG, "on scroll:" + firstVisibleItem + " " + visibleItemCount + " " + totalItemCount);
-					if(firstVisibleItem + visibleItemCount == totalItemCount){
+					//Log.i(TAG, "on scroll:" + firstVisibleItem + " " + visibleItemCount + " " + totalItemCount);
+					if(firstVisibleItem != 0 && firstVisibleItem + visibleItemCount == totalItemCount){
 						flag = true;
 					} else {
 						flag = false;
@@ -130,9 +131,8 @@ public class CookingItemsListView extends RelativeLayout{
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				if(scrollState == SCROLL_STATE_IDLE || scrollState == SCROLL_STATE_FLING){
-					Log.i(TAG, "Scroll state changed");
 					if(this.flag == true){
-						getNextCookingItems(true);
+						getNextCookingItems(true, 0L);
 					}
 				}
 			}
@@ -150,11 +150,11 @@ public class CookingItemsListView extends RelativeLayout{
         ((TextView)this.mHeaderView.findViewById(R.id.timertitle)).setText(R.string.cookingitem_title_timer);
         ((TextView)this.mHeaderView.findViewById(R.id.statustitle)).setText(R.string.cookingitem_title_status);
         ((TextView)this.mHeaderView.findViewById(R.id.operationstitle)).setText(R.string.cookingitem_title_operations);
-        this.getNextCookingItems(false);
+        this.getNextCookingItems(false, 0L);
     }
     
-    public void getNextCookingItems(boolean isForce){
-    	if(this.mCookingItemsList.size() >= TOTAL_RECORDS_THRESHOLD){
+    public void getNextCookingItems(boolean isForce, Long delay){
+    	if(this.mCookingItemsList.size() >= TOTAL_RECORDS_THRESHOLD || this.isUpdating == true){
     		return;
     	}    	
 		int count = 0;
@@ -166,60 +166,58 @@ public class CookingItemsListView extends RelativeLayout{
 			count = INIT_RECORDS_THRESHOLD - this.mCookingItemsList.size();
 		}
 		if(count > 0){
-			toggleLoadingMsg(true);
-	    	synchronized(this){
-	    		if(isUpdating){
-	    			return;
-	    		} else {
-	    			isUpdating = true;
-	    		}
-	    	}
-    		CookingItemService.getCookingItems(mStatusList, mBeginId, count, new HttpHandler(){
-        		
-            	@Override
-            	public void onSuccess(String action, String response) {
-            		try {
-            			JSONObject jresp = new JSONObject(response);
-            			if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
-            				//TODO handle fail
-                        	synchronized(this){
-                    			isUpdating = false;
-                        	}
-            			} else {
-            				JSONArray jcookingitems = jresp.getJSONArray("result");
-            				for(int i=0; i < jcookingitems.length(); i++){
-            					JSONObject jcookingitem = jcookingitems.getJSONObject(i);
-            					JSONObject jfood = jcookingitem.getJSONObject("food");
-            					CookingItem cookingitem = new CookingItem(jcookingitem.getLong("id"),
-            							jfood.getLong("id"), jcookingitem.getLong("order_id"), jfood.getString("name"), 
-            							jcookingitem.getInt("status"), jcookingitem.getInt("count"),
-            							jcookingitem.getBoolean("isFree"), null, jcookingitem.getLong("last_modify_time"));
-            					mCookingItemsList.add(cookingitem);
-            					if(i == jcookingitems.length() - 1){
-            						mBeginId = jcookingitem.getLong("id");
-            					}
-            				}
-            				onGetCookingItems();
-            			}
-            		} catch (JSONException e) {
-            			e.printStackTrace();
-                    	synchronized(this){
-                			isUpdating = false;
-                    	}
-            		}
-            		toggleLoadingMsg(false);
-            	}
+			isUpdating = true;
+			Handler handler = new Handler();
+			final int total = count;
+			handler.postDelayed(new Runnable(){
 
-            	@Override
-            	public void onFail(String action, int statuscode) {
-            		Log.e(TAG, "[CookingItemService.getCookingItems] Network error:" + statuscode);
-                	synchronized(this){
-            			isUpdating = false;
-                	}
-                	toggleLoadingMsg(false);
-            	}
-            	
-            });
+				@Override
+				public void run() {
+		    		toggleLoadingMsg(true);
+		    		CookingItemService.getCookingItems(mStatusList, mBeginId, total, new HttpHandler(){
+		        		
+		            	@Override
+		            	public void onSuccess(String action, String response) {
+		            		try {
+		            			JSONObject jresp = new JSONObject(response);
+		            			if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
+		            				//TODO handle fail
+		            			} else {
+		            				JSONArray jcookingitems = jresp.getJSONArray("result");
+		            				for(int i = 0; i < jcookingitems.length(); i++){
+		            					JSONObject jcookingitem = jcookingitems.getJSONObject(i);
+		            					JSONObject jfood = jcookingitem.getJSONObject("food");
+		            					CookingItem cookingitem = new CookingItem(jcookingitem.getLong("id"),
+		            							jfood.getLong("id"), jcookingitem.getLong("order_id"), jfood.getString("name"), 
+		            							jcookingitem.getInt("status"), jcookingitem.getInt("count"),
+		            							jcookingitem.getBoolean("isFree"), null, jcookingitem.getLong("last_modify_time"));
+		            					mCookingItemsList.add(cookingitem);
+		            					if(jcookingitem.getLong("id") > mBeginId){
+		            						mBeginId = jcookingitem.getLong("id");
+		            					}
+		            				}
+		            				if(jcookingitems.length() > 0){
+		            					onGetCookingItems();
+		            				}
+		            			}
+		            		} catch (JSONException e) {
+		            			e.printStackTrace();
+		            		}
+		        			isUpdating = false;
+		            		toggleLoadingMsg(false);
+		            	}
+
+		            	@Override
+		            	public void onFail(String action, int statuscode) {
+		            		Log.e(TAG, "[CookingItemService.getCookingItems] Network error:" + statuscode);
+		        			isUpdating = false;
+		                	toggleLoadingMsg(false);
+		            	}
+		            	
+		            });
+				}
+				
+			}, delay);
 		}
 
     }
@@ -230,10 +228,7 @@ public class CookingItemsListView extends RelativeLayout{
     		mAdapter.setCookingItems(mCookingItemsList);
     		this.mListView.setAdapter(mAdapter);
     	} else {
-    		mAdapter.notifyDataSetChanged();
-    	}
-    	synchronized(this){
-			isUpdating = false;
+			mAdapter.notifyDataSetChanged();	
     	}
     }
     

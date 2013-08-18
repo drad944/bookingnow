@@ -92,6 +92,7 @@ public class WaiterOrderListView extends OrderListView{
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
+						tablesView.close();
 					}
 
 					@Override
@@ -176,30 +177,44 @@ public class WaiterOrderListView extends OrderListView{
 			    		Order order = orderlist.get(position);
 			    		if(view == null){
 			    			view = View.inflate(parent.getContext(), R.layout.orderinfoview, null);
+			    			ViewHolder holder = new ViewHolder();
+			    			holder.info1 = (TextView)view.findViewById(R.id.info1);
+			    			holder.info2 = (TextView)view.findViewById(R.id.info2);
+			    			holder.info3 = (TextView)view.findViewById(R.id.info3);
+			    			holder.info4 = (TextView)view.findViewById(R.id.info4);
+			    			holder.info5 = (TextView)view.findViewById(R.id.info5);
+			    			view.setTag(holder);
 			    		}
+			    		
+			    		final ViewHolder viewHolder = (ViewHolder)view.getTag();
 			    		if(this.selectItem != null && this.selectItem == position){
 			    			view.setBackgroundColor(parent.getContext().getResources().getColor(R.color.common_background));
 			    		} else {
 			    			view.setBackgroundColor(parent.getContext().getResources().getColor(android.R.color.white));
 			    		}
-			
-			    		((TextView)view.findViewById(R.id.info1)).setText(order.getTableNum());
-			    		((TextView)view.findViewById(R.id.info2)).setText(Order.getOrderStatusString(order.getStatus()));
-			    		order.addOnStatusChangedListener(new OnOrderStatusChangedListener(){
+			    		viewHolder.info1.setText(order.getTableNum());
+			    		viewHolder.info2.setText(Order.getOrderStatusString(order.getStatus()));
+			    		if(viewHolder.getOrder() != null && viewHolder.getStatusListener() != null){
+			    			viewHolder.getOrder().removeOnStatusChangedListener(viewHolder.getStatusListener());
+			    		}
+			    		viewHolder.setOrder(order);
+			    		OnOrderStatusChangedListener statuslistener = new OnOrderStatusChangedListener(){
 			
 			    			@Override
 			    			public void onOrderStatusChanged(Order order, int status) {
-			    				updateOrderStatus(index, status);
+			    				//updateOrderStatus(index, status);
+			    				viewHolder.info2.setText(Order.getOrderStatusString(order.getStatus()));
 			    			}
 			    			
-			    		});
-			    		SimpleDateFormat dateFm = new SimpleDateFormat("MM月dd日 HH:mm:ss"); 
+			    		};
+			    		viewHolder.setStatusListener(statuslistener);
+			    		order.addOnStatusChangedListener(statuslistener);
+			    		SimpleDateFormat dateFm = new SimpleDateFormat("MM月dd日 HH:mm"); 
 			    		Date date = new Date();
 			    		date.setTime(order.getModificationTime());
-			    		((TextView)view.findViewById(R.id.info3)).setText(dateFm.format(date));
-			    		
-			    		view.findViewById(R.id.info4).setVisibility(View.GONE);
-			    		view.findViewById(R.id.info5).setVisibility(View.GONE);
+			    		viewHolder.info3.setText(dateFm.format(date));
+			    		viewHolder.info4.setVisibility(View.GONE);
+			    		viewHolder.info5.setVisibility(View.GONE);
 			    		return view;
 		        	}
 		        };

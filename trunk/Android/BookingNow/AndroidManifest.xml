@@ -40,6 +40,11 @@
             	android:configChanges="screenSize|orientation"
             	android:windowSoftInputMode="adjustPan">
         </activity>
+        <service
+            android:name=".service.MessageService"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/service_name" >
+        </service>
         <provider
       		    android:name=".service.FoodMenuContentProvider"
       		    android:authorities="com.pitaya.bookingnow.food.contentprovider" >

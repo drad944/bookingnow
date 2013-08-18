@@ -1,5 +1,6 @@
 package com.pitaya.bookingnow.app.data;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -71,6 +72,47 @@ public class OrderListAdapter extends BaseAdapter{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		return null;
+	}
+	
+	public static class ViewHolder{
+		public TextView info1;
+		public TextView info2;
+		public TextView info3;
+		public TextView info4;
+		public TextView info5;
+		public WeakReference<Order> currentDisplayOrderRef;
+		public WeakReference<Order.OnOrderStatusChangedListener> listenerRef;
+		public ViewHolder(){};
+		
+		public Order getOrder(){
+			if(currentDisplayOrderRef != null){
+				return currentDisplayOrderRef.get();
+			} else {
+				return null;
+			}
+		}
+		
+		public void setOrder(Order order){
+			if(currentDisplayOrderRef != null){
+				currentDisplayOrderRef.clear();
+			}
+			currentDisplayOrderRef = new WeakReference<Order>(order);
+		}
+		
+		public Order.OnOrderStatusChangedListener getStatusListener(){
+			if(listenerRef != null){
+				return listenerRef.get();
+			} else {
+				return null;
+			}
+		}
+		
+		public void setStatusListener(Order.OnOrderStatusChangedListener l){
+			if(listenerRef != null){
+				listenerRef.clear();
+			}
+			listenerRef = new WeakReference<Order.OnOrderStatusChangedListener>(l);
+		}
 	}
 	
 }

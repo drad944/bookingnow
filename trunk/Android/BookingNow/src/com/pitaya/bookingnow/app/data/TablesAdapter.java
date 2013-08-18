@@ -49,27 +49,27 @@ public class TablesAdapter extends BaseAdapter{
 			final int index = position;
 			if(view == null){
 				view = new CheckBox(mContext);
-				((CheckBox)view).setText(this.tables.get(position).getLabel());
-				((CheckBox)view).setOnCheckedChangeListener(new OnCheckedChangeListener(){
+			}
+			((CheckBox)view).setText(this.tables.get(position).getLabel());
+			((CheckBox)view).setOnCheckedChangeListener(new OnCheckedChangeListener(){
 
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView,
-							boolean isChecked) {
-						if(isChecked){
-							selectedTables.add(tables.get(index));
-						} else {
-							int i = 0;
-							while(!selectedTables.get(i).equals(tables.get(index).getId())){
-								i++;
-							}
-							if(i < selectedTables.size()){
-								selectedTables.remove(i);
-							}
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView,
+						boolean isChecked) {
+					if(isChecked){
+						selectedTables.add(tables.get(index));
+					} else {
+						int i = 0;
+						while(!selectedTables.get(i).getId().equals(tables.get(index).getId())){
+							i++;
+						}
+						if(i < selectedTables.size()){
+							selectedTables.remove(i);
 						}
 					}
-					
-				});
-			}
+				}
+				
+			});
 			return view;
 		}
 	

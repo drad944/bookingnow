@@ -39,7 +39,7 @@ public class DataService {
 	    		FoodMenuTable.COLUMN_REVISION,
 	    		FoodMenuTable.COLUMN_STATUS };
 		CursorLoader cursorLoader = new CursorLoader(context, FoodMenuContentProvider.CONTENT_URI, 
-				projection, null, null, null);
+				projection, null, null, FoodMenuTable.COLUMN_CATEGORY);
 		return cursorLoader;
 	}
 	
@@ -55,7 +55,7 @@ public class DataService {
 	    		FoodMenuTable.COLUMN_REVISION,
 	    		FoodMenuTable.COLUMN_STATUS };
 		  CursorLoader cursorLoader = new CursorLoader(context, FoodMenuContentProvider.CONTENT_URI, 
-				projection, FoodMenuTable.COLUMN_CATEGORY + "=?",  new String[]{category}, null);
+				projection, FoodMenuTable.COLUMN_CATEGORY + "=?",  new String[]{category}, FoodMenuTable.COLUMN_NAME);
 		  return cursorLoader;
 	}
 	
@@ -226,11 +226,13 @@ public class DataService {
 				Long version = null;
 				Cursor subcursor = context.getContentResolver().query(FoodMenuContentProvider.CONTENT_URI, foodprojection,
 						FoodMenuTable.COLUMN_FOOD_KEY + "=?", new String[]{food_key},null);
-				if(subcursor != null && subcursor.moveToFirst()){
-					int [] subindexes = getColumnIndexs(subcursor, foodprojection);
-					food_name = subcursor.getString(subindexes[0]);
-					price = subcursor.getFloat(subindexes[1]);
-					version = subcursor.getLong(subindexes[2]);
+				if(subcursor != null){
+					if(subcursor.moveToFirst()){
+						int [] subindexes = getColumnIndexs(subcursor, foodprojection);
+						food_name = subcursor.getString(subindexes[0]);
+						price = subcursor.getFloat(subindexes[1]);
+						version = subcursor.getLong(subindexes[2]);
+					}
 					subcursor.close();
 				}
 				Order.Food food = order.new Food(food_key, food_name, price);
@@ -418,9 +420,11 @@ public class DataService {
 		Cursor cursor = context.getContentResolver().query(OrderContentProvider.CONTENT_URI, projection, 
 				OrderTable.COLUMN_ORDER_KEY + "=?", new String[]{order.getOrderKey()}, null);
 		
-		if(cursor != null && cursor.moveToFirst()){
-			int [] indexes =  getColumnIndexs(cursor, projection);
-			order.setDirty(Boolean.parseBoolean(cursor.getString(indexes[0])));
+		if(cursor != null){
+			if(cursor.moveToFirst()){
+				int [] indexes =  getColumnIndexs(cursor, projection);
+				order.setDirty(Boolean.parseBoolean(cursor.getString(indexes[0])));
+			}
 			cursor.close();
 		} else {
 			order.setDirty(false);

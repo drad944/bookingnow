@@ -53,7 +53,11 @@ public class OrderLeftView extends Fragment{
 	
 	public void showOrderDetail(Order order, boolean isForce, Class<? extends OrderDetailAdapter> orderDetailAdapterClz){
         String key = order.getOrderKey();
-        OrderDetailFragment details = (OrderDetailFragment)getFragmentManager().findFragmentById(R.id.orderdetail);
+        OrderDetailFragment details = null;
+    	Fragment fragment = getFragmentManager().findFragmentById(R.id.orderdetail);
+    	if(fragment != null && fragment instanceof OrderDetailFragment){
+    		details = (OrderDetailFragment)fragment;
+    	}
         if (details == null || isForce || !details.getShownOrder().getOrderKey().equals(key)) {
         	FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
     		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -61,6 +65,15 @@ public class OrderLeftView extends Fragment{
     		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
     		fragmentTransaction.commit();
         }
+	}
+	
+	protected Order getCurrentOrder(){
+		 OrderDetailFragment details = (OrderDetailFragment)getFragmentManager().findFragmentById(R.id.orderdetail);
+		 if(details != null){
+			 return details.getShownOrder();
+		 } else {
+			 return null;
+		 }
 	}
 	
 }

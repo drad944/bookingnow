@@ -45,7 +45,7 @@ public class CookingItemsListFragment extends Fragment{
     		this.mView.refresh();
     	}
     	if(hasNew){
-    		this.mView.getNextCookingItems(false);
+    		this.mView.getNextCookingItems(false, 5000L);
     	}
     }
 }

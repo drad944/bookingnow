@@ -37,6 +37,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 //import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -50,9 +51,12 @@ import android.widget.TextView;
 import android.widget.CheckBox;
 import android.widget.Toast;
 import android.view.LayoutInflater;
+import android.content.ComponentName;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;  
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -68,22 +72,51 @@ public class HomeActivity extends FragmentActivity {
 	
 	private SlideContent homecontent;
 	private View mLeftMenu;
+	private TextView mUserInfoView;
+	private TextView mOnlineInfoView;
 	
 	private AlertDialog loginDialog;
 	private AlertDialog menuUpdateDialog;
 	
-	private SoftReference<MessageService> msRef;
 	private MessageHandler mMessageHandler;
+	private MessageService mBoundService;
+	private boolean mIsBound = false;
 	private boolean isUpdating = false;
 	private boolean isRemeberMe = false;
 	private String username;
 	private String password;
 	
+	private ServiceConnection mConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			Log.i(TAG, "Service connected");
+			mBoundService = ((MessageService.MessageBinder)service).getService();
+			mBoundService.registerHandler(Constants.RESULT_MESSAGE, mMessageHandler);
+			mBoundService.registerHandler(Constants.FOOD_MESSAGE, mMessageHandler);
+			if(mBoundService.isReady()){
+				doAutoLogin();
+				checkMenuUpdate();
+				mOnlineInfoView.setText("状态: 在线" );
+			} else if(mBoundService.isConnecting()){
+				mOnlineInfoView.setText("状态: 连接中..." );
+			} else {
+				mOnlineInfoView.setText("状态: 离线" );
+			}
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			Log.i(TAG, "Service disconnected");
+			mBoundService = null;
+		}
+
+	};
+	
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 		this.setHomeContent();
-		MessageService.initService("192.168.0.102", 19191);
 		mMessageHandler = new MessageHandler();
 		mMessageHandler.setOnMessageListener(new MessageHandler.OnMessageListener() {
 			
@@ -101,8 +134,6 @@ public class HomeActivity extends FragmentActivity {
 	            }
 			}
 		});
-		this.getMessageService().registerHandler(Constants.RESULT_MESSAGE, mMessageHandler);
-		this.getMessageService().registerHandler(Constants.FOOD_MESSAGE, mMessageHandler);
 		setOrder();
 	}
 	
@@ -113,6 +144,23 @@ public class HomeActivity extends FragmentActivity {
 		setOrder();
 	}
 	
+	void doStartService(){
+		this.startService(new Intent(this, MessageService.class));
+	}
+	
+	void doBindService() {
+		bindService(new Intent(this, MessageService.class), mConnection, Context.BIND_AUTO_CREATE);
+	    mIsBound = true;
+	}
+	
+	void doUnbindService() {
+	    if (mIsBound) {
+	        // Detach our existing connection.
+	        unbindService(mConnection);
+	        mIsBound = false;
+	    }
+	}
+	
 	private void setOrder(){
 		Intent intent = this.getIntent();
 		Bundle bundle = intent.getExtras();
@@ -121,47 +169,22 @@ public class HomeActivity extends FragmentActivity {
 		}
 	}
 	
-	private MessageService getMessageService(){
-		if(this.msRef == null){
-			msRef = new SoftReference<MessageService>(MessageService.getService());
-		}
-		return (MessageService)msRef.get();
-	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
-		if(!this.getMessageService().isReady()){
-			if(this.getMessageService().isConnecting()){ 
-				showConnectResultToast("正在连接服务器...");
-			} else {
-				MessageService.initService("192.168.0.102", 19191);
-			}
-		} else {
-			Log.i(TAG, "The service is ready");
-			this.doAutoLogin();
-			this.checkMenuUpdate();
+		this.doStartService();
+		if(!this.mIsBound){
+			this.doBindService();
 		}
 	}
-	
-	
-//   @Override
-//    public void onSaveInstanceState(Bundle savedInstanceState) {
-//		super.onSaveInstanceState(savedInstanceState);
-//    }
-//	   
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig){
-//    	super.onConfigurationChanged(newConfig);
-//    	setContentView(homecontent);
-//    }
-   
 	
 	@Override  
 	public void onDestroy() {
 		super.onDestroy();
 		Log.i(TAG, "onDestroy");
-		this.getMessageService().unregisterHandler(mMessageHandler);
+		mBoundService.unregisterHandler(mMessageHandler);
+		this.doUnbindService();
     }
 	
 	private synchronized void refreshMenuByRole(){
@@ -170,10 +193,14 @@ public class HomeActivity extends FragmentActivity {
 			this.mLeftMenu.findViewById(R.id.order_btn).setVisibility(View.VISIBLE);
 			this.mLeftMenu.findViewById(R.id.login_btn).setVisibility(View.GONE);
 			this.mLeftMenu.findViewById(R.id.logout_btn).setVisibility(View.VISIBLE);
+			this.mUserInfoView.setVisibility(View.VISIBLE);
+			this.mUserInfoView.setText("用户: " + this.username);
 		} else {
 			this.mLeftMenu.findViewById(R.id.order_btn).setVisibility(View.GONE);
 			this.mLeftMenu.findViewById(R.id.login_btn).setVisibility(View.VISIBLE);
 			this.mLeftMenu.findViewById(R.id.logout_btn).setVisibility(View.GONE);
+			this.mUserInfoView.setVisibility(View.GONE);
+			this.mUserInfoView.setText("");
 		}
 	}
 	
@@ -185,6 +212,8 @@ public class HomeActivity extends FragmentActivity {
 			
 			LinearLayout menuitems = (LinearLayout)(mLeftMenu.findViewById(R.id.leftmenu));
 			
+			this.mUserInfoView = (TextView)menuitems.findViewById(R.id.userinfo);
+			this.mOnlineInfoView = (TextView)menuitems.findViewById(R.id.onlineinfo);
 			View menuitem = menuitems.findViewById(R.id.menu_btn);
 			menuitem.setOnClickListener(new OnClickListener(){
 				@Override
@@ -225,7 +254,7 @@ public class HomeActivity extends FragmentActivity {
 			menuitem.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view) {
-	           	 	if(!HomeActivity.this.getMessageService().sendMessage(new RegisterMessage(UserManager.getUserId(), "unregister"))){
+	           	 	if(!HomeActivity.this.mIsBound && HomeActivity.this.mBoundService.sendMessage(new RegisterMessage(UserManager.getUserId(), "unregister"))){
 	           	 		Log.e(TAG, "Fail to send unregister message");
 	           	 	}
 					UserManager.setUserRole(null);
@@ -353,9 +382,11 @@ public class HomeActivity extends FragmentActivity {
 		if(message.getResult() == Constants.SUCCESS){
 			this.doAutoLogin();
 			this.checkMenuUpdate();
+			this.mOnlineInfoView.setText("状态: 在线");
 		} else {
 			UserManager.setUserRole(null);
 			this.refreshMenuByRole();
+			this.mOnlineInfoView.setText("状态: 离线");
 		}
 	}
 	
@@ -383,9 +414,11 @@ public class HomeActivity extends FragmentActivity {
 				ToastUtil.showToast(this, "登录成功", Toast.LENGTH_SHORT);
 				this.refreshMenuByRole();
 				this.homecontent.selectItem("menu");
-           	 	if(!this.getMessageService().sendMessage(new RegisterMessage(id, "register"))){
-           	 		Log.e(TAG, "Fail to send register message");
-           	 	}
+				if(this.mIsBound){
+					if(this.mBoundService.sendMessage(new RegisterMessage(id, "register"))){
+	           	 		Log.e(TAG, "Fail to send register message");
+	           	 	}
+				}
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -406,6 +439,7 @@ public class HomeActivity extends FragmentActivity {
 			String [] userinfo = UserManager.getUsernameAndPassword(this);
 			if(userinfo != null){
 				//auto login
+				this.username = userinfo[0];
 				UserManager.login(userinfo[0], userinfo[1], new HttpHandler(){
 				
 					@Override

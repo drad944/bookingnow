@@ -22,7 +22,6 @@ public class LeftMenuView extends ViewGroup {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
 		int width = getDefaultSize(0, widthMeasureSpec);
 		int height = getDefaultSize(0, heightMeasureSpec);
 		setMeasuredDimension(width, height);
@@ -30,8 +29,8 @@ public class LeftMenuView extends ViewGroup {
 				height);
 		final int menuWidth = getChildMeasureSpec(widthMeasureSpec, 0,
 				mContainer.getWidth());
-		Log.e("ad", "menuWidth----------------" + menuWidth);
-		Log.e("ad", "contentHeight----------------" + contentHeight);
+		Log.i("ad", "menuWidth----------------" + menuWidth);
+		Log.i("ad", "contentHeight----------------" + contentHeight);
 		mContainer.measure(menuWidth, contentHeight);
 	}
 	
@@ -39,7 +38,9 @@ public class LeftMenuView extends ViewGroup {
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		final int width = r - l;
 		final int height = b - t;
-		mContainer.layout(0, 0, 200, height);		
+		final float scale = getContext().getResources().getDisplayMetrics().density;
+		int menuWidth =  (int) (200 * scale + 0.5f);
+		mContainer.layout(0, 0, menuWidth, height);
 	}
 
 	public void setView(View v) {
