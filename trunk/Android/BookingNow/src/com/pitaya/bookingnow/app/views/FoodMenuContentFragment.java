@@ -92,12 +92,12 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		}
 		
 		private int getPopupWindowSize(int items){
-			return (items + 1) * 40 + 8;
+			int height = (items + 1) * 40 + 8;
+			return height > 700 ? 600 : height;
 		}
 		
 		@Override
 	    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-			Log.i(TAG, "onCreateView in FoodMenuContentFragment" + this.hashCode());
 			mFoodMenuContentView = inflater.inflate(R.layout.foodmenucontentview, container, false);
 			mFoodMenuViewPager = (ViewPager)mFoodMenuContentView.findViewById(R.id.foodmenuviewpager);
 			
@@ -113,7 +113,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 				popupWindow.setFocusable(true);
 		        popupWindow.setOutsideTouchable(false);
 		        popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
-		        popupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+		        popupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 		        popupWindow.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.common_background));
 		        popupWindow.setAnimationStyle(R.style.AnimBottom);
 		        popupWindow.setOnDismissListener(new OnDismissListener(){

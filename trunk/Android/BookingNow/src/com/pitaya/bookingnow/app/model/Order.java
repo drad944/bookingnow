@@ -297,6 +297,9 @@ public class Order implements Serializable{
 		DataService.saveOrderUpdateDetail(context, desttype, this.getOrderKey(), food);
 	}
 	
+	/*
+	 * Sync the food list between memory object and database
+	 */
 	public void enrichFoods(Context context){
 		if(this.foods != null && this.foods.size() > 0){
 			this.removeAllFood(null);

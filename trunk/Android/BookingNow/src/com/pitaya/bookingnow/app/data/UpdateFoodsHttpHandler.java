@@ -95,10 +95,12 @@ public class UpdateFoodsHttpHandler extends HttpHandler{
 			if(needrestore){
 				mOrder.enrichFoods(mContext);
 				this.mAdapter.notifyDataSetChanged();
+				ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitpartsuccess), Toast.LENGTH_LONG);
+			} else {
+				ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
 			}
-			ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
 		} else {
-			ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitfail), Toast.LENGTH_SHORT);
+			ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitfail), Toast.LENGTH_LONG);
 		}
 	}
 	

@@ -37,6 +37,7 @@
     <string name="paying">已申请结帐</string>
     <string name="reset">清空</string>
     <string name="commitsuccess">提交成功</string>
+    <string name="commitpartsuccess">加工中的食品无法删除或减少数量</string>
     <string name="commitfail">提交失败</string>
     <string name="rememberme">自动登录</string>
     
