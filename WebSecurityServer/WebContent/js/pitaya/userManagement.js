@@ -20,9 +20,9 @@ function initUpdateUserElements(rowData) {
 	}else {
 		d1= new Date();
 	}
-    $('#updateUserBirthdayInput').jqxDateTimeInput({ theme: theme, height: 22,formatString: "yyyy/MM/dd", value: d1 });
+    $('#updateUserBirthdayInput').jqxDateTimeInput({ theme: theme, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
     
-    if(rowData["sex"] != null && rowData["sex"] == 3) {
+    if(rowData["sex"] != null && findSexValue(rowData["sex"]) == 3) {
     	$("#updateUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25, theme: theme });
     	$("#updateUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
     }else {
@@ -60,7 +60,7 @@ function initUpdateUserElements(rowData) {
     
 	// Create a jqxComboBox
 	$("#updateUserDepartmentCombobox").jqxComboBox({ 
-		selectedIndex: $("#updateUserDepartmentInput").val() - 2, 
+		selectedIndex: findDepartmentValue($("#updateUserDepartmentInput").val()) - 2, 
 		source: userDepartmentData, 
 		displayMember: "label", 
 		valueMember: "value", 
@@ -205,6 +205,9 @@ function updateUser() {
 		}
 	});
 }
+
+
+
 function initRegisterUserElements() {
 	var theme = getDemoTheme();
     $("#registerUserDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
@@ -220,7 +223,7 @@ function initRegisterUserElements() {
     $('.registerUserTextInput').jqxInput({ theme: theme });
     var date = new Date();
     date.setFullYear(2000, 0, 1);
-    $('#registerUserBirthdayInput').jqxDateTimeInput({ theme: theme, height: 22,formatString: "yyyy/MM/dd", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
+    $('#registerUserBirthdayInput').jqxDateTimeInput({ theme: theme, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
     $("#registerUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
     $("#registerUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
     
@@ -652,6 +655,7 @@ function addOperateUserGridEventListeners() {
 	});
 }
 
+
 function parseUserGridHtml() {
 		$.post("findUser.action", 
 			{"user.enabled": true}, 
@@ -711,7 +715,7 @@ function parseUserGridHtml() {
 			column["text"] = "Phone";
 			
 		}else if(item == "sex") {
-			datafield["type"] = "number";
+			datafield["type"] = "string";
 			column["text"] = "Sex";
 			
 		}else if(item == "email") {
@@ -731,7 +735,7 @@ function parseUserGridHtml() {
 			column["text"] = "Description";
 			
 		}else if(item == "department") {
-			datafield["type"] = "number";
+			datafield["type"] = "string";
 			column["text"] = "Department";
 			
 		}else if(item == "sub_system") {
@@ -763,11 +767,18 @@ function parseUserGridHtml() {
 	
 	var rowData = {};
 	for(var item in user) {
-	if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
+		if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
+				
+		}else if(item == "sex") {
+			rowData[item] = findSexString(user[item]);
+		}else if(item == "password") {
+				rowData[item] = "******";
+		}else if(item == "department") {
+			rowData[item] = findDepartmentString(user[item]);
 			
-	}else {
-		rowData[item] = user[item];
-	}
+		}else {
+			rowData[item] = user[item];
+		}
 	
 	}
 	
@@ -842,6 +853,67 @@ function parseUserGridHtml() {
 	});
 	*/
 	});
+		
 }
 
 
+function findSexString(value) {
+	if(value == 2) {
+		return "男";
+	}else if(value == 3){
+		return "女";
+	}
+	return "G";
+}
+
+function findSexValue(label) {
+	if(label == "男") {
+		return 2;
+	}else if(label == "女"){
+		return 3;
+	}
+	return 1;
+}
+
+function findDateTimeString(time,format) {
+	
+}
+
+function findDepartmentString(value) {
+	 var userDepartmentData = [
+	                              //  { value: 1, label: "USER_DEPARTMENT" },
+	                                { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
+	                                { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
+	                                { value: 4, label: "USER_DEPARTMENT_FINANCE" },
+	                                { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
+	                                { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
+	                                { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
+	                            ];
+	 
+	 for(var i = 0;i < userDepartmentData.length;i++) {
+		 if(userDepartmentData[i].value == value) {
+			 return userDepartmentData[i].label;
+		 }
+	 }
+	 
+	 return null;
+}
+
+function findDepartmentValue(label) {
+	 var userDepartmentData = [
+	                              //  { value: 1, label: "USER_DEPARTMENT" },
+	                                { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
+	                                { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
+	                                { value: 4, label: "USER_DEPARTMENT_FINANCE" },
+	                                { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
+	                                { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
+	                                { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
+	                            ];
+	 for(var i = 0;i < userDepartmentData.length;i++) {
+		 if(userDepartmentData[i].label == label) {
+			 return userDepartmentData[i].value;
+		 }
+	 }
+	 
+	 return null;
+}
