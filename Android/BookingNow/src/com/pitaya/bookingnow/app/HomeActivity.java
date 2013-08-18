@@ -175,7 +175,13 @@ public class HomeActivity extends FragmentActivity {
 		super.onResume();
 		this.doStartService();
 		if(!this.mIsBound){
-			this.doBindService();
+			new Thread(){
+				@Override
+				public void run(){
+					HomeActivity.this.doBindService();
+				}
+				
+			}.start();
 		}
 	}
 	
@@ -184,6 +190,7 @@ public class HomeActivity extends FragmentActivity {
 		super.onDestroy();
 		Log.i(TAG, "onDestroy");
 		mBoundService.unregisterHandler(mMessageHandler);
+		UserManager.setUserRole(null);
 		this.doUnbindService();
     }
 	
@@ -214,6 +221,7 @@ public class HomeActivity extends FragmentActivity {
 			
 			this.mUserInfoView = (TextView)menuitems.findViewById(R.id.userinfo);
 			this.mOnlineInfoView = (TextView)menuitems.findViewById(R.id.onlineinfo);
+			this.mOnlineInfoView.setText("状态: 离线");
 			View menuitem = menuitems.findViewById(R.id.menu_btn);
 			menuitem.setOnClickListener(new OnClickListener(){
 				@Override

@@ -34,7 +34,6 @@ public class OrderService {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public static void getOrderByStatus(boolean byUser, ArrayList<Integer> statuses, HttpHandler callback){
@@ -102,8 +101,20 @@ public class OrderService {
 		}
 	}
 	
-	public static void updateOrder(Order order, HttpHandler callback){
-		
+	public static void updateOrderToPaying(Order order, HttpHandler callback){
+		JSONObject jreq = new JSONObject();
+		JSONObject jorder = new JSONObject();
+		try {
+			jorder.put("id", Long.parseLong(order.getOrderKey()));
+			jreq.put("order", jorder);
+			HttpService.post("updateToPayingOfOrder.action", new StringEntity(jreq.toString()), callback);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void updateFoodsOfOrder(Order order, HttpHandler callback){
