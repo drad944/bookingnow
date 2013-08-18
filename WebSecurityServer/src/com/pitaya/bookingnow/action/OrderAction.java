@@ -254,6 +254,16 @@ public class OrderAction extends BaseAction{
 		return "Fail";
 	}
 	
+	public String updateToPayingOfOrder(){
+		if(order != null){
+			result = orderService.updateOrderToPaying(order);
+			if(result.isExecuteResult()){
+				return "Success";
+			}
+		}
+		return "Fail";
+	}
+	
 	public String calculateOrder(){
 		if (order != null && order.getId() != null) {
 			result = orderService.calculateOrder(order);
