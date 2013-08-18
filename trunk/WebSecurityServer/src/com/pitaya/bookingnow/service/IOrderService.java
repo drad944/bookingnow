@@ -47,6 +47,8 @@ public interface IOrderService {
 	
 	MyResult cancelOrder(Order order);
 	
+	MyResult updateOrderToPaying(Order order);
+	
 	MyResult updateOrderToFinished(Order order);
 	
 	MyResult updateOrder(Order order);

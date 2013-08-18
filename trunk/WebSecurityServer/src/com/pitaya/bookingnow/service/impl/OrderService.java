@@ -1,6 +1,7 @@
 package com.pitaya.bookingnow.service.impl;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -121,7 +122,11 @@ public class OrderService implements IOrderService{
 
 	@Override
 	public boolean modify(Order order) {
-		// TODO Auto-generated method stub
+		if(order != null && order.getId() != null){
+			if(this.orderDao.updateByPrimaryKey(order) == 1){
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -1374,6 +1379,33 @@ public class OrderService implements IOrderService{
 			result.getErrorDetails().put("order_exist", "can not find order or order id in client data");
 		}
 		
+		return result;
+	}
+
+	@Override
+	public MyResult updateOrderToPaying(Order order) {
+		MyResult result = new MyResult();
+		if(order != null && order.getId() != null){
+			order.setStatus(Constants.ORDER_PAYING);
+			if(orderDao.updateByPrimaryKeySelective(order) == 1){
+				result.setExecuteResult(true);
+				SearchParams params = new SearchParams();
+				List<Integer> statuslist = new ArrayList<Integer>();
+				statuslist.add(Constants.ORDER_WELCOMER_NEW);
+				statuslist.add(Constants.ORDER_WAITING);
+				List<Order> orders = this.searchFullOrdersWithoutFoods(params);
+				if(orders != null && orders.size() > 0){
+					Order nextorder = orders.get(0);
+					for(Order waitorder : orders){
+						if(nextorder.getSubmit_time() > waitorder.getSubmit_time()){
+							nextorder = waitorder;
+						}
+					}
+				}
+			}
+		} else {
+			result.getErrorDetails().put("updateOrderToPaying", "Missing order paramters");
+		}
 		return result;
 	}
 
