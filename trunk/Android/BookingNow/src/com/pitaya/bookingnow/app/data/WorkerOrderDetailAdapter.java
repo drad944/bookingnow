@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.pitaya.bookingnow.app.*;
 import com.pitaya.bookingnow.app.data.GetOrderFoodsHandler.AfterGetFoodsListener;
 import com.pitaya.bookingnow.app.model.Order;
+import com.pitaya.bookingnow.app.model.Order.Food;
 import com.pitaya.bookingnow.app.model.Order.OnDirtyChangedListener;
 import com.pitaya.bookingnow.app.model.Order.OnOrderStatusChangedListener;
 import com.pitaya.bookingnow.app.model.UpdateFood;
@@ -158,7 +159,6 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
 								@Override
 								public void afterGetFoods() {
 									mOrder.markDirty(mContext, false);
-									//DataService.saveOrderDetails(mContext, mOrder);
 									WorkerOrderDetailAdapter.this.notifyDataSetChanged();
 								}
 							});
@@ -175,8 +175,27 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
 
 							@Override
 							public void onClick(View v) {
-								//TODO request to pay for the order
-								mOrder.setStatus(Constants.ORDER_PAYING);
+								OrderService.updateOrderToPaying(mOrder, new HttpHandler(){
+									@Override
+									public void onSuccess(String action, String response) {
+										try {
+											JSONObject jresp = new JSONObject(response);
+											if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == true){
+												mOrder.setStatus(Constants.ORDER_PAYING);
+												return;
+											}
+										} catch (JSONException e) {
+											e.printStackTrace();
+										}
+										//TODO handle fail
+									}
+
+									@Override
+									public void onFail(String action, int statuscode) {
+										Log.e(TAG, "[OrderService.updateOrderToPaying] Network error:" + statuscode);
+									}
+								});
+								
 							}
 	    					
 	    				});
@@ -230,7 +249,6 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
     		final View itemView = View.inflate(mContext, R.layout.orderbottom, null);
     		if(mOrder.getFoods().size() != 0){
     			((TextView)itemView.findViewById(R.id.summary)).setText("合计"+mOrder.getTotalPrice()+"元");
-    			this.setViewByOrderStatus(itemView);
     			mOrder.addOnStatusChangedListener(new OnOrderStatusChangedListener(){
 
 					@Override
@@ -239,6 +257,7 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
 					}
     				
     			});
+    			this.setViewByOrderStatus(itemView);
     		} else {
     			Button act1Btn = ((Button)itemView.findViewById(R.id.action1));
     			act1Btn.setText(R.string.hintinorder);

@@ -43,6 +43,25 @@ public class OrderDetailAdapter extends BaseAdapter {
         this.mContext = c;
         this.mView = view;
         this.mOrder = order;
+        mView.setOnTouchListener(new View.OnTouchListener(){
+
+			@Override
+			public boolean onTouch(View v, MotionEvent arg1) {
+        	    if(v instanceof EditText){
+        	    	if(mEditText != null){
+        	    		mEditText.clearFocus();
+        	    	}
+        	    	return false;
+        	    } else if(mEditText != null){
+        	    	mEditText.clearFocus();
+        	    }
+			    InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE); 
+        	    if(imm.isActive()){
+        	    	imm.hideSoftInputFromWindow(mView.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+        	    }
+				return false;
+			}
+        });
     }
     
 	public void setDataSetChangedListener(DataSetChangedListener l){
@@ -113,6 +132,149 @@ public class OrderDetailAdapter extends BaseAdapter {
 			}
 		}
 		updateSummaryPrice();
+	}
+	
+	private void updateFoodStatus(ViewHolder viewHolder, int status, int old_status){
+		if(status == Constants.FOOD_UNAVAILABLE){
+			viewHolder.totalPriceText.setText("0元");
+		} else if(old_status == Constants.FOOD_UNAVAILABLE){
+			viewHolder.totalPriceText.setText(viewHolder.food.getPrice()*mOrder.getFoods().get(viewHolder.food) + "元");
+		}
+		viewHolder.statusText.setText(Order.getFoodStatusString(status));
+		viewHolder.statusText.setVisibility(View.VISIBLE);
+		updateSummaryPrice();
+	}
+	
+	private void setupConvertView(final View itemView, final ViewHolder viewHolder){
+		RelativeLayout fooditemRL = (RelativeLayout) itemView.findViewById(R.id.fooditemdetail);
+		viewHolder.nameText = (TextView) fooditemRL.findViewById(R.id.name);
+		viewHolder.totalPriceText = (TextView) fooditemRL.findViewById(R.id.totalprice);
+		viewHolder.statusText = (TextView) fooditemRL.findViewById(R.id.foodstatus);
+		viewHolder.freeStatusText = (TextView) fooditemRL.findViewById(R.id.freestatus);
+		viewHolder.freeBtn = (Button) fooditemRL.findViewById(R.id.freebtn);
+		
+        if(this instanceof WorkerOrderDetailAdapter){
+        	viewHolder.freeBtn.setVisibility(View.VISIBLE);
+        	viewHolder.freeStatusText.setVisibility(View.GONE);
+        } else if(this instanceof CustomerOrderDetailAdapter){
+        	viewHolder.freeBtn.setVisibility(View.GONE);
+        	viewHolder.freeStatusText.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(viewHolder.totalPriceText.getLayoutParams().width
+            		, viewHolder.totalPriceText.getLayoutParams().height);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            viewHolder.totalPriceText.setLayoutParams(lp);
+        }
+		View foodstepper = View.inflate(mContext, R.layout.foodstepper, null);
+        RelativeLayout.LayoutParams fsRL_LP = new RelativeLayout.LayoutParams(250,
+        		ViewGroup.LayoutParams.WRAP_CONTENT);
+        fsRL_LP.addRule(RelativeLayout.RIGHT_OF, viewHolder.nameText.getId());
+        fooditemRL.addView(foodstepper, fsRL_LP);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(viewHolder.statusText.getLayoutParams().width
+        		, viewHolder.statusText.getLayoutParams().height);
+        lp.addRule(RelativeLayout.RIGHT_OF, foodstepper.getId());
+        viewHolder.statusText.setLayoutParams(lp);
+        RelativeLayout fsRL = (RelativeLayout) foodstepper.findViewById(R.id.food_stepper);
+        viewHolder.priceText = (TextView) fsRL.findViewById(R.id.price);
+        viewHolder.quantityText = (EditText)fsRL.findViewById(R.id.quantity);
+        
+        viewHolder.quantityText.addTextChangedListener(new TextWatcher(){
+        	
+			@Override
+			public void afterTextChanged(Editable text) {
+				if(text.toString().trim().equals(""))
+					return;
+				int quantity = 0;
+				try{
+					quantity = Integer.parseInt(text.toString());
+				} catch(Exception e){
+					Log.e("FoodMenuView", "Fail to parse food quantity");
+					return;
+				}
+				if(mOrder.getStatus() != Constants.ORDER_PAYING && mOrder.getStatus() != Constants.ORDER_FINISHED){
+					int result = DataService.updateOrderDetails(mContext, mOrder, viewHolder.food, quantity);
+					if(result != Order.IGNORED && (mOrder.getStatus() == Constants.ORDER_COMMITED
+							|| mOrder.getStatus() == Constants.ORDER_WAITING)){
+						mOrder.addUpdateFoods(mContext, result, viewHolder.food, quantity);
+						mOrder.markDirty(mContext, true);
+					}
+					if(result == Order.REMOVED){
+						OrderDetailAdapter.this.notifyDataSetChanged();
+						if(OrderDetailAdapter.this.mListener != null){
+							mListener.OnDataSetChanged();
+						}
+						return;
+					}
+				}
+				
+				if(viewHolder.food.getStatus() != Constants.FOOD_UNAVAILABLE && !viewHolder.food.isFree()){
+					viewHolder.totalPriceText.setText(String.valueOf(viewHolder.food.getPrice() * quantity) + "元");
+					OrderDetailAdapter.this.updateSummaryPrice();
+				}
+				
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence text, int arg1,
+					int arg2, int arg3) {
+				viewHolder.quantityText.setSelection(text.length());
+			}
+
+			@Override
+			public void onTextChanged(CharSequence text, int arg1, int arg2, int arg3) {
+			}
+        	
+        });
+     	
+        viewHolder.quantityText.setOnFocusChangeListener(new OnFocusChangeListener(){
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if(hasFocus){
+					mEditText = viewHolder.quantityText;
+				} else {
+					mEditText = null;
+				}
+			}
+        	
+        });
+        
+        ((Button)fsRL.findViewById(R.id.minusbtn)).setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				String current = viewHolder.quantityText.getText().toString();
+				int quantity = 0;
+				try{
+					quantity = Integer.parseInt(current) - 1;
+				} catch(Exception e){
+					Log.e("FoodMenuView", "Fail to parse food quantity");
+				}
+				if(quantity < 0){
+					return;
+				}
+				viewHolder.quantityText.setText(String.valueOf(quantity));
+			}
+        	
+        });
+        
+        ((Button)fsRL.findViewById(R.id.addbtn)).setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				String current = viewHolder.quantityText.getText().toString();
+				int quantity = 0;
+				try{
+					quantity = Integer.parseInt(current) + 1;
+				} catch(Exception e){
+					Log.e("FoodMenuView", "Fail to parse food quantity");
+					quantity = 1;
+				}
+				viewHolder.quantityText.setText(String.valueOf(quantity));
+			}
+        	
+        });
+        
+        itemView.setTag(viewHolder);
 	}
 
 	//Setup the food item view for waiter role
@@ -336,12 +498,92 @@ public class OrderDetailAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		//This implementation is only for food item, you have to implement bottom buttons or header view in subclass
-		//View itemView = convertView;
-		//if(itemView == null){
-		View	itemView = View.inflate(mContext, R.layout.fooditem_waiter, null);
-		//}
-		setupView(itemView, position);
+		View itemView = convertView;
+		if(itemView == null){
+			itemView = View.inflate(mContext, R.layout.fooditem_waiter, null);
+			setupConvertView(itemView, new ViewHolder());
+		}
+		//setupView(itemView, position);
+		
+		Item item = (Item)this.getItem(position);
+		Order.Food food = item.food;
+		final int quantity = item.quantity;
+		final ViewHolder holder = (ViewHolder)itemView.getTag();
+		holder.food = food;
+		holder.nameText.setText(food.getName());
+        if(food.isFree()){
+        	holder.totalPriceText.setText("0元");
+        } else {
+        	holder.totalPriceText.setText(String.valueOf(food.getPrice() * quantity) + "元");
+        }
+        
+        if(mOrder.getStatus() == Constants.ORDER_NEW || mOrder.getStatus() == Constants.ORDER_COMMITED){
+        	food.setOnFoodStatusChangedListener(new Order.OnFoodStatusChangedListener() {
+    			
+    			@Override
+    			public void onFoodStatusChanged(Order.Food food, int status, int old_status) {
+    				updateFoodStatus(holder, status, old_status);
+    			}
+        		
+        	});
+        	if(mOrder.getStatus() == Constants.ORDER_COMMITED){
+        		holder.statusText.setText(Order.getFoodStatusString(food.getStatus()));
+        	}
+        } else {
+        	holder.statusText.setVisibility(View.GONE);
+        }
+        
+        if(this instanceof WorkerOrderDetailAdapter){
+	        if(food.isFree()){
+	        	holder.freeBtn.setText(R.string.cancelfreebtn);
+	        } else {
+	        	holder.freeBtn.setText(R.string.freebtn);
+	        }
+	        holder.freeBtn.setOnClickListener(new OnClickListener(){
+	
+				@Override
+				public void onClick(View v) {
+					if(holder.food.isFree()){
+						holder.food.setFree(false);
+						holder.totalPriceText.setText(holder.food.getPrice() * mOrder.getFoods().get(holder.food) + "元");
+						holder.freeBtn.setText(R.string.freebtn);
+					} else {
+						holder.food.setFree(true);
+						holder.freeBtn.setText(R.string.cancelfreebtn);
+						holder.totalPriceText.setText("0元");
+					}
+					if(mOrder.getStatus() != Constants.ORDER_PAYING && mOrder.getStatus() != Constants.ORDER_FINISHED){
+						DataService.updateFoodFreeStatus(mContext, mOrder, holder.food);
+						if(mOrder.getStatus() == Constants.ORDER_COMMITED || mOrder.getStatus() == Constants.ORDER_WAITING){
+							mOrder.addUpdateFoods(mContext, Order.UPDATED, holder.food, mOrder.getFoods().get(holder.food));
+							mOrder.markDirty(mContext, true);
+						}
+						updateSummaryPrice();
+					}
+				}
+	        	
+	        });
+        } else if(this instanceof CustomerOrderDetailAdapter){
+        	if(food.isFree()){
+        		holder.freeStatusText.setText("赠菜");
+        		holder.freeStatusText.setTextColor(mContext.getResources().getColor(R.color.green));
+        	}
+        }
+		
+        holder.priceText.setText(String.valueOf(food.getPrice())+"元/份");
+        holder.quantityText.setText(String.valueOf(quantity));
 		return itemView;
+	}
+	
+	private static class ViewHolder{
+		 TextView nameText;
+		 TextView totalPriceText;
+		 TextView statusText;
+		 TextView freeStatusText;
+		 Button freeBtn;
+		 TextView priceText;
+		 EditText quantityText;
+		 Order.Food food;
 	}
 	
 	protected class Item{
