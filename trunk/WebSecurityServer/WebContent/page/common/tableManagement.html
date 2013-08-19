@@ -7,7 +7,187 @@
 	
 <body>
 	<div id="content">
-		table management.haha.
+	
+		<div id='jqxWidget' style="font-size: 13px; font-family: Verdana; float: left;">
+			<div id="J_Nav" class="main-nav">
+				<ul>
+					<li class="J_nav_1">
+						<div>
+		                	<input id="addTableRowButton" type="button" value="Add New Row" />
+		            	</div>
+					</li>
+					
+					<li class="J_nav_1">
+						<div>
+		                	<input id="updateTableRowButton" type="button" value="Update Selected Row" />
+		            	</div>
+					</li>
+					
+					<li class="J_nav_1">
+						<div>
+		                	<input id="deleteTableRowButton" type="button" value="Delete Selected Row" />
+		            	</div>
+					</li>
+					
+				</ul>
+			</div>
+        	
+	        
+        	<div id="tableDataGrid" style="float: left;" ></div>
+
+				<div id="updateTablePopupWindow" style="overflow:hidden;visibility:hidden;">
+					<div><h3>Update Table</h3></div>
+					<div id="updateTableDiv">
+				        <div>
+				            <form id="updateTableInfoForm" action="./">
+				                <table class="updateTableTable">
+				                	<tr style="display:none">
+				                        <td>Id:</td>
+				                        <td><input type="text" id="updateTableIdInput" class="updateTableTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Account:</td>
+				                        <td><input type="text" id="updateTableAccountInput" class="updateTableTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Password:</td>
+				                        <td><input type="password" id="updateTablePasswordInput" class="updateTableTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Confirm password:</td>
+				                        <td><input type="password" id="updateTablePasswordConfirmInput" class="updateTableTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Real name:</td>
+				                        <td><input type="text" id="updateTableRealNameInput" class="updateTableTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Department:</td>
+				                        <td>
+				                        	<div id='updateTableDepartmentCombobox'></div>
+				                        	<input id="updateTableDepartmentInput" type="hidden" value="2" />
+			        					</td>
+				                    </tr>
+				                    <tr>
+				                        <td>Birth date:</td>
+				                        <td><div id="updateTableBirthdayInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>E-mail:</td>
+				                        <td><input type="text" id="updateTableEmailInput" placeholder="someone@mail.com" class="updateTableTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Address:</td>
+				                        <td><input type="text" id="updateTableAddressInput" placeholder="省-市-区-街道-小区-门牌号" class="updateTableTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Phone:</td>
+				                        <td><div id="updateTablePhoneInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Sex:</td>
+				                        <td>
+				                        	<div style='margin-top: 10px;'>
+								            	<span id='updateTableSexRadioButton1' style='float:left;'>男</span>
+								            	<span id='updateTableSexRadioButton2' style='float:right;'>女</span>
+								            	<input id="updateTableSexInput" type="hidden" value="男" />
+								            </div>
+				                        </td>
+				                    </tr>
+				                    <tr style="text-align: center;">
+				                        <td>
+				                        	<input id="updateTableUpdateButton" type="button" value="Update" />
+				                        </td>
+				                        <td>
+				                        	<input id="updateTableResetButton" type="reset" value="Reset" />
+				                        	<input id="updateTableCancelButton" type="button" value="Cancel" />
+				                        </td>
+				                    </tr>
+				                </table>
+				            </form>
+				        </div>
+				        <div id="updateTableResult"></div>
+		    		</div>
+				</div>
+			
+				<div id="addTablePopupWindow" style="overflow:hidden;visibility:hidden;">
+					<div><h3>Register Table</h3></div>
+					<div id="registerTableDiv">
+		        		
+				        <div>
+				            <form id="registerTableInfoForm" action="./">
+				                <table class="registerTableTable">
+				                    <tr>
+				                        <td>Account:</td>
+				                        <td><input type="text" id="registerTableAccountInput" class="registerTableTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Password:</td>
+				                        <td><input type="password" id="registerTablePasswordInput" class="registerTableTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Confirm password:</td>
+				                        <td><input type="password" id="registerTablePasswordConfirmInput" class="registerTableTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Real name:</td>
+				                        <td><input type="text" id="registerTableRealNameInput" class="registerTableTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Department:</td>
+				                        <td>
+				                        	<div id='registerTableDepartmentCombobox'></div>
+				                        	<input id="registerTableDepartmentInput" type="hidden" value="2" />
+			        					</td>
+				                    </tr>
+				                    <tr>
+				                        <td>Birth date:</td>
+				                        <td><div id="registerTableBirthdayInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>E-mail:</td>
+				                        <td><input type="text" id="registerTableEmailInput" placeholder="someone@mail.com" class="registerTableTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Address:</td>
+				                        <td><div id="registerTableAddressInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Phone:</td>
+				                        <td><div id="registerTablePhoneInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Sex:</td>
+				                        <td>
+				                        	<div style='margin-top: 10px;'>
+								            	<span id='registerTableSexRadioButton1' style='float:left;'>男</span>
+								            	<span id='registerTableSexRadioButton2' style='float:right;'>女</span>
+								            	<input id="registerTableSexInput" type="hidden" value="2" />
+								            </div>
+				                        </td>
+				                    </tr>
+				                    <tr>
+				                        <td colspan="2" style="padding: 5px;">
+				                        	<div id="acceptInput" style="margin-left: 50px;">I accept terms</div>
+				                        </td>
+				                    </tr>
+				                    <tr style="text-align: center;">
+				                        <td>
+				                        	<input id="registerTableRegisterButton" type="button" value="Register" />
+				                        </td>
+				                        <td>
+				                        	<input id="registerTableResetButton" type="reset" value="Reset" />
+				                        	<input id="registerTableCancelButton" type="button" value="Cancel" />
+				                        </td>
+				                    </tr>
+				                </table>
+				            </form>
+				        </div>
+				        <div id="registerTableResult"></div>
+		    		</div>
+				</div>
+				
+		</div>
 	</div>
 </body>
 </html>
