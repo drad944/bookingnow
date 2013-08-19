@@ -321,5 +321,96 @@ function parseMenuHtml() {
 }
 
 
+function findSexString(value) {
+	if(value == 2) {
+		return "男";
+	}else if(value == 3){
+		return "女";
+	}
+	return "G";
+}
+
+function findSexValue(label) {
+	if(label == "男") {
+		return 2;
+	}else if(label == "女"){
+		return 3;
+	}
+	return 1;
+}
+
+
+function findDateTime(datetimeString) {
+	//var s = "2005-02-05 01:02:03";   
+	var d = new Date(Date.parse(datetimeString.replace(/-/g,"/")));
+	return d;
+}
+
+Date.prototype.Format = function (fmt) {
+	//how to call it:
+	//var time1 = new Date().Format("yyyy-MM-dd");
+	//var time2 = new Date().Format("yyyy-MM-dd HH:mm:ss");
+	
+    var o = {
+        "M+": this.getMonth() + 1,
+        "d+": this.getDate(),
+        "H+": this.getHours(),
+        "m+": this.getMinutes(),
+        "s+": this.getSeconds(),
+        "q+": Math.floor((this.getMonth() + 3) / 3),
+        "S": this.getMilliseconds()
+    };
+    if (/(y+)/.test(fmt)) {
+    	fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    }
+    for (var k in o){
+    	if (new RegExp("(" + k + ")").test(fmt)) {
+    		fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    	}
+    }
+    
+    return fmt;
+}
+
+
+function findDepartmentString(value) {
+	 var userDepartmentData = [
+	                              //  { value: 1, label: "USER_DEPARTMENT" },
+	                                { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
+	                                { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
+	                                { value: 4, label: "USER_DEPARTMENT_FINANCE" },
+	                                { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
+	                                { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
+	                                { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
+	                            ];
+	 
+	 for(var i = 0;i < userDepartmentData.length;i++) {
+		 if(userDepartmentData[i].value == value) {
+			 return userDepartmentData[i].label;
+		 }
+	 }
+	 
+	 return null;
+}
+
+function findDepartmentValue(label) {
+	 var userDepartmentData = [
+	                              //  { value: 1, label: "USER_DEPARTMENT" },
+	                                { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
+	                                { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
+	                                { value: 4, label: "USER_DEPARTMENT_FINANCE" },
+	                                { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
+	                                { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
+	                                { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
+	                            ];
+	 for(var i = 0;i < userDepartmentData.length;i++) {
+		 if(userDepartmentData[i].label == label) {
+			 return userDepartmentData[i].value;
+		 }
+	 }
+	 
+	 return null;
+}
+
 
 

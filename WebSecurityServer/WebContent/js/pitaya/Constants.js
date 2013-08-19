@@ -26,4 +26,9 @@ var Constants = {
 	PREVIEW_WIDTH : "640px",
 	PREVIEW_HEIGHT : "360px",
 	
+	ROLES: [
+		{name : "厨师", value : 1}
+		
+		]
+	
 };
