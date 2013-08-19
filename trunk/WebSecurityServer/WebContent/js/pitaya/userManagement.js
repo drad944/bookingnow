@@ -16,13 +16,13 @@ function initUpdateUserElements(rowData) {
     
     var d1 = {};
 	if (rowData["birthday"] != null) {
-		d1 = new Date(rowData["birthday"]);
+		d1 = findDateTime(rowData["birthday"]);
 	}else {
 		d1= new Date();
 	}
-    $('#updateUserBirthdayInput').jqxDateTimeInput({ theme: theme, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
+    $('#updateUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 180, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
     
-    if(rowData["sex"] != null && findSexValue(rowData["sex"]) == 3) {
+    if(rowData["sex"] != null && rowData["sex"] == '女') {
     	$("#updateUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25, theme: theme });
     	$("#updateUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
     }else {
@@ -165,35 +165,36 @@ function initUpdateUserWindow(rowData,position) {
 }
 
 function updateUser() {
-	var d1 = {};
-	if ($('#updateUserBirthdayInput').jqxDateTimeInput('value') != null) {
-		d1 = $('#updateUserBirthdayInput').jqxDateTimeInput('value');
-	}
 
-	var updateUserData = {
+	var updateUserUIData = {
 		"user.id" : $("#updateUserIdInput").val(),
 		"user.account" : $("#updateUserAccountInput").val(),
 		"user.name" : $("#updateUserRealNameInput").val(),
 		"user.password" : $("#updateUserPasswordConfirmInput").val(),
 		"user.address" : $("#updateUserAddressInput").val(),
-		"user.birthday" : d1.getTime(),
+		"user.birthday" : $('#updateUserBirthdayInput').jqxDateTimeInput('value'),
 		"user.department" : $("#updateUserDepartmentInput").val(),
 		"user.email" : $("#updateUserEmailInput").val(),
 		"user.phone" : $("#updateUserPhoneInput").val(),
 		"user.sex" : $("#updateUserSexInput").val()
 	};
+	
+	var updateUserData = parseUIDataToUserData(updateUserUIData);
 
 	$.post("updateUser.action", updateUserData, function(result) {
 		if (result != null && result["id"] != null) {
+			
 			$("#updateUserResult").text("update user successfully!");
 			$("#updateUserPopupWindow").jqxWindow('close');
+			
+			var userUIResult = parseUserDataToUIData(result);
 			
 			//update row in grid
 			var selectedrowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
             var rowscount = $("#userDataGrid").jqxGrid('getdatainformation').rowscount;
             if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
             	var id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
-                var commit = $("#userDataGrid").jqxGrid('updaterow', id, result);
+                var commit = $("#userDataGrid").jqxGrid('updaterow', id, userUIResult);
                 $("#userDataGrid").jqxGrid('ensurerowvisible', selectedrowindex);
             }
 			
@@ -661,11 +662,11 @@ function parseUserGridHtml() {
 			{"user.enabled": true}, 
 			function(matchedusers){
 	if(matchedusers != null && matchedusers.result != null){
-	users = matchedusers.result;
+		users = matchedusers.result;
 	}
 	
 	var imageRenderer = function (row, datafield, value) {
-	return '<img style="margin-left: 5px;" height="60" width="50" src="' + value + '"/>';
+		return '<img style="margin-left: 5px;" height="60" width="50" src="' + value + '"/>';
 	};
 	var userSize = users.length;
 	var userData = {};
@@ -674,115 +675,107 @@ function parseUserGridHtml() {
 	
 	var datafields = {};
 	for(var i = 0;i < userSize; i++) {
-	user = users[i];
-	if(i==0) {
-	var j=0;
-	
-	for(var item in user) {
-		var datafield = {};
-		var column = {};
-		
-		if(item == "id"){
-			datafield["type"] = "number";
-			column["text"] = "Id";
-			
-		}else if(item == "modifyTime") {
-			datafield["type"] = "number";
-			column["text"] = "ModifyTime";
-			
-		}else if(item == "image_size") {
-			datafield["type"] = "number";
-			column["text"] = "Image_size";
-			
-		}else if(item == "image_relative_path") {
-			datafield["type"] = "string";
-			column["text"] = "Image_relative_path";
-			column["cellsrenderer"] = imageRenderer;
-		}else if(item == "account") {
-			datafield["type"] = "string";
-			column["text"] = "Account";
-			
-		}else if(item == "name") {
-			datafield["type"] = "string";
-			column["text"] = "Name";
-			
-		}else if(item == "password") {
-			datafield["type"] = "string";
-			column["text"] = "Password";
-			
-		}else if(item == "phone") {
-			datafield["type"] = "string";
-			column["text"] = "Phone";
-			
-		}else if(item == "sex") {
-			datafield["type"] = "string";
-			column["text"] = "Sex";
-			
-		}else if(item == "email") {
-			datafield["type"] = "string";
-			column["text"] = "Email";
-			
-		}else if(item == "address") {
-			datafield["type"] = "string";
-			column["text"] = "Address";
-			
-		}else if(item == "birthday") {
-			datafield["type"] = "number";
-			column["text"] = "Birthday";
-			
-		}else if(item == "description") {
-			datafield["type"] = "string";
-			column["text"] = "Description";
-			
-		}else if(item == "department") {
-			datafield["type"] = "string";
-			column["text"] = "Department";
-			
-		}else if(item == "sub_system") {
-			datafield["type"] = "number";
-			column["text"] = "Sub_system";
-			
-		}else if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
-			//do nothing
-		}else {
-			datafield["type"] = "string";
-			column["text"] = "XX";
-		}
-		
-		if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
-			
-		}else {
-			column["datafield"] = item;
-			if(item == "id") {
-				column["width"] = "50";
-			}
-			
-			columns[j] = column;
-			
-			datafields[j] = datafield;
-			j++;
-		}
-	}
-	}
-	
-	var rowData = {};
-	for(var item in user) {
-		if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
+		user = parseUserDataToUIData(users[i]);
+		if(i==0) {
+			var j=0;
+			for(var item in user) {
+				var datafield = {};
+				var column = {};
 				
-		}else if(item == "sex") {
-			rowData[item] = findSexString(user[item]);
-		}else if(item == "password") {
-				rowData[item] = "******";
-		}else if(item == "department") {
-			rowData[item] = findDepartmentString(user[item]);
-			
-		}else {
-			rowData[item] = user[item];
+				if(item == "id"){
+					datafield["type"] = "number";
+					column["text"] = "Id";
+					
+				}else if(item == "modifyTime") {
+					datafield["type"] = "number";
+					column["text"] = "ModifyTime";
+					
+				}else if(item == "image_size") {
+					datafield["type"] = "number";
+					column["text"] = "Image_size";
+					
+				}else if(item == "image_relative_path") {
+					datafield["type"] = "string";
+					column["text"] = "Image_relative_path";
+					column["cellsrenderer"] = imageRenderer;
+				}else if(item == "account") {
+					datafield["type"] = "string";
+					column["text"] = "Account";
+					
+				}else if(item == "name") {
+					datafield["type"] = "string";
+					column["text"] = "Name";
+					
+				}else if(item == "password") {
+					datafield["type"] = "string";
+					column["text"] = "Password";
+					
+				}else if(item == "phone") {
+					datafield["type"] = "string";
+					column["text"] = "Phone";
+					
+				}else if(item == "sex") {
+					datafield["type"] = "string";
+					column["text"] = "Sex";
+					
+				}else if(item == "email") {
+					datafield["type"] = "string";
+					column["text"] = "Email";
+					
+				}else if(item == "address") {
+					datafield["type"] = "string";
+					column["text"] = "Address";
+					
+				}else if(item == "birthday") {
+					datafield["type"] = "string";
+					column["text"] = "Birthday";
+					
+				}else if(item == "description") {
+					datafield["type"] = "string";
+					column["text"] = "Description";
+					
+				}else if(item == "department") {
+					datafield["type"] = "string";
+					column["text"] = "Department";
+					
+				}else if(item == "sub_system") {
+					datafield["type"] = "number";
+					column["text"] = "Sub_system";
+					
+				}else if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
+					//do nothing
+				}else {
+					datafield["type"] = "string";
+					column["text"] = "XX";
+				}
+				
+				if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
+					
+				}else {
+					column["datafield"] = item;
+					if(item == "id") {
+						column["width"] = "50";
+					}
+					
+					columns[j] = column;
+					
+					datafields[j] = datafield;
+					j++;
+				}
+			}
 		}
-	
-	}
-	
-	userData[i] = rowData;
+		
+		var rowData = {};
+		for(var item in user) {
+			if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
+					
+			}else {
+				rowData[item] = user[item];
+			}
+		
+		}
+		
+		userData[i] = rowData;
 	}
 	
 	
@@ -856,64 +849,32 @@ function parseUserGridHtml() {
 		
 }
 
-
-function findSexString(value) {
-	if(value == 2) {
-		return "男";
-	}else if(value == 3){
-		return "女";
+function parseUIDataToUserData(record) {
+	if(record != null){
+		for(var attr in record) {
+			if(attr == "user.sex") {
+				record[attr] = findSexValue(record[attr]);
+			}else if(attr == "user.birthday") {
+				record[attr] = record[attr].getTime();
+			}
+		}
+		return record;
 	}
-	return "G";
+	return null;
 }
 
-function findSexValue(label) {
-	if(label == "男") {
-		return 2;
-	}else if(label == "女"){
-		return 3;
+function parseUserDataToUIData(user) {
+	if(user != null){
+		for(var attr in user) {
+			if(attr == "department") {
+				user[attr] = findDepartmentString(user[attr]);
+			}else if(attr == "sex") {
+				user[attr] = findSexString(user[attr]);
+			}else if(attr == "birthday") {
+				user[attr] = new Date(user[attr]).Format("yyyy-MM-dd HH:mm:ss");
+			}
+		}
+		return user;
 	}
-	return 1;
-}
-
-function findDateTimeString(time,format) {
-	
-}
-
-function findDepartmentString(value) {
-	 var userDepartmentData = [
-	                              //  { value: 1, label: "USER_DEPARTMENT" },
-	                                { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
-	                                { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
-	                                { value: 4, label: "USER_DEPARTMENT_FINANCE" },
-	                                { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
-	                                { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
-	                                { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
-	                            ];
-	 
-	 for(var i = 0;i < userDepartmentData.length;i++) {
-		 if(userDepartmentData[i].value == value) {
-			 return userDepartmentData[i].label;
-		 }
-	 }
-	 
-	 return null;
-}
-
-function findDepartmentValue(label) {
-	 var userDepartmentData = [
-	                              //  { value: 1, label: "USER_DEPARTMENT" },
-	                                { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
-	                                { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
-	                                { value: 4, label: "USER_DEPARTMENT_FINANCE" },
-	                                { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
-	                                { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
-	                                { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
-	                            ];
-	 for(var i = 0;i < userDepartmentData.length;i++) {
-		 if(userDepartmentData[i].label == label) {
-			 return userDepartmentData[i].value;
-		 }
-	 }
-	 
-	 return null;
+	return null;
 }
