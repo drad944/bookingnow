@@ -287,6 +287,7 @@ function parseMenuHtml() {
         	
         }else if(event.args.id == 4) {
         	openContentPage('framework_main','page/common/tableManagement.html','content');
+        	parseTableGridHtml();
         }else if(event.args.id == 5) {
         	//openContentPage('page/common/map.html')
         }else if(event.args.id == 6) {
@@ -412,5 +413,32 @@ function findDepartmentValue(label) {
 	 return null;
 }
 
+function findTableStatusValue(label) {
+	 var tableStatusData = [
+	                                { value: 2, label: "TABLE_EMPTY" },
+	                                { value: 3, label: "TABLE_BOOKING" },
+	                                { value: 4, label: "TABLE_USING" }
+	                            ];
+	 for(var i = 0;i < tableStatusData;i++) {
+		 if(tableStatusData[i].label == label) {
+			 return tableStatusData[i].value;
+		 }
+	 }
+	 
+	 return null;
+}
 
-
+function findTableStatusLable(value) {
+	 var tableStatusData = [
+	                                { value: 2, label: "TABLE_EMPTY" },
+	                                { value: 3, label: "TABLE_BOOKING" },
+	                                { value: 4, label: "TABLE_USING" }
+	                            ];
+	 for(var i = 0;i < tableStatusData;i++) {
+		 if(tableStatusData[i].value == value) {
+			 return tableStatusData[i].label;
+		 }
+	 }
+	 
+	 return null;
+}

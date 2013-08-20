@@ -3,18 +3,19 @@ package com.pitaya.bookingnow.service;
 import java.util.List;
 
 import com.pitaya.bookingnow.entity.Table;
+import com.pitaya.bookingnow.util.MyResult;
 import com.pitaya.bookingnow.util.SearchParams;
 
 
 public interface ITableService {
+	Boolean existTable(Table table);
+	MyResult add(Table table);
 	
-	boolean add(Table table);
+	MyResult removeTableById(Long id);
 	
-	boolean removeTableById(Long id);
-	
-	boolean remove(Table table);
+	MyResult remove(Table table);
 
-	boolean modify(Table table);
+	MyResult modify(Table table);
 	
 	Table searchByPrimaryKey(Long id);
 	

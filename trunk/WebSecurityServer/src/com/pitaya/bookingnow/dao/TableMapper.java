@@ -23,4 +23,5 @@ public interface TableMapper {
     List<Table> searchAllTables();
     
     List<Table> searchAvailableTables(SearchParams params);
+    Table existTable(Table table);
 }

@@ -1,18 +1,43 @@
 /**
  * 
  */
-function initUpdateTableElements(rowData) {
+
+function emptyRegisterUserWindow(){
+	//init registerUserWindow widget data
+	$("#registerUserPhoneInput").jqxMaskedInput({value: null });
+	$('#registerUserBirthdayInput').jqxDateTimeInput({value:findDateTime("2000-01-01 00:00:00")});
+	
+	$("#registerUserSexRadioButton1").jqxRadioButton({checked: true});
+    $("#registerUserSexRadioButton2").jqxRadioButton({checked: false});
+    $('#acceptInput').jqxCheckBox({checked: false});
+
+    //init registerUserWindow store data
+	$("registerUserSexInput").val("男");
+	$("#registerUserIdInput").val(null);
+	$("#registerUserAccountInput").val(null);
+	$("#registerUserRealNameInput").val(null);
+	$("#registerUserPasswordInput").val(null);
+	$("#registerUserPasswordConfirmInput").val(null);
+	$("#registerUserAddressInput").val(null);
+	
+	$("#registerUserDepartmentInput").val(null);
+	
+	$("#registerUserEmailInput").val(null);
+}
+
+
+function initUpdateUserElements(rowData) {
 	var theme = getDemoTheme();
-    $("#updateTableDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
-    $('#updateTableUpdateButton').jqxButton({ width: 60, height: 25, theme: theme });
-    $('#updateTableResetButton').jqxButton({ width: 60, height: 25, theme: theme });
-    $('#updateTableCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
+    $("#updateUserDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
+    $('#updateUserUpdateButton').jqxButton({ width: 60, height: 25, theme: theme });
+    $('#updateUserResetButton').jqxButton({ width: 60, height: 25, theme: theme });
+    $('#updateUserCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
     
 
     
-  //  $("#updateTableAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
-    $("#updateTablePhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 25, theme: theme });
-    $('.updateTableTextInput').jqxInput({ theme: theme });
+  //  $("#updateUserAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
+    $("#updateUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 25, theme: theme });
+    $('.updateUserTextInput').jqxInput({ theme: theme });
     
     var d1 = {};
 	if (rowData["birthday"] != null) {
@@ -20,37 +45,37 @@ function initUpdateTableElements(rowData) {
 	}else {
 		d1= new Date();
 	}
-    $('#updateTableBirthdayInput').jqxDateTimeInput({ theme: theme,width: 180, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
+    $('#updateUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 180, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
     
     if(rowData["sex"] != null && rowData["sex"] == '女') {
-    	$("#updateTableSexRadioButton1").jqxRadioButton({ width: 70, height: 25, theme: theme });
-    	$("#updateTableSexRadioButton2").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
-    	$("updateTableSexInput").val("女");
+    	$("#updateUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25, theme: theme });
+    	$("#updateUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
+    	$("updateUserSexInput").val("女");
     }else {
-    	$("#updateTableSexRadioButton1").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
-    	$("#updateTableSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
-    	$("updateTableSexInput").val("男");
+    	$("#updateUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
+    	$("#updateUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
+    	$("updateUserSexInput").val("男");
     }
     
     
-    $("#updateTableIdInput").val(rowData["id"]);
-	$("#updateTableAccountInput").val(rowData["account"]);
-	$("#updateTableRealNameInput").val(rowData["name"]);
-	$("#updateTablePasswordInput").val(rowData["password"]);
-	$("#updateTablePasswordConfirmInput").val(rowData["password"]);
-	$("#updateTableAddressInput").val(rowData["address"]);
+    $("#updateUserIdInput").val(rowData["id"]);
+	$("#updateUserAccountInput").val(rowData["account"]);
+	$("#updateUserRealNameInput").val(rowData["name"]);
+	$("#updateUserPasswordInput").val(rowData["password"]);
+	$("#updateUserPasswordConfirmInput").val(rowData["password"]);
+	$("#updateUserAddressInput").val(rowData["address"]);
 	
-	$("#updateTableDepartmentInput").val(rowData["department"]);
+	$("#updateUserDepartmentInput").val(rowData["department"]);
 	
-	$("#updateTableEmailInput").val(rowData["email"]);
-//		$("#updateTable_image").attr("src","../../" + rowData["image_relative_path"]);
+	$("#updateUserEmailInput").val(rowData["email"]);
+//		$("#updateUser_image").attr("src","../../" + rowData["image_relative_path"]);
 	
 //		$("#image_relative_path").val(rowData["image_relative_path"]);
 //		$("#image_size").val(rowData["image_size"]);
-	$("#updateTablePhoneInput").val(rowData["phone"]);
-	$("#updateTableSexInput").val(rowData["sex"]);
+	$("#updateUserPhoneInput").val(rowData["phone"]);
+	$("#updateUserSexInput").val(rowData["sex"]);
     
-    var tableDepartmentData = [
+    var userDepartmentData = [
           //  { value: 1, label: "USER_DEPARTMENT" },
             { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
             { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
@@ -61,9 +86,9 @@ function initUpdateTableElements(rowData) {
         ];
     
 	// Create a jqxComboBox
-	$("#updateTableDepartmentCombobox").jqxComboBox({ 
-		selectedIndex: findDepartmentValue($("#updateTableDepartmentInput").val()) - 2, 
-		source: tableDepartmentData, 
+	$("#updateUserDepartmentCombobox").jqxComboBox({ 
+		selectedIndex: findDepartmentValue($("#updateUserDepartmentInput").val()) - 2, 
+		source: userDepartmentData, 
 		displayMember: "label", 
 		valueMember: "value", 
 		width: 150, 
@@ -72,165 +97,164 @@ function initUpdateTableElements(rowData) {
 	});
     
     // initialize validator.
-    $('#updateTableInfoForm').jqxValidator({
+    $('#updateUserInfoForm').jqxValidator({
      rules: [
-            { input: '#updateTableAccountInput', message: 'Tablename is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateTableAccountInput', message: 'Your tablename must be between 3 and 12 characters!', action: 'keyup, blur', rule: 'length=3,12' },
-            { input: '#updateTableRealNameInput', message: 'Real Name is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateTableRealNameInput', message: 'Your real name must contain only letters!', action: 'keyup', rule: 'notNumber' },
-            { input: '#updateTableRealNameInput', message: 'Your real name must be between 3 and 12 characters!', action: 'keyup', rule: 'length=3,12' },
+            { input: '#updateUserAccountInput', message: 'Username is required!', action: 'keyup, blur', rule: 'required' },
+            { input: '#updateUserAccountInput', message: 'Your username must be between 3 and 12 characters!', action: 'keyup, blur', rule: 'length=3,12' },
+            { input: '#updateUserRealNameInput', message: 'Real Name is required!', action: 'keyup, blur', rule: 'required' },
+            { input: '#updateUserRealNameInput', message: 'Your real name must contain only letters!', action: 'keyup', rule: 'notNumber' },
+            { input: '#updateUserRealNameInput', message: 'Your real name must be between 3 and 12 characters!', action: 'keyup', rule: 'length=3,12' },
             
-            { input: '#updateTablePasswordInput', message: 'Password is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateTablePasswordInput', message: 'Your password must be between 6 and 20 characters!', action: 'keyup, blur', rule: 'length=6,20' },
-            { input: '#updateTablePasswordConfirmInput', message: 'Confirm Password is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateTablePasswordConfirmInput', message: 'Confirm Passwords doesn\'t match!', action: 'keyup, focus', rule: function (input, commit) {
+            { input: '#updateUserPasswordInput', message: 'Password is required!', action: 'keyup, blur', rule: 'required' },
+            { input: '#updateUserPasswordInput', message: 'Your password must be between 6 and 20 characters!', action: 'keyup, blur', rule: 'length=6,20' },
+            { input: '#updateUserPasswordConfirmInput', message: 'Confirm Password is required!', action: 'keyup, blur', rule: 'required' },
+            { input: '#updateUserPasswordConfirmInput', message: 'Confirm Passwords doesn\'t match!', action: 'keyup, focus', rule: function (input, commit) {
                 // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
-                    if (input.val() === $('#updateTablePasswordInput').val()) {
+                    if (input.val() === $('#updateUserPasswordInput').val()) {
                         return true;
                     }
                     return false;
             	}
             },
-            { input: '#updateTableBirthdayInput', message: 'Your birth date must be between 1/1/1900 and ' + ((new Date()).getFullYear() + 1), action: 'valuechanged', rule: function (input, commit) {
-                var date = $('#updateTableBirthdayInput').jqxDateTimeInput('value');
+            { input: '#updateUserBirthdayInput', message: 'Your birth date must be between 1/1/1900 and ' + ((new Date()).getFullYear() + 1), action: 'valuechanged', rule: function (input, commit) {
+                var date = $('#updateUserBirthdayInput').jqxDateTimeInput('value');
                 var result = date.getFullYear() >= 1900 && date.getFullYear() <= (new Date()).getFullYear();
                 // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
                 return result;
             	}
             },
-            { input: '#updateTableEmailInput', message: 'E-mail is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateTableEmailInput', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' }
+            { input: '#updateUserEmailInput', message: 'E-mail is required!', action: 'keyup, blur', rule: 'required' },
+            { input: '#updateUserEmailInput', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' }
             ], 
             theme: theme
     });
     
 }
 
-function addUpdateTableEventListeners() {
-	$('#updateTablePopupWindow').on('close', function (event) { 
-		$('#updateTableInfoForm').jqxValidator('hide');
-      //  $('#updateTablePopupWindow').jqxWindow('close');
+function addUpdateUserEventListeners() {
+	$('#updateUserPopupWindow').on('close', function (event) { 
+		$('#updateUserInfoForm').jqxValidator('hide');
+      //  $('#updateUserPopupWindow').jqxWindow('close');
 	});
-	$('#updateTableUpdateButton').on('click', function () {
-        $('#updateTableInfoForm').jqxValidator('validate');
+	$('#updateUserUpdateButton').on('click', function () {
+        $('#updateUserInfoForm').jqxValidator('validate');
     });
     
-    $("#updateTableSexRadioButton1").on('change', function (event) {
+    $("#updateUserSexRadioButton1").on('change', function (event) {
         var checked = event.args.checked;
         if (checked) {
-        	 $("#updateTableSexInput").val("男");
+        	 $("#updateUserSexInput").val("男");
         }
     });
-    $("#updateTableSexRadioButton2").on('change', function (event) {
+    $("#updateUserSexRadioButton2").on('change', function (event) {
         var checked = event.args.checked;
         if (checked) {
-        	$("#updateTableSexInput").val("女");
+        	$("#updateUserSexInput").val("女");
         }
     });
     
-    $("#updateTableCancelButton").on('click', function (event) {
-    	$('#updateTableInfoForm').jqxValidator('hide');
-        $('#updateTablePopupWindow').jqxWindow('close');
+    $("#updateUserCancelButton").on('click', function (event) {
+    	$('#updateUserInfoForm').jqxValidator('hide');
+        $('#updateUserPopupWindow').jqxWindow('close');
     });
         
-    $("#updateTableDepartmentCombobox").on('select', function (event) {
+    $("#updateUserDepartmentCombobox").on('select', function (event) {
             if (event.args) {
                 var item = event.args.item;
                 if (item) {
-                	$("#updateTableDepartmentInput").val(item.value);
+                	$("#updateUserDepartmentInput").val(item.value);
                 }
             }
         });
     
-    $('#updateTableInfoForm').on('validationSuccess', function (event) { 
+    $('#updateUserInfoForm').on('validationSuccess', function (event) { 
     	// Some code here. 
-    	updateTable();
+    	updateUser();
     });
 }
 
-function initUpdateTableWindow(rowData,position) {
-	$("#updateTablePopupWindow").removeAttr("style");
+function initUpdateUserWindow(rowData,position) {
+	$("#updateUserPopupWindow").removeAttr("style");
 	
 	var theme = getDemoTheme();
 	
-	initUpdateTableElements(rowData);
+	initUpdateUserElements(rowData);
 	
 	// initialize the popup window and buttons.
-    $("#updateTablePopupWindow").jqxWindow({
-    	position:position, isModal: true,width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#updateTableCancelButton"), modalOpacity: 0.01,
+    $("#updateUserPopupWindow").jqxWindow({
+    	position:position, isModal: true,width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
     	initContent: function () {
-            $('#updateTablePopupWindow').jqxWindow('focus');
+            $('#updateUserPopupWindow').jqxWindow('focus');
         }
     });
     
-    $("#updateTablePopupWindow").jqxWindow('open');
+    $("#updateUserPopupWindow").jqxWindow('open');
 }
 
-function updateTable() {
+function updateUser() {
 
-	var updateTableUIData = {
-		"table.id" : $("#updateTableIdInput").val(),
-		"table.account" : $("#updateTableAccountInput").val(),
-		"table.name" : $("#updateTableRealNameInput").val(),
-		"table.password" : $("#updateTablePasswordConfirmInput").val(),
-		"table.address" : $("#updateTableAddressInput").val(),
-		"table.birthday" : $('#updateTableBirthdayInput').jqxDateTimeInput('value'),
-		"table.department" : $("#updateTableDepartmentInput").val(),
-		"table.email" : $("#updateTableEmailInput").val(),
-		"table.phone" : $("#updateTablePhoneInput").val(),
-		"table.sex" : $("#updateTableSexInput").val()
+	var updateUserUIData = {
+		"user.id" : $("#updateUserIdInput").val(),
+		"user.account" : $("#updateUserAccountInput").val(),
+		"user.name" : $("#updateUserRealNameInput").val(),
+		"user.password" : $("#updateUserPasswordConfirmInput").val(),
+		"user.address" : $("#updateUserAddressInput").val(),
+		"user.birthday" : $('#updateUserBirthdayInput').jqxDateTimeInput('value'),
+		"user.department" : $("#updateUserDepartmentInput").val(),
+		"user.email" : $("#updateUserEmailInput").val(),
+		"user.phone" : $("#updateUserPhoneInput").val(),
+		"user.sex" : $("#updateUserSexInput").val()
 	};
 	
-	var updateTableData = parseUIDataToTableData(updateTableUIData);
+	var updateUserData = parseUIDataToUserData(updateUserUIData);
 
-	$.post("updateTable.action", updateTableData, function(result) {
+	$.post("updateUser.action", updateUserData, function(result) {
 		if (result != null && result["id"] != null) {
 			
-			$("#updateTablePopupWindow").jqxWindow('close');
+			$("#updateUserResult").text("update user successfully!");
+			$("#updateUserPopupWindow").jqxWindow('close');
 			
-			var tableUIResult = parseTableDataToUIData(result);
+			var userUIResult = parseUserDataToUIData(result);
 			
 			//update row in grid
-			var selectedrowindex = $("#tableDataGrid").jqxGrid('getselectedrowindex');
-            var rowscount = $("#tableDataGrid").jqxGrid('getdatainformation').rowscount;
+			var selectedrowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
+            var rowscount = $("#userDataGrid").jqxGrid('getdatainformation').rowscount;
             if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
-            	var id = $("#tableDataGrid").jqxGrid('getrowid', selectedrowindex);
-                var commit = $("#tableDataGrid").jqxGrid('updaterow', id, tableUIResult);
-                $("#tableDataGrid").jqxGrid('ensurerowvisible', selectedrowindex);
+            	var id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
+                var commit = $("#userDataGrid").jqxGrid('updaterow', id, userUIResult);
+                $("#userDataGrid").jqxGrid('ensurerowvisible', selectedrowindex);
             }
 			
-			$("#eventLog").text("update table successfully!");
+			$("#eventLog").text("update user successfully!");
 
 		} else if (result != null && result["executeResult"] != null
 				&& result["executeResult"] == false) {
-			$("#updateTableResult").text("update table failed,please check table info!");
-			
+			$("#updateUserResult").text("update user failed,please check user info!");
 		}
 	});
 }
 
 
 
-function initRegisterTableElements() {
+function initRegisterUserElements() {
 	var theme = getDemoTheme();
-    $("#registerTableDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
-    $('#registerTableRegisterButton').jqxButton({ width: 60, height: 25, theme: theme });
-    $('#registerTableResetButton').jqxButton({ width: 60, height: 25, theme: theme });
-    $('#registerTableCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
+    $("#registerUserDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
+    $('#registerUserRegisterButton').jqxButton({ width: 60, height: 25, theme: theme });
+    $('#registerUserResetButton').jqxButton({ width: 60, height: 25, theme: theme });
+    $('#registerUserCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
     
-    $('#acceptInput').jqxCheckBox({ width: 130, theme: theme });
+    $('#acceptInput').jqxCheckBox({ width: 130, theme: theme ,checked: false});
     
     
-    $("#registerTableAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
-    $("#registerTablePhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 22, theme: theme });
-    $('.registerTableTextInput').jqxInput({ theme: theme });
-    var date = new Date();
-    date.setFullYear(2000, 0, 1);
-    $('#registerTableBirthdayInput').jqxDateTimeInput({ theme: theme, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
-    $("#registerTableSexRadioButton1").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
-    $("#registerTableSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
+    $("#registerUserAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
+    $("#registerUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 22, theme: theme });
+    $('.registerUserTextInput').jqxInput({ theme: theme });
+    var date = findDateTime("2000-01-01 00:00:00");
+    $('#registerUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 180, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
+    $("#registerUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
+    $("#registerUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
     
-    var tableDepartmentData = [
+    var userDepartmentData = [
                               //  { value: 1, label: "USER_DEPARTMENT" },
                                 { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
                                 { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
@@ -241,9 +265,9 @@ function initRegisterTableElements() {
                             ];
                         
 	// Create a jqxComboBox
-	$("#registerTableDepartmentCombobox").jqxComboBox({ 
+	$("#registerUserDepartmentCombobox").jqxComboBox({ 
 		selectedIndex: 0, 
-		source: tableDepartmentData, 
+		source: userDepartmentData, 
 		displayMember: "label", 
 		valueMember: "value", 
 		width: 150, 
@@ -252,34 +276,34 @@ function initRegisterTableElements() {
 	});
     
     // initialize validator.
-    $('#registerTableInfoForm').jqxValidator({
+    $('#registerUserInfoForm').jqxValidator({
      rules: [
-            { input: '#registerTableAccountInput', message: 'Tablename is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#registerTableAccountInput', message: 'Your tablename must be between 3 and 12 characters!', action: 'keyup, blur', rule: 'length=3,12' },
-            { input: '#registerTableRealNameInput', message: 'Real Name is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#registerTableRealNameInput', message: 'Your real name must contain only letters!', action: 'keyup', rule: 'notNumber' },
-            { input: '#registerTableRealNameInput', message: 'Your real name must be between 3 and 12 characters!', action: 'keyup', rule: 'length=3,12' },
+            { input: '#registerUserAccountInput', message: 'Username is required!', action: 'keyup, blur', rule: 'required' },
+            { input: '#registerUserAccountInput', message: 'Your username must be between 3 and 12 characters!', action: 'keyup, blur', rule: 'length=3,12' },
+            { input: '#registerUserRealNameInput', message: 'Real Name is required!', action: 'keyup, blur', rule: 'required' },
+            { input: '#registerUserRealNameInput', message: 'Your real name must contain only letters!', action: 'keyup', rule: 'notNumber' },
+            { input: '#registerUserRealNameInput', message: 'Your real name must be between 3 and 12 characters!', action: 'keyup', rule: 'length=3,12' },
             
-            { input: '#registerTablePasswordInput', message: 'Password is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#registerTablePasswordInput', message: 'Your password must be between 6 and 20 characters!', action: 'keyup, blur', rule: 'length=6,20' },
-            { input: '#registerTablePasswordConfirmInput', message: 'Confirm Password is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#registerTablePasswordConfirmInput', message: 'Confirm Passwords doesn\'t match!', action: 'keyup, focus', rule: function (input, commit) {
+            { input: '#registerUserPasswordInput', message: 'Password is required!', action: 'keyup, blur', rule: 'required' },
+            { input: '#registerUserPasswordInput', message: 'Your password must be between 6 and 20 characters!', action: 'keyup, blur', rule: 'length=6,20' },
+            { input: '#registerUserPasswordConfirmInput', message: 'Confirm Password is required!', action: 'keyup, blur', rule: 'required' },
+            { input: '#registerUserPasswordConfirmInput', message: 'Confirm Passwords doesn\'t match!', action: 'keyup, focus', rule: function (input, commit) {
                 // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
-                    if (input.val() === $('#registerTablePasswordInput').val()) {
+                    if (input.val() === $('#registerUserPasswordInput').val()) {
                         return true;
                     }
                     return false;
             	}
             },
-            { input: '#registerTableBirthdayInput', message: 'Your birth date must be between 1/1/1900 and ' + ((new Date()).getFullYear() + 1), action: 'valuechanged', rule: function (input, commit) {
-                var date = $('#registerTableBirthdayInput').jqxDateTimeInput('value');
+            { input: '#registerUserBirthdayInput', message: 'Your birth date must be between 1/1/1900 and ' + ((new Date()).getFullYear() + 1), action: 'valuechanged', rule: function (input, commit) {
+                var date = $('#registerUserBirthdayInput').jqxDateTimeInput('value');
                 var result = date.getFullYear() >= 1900 && date.getFullYear() <= (new Date()).getFullYear();
                 // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
                 return result;
             	}
             },
-            { input: '#registerTableEmailInput', message: 'E-mail is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#registerTableEmailInput', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' },
+            { input: '#registerUserEmailInput', message: 'E-mail is required!', action: 'keyup, blur', rule: 'required' },
+            { input: '#registerUserEmailInput', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' },
             { input: '#acceptInput', message: 'You have to accept the terms', action: 'change', rule: 'required', position: 'right:0,0'}
             ], 
             theme: theme
@@ -288,136 +312,135 @@ function initRegisterTableElements() {
 	
 };
 
-function addRegisterTableEventListeners() {
-	$('#addTablePopupWindow').on('close', function (event) { 
-		$('#registerTableInfoForm').jqxValidator('hide');
-      //  $('#updateTablePopupWindow').jqxWindow('close');
+function addRegisterUserEventListeners() {
+	$('#addUserPopupWindow').on('close', function (event) { 
+		$('#registerUserInfoForm').jqxValidator('hide');
+		emptyRegisterUserWindow();
+      //  $('#updateUserPopupWindow').jqxWindow('close');
 	});
 	
-	$('#registerTableRegisterButton').on('click', function () {
-        $('#registerTableInfoForm').jqxValidator('validate');
+	$('#registerUserRegisterButton').on('click', function () {
+        $('#registerUserInfoForm').jqxValidator('validate');
     });
     
-    $("#registerTableSexRadioButton1").on('change', function (event) {
+    $("#registerUserSexRadioButton1").on('change', function (event) {
         var checked = event.args.checked;
         if (checked) {
-        	 $("#registerTableSexInput").val("男");
+        	 $("#registerUserSexInput").val("男");
         }
     });
-    $("#registerTableSexRadioButton2").on('change', function (event) {
+    $("#registerUserSexRadioButton2").on('change', function (event) {
         var checked = event.args.checked;
         if (checked) {
-        	$("#registerTableSexInput").val("女");
+        	$("#registerUserSexInput").val("女");
         }
     });
     
-    $("#registerTableCancelButton").on('click', function (event) {
-    	$('#registerTableInfoForm').jqxValidator('hide');
-        $('#addTablePopupWindow').jqxWindow('close');
-    //    $('#addTablePopupWindow').jqxWindow('destroy');
-     //   removeElementFromPage("addTablePopupWindow");
+    $("#registerUserCancelButton").on('click', function (event) {
+        $('#addUserPopupWindow').jqxWindow('close');
         
     });
         
-    $("#registerTableDepartmentCombobox").on('select', function (event) {
+    $("#registerUserDepartmentCombobox").on('select', function (event) {
             if (event.args) {
                 var item = event.args.item;
                 if (item) {
-                	$("#registerTableDepartmentInput").val(item.value);
+                	$("#registerUserDepartmentInput").val(item.value);
                 }
             }
         });
     
-    $('#registerTableInfoForm').on('validationSuccess', function (event) { 
+    $('#registerUserInfoForm').on('validationSuccess', function (event) { 
     	// Some code here. 
-    	registerTable();
+    	registerUser();
     });
 }
-function initRegisterTableWindow(position) {
-	$("#addTablePopupWindow").removeAttr("style");
-	$("#addTablePopupWindow").attr("style","overflow:hidden");
+function initRegisterUserWindow(position) {
+	emptyRegisterUserWindow();
+	$("#addUserPopupWindow").removeAttr("style");
+	$("#addUserPopupWindow").attr("style","overflow:hidden");
 	
 	var theme = getDemoTheme();
-	$("#addTablePopupWindow").jqxWindow({
-		position:position,isModal: true,width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#registerTableCancelButton"), 
+	$("#addUserPopupWindow").jqxWindow({
+		position:position,isModal: true,width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#registerUserCancelButton"), 
     	modalOpacity: 0.01,
     	
     	initContent: function () {
-            $('#addTablePopupWindow').jqxWindow('focus');
+            $('#addUserPopupWindow').jqxWindow('focus');
         }
         
     });
-    $("#addTablePopupWindow").jqxWindow('open');
+    $("#addUserPopupWindow").jqxWindow('open');
 }
 
 
-function registerTable() {
+function registerUser() {
 
-	var registerTableUIData = {
-		"table.account" : $("#registerTableAccountInput").val(),
-		"table.name" : $("#registerTableRealNameInput").val(),
-		"table.password" : $("#registerTablePasswordConfirmInput").val(),
-		"table.address" : $("#registerTableAddressInput").val(),
-		"table.birthday" : $('#registerTableBirthdayInput').jqxDateTimeInput('value'),
-		"table.department" : $("#registerTableDepartmentInput").val(),
-		"table.email" : $("#registerTableEmailInput").val(),
-		"table.phone" : $("#registerTablePhoneInput").val(),
-		"table.sex" : $("#registerTableSexInput").val()
+	var registerUserUIData = {
+		"user.account" : $("#registerUserAccountInput").val(),
+		"user.name" : $("#registerUserRealNameInput").val(),
+		"user.password" : $("#registerUserPasswordConfirmInput").val(),
+		"user.address" : $("#registerUserAddressInput").val(),
+		"user.birthday" : $("#registerUserBirthdayInput").jqxDateTimeInput('value'),
+		"user.department" : $("#registerUserDepartmentInput").val(),
+		"user.email" : $("#registerUserEmailInput").val(),
+		"user.phone" : $("#registerUserPhoneInput").val(),
+		"user.sex" : $("#registerUserSexInput").val()
 	};
-	
-	var registerTableData = parseUIDataToTableData(registerTableUIData);
 
-	$.post("registerTable.action", registerTableData, function(result) {
+	var registerUserData = parseUIDataToUserData(registerUserUIData);
+	
+	$.post("registerUser.action", registerUserData, function(result) {
 		if (result != null && result["id"] != null) {
-			result = parseTableDataToUIData(result);
-			$('#addTablePopupWindow').jqxWindow('close');
+			result = parseUserDataToUIData(result);
 			
-			var commit = $("#tableDataGrid").jqxGrid('addrow', null, result);
+			$("#registerUserResult").text("register user successfully!");
+			$('#addUserPopupWindow').jqxWindow('close');
 			
-			$("#eventLog").text("register table successfully!");
+			var commit = $("#userDataGrid").jqxGrid('addrow', null, result);
+			
+			$("#eventLog").text("register user successfully!");
 		} else if (result != null && result["executeResult"] != null
 				&& result["executeResult"] == false) {
-			$("#registerTableResult").text("register table failed,please check table info!");
+			$("#registerUserResult").text("register user failed,please check user info!");
 		}
 	});
 }
 
-function showTableDetailInfo() {
-	$.post("findLoginTable.action", function(table) {
-		if (table != null && table.id != null) {
-			table = parseTableDataToUIData(table);
-			
-			$("#showUsreTable #account").text(table["account"]);
-			$("#showUsreTable #name").text(table["name"]);
-			$("#showUsreTable #password").text(table["password"]);
-			$("#showUsreTable #address").text(table["address"]);
-			$("#showUsreTable #birthday").text(table["birthday"]);
-			$("#showUsreTable #department").text(table["department"]);
-			$("#showUsreTable #email").text(table["email"]);
-			$("#showUsreTable #image_relative_path").attr("src",table["image_relative_path"]);
-			$("#showUsreTable #phone").text(table["phone"]);
-			$("#showUsreTable #sex").text(table["sex"]);
+function showUserDetailInfo() {
+	$.post("findLoginUser.action", function(user) {
+		if (user != null && user.id != null) {
+			$("#showUsreTable #account").text(user["account"]);
+			$("#showUsreTable #name").text(user["name"]);
+			$("#showUsreTable #password").text(user["password"]);
+			$("#showUsreTable #address").text(user["address"]);
+			$("#showUsreTable #birthday").text(user["birthday"]);
+			$("#showUsreTable #department").text(user["department"]);
+			$("#showUsreTable #email").text(user["email"]);
+			$("#showUsreTable #image_relative_path").attr("src",user["image_relative_path"]);
+			$("#showUsreTable #phone").text(user["phone"]);
+			$("#showUsreTable #sex").text(user["sex"]);
 		}
 	});
 }
 
-function uploadTableImage() {
-	$.post("findLoginTable.action", function(table) {
-		if (table != null && table.id != null) {
-			$("#crop_now").attr("src", table.image_relative_path);
-			$("#crop_preview").attr("src", table.image_relative_path);
+function uploadUserImage() {
+	$.post("findLoginUser.action", function(user) {
+		if (user != null && user.id != null) {
+			$("#crop_now").attr("src", user.image_relative_path);
+			$("#crop_preview").attr("src", user.image_relative_path);
 
-			$("#table_id").val(table.id);
-			$("#image_relative_path").val(table.image_relative_path);
+			$("#user_id").val(user.id);
+			$("#image_relative_path").val(user.image_relative_path);
 
-			initUploadTableImage();
+			initUploadUserImage();
 			initJCrop();
 		}
 
 	});
 };
 
-function initUploadTableImage(){
+function initUploadUserImage(){
 	
 	$(function(){
 		$("#file_upload").uploadify({
@@ -429,8 +452,8 @@ function initUploadTableImage(){
 	        'successTimeout':99999,
 	        //附带值
 	        'formData':{
-	            'tableid':'用户id',
-	            'tablename':'用户名',
+	            'userid':'用户id',
+	            'username':'用户名',
 	            'rnd':'加密密文'
 	        },
 	        //flash
@@ -508,7 +531,7 @@ function initUploadTableImage(){
 	        	 var jsonData = eval('(' + data + ')');
 	        	
 	            if(jsonData != null && jsonData.fileRelativePath != null && response == true) {
-	            	var table = jsonData;
+	            	var user = jsonData;
 	            	
 	            	//reload jcrop
 	            	//jcrop_api.disable();
@@ -519,10 +542,10 @@ function initUploadTableImage(){
 	            	jcrop_api.destroy();
 	            	
 	            	
-	            	$("#crop_now").attr("src",table.fileRelativePath);
-	            	$("#crop_preview").attr("src",table.fileRelativePath);
-	            	$("#image_relative_path").val(table.fileRelativePath);
-	 //           	$("#table_id").val(table.id);
+	            	$("#crop_now").attr("src",user.fileRelativePath);
+	            	$("#crop_preview").attr("src",user.fileRelativePath);
+	            	$("#image_relative_path").val(user.fileRelativePath);
+	 //           	$("#user_id").val(user.id);
 	            	
 	            	//init again
 	            	jQuery('#crop_now').Jcrop({
@@ -591,28 +614,28 @@ function releaseCrop(obj){
 	
 }
 
-function initOperateTableGridElements() {
+function initOperateUserGridElements() {
 	var theme = getDemoTheme();
-	$("#addTableRowButton").jqxButton({ theme: theme });
-	$("#deleteTableRowButton").jqxButton({ theme: theme });
-	$("#updateTableRowButton").jqxButton({ theme: theme });
+	$("#addUserRowButton").jqxButton({ theme: theme });
+	$("#deleteUserRowButton").jqxButton({ theme: theme });
+	$("#updateUserRowButton").jqxButton({ theme: theme });
 }	
 
-function addOperateTableGridEventListeners() {
+function addOperateUserGridEventListeners() {
 	// update row.
-	$("#updateTableRowButton").on('click', function () {
-		selectedupdaterowindex = $("#tableDataGrid").jqxGrid('getselectedrowindex');
-		//id = $("#tableDataGrid").jqxGrid('getrowid', selectedrowindex);
-	    rowData = $('#tableDataGrid').jqxGrid('getrowdata', selectedupdaterowindex);
+	$("#updateUserRowButton").on('click', function () {
+		selectedupdaterowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
+		//id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
+	    rowData = $('#userDataGrid').jqxGrid('getrowdata', selectedupdaterowindex);
 	    
 		
 		if(rowData != null) {
-			var offset = $("#tableDataGrid").offset();
+			var offset = $("#userDataGrid").offset();
 			var position = {};
 			position.x = parseInt(offset.left) + 200;
 			position.y = parseInt(offset.top) - 200;
 			
-			initUpdateTableWindow(rowData,position);
+			initUpdateUserWindow(rowData,position);
 			
 		}
 	    
@@ -620,33 +643,33 @@ function addOperateTableGridEventListeners() {
 	});
     
 	// show the popup window
-	$("#addTableRowButton").on('click', function () {
-	//	openContentPage('addTablePopupWindowDiv','page/common/addTablePopupWindow.html','content');
+	$("#addUserRowButton").on('click', function () {
+	//	openContentPage('addUserPopupWindowDiv','page/common/addUserPopupWindow.html','content');
 		
-		var offset = $("#tableDataGrid").offset();
+		var offset = $("#userDataGrid").offset();
 		var position = {};
 		position.x = parseInt(offset.left) + 200;
 		position.y = parseInt(offset.top) - 200;
 		
 		
 		// show the popup window.
-		initRegisterTableWindow(position);
+		initRegisterUserWindow(position);
 		
 			
 	});
 	
 	// delete row.
-	$("#deleteTableRowButton").on('click', function () {
-	    var selectedrowindex = $("#tableDataGrid").jqxGrid('getselectedrowindex');
-	    var rowscount = $("#tableDataGrid").jqxGrid('getdatainformation').rowscount;
+	$("#deleteUserRowButton").on('click', function () {
+	    var selectedrowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
+	    var rowscount = $("#userDataGrid").jqxGrid('getdatainformation').rowscount;
 	    if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
-	        //var id = $("#tableDataGrid").jqxGrid('getrowid', selectedrowindex);
+	        //var id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
 	        
-	        var rowData = $('#tableDataGrid').jqxGrid('getrowdata', selectedrowindex);
-	        $.post("removeTable.action", {"table.id": rowData["id"]},function(result){
+	        var rowData = $('#userDataGrid').jqxGrid('getrowdata', selectedrowindex);
+	        $.post("removeUser.action", {"user.id": rowData["id"]},function(result){
 				if(result != null && result["executeResult"] != null && result["executeResult"] == true){
-					var id = $("#tableDataGrid").jqxGrid('getrowid', selectedrowindex);
-                    var commit = $("#tableDataGrid").jqxGrid('deleterow', id);
+					var id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
+                    var commit = $("#userDataGrid").jqxGrid('deleterow', id);
 	            	
 	            	if(commit != null) {
 	            		
@@ -659,28 +682,28 @@ function addOperateTableGridEventListeners() {
 }
 
 
-function parseTableGridHtml() {
-		$.post("findTable.action", 
-			{"table.enabled": true}, 
-			function(matchedtables){
-	if(matchedtables != null && matchedtables.result != null){
-		tables = matchedtables.result;
+function parseUserGridHtml() {
+		$.post("findUser.action", 
+			{"user.enabled": true}, 
+			function(matchedusers){
+	if(matchedusers != null && matchedusers.result != null){
+		users = matchedusers.result;
 	}
 	
 	var imageRenderer = function (row, datafield, value) {
 		return '<img style="margin-left: 5px;" height="60" width="50" src="' + value + '"/>';
 	};
-	var tableSize = tables.length;
-	var tableData = {};
+	var userSize = users.length;
+	var userData = {};
 	
 	var columns = {};
 	
 	var datafields = {};
-	for(var i = 0;i < tableSize; i++) {
-		table = parseTableDataToUIData(tables[i]);
+	for(var i = 0;i < userSize; i++) {
+		user = parseUserDataToUIData(users[i]);
 		if(i==0) {
 			var j=0;
-			for(var item in table) {
+			for(var item in user) {
 				var datafield = {};
 				var column = {};
 				
@@ -768,16 +791,16 @@ function parseTableGridHtml() {
 		}
 		
 		var rowData = {};
-		for(var item in table) {
+		for(var item in user) {
 			if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
 					
 			}else {
-				rowData[item] = table[item];
+				rowData[item] = user[item];
 			}
 		
 		}
 		
-		tableData[i] = rowData;
+		userData[i] = rowData;
 	}
 	
 	
@@ -785,7 +808,7 @@ function parseTableGridHtml() {
 	
 	var source =
 	{
-	    localdata: tableData,
+	    localdata: userData,
 	    datatype: "local",
 	    datafields:datafields,
 	    addrow: function (rowid, rowdata, position, commit) {
@@ -810,7 +833,7 @@ function parseTableGridHtml() {
 	};
 	var dataAdapter = new $.jqx.dataAdapter(source);
 	// initialize jqxGrid
-	$("#tableDataGrid").jqxGrid(
+	$("#userDataGrid").jqxGrid(
 	{
 	    width: 1000,
 	    height: 350,
@@ -827,21 +850,21 @@ function parseTableGridHtml() {
 	});
 	
 	// display selected row index.
-    $("#tableDataGrid").on('rowselect', function (event) {
+    $("#userDataGrid").on('rowselect', function (event) {
         $("#eventLog").text("select row index : " + event.args.rowindex);
     });
 	
-	initOperateTableGridElements();
-	addOperateTableGridEventListeners();
+	initOperateUserGridElements();
+	addOperateUserGridEventListeners();
 	
-	addUpdateTableEventListeners();
+	addUpdateUserEventListeners();
 	
 	// initialize the popup window and buttons.
-	initRegisterTableElements();
-	addRegisterTableEventListeners();
+	initRegisterUserElements();
+	addRegisterUserEventListeners();
 	
 	/*
-	 $("#tableDataGrid").on('columnreordered', function (event) {
+	 $("#userDataGrid").on('columnreordered', function (event) {
 	    var column = event.args.columntext;
 	    var newindex = event.args.newindex
 	    var oldindex = event.args.oldindex;
@@ -851,12 +874,14 @@ function parseTableGridHtml() {
 		
 }
 
-function parseUIDataToTableData(record) {
+
+
+function parseUIDataToUserData(record) {
 	if(record != null){
 		for(var attr in record) {
-			if(attr == "table.sex") {
+			if(attr == "user.sex") {
 				record[attr] = findSexValue(record[attr]);
-			}else if(attr == "table.birthday") {
+			}else if(attr == "user.birthday") {
 				record[attr] = record[attr].getTime();
 			}
 		}
@@ -865,18 +890,18 @@ function parseUIDataToTableData(record) {
 	return null;
 }
 
-function parseTableDataToUIData(table) {
-	if(table != null){
-		for(var attr in table) {
+function parseUserDataToUIData(user) {
+	if(user != null){
+		for(var attr in user) {
 			if(attr == "department") {
-				table[attr] = findDepartmentString(table[attr]);
+				user[attr] = findDepartmentString(user[attr]);
 			}else if(attr == "sex") {
-				table[attr] = findSexString(table[attr]);
+				user[attr] = findSexString(user[attr]);
 			}else if(attr == "birthday") {
-				table[attr] = new Date(table[attr]).Format("yyyy-MM-dd HH:mm:ss");
+				user[attr] = new Date(user[attr]).Format("yyyy-MM-dd HH:mm:ss");
 			}
 		}
-		return table;
+		return user;
 	}
 	return null;
 }

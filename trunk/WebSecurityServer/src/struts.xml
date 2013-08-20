@@ -286,11 +286,18 @@
 	        <result name="findAvailableTablesSuccess" type="json">
 				<param name="root">matchedTables</param>
 	        </result>
-	        <result name="searchSuccess" type="json">
+	        <result name="searchTableSuccess" type="json">
 				<param name="root">matchedTables</param>
 	        </result>
 	        
-	        <result name="searchFail" type="json">
+	        <result name="addTableSuccess" type="json">
+				<param name="root">table</param>
+	        </result>
+	        
+	        <result name="updateTableSuccess" type="json">
+				<param name="root">table</param>
+	        </result>
+	        <result name="removeUserSuccess" type="json">
 				<param name="root">result</param>
 	        </result>
 	        
