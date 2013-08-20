@@ -18,6 +18,7 @@ import com.pitaya.bookingnow.app.util.Constants;
 import com.pitaya.bookingnow.app.util.ToastUtil;
 import com.pitaya.bookingnow.app.data.HttpHandler;
 import com.pitaya.bookingnow.app.data.OrderListAdapter;
+import com.pitaya.bookingnow.app.data.OrderListAdapter.ViewHolder;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -262,39 +263,46 @@ public class WelcomerOrderListView extends OrderListView{
 		try {
 			mAdapter = new OrderListAdapter(this.getContext(), this.mListView){
 					
-				private void updateOrderStatus(int position, int status){
-					View view = mListView.getChildAt(position);
-					if(view != null && (TextView)view.findViewById(R.id.info4) != null){
-						((TextView)view.findViewById(R.id.info4)).setText(Order.getOrderStatusString(status));
-					}
-				}
-				
 				@Override
 				public View getView(int position, View convertView, ViewGroup parent) {
 					View view = convertView;
-					final int index = position;
 					Order order = orderlist.get(position);
-					if(view == null){
-						view = View.inflate(parent.getContext(), R.layout.orderinfoview, null);
-					}
-					if(this.selectItem == position){
+		    		if(view == null){
+		    			view = View.inflate(parent.getContext(), R.layout.orderinfoview, null);
+		    			ViewHolder holder = new ViewHolder();
+		    			holder.info1 = (TextView)view.findViewById(R.id.info1);
+		    			holder.info2 = (TextView)view.findViewById(R.id.info2);
+		    			holder.info3 = (TextView)view.findViewById(R.id.info3);
+		    			holder.info4 = (TextView)view.findViewById(R.id.info4);
+		    			holder.info5 = (TextView)view.findViewById(R.id.info5);
+		    			view.setTag(holder);
+		    		}
+		    		
+		    		final ViewHolder viewHolder = (ViewHolder)view.getTag();
+					if(this.selectItem != null && this.selectItem == position){
 						view.setBackgroundColor(mContext.getResources().getColor(R.color.common_background));
 					} else {
 						view.setBackgroundColor(mContext.getResources().getColor(android.R.color.white));
 					}
-					((TextView)view.findViewById(R.id.info1)).setText(order.getCustomerName());
-					((TextView)view.findViewById(R.id.info2)).setText(order.getPhoneNumber());
-					((TextView)view.findViewById(R.id.info3)).setText(String.valueOf(order.getPeopleCount()));
-					((TextView)view.findViewById(R.id.info4)).setText(Order.getOrderStatusString(order.getStatus()));
-					order.addOnStatusChangedListener(new OnOrderStatusChangedListener(){
+					viewHolder.info1.setText(order.getCustomerName());
+					viewHolder.info2.setText(order.getPhoneNumber());
+					viewHolder.info3.setText(String.valueOf(order.getPeopleCount()));
+					viewHolder.info4.setText(Order.getOrderStatusString(order.getStatus()));
+		    		if(viewHolder.getOrder() != null && viewHolder.getStatusListener() != null){
+		    			viewHolder.getOrder().removeOnStatusChangedListener(viewHolder.getStatusListener());
+		    		}
+		    		viewHolder.setOrder(order);
+		    		OnOrderStatusChangedListener statuslistener = new OnOrderStatusChangedListener(){
 	
 						@Override
 						public void onOrderStatusChanged(Order order, int status) {
-							 updateOrderStatus(index, status);
+							viewHolder.info4.setText(Order.getOrderStatusString(order.getStatus()));
 						}
 						
-					});
-					SimpleDateFormat dateFm = new SimpleDateFormat("MM月dd日 HH:mm:ss"); 
+					};
+					viewHolder.setStatusListener(statuslistener);
+		    		order.addOnStatusChangedListener(statuslistener);
+					SimpleDateFormat dateFm = new SimpleDateFormat("MM月dd日 HH:mm"); 
 					Date date = new Date();
 					date.setTime(order.getSubmitTime());
 					((TextView)view.findViewById(R.id.info5)).setText(dateFm.format(date));
@@ -336,8 +344,13 @@ public class WelcomerOrderListView extends OrderListView{
 					long arg3) {
 				mParentView.showOrderDetail(mAdapter.getOrderList().get(position), false);
 				mParentView.setLastItem(mAdapter.getOrderList().get(position).getOrderKey());
+				Integer old = mAdapter.getSelectItem();
+				if(old != null){
+					mListView.getChildAt(old).setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
+				}
+				mListView.getChildAt(position).setBackgroundColor(getContext().getResources().getColor(R.color.common_background));
 				mAdapter.setSelectItem(position);
-				mAdapter.notifyDataSetInvalidated();
+				//mAdapter.notifyDataSetChanged();
 			}
         	
         });

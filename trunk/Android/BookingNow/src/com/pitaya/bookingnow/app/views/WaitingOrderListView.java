@@ -56,8 +56,8 @@ public class WaitingOrderListView extends OrderListView{
 		((TextView)this.mHeaderView.findViewById(R.id.title1)).setText(R.string.order_list_title_customer);
 		((TextView)this.mHeaderView.findViewById(R.id.title2)).setText(R.string.order_list_title_phone);
 		((TextView)this.mHeaderView.findViewById(R.id.title3)).setText(R.string.order_list_title_count);
-		((TextView)this.mHeaderView.findViewById(R.id.title4)).setText(R.string.order_list_title_status);
-		((TextView)this.mHeaderView.findViewById(R.id.title5)).setText(R.string.order_list_title_submittime);
+		((TextView)this.mHeaderView.findViewById(R.id.title4)).setText(R.string.order_list_title_submittime);
+		((TextView)this.mHeaderView.findViewById(R.id.title5)).setVisibility(View.GONE);
 		
 		final TablesView tablesView = new TablesView(this.getContext(), this.mListView);
 		tablesView.setOnConfirmListener(new TablesView.OnConfirmListener() {
@@ -199,7 +199,6 @@ public class WaitingOrderListView extends OrderListView{
 				@Override
 				public View getView(int position, View convertView, ViewGroup parent) {
 					View view = convertView;
-					final int index = position;
 					Order order = orderlist.get(position);
 					if(view == null){
 						view = View.inflate(parent.getContext(), R.layout.orderinfoview, null);
@@ -209,6 +208,7 @@ public class WaitingOrderListView extends OrderListView{
 		    			holder.info3 = (TextView)view.findViewById(R.id.info3);
 		    			holder.info4 = (TextView)view.findViewById(R.id.info4);
 		    			holder.info5 = (TextView)view.findViewById(R.id.info5);
+		    			holder.info5.setVisibility(View.GONE);
 		    			view.setTag(holder);
 					}
 					
@@ -221,26 +221,10 @@ public class WaitingOrderListView extends OrderListView{
 					viewHolder.info1.setText(order.getCustomerName());
 					viewHolder.info2.setText(order.getPhoneNumber());
 					viewHolder.info3.setText(String.valueOf(order.getPeopleCount()));
-					viewHolder.info4.setText(Order.getOrderStatusString(order.getStatus()));
-		    		if(viewHolder.getOrder() != null && viewHolder.getStatusListener() != null){
-		    			viewHolder.getOrder().removeOnStatusChangedListener(viewHolder.getStatusListener());
-		    		}
-		    		viewHolder.setOrder(order);
-		    		OnOrderStatusChangedListener statuslistener =  new OnOrderStatusChangedListener(){
-	
-						@Override
-						public void onOrderStatusChanged(Order order, int status) {
-							// updateOrderStatus(index, status);
-							viewHolder.info4.setText(Order.getOrderStatusString(order.getStatus()));
-						}
-						
-					};
-					viewHolder.setStatusListener(statuslistener);
-					order.addOnStatusChangedListener(statuslistener);
 					SimpleDateFormat dateFm = new SimpleDateFormat("MM月dd日 HH:mm"); 
 					Date date = new Date();
 					date.setTime(order.getSubmitTime());
-					((TextView)view.findViewById(R.id.info5)).setText(dateFm.format(date));
+					viewHolder.info4.setText(dateFm.format(date));
 					return view;
 				}
 				

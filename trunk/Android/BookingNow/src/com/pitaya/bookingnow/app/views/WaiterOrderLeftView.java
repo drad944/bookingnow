@@ -59,24 +59,6 @@ public class WaiterOrderLeftView extends OrderLeftView{
 	
 	private OrderListsViewPagerAdapter mAdapter;
 	private OrderListsViewPager mOrdersViewPager;
-	private MessageHandler mMessageHandler;
-	private MessageService mMessageService;
-	private boolean mIsBound = false;
-	
-	private ServiceConnection mConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			mMessageService = ((MessageService.MessageBinder)service).getService();
-			mMessageService.registerHandler(Constants.ORDER_MESSAGE, mMessageHandler);
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			mMessageService = null;
-		}
-
-	};
 	
 	public WaiterOrderLeftView(){
 		super();
@@ -94,7 +76,7 @@ public class WaiterOrderLeftView extends OrderLeftView{
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		doBindService();
+		super.onCreateView(inflater, container, savedInstanceState);
 		if(this.mContentContainer.getStatus() != null){
 			this.lastSelectItem = (String)this.mContentContainer.getStatus();
 		}
@@ -106,20 +88,23 @@ public class WaiterOrderLeftView extends OrderLeftView{
 		listTypes.add(WAITING_ORDERS);
 		mAdapter = new OrderListsViewPagerAdapter(this.getActivity(), listTypes) ;
 		mOrdersViewPager.setAdapter(mAdapter);
-		mMessageHandler = new MessageHandler();
 		mMessageHandler.setOnMessageListener(new MessageHandler.OnMessageListener(){
 
 			@Override
 			public void onMessage(Message message) {
 				if(message instanceof OrderMessage){
+					//Can only be new welcomer_new or waiting order
 					OrderMessage msg = (OrderMessage)message;
 					if(msg.getAction().equals(Constants.ACTION_ADD)){
-						//Can only be new welcomer_new order
 						Order order =  new Order(msg.getOrderId(), null, null, 
 								msg.getPhone(), msg.getCustomer(), msg.getPeopleCount(), msg.getTimestamp());
 						order.setSubmitTime(msg.getTimestamp());
 						order.setStatus(Constants.ORDER_WELCOMER_NEW);
 						mAdapter.addNewWaitingOrder(order);
+					} else if(msg.getAction().equals(Constants.ACTION_REMOVE)){
+						Order order =  new Order(msg.getOrderId(), null, null, 
+								null, null, 0, null);
+						mAdapter.removeWaitingOrder(order);
 					}
 				} else if(message instanceof OrderDetailMessage){
 					OrderDetailMessage msg = (OrderDetailMessage)message;
@@ -130,14 +115,8 @@ public class WaiterOrderLeftView extends OrderLeftView{
 			}
 			
 		});
+		this.doBindService();
 		return view;
-	}
-	
-	@Override
-	public void onDestroyView(){
-		super.onDestroyView();
-		mMessageService.unregisterHandler(mMessageHandler);
-		this.doUnbindService();
 	}
 	
 	public void moveOrderToMineList(Order order){
@@ -199,19 +178,6 @@ public class WaiterOrderLeftView extends OrderLeftView{
 		return this.mOrdersViewPager.getCurrentItem();
 	}
 
-	void doBindService() {
-		this.getActivity().bindService(new Intent(this.getActivity(), MessageService.class), mConnection, Context.BIND_AUTO_CREATE);
-	    mIsBound = true;
-	}
-	
-	void doUnbindService() {
-	    if (mIsBound) {
-	        // Detach our existing connection.
-	    	this.getActivity().unbindService(mConnection);
-	        mIsBound = false;
-	    }
-	}
-	
 	private String getTitleByType(int type){
 		switch(type){
 			case MYORDERS:
@@ -298,6 +264,24 @@ public class WaiterOrderLeftView extends OrderLeftView{
 			if(this.getCount() > 1){
 				mOrderListViews.get(1).getOrderList().add(order);
 				mOrderListViews.get(1).refresh();
+			}
+		}
+		
+		private void removeWaitingOrder(Order removedorder){
+			if(this.getCount() > 1){
+				int i = 0;
+				boolean isRemoved = false;
+				for(Order order : mOrderListViews.get(1).getOrderList()){
+					if(order.getOrderKey().equals(removedorder.getOrderKey())){
+						mOrderListViews.get(1).getOrderList().remove(i);
+						isRemoved = true;
+						break;
+					}
+					i++;
+				}
+				if(isRemoved){
+					mOrderListViews.get(1).refresh();
+				}
 			}
 		}
 		

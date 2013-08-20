@@ -34,21 +34,6 @@ public class KitchenOrderLeftView extends OrderLeftView{
 		super();
 	}
 	
-	private ServiceConnection mConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			mMessageService = ((MessageService.MessageBinder)service).getService();
-			mMessageService.registerHandler(Constants.ORDER_MESSAGE, mMessageHandler);
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			mMessageService = null;
-		}
-
-	};
-	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		doBindService();
@@ -66,14 +51,8 @@ public class KitchenOrderLeftView extends OrderLeftView{
 			}
 			
 		});
+		this.doBindService();
 		return view;
-	}
-	
-	@Override
-	public void onDestroyView(){
-		super.onDestroyView();
-		mMessageService.unregisterHandler(mMessageHandler);
-		this.doUnbindService();
 	}
 	
 	public void showCookingItemsList(){
@@ -83,18 +62,5 @@ public class KitchenOrderLeftView extends OrderLeftView{
 		fragmentTransaction.replace(R.id.orderdetail, mContent);
 		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		fragmentTransaction.commit();
-	}
-	
-	void doBindService() {
-		this.getActivity().bindService(new Intent(this.getActivity(), MessageService.class), mConnection, Context.BIND_AUTO_CREATE);
-	    mIsBound = true;
-	}
-	
-	void doUnbindService() {
-	    if (mIsBound) {
-	        // Detach our existing connection.
-	    	this.getActivity().unbindService(mConnection);
-	        mIsBound = false;
-	    }
 	}
 }

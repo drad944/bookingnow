@@ -191,6 +191,7 @@ public class HomeActivity extends FragmentActivity {
 		Log.i(TAG, "onDestroy");
 		mBoundService.unregisterHandler(mMessageHandler);
 		UserManager.setUserRole(null);
+		mBoundService.sendMessage(new RegisterMessage(UserManager.getUserId(), "unregister"));
 		this.doUnbindService();
     }
 	
@@ -262,7 +263,8 @@ public class HomeActivity extends FragmentActivity {
 			menuitem.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view) {
-	           	 	if(!HomeActivity.this.mIsBound && HomeActivity.this.mBoundService.sendMessage(new RegisterMessage(UserManager.getUserId(), "unregister"))){
+	           	 	if(HomeActivity.this.mIsBound 
+	           	 			&& HomeActivity.this.mBoundService.sendMessage(new RegisterMessage(UserManager.getUserId(), "unregister"))){
 	           	 		Log.e(TAG, "Fail to send unregister message");
 	           	 	}
 					UserManager.setUserRole(null);
