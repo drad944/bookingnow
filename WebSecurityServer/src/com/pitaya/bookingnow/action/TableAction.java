@@ -7,6 +7,7 @@ import java.util.Map;
 import com.pitaya.bookingnow.entity.Table;
 import com.pitaya.bookingnow.service.ITableService;
 import com.pitaya.bookingnow.util.Constants;
+import com.pitaya.bookingnow.util.MyResult;
 import com.pitaya.bookingnow.util.SearchParams;
 
 public class TableAction extends BaseAction{
@@ -64,46 +65,66 @@ public class TableAction extends BaseAction{
 			}
 			matchedTables.put("result", tables);
 			
-			return "searchSuccess";
+			return "searchTableSuccess";
 		}
-		
-		return "searchFail";
+		if (result == null) {
+			result = new MyResult();
+			result.setErrorType(Constants.FAIL);
+		}
+        return "Fail"; 
 	}
 	
 	public String addTable() {
 		if (table != null) {
-			boolean result = tableService.add(table);
-			if (result) {
-				return "addSuccess";
-			}
-			return "addFail";
+			result = tableService.add(table);
+			
+			if(result.isExecuteResult()){ 
+				table = result.getTable();
+	            return "addTableSuccess";  
+	        }else{  
+	            return "Fail";  
+	        }  
+        }
+		if (result == null) {
+			result = new MyResult();
+			result.setErrorType(Constants.FAIL);
 		}
+        return "Fail"; 
 		
-		return "addFail";
 	}
 	
 	public String updateTable() {
-		if (table != null) {
-			boolean result = tableService.modify(table);
-			if (result) {
-				return "updateSuccess";
-			}
-			return "updateFail";
+		if(table != null) {
+			result = tableService.modify(table);
+			
+			if(result.isExecuteResult()){ 
+				table = result.getTable();
+	            return "updateTableSuccess";  
+	        }else{  
+	            return "Fail";  
+	        }  
+        }
+		if (result == null) {
+			result = new MyResult();
+			result.setErrorType(Constants.FAIL);
 		}
-		
-		return "updateFail";
+        return "Fail";
 	}
 	
 	public String removeTable() {
 		if (table != null) {
-			boolean result = tableService.remove(table);
-			if (result) {
-				return "removeSuccess";
-			}
-			return "removeFail";
+			result = tableService.removeTableById(table.getId());
+			if(result.isExecuteResult()){ 
+	            return "removeUserSuccess";  
+	        }else{  
+	            return "Fail";  
+	        }  
+        }
+		if (result == null) {
+			result = new MyResult();
+			result.setErrorType(Constants.FAIL);
 		}
-		
-		return "removeFail";
+		return "Fail";  
 	}
 	
 	public String findAvailableTables() {
@@ -116,8 +137,11 @@ public class TableAction extends BaseAction{
 			matchedTables.put("result", tables);
 			return "findAvailableTablesSuccess";
 		}
-		this.getResult().setExecuteResult(false);
-		this.getResult().setErrorType(Constants.FAIL);
+		if (result == null) {
+			result = new MyResult();
+			this.getResult().setExecuteResult(false);
+			result.setErrorType(Constants.FAIL);
+		}
 		return "Fail";
 		
 	}

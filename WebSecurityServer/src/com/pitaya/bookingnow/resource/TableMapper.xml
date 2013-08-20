@@ -15,6 +15,13 @@
 	</sql>
 	
 	
+	<select id="existTable" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_table
+		where enabled = true and address = #{address,jdbcType=VARCHAR}
+	</select>
+	
 	<select id="searchAvailableTables" resultMap="BaseResultMap"
 		parameterType="com.pitaya.bookingnow.util.SearchParams">
 		select

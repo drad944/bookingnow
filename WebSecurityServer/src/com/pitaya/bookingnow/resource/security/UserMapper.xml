@@ -136,10 +136,11 @@
 	
 	<select id="existUser" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">
 		select
+			id,
 			account, 
 			name
 		from pitaya_user 
-		where account = #{account,jdbcType=VARCHAR} 
+		where account = #{account,jdbcType=VARCHAR} and enabled = true
 	</select>
 	
 	<select id="login" resultMap="User_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">

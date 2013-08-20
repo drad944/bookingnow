@@ -214,10 +214,13 @@ public class UserService implements IUserService {
 
 	@Override
 	public boolean existUser(User user) {
-		User existedUser = userDao.existUser(user);
-		if (existedUser != null && existedUser.getAccount() != null) {
-			return true;
+		if (user != null && user.getAccount() != null) {
+			User existedUser = userDao.existUser(user);
+			if (existedUser != null && existedUser.getId() != null) {
+				return true;
+			}
 		}
+		
 		return false;
 	}
 	
