@@ -25,8 +25,29 @@ function emptyRegisterUserWindow(){
 	$("#registerUserEmailInput").val(null);
 }
 
+function emptyUpdateUserWindow(){
+	//init registerUserWindow widget data
+	$("#updateUserPhoneInput").jqxMaskedInput({value: null });
+	$('#updateUserBirthdayInput').jqxDateTimeInput({value:findDateTime("2000-01-01 00:00:00")});
+	
+	$("#updateUserSexRadioButton1").jqxRadioButton({checked: true});
+    $("#updateUserSexRadioButton2").jqxRadioButton({checked: false});
+    $('#acceptInput').jqxCheckBox({checked: false});
 
-function initUpdateUserElements(rowData) {
+	$("updateUserSexInput").val("男");
+	$("#updateUserIdInput").val(null);
+	$("#updateUserAccountInput").val(null);
+	$("#updateUserRealNameInput").val(null);
+	$("#updateUserPasswordInput").val(null);
+	$("#updateUserPasswordConfirmInput").val(null);
+	$("#updateUserAddressInput").val(null);
+	
+	$("#updateUserDepartmentInput").val(null);
+	
+	$("#updateUserEmailInput").val(null);
+}
+
+function initUpdateUserElements() {
 	var theme = getDemoTheme();
     $("#updateUserDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
     $('#updateUserUpdateButton').jqxButton({ width: 60, height: 25, theme: theme });
@@ -39,41 +60,15 @@ function initUpdateUserElements(rowData) {
     $("#updateUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 25, theme: theme });
     $('.updateUserTextInput').jqxInput({ theme: theme });
     
-    var d1 = {};
-	if (rowData["birthday"] != null) {
-		d1 = findDateTime(rowData["birthday"]);
-	}else {
-		d1= new Date();
-	}
+    var d1 = new Date();
     $('#updateUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 180, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
     
-    if(rowData["sex"] != null && rowData["sex"] == '女') {
-    	$("#updateUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25, theme: theme });
-    	$("#updateUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
-    	$("updateUserSexInput").val("女");
-    }else {
-    	$("#updateUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
-    	$("#updateUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
-    	$("updateUserSexInput").val("男");
-    }
+	$("#updateUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25,checked: true, theme: theme });
+	$("#updateUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25,  theme: theme });
+	$("updateUserSexInput").val("男");
     
     
-    $("#updateUserIdInput").val(rowData["id"]);
-	$("#updateUserAccountInput").val(rowData["account"]);
-	$("#updateUserRealNameInput").val(rowData["name"]);
-	$("#updateUserPasswordInput").val(rowData["password"]);
-	$("#updateUserPasswordConfirmInput").val(rowData["password"]);
-	$("#updateUserAddressInput").val(rowData["address"]);
-	
-	$("#updateUserDepartmentInput").val(rowData["department"]);
-	
-	$("#updateUserEmailInput").val(rowData["email"]);
-//		$("#updateUser_image").attr("src","../../" + rowData["image_relative_path"]);
-	
-//		$("#image_relative_path").val(rowData["image_relative_path"]);
-//		$("#image_size").val(rowData["image_size"]);
-	$("#updateUserPhoneInput").val(rowData["phone"]);
-	$("#updateUserSexInput").val(rowData["sex"]);
+  
     
     var userDepartmentData = [
           //  { value: 1, label: "USER_DEPARTMENT" },
@@ -87,7 +82,7 @@ function initUpdateUserElements(rowData) {
     
 	// Create a jqxComboBox
 	$("#updateUserDepartmentCombobox").jqxComboBox({ 
-		selectedIndex: findDepartmentValue($("#updateUserDepartmentInput").val()) - 2, 
+		selectedIndex: 0, 
 		source: userDepartmentData, 
 		displayMember: "label", 
 		valueMember: "value", 
@@ -128,11 +123,59 @@ function initUpdateUserElements(rowData) {
             ], 
             theme: theme
     });
+	
+};
+
+function formatUpdateUserElements(rowData) {
+	var theme = getDemoTheme();
     
+    var d1 = {};
+	if (rowData["birthday"] != null) {
+		d1 = findDateTime(rowData["birthday"]);
+	}else {
+		d1= new Date();
+	}
+    $('#updateUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 180, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
+    
+    if(rowData["sex"] != null && rowData["sex"] == '女') {
+    	$("#updateUserSexRadioButton1").jqxRadioButton({checked: false});
+    	$("#updateUserSexRadioButton2").jqxRadioButton({checked: true});
+    }else {
+    	$("#updateUserSexRadioButton1").jqxRadioButton({checked: true});
+    	$("#updateUserSexRadioButton2").jqxRadioButton({checked: false});
+    }
+    
+    
+    $("#updateUserIdInput").val(rowData["id"]);
+	$("#updateUserAccountInput").val(rowData["account"]);
+	$("#updateUserRealNameInput").val(rowData["name"]);
+	$("#updateUserPasswordInput").val(rowData["password"]);
+	$("#updateUserPasswordConfirmInput").val(rowData["password"]);
+	$("#updateUserAddressInput").val(rowData["address"]);
+	
+	$("#updateUserDepartmentInput").val(rowData["department"]);
+	
+	$("#updateUserEmailInput").val(rowData["email"]);
+	$("#updateUserPhoneInput").val(rowData["phone"]);
+	$("#updateUserSexInput").val(rowData["sex"]);
+    
+    var userDepartmentData = [
+          //  { value: 1, label: "USER_DEPARTMENT" },
+            { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
+            { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
+            { value: 4, label: "USER_DEPARTMENT_FINANCE" },
+            { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
+            { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
+            { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
+        ];
+    
+	// Create a jqxComboBox
+	$("#updateUserDepartmentCombobox").jqxComboBox({ selectedIndex: findDepartmentValue($("#updateUserDepartmentInput").val()) - 2});
 }
 
 function addUpdateUserEventListeners() {
 	$('#updateUserPopupWindow').on('close', function (event) { 
+		emptyUpdateUserWindow();
 		$('#updateUserInfoForm').jqxValidator('hide');
       //  $('#updateUserPopupWindow').jqxWindow('close');
 	});
@@ -178,7 +221,7 @@ function initUpdateUserWindow(rowData,position) {
 	
 	var theme = getDemoTheme();
 	
-	initUpdateUserElements(rowData);
+	formatUpdateUserElements(rowData);
 	
 	// initialize the popup window and buttons.
     $("#updateUserPopupWindow").jqxWindow({
@@ -314,8 +357,8 @@ function initRegisterUserElements() {
 
 function addRegisterUserEventListeners() {
 	$('#addUserPopupWindow').on('close', function (event) { 
-		$('#registerUserInfoForm').jqxValidator('hide');
 		emptyRegisterUserWindow();
+		$('#registerUserInfoForm').jqxValidator('hide');
       //  $('#updateUserPopupWindow').jqxWindow('close');
 	});
 	
@@ -636,7 +679,6 @@ function addOperateUserGridEventListeners() {
 			position.y = parseInt(offset.top) - 200;
 			
 			initUpdateUserWindow(rowData,position);
-			
 		}
 	    
 	    
@@ -857,6 +899,7 @@ function parseUserGridHtml() {
 	initOperateUserGridElements();
 	addOperateUserGridEventListeners();
 	
+	initUpdateUserElements();
 	addUpdateUserEventListeners();
 	
 	// initialize the popup window and buttons.
