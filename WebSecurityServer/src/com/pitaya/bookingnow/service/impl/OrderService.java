@@ -3,7 +3,9 @@ package com.pitaya.bookingnow.service.impl;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.pitaya.bookingnow.dao.CustomerMapper;
 import com.pitaya.bookingnow.dao.FoodMapper;
@@ -21,6 +23,7 @@ import com.pitaya.bookingnow.entity.Table;
 import com.pitaya.bookingnow.entity.security.User;
 import com.pitaya.bookingnow.message.OrderDetailMessage;
 import com.pitaya.bookingnow.message.OrderMessage;
+import com.pitaya.bookingnow.message.TableMessage;
 import com.pitaya.bookingnow.service.IOrderService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
@@ -674,6 +677,7 @@ public class OrderService implements IOrderService{
 			Order realOrder = orderDao.selectFullOrderByPrimaryKey(order.getId());
 			
 			if (realOrder != null && realOrder.getId() != null) {
+				Long oldUserId = realOrder.getUser_id();
 				//check user existed in client data and DB data
 				if (order.getUser() != null && order.getUser().getId() != null) {
 					User realUser = userDao.selectByPrimaryKey(order.getUser().getId());
@@ -757,6 +761,11 @@ public class OrderService implements IOrderService{
 								if (orderDao.updateByPrimaryKeySelective(realOrder) == 1) {
 									result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(realOrder.getId()));
 									result.setExecuteResult(true);
+									OrderMessage orderMessage = new OrderMessage();
+									orderMessage.setAction(Constants.ACTION_REMOVE);
+									orderMessage.setOrderId(realOrder.getId());
+									this.messageService.sendMessageToGroupExcept(Constants.ROLE_WAITER, realOrder.getUser_id(), orderMessage);
+									this.messageService.sendMessageToOne(oldUserId, orderMessage);
 								}else {
 									throw new RuntimeException("-------- failed to insert order in DB.");
 								}
@@ -1389,24 +1398,65 @@ public class OrderService implements IOrderService{
 			order.setStatus(Constants.ORDER_PAYING);
 			if(orderDao.updateByPrimaryKeySelective(order) == 1){
 				result.setExecuteResult(true);
-				SearchParams params = new SearchParams();
-				List<Integer> statuslist = new ArrayList<Integer>();
-				statuslist.add(Constants.ORDER_WELCOMER_NEW);
-				statuslist.add(Constants.ORDER_WAITING);
-				List<Order> orders = this.searchFullOrdersWithoutFoods(params);
-				if(orders != null && orders.size() > 0){
-					Order nextorder = orders.get(0);
-					for(Order waitorder : orders){
-						if(nextorder.getSubmit_time() > waitorder.getSubmit_time()){
-							nextorder = waitorder;
+				Order finishOrder = this.getTablesOfOrder(order.getId());
+				if(finishOrder != null && finishOrder.getTable_details() != null && finishOrder.getTable_details().size() > 0){
+					SearchParams params = new SearchParams();
+					List<Integer> statuslist = new ArrayList<Integer>();
+					statuslist.add(Constants.ORDER_WELCOMER_NEW);
+					statuslist.add(Constants.ORDER_WAITING);
+					params.setOrderStatusList(statuslist);
+					List<Order> waitingOrders = this.searchFullOrdersWithoutFoods(params);
+					if(waitingOrders != null && waitingOrders.size() > 0){
+						List<Order_Table_Detail> tableDetails = finishOrder.getTable_details();
+						List<TableMessage> messages = new ArrayList<TableMessage>();
+						for(Order_Table_Detail tableDetail : tableDetails){
+							if(waitingOrders.size() > 0){
+								Table freeTable = tableDetail.getTable();
+								Table temp = new Table();
+								temp.setStatus(Constants.TABLE_EMPTY);
+								temp.setId(freeTable.getId());
+								if(tableDao.updateByPrimaryKeySelective(temp) != 1) {
+									throw new RuntimeException("[updateOrderToPaying] Failed to update table status to empty in DB.");
+								} else {
+									if (table_detailDao.deleteByPrimaryKey(tableDetail.getId()) != 1) {
+										throw new RuntimeException("[updateOrderToPaying] Failed to disable table detail in DB.");
+									}
+								}
+								int nextorderidx = -1;
+								Order nextOrder = null;
+								for(int i = 0; i < waitingOrders.size(); i++){
+									Order waitingOrder = waitingOrders.get(i);
+									if(freeTable.getMinCustomerCount() <= waitingOrder.getCustomer_count()
+											&& waitingOrder.getCustomer_count() <= freeTable.getMaxCustomerCount()
+										    && (nextorderidx == -1 || waitingOrder.getSubmit_time() < nextOrder.getSubmit_time())){
+											nextorderidx = i;
+											nextOrder = waitingOrder;
+									}
+								}
+								waitingOrders.remove(nextorderidx);
+								messages.add(new TableMessage(freeTable, nextOrder));
+							} else {
+								break;
+							}
+						}
+						for(TableMessage message: messages){
+							this.messageService.sendMessageToOne(message.getOrder().getUser_id(), message);
 						}
 					}
 				}
+			} else {
+				throw new RuntimeException("[updateOrderToPaying] Fail to update order status to paying");
 			}
 		} else {
 			result.getErrorDetails().put("updateOrderToPaying", "Missing order paramters");
 		}
 		return result;
+	}
+
+	@Override
+	public Order getTablesOfOrder(Long id) {
+		Order order = this.orderDao.getTablesOfOrder(id);
+		return order;
 	}
 
 }

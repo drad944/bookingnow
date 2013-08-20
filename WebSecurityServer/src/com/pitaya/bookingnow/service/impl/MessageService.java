@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -75,8 +76,32 @@ class ClientAgent extends Thread{
 			 } catch (IOException ex) {
 				 ex.printStackTrace();
 			 }
+	         client_socket = null;
 	         logger.debug("Connection to client [" + this.userId +"] is broken");
 		 }
+	}
+	
+	void sendHeartBeat(){
+		try {
+			this.client_socket.sendUrgentData(0xff);
+		} catch (IOException e) {
+			this.service.removeClient(this, true);
+			try {
+				in.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			out.close();
+			if(client_socket != null && !client_socket.isClosed()){
+				 try {
+					client_socket.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			 }
+			client_socket = null;
+			logger.debug("Connection to client [" + this.userId +"] is broken");
+		}
 	}
 	
 	void sendMessage(String message){
@@ -89,16 +114,13 @@ class ClientAgent extends Thread{
 				this.isSending = true;
 			}
 		}
-		try {
-			while(this.messages.size() > 0){
-				String msg = this.messages.get(0);
-				out.println(msg);
-				out.flush();
-				this.messages.remove(0);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		while(this.messages.size() > 0){
+			String msg = this.messages.get(0);
+			out.println(msg);
+			out.flush();
+			this.messages.remove(0);
 		}
+
 		/*		Notice!!! It's unsafe to add any codes without sync here. Because during the 
 		 * 		logic, it's possible that a new thread is asking send message, so it won't be 
 		 * 		sent until next time because isSending still true.
@@ -186,6 +208,7 @@ public class MessageService {
 	private boolean hasStarted;
 	private Map<Integer, Map<Long, ClientAgent>> groups;
 	private List<ClientAgent> clients;
+	private Timer mChecker;
 	
 	private IUserService userService;
 	
@@ -211,21 +234,22 @@ public class MessageService {
 	public boolean shutdown(){
 		if(this.hasStarted) {
 			try {
-        			if(this.serverSocket != null && this.serverSocket.isClosed()){
-        				this.serverSocket.close();
-        			}
-        			for(ClientAgent client : this.clients){
-        				client.shutdown();
-        			}
-					this.serverThread.shutdown();
-					this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientAgent>>();
-					this.clients = Collections.synchronizedList(new ArrayList<ClientAgent>());
-					this.hasStarted = false;
-					logger.info("Success to shutdown message service.");
-					return true;
+    			if(this.serverSocket != null && this.serverSocket.isClosed()){
+    				this.serverSocket.close();
+    			}
+    			for(ClientAgent client : this.clients){
+    				client.shutdown();
+    			}
+				this.serverThread.shutdown();
+				this.mChecker.cancel();
+				this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientAgent>>();
+				this.clients = Collections.synchronizedList(new ArrayList<ClientAgent>());
+				this.hasStarted = false;
+				logger.info("Success to shutdown message service.");
+				return true;
 			} catch (IOException e) {
-					e.printStackTrace();
-					return false;
+				e.printStackTrace();
+				return false;
 			}
 		}
 		return true;
@@ -247,6 +271,8 @@ public class MessageService {
 	            serverThread.start();
 	            logger.info("Success to start message server thread");
 	            this.hasStarted = true;
+	            mChecker = new Timer();
+	            mChecker.schedule(new ConnectionCheckTask(this), 60000, 60000);
 	            return true;
 	        } catch(IOException e) {
 	        	e.printStackTrace();
@@ -287,6 +313,22 @@ public class MessageService {
 		return success;
 	}
 	
+	public boolean sendMessageToGroupExcept(int groupType, Long userid, Message message){
+		String msgstring = parseMessage(message);
+		Map<Long, ClientAgent> group = this.groups.get(groupType);
+		boolean success = false;
+		if(group != null){
+			for(Entry<Long, ClientAgent> entry : group.entrySet()){
+				if(!entry.getKey().equals(userid)){
+					entry.getValue().sendMessage(msgstring);
+					success = true;
+				}
+			}
+			logger.info("Send message to group: " + groupType + " except this one: " + userid);
+		}
+		return success;
+	}
+	
 	public boolean sendMessageToOne(Long userid, Message message){
 		if(userid != null){
 			for(Entry<Integer, Map<Long, ClientAgent>> entry : this.groups.entrySet()){
@@ -299,6 +341,14 @@ public class MessageService {
 			}
 		}
 		return false;
+	}
+	
+	public List<ClientAgent> getClients(){
+		return this.clients;
+	}
+	
+	public Map<Integer, Map<Long, ClientAgent>> getClientGroups(){
+		return this.groups;
 	}
 	
 	synchronized void onMessage(String msgstring, ClientAgent clientAgent){
