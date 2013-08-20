@@ -340,7 +340,6 @@ function findSexValue(label) {
 	return 1;
 }
 
-
 function findDateTime(datetimeString) {
 	//var s = "2005-02-05 01:02:03";   
 	var d = new Date(Date.parse(datetimeString.replace(/-/g,"/")));
@@ -419,7 +418,7 @@ function findTableStatusValue(label) {
 	                                { value: 3, label: "TABLE_BOOKING" },
 	                                { value: 4, label: "TABLE_USING" }
 	                            ];
-	 for(var i = 0;i < tableStatusData;i++) {
+	 for(var i = 0;i < tableStatusData.length;i++) {
 		 if(tableStatusData[i].label == label) {
 			 return tableStatusData[i].value;
 		 }
@@ -434,7 +433,7 @@ function findTableStatusLable(value) {
 	                                { value: 3, label: "TABLE_BOOKING" },
 	                                { value: 4, label: "TABLE_USING" }
 	                            ];
-	 for(var i = 0;i < tableStatusData;i++) {
+	 for(var i = 0;i < tableStatusData.length;i++) {
 		 if(tableStatusData[i].value == value) {
 			 return tableStatusData[i].label;
 		 }

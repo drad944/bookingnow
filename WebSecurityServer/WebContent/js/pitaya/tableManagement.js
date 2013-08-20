@@ -1,113 +1,115 @@
 /**
  * 
  */
-function initUpdateTableElements(rowData) {
+
+function emptyRegisterTableWindow(){
+	//init registerTableWindow widget data
+	$("#registerTableStatusCombobox").jqxComboBox({ selectedIndex: 0});
+	
+	//init registerTableWindow store data
+	$("#registerTableAddressInput").val(null);
+	$("#registerTableMinCustomerCountInput").val(null);
+	$("#registerTableMaxCustomerCountInput").val(null);
+	$("#registerTableIndoorPriceInput").val(null);
+	$("#registerTableStatusInput").val(null);
+}
+
+function emptyUpdateTableWindow(){
+	$("#updateTableStatusCombobox").jqxComboBox({ selectedIndex: 0});
+	
+	$("#updateTableAddressInput").val(null);
+	$("#updateTableMinCustomerCountInput").val(null);
+	$("#updateTableMaxCustomerCountInput").val(null);
+	$("#updateTableIndoorPriceInput").val(null);
+	$("#updateTableStatusInput").val(null);
+}
+
+function initUpdateTableElements() {
 	var theme = getDemoTheme();
     $("#updateTableDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
     $('#updateTableUpdateButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#updateTableResetButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#updateTableCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
     
-
-    
-  //  $("#updateTableAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
-    $("#updateTablePhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 25, theme: theme });
     $('.updateTableTextInput').jqxInput({ theme: theme });
     
-    var d1 = {};
-	if (rowData["birthday"] != null) {
-		d1 = findDateTime(rowData["birthday"]);
-	}else {
-		d1= new Date();
-	}
-    $('#updateTableBirthdayInput').jqxDateTimeInput({ theme: theme,width: 180, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
+	$('#updateTableAddressInput').jqxInput({ theme: theme });
+    $('#updateTableMinCustomerCountInput').jqxNumberInput({ width: 70, height: 25,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
+    $('#updateTableMaxCustomerCountInput').jqxNumberInput({ width: 70, height: 25,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
+    $('#updateTableIndoorPriceInput').jqxNumberInput({ width: 70, height: 25, digits: 2,symbolPosition: 'right', symbol: '￥', theme: theme, spinButtons: true});
+    var tableStatusData = [
+                                 { value: 2, label: "TABLE_EMPTY"},
+                                 { value: 3, label: "TABLE_BOOKING"},
+                                 { value: 4, label: "TABLE_USING"}
+                             ];
+     
+ 	$("#updateTableStatusCombobox").jqxComboBox({ 
+ 		selectedIndex: 0, 
+ 		source: tableStatusData, 
+ 		displayMember: "label", 
+ 		valueMember: "value", 
+ 		width: 150, 
+ 		height: 25, 
+ 		theme: theme 
+ 	});
     
-    if(rowData["sex"] != null && rowData["sex"] == '女') {
-    	$("#updateTableSexRadioButton1").jqxRadioButton({ width: 70, height: 25, theme: theme });
-    	$("#updateTableSexRadioButton2").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
-    	$("updateTableSexInput").val("女");
-    }else {
-    	$("#updateTableSexRadioButton1").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
-    	$("#updateTableSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
-    	$("updateTableSexInput").val("男");
-    }
     
-    
-    $("#updateTableIdInput").val(rowData["id"]);
-	$("#updateTableAccountInput").val(rowData["account"]);
-	$("#updateTableRealNameInput").val(rowData["name"]);
-	$("#updateTablePasswordInput").val(rowData["password"]);
-	$("#updateTablePasswordConfirmInput").val(rowData["password"]);
-	$("#updateTableAddressInput").val(rowData["address"]);
-	
-	$("#updateTableDepartmentInput").val(rowData["department"]);
-	
-	$("#updateTableEmailInput").val(rowData["email"]);
-//		$("#updateTable_image").attr("src","../../" + rowData["image_relative_path"]);
-	
-//		$("#image_relative_path").val(rowData["image_relative_path"]);
-//		$("#image_size").val(rowData["image_size"]);
-	$("#updateTablePhoneInput").val(rowData["phone"]);
-	$("#updateTableSexInput").val(rowData["sex"]);
-    
-    var tableDepartmentData = [
-          //  { value: 1, label: "USER_DEPARTMENT" },
-            { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
-            { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
-            { value: 4, label: "USER_DEPARTMENT_FINANCE" },
-            { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
-            { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
-            { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
-        ];
-    
-	// Create a jqxComboBox
-	$("#updateTableDepartmentCombobox").jqxComboBox({ 
-		selectedIndex: findDepartmentValue($("#updateTableDepartmentInput").val()) - 2, 
-		source: tableDepartmentData, 
-		displayMember: "label", 
-		valueMember: "value", 
-		width: 150, 
-		height: 25, 
-		theme: theme 
-	});
     
     // initialize validator.
     $('#updateTableInfoForm').jqxValidator({
      rules: [
-            { input: '#updateTableAccountInput', message: 'Tablename is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateTableAccountInput', message: 'Your tablename must be between 3 and 12 characters!', action: 'keyup, blur', rule: 'length=3,12' },
-            { input: '#updateTableRealNameInput', message: 'Real Name is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateTableRealNameInput', message: 'Your real name must contain only letters!', action: 'keyup', rule: 'notNumber' },
-            { input: '#updateTableRealNameInput', message: 'Your real name must be between 3 and 12 characters!', action: 'keyup', rule: 'length=3,12' },
-            
-            { input: '#updateTablePasswordInput', message: 'Password is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateTablePasswordInput', message: 'Your password must be between 6 and 20 characters!', action: 'keyup, blur', rule: 'length=6,20' },
-            { input: '#updateTablePasswordConfirmInput', message: 'Confirm Password is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateTablePasswordConfirmInput', message: 'Confirm Passwords doesn\'t match!', action: 'keyup, focus', rule: function (input, commit) {
+             
+             /*
+            {input: '#updateTableMaxCustomerCountInput', message: 'Max Customer Count should large than 0', action: 'keyup, focus', rule: function (input, commit) {
                 // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
-                    if (input.val() === $('#updateTablePasswordInput').val()) {
+	                if (0 < $('#updateTableMaxCustomerCountInput').val()) {
+	                    return true;
+	                }
+	                return false;
+	        	}
+            },
+            {input: '#updateTableMaxCustomerCountInput', message: 'Max Customer Count should large than minCustomerCount', action: 'keyup, focus', rule: function (input, commit) {
+                // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
+	                if ($('#updateTableMinCustomerCountInput').val() < $('#updateTableMaxCustomerCountInput').val()) {
+	                    return true;
+	                }
+	                return false;
+	        	}
+            },
+            */
+            { input: '#updateTableAddressInput', message: 'address is required!', action: 'keyup, blur', rule: 'required' }
+            
+            /*,
+            { input: '#updateTableMinCustomerCountInput', message: 'Min Customer Count should large than 0', action: 'keyup, focus', rule: function (input, commit) {
+                // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
+                    if (0 < $('#updateTableMinCustomerCountInput').val()) {
                         return true;
                     }
                     return false;
             	}
-            },
-            { input: '#updateTableBirthdayInput', message: 'Your birth date must be between 1/1/1900 and ' + ((new Date()).getFullYear() + 1), action: 'valuechanged', rule: function (input, commit) {
-                var date = $('#updateTableBirthdayInput').jqxDateTimeInput('value');
-                var result = date.getFullYear() >= 1900 && date.getFullYear() <= (new Date()).getFullYear();
-                // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
-                return result;
-            	}
-            },
-            { input: '#updateTableEmailInput', message: 'E-mail is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateTableEmailInput', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' }
+            }*/
             ], 
             theme: theme
     });
+	
+};
+
+function formatUpdateTableElements(rowData) {
     
+    $("#updateTableAddressInput").val(rowData["address"]);
+	
+    $("#updateTableMinCustomerCountInput").val(rowData["minCustomerCount"]);
+	$("#updateTableMaxCustomerCountInput").val(rowData["maxCustomerCount"]);
+	$("#updateTableIndoorPriceInput").val(rowData["indoorPrice"]);
+	
+	("#updateTableMinCustomerCountInput").jqxNumberInput('val',rowData["minCustomerCount"]);
+	$("#updateTableMaxCustomerCountInput").jqxNumberInput('val',rowData["maxCustomerCount"]);
+	$("#updateTableStatusCombobox").jqxComboBox({ selectedIndex: findTableStatusValue($("#updateTableStatusInput").val()) - 2});
 }
 
 function addUpdateTableEventListeners() {
 	$('#updateTablePopupWindow').on('close', function (event) { 
+		emptyUpdateTableWindow();
 		$('#updateTableInfoForm').jqxValidator('hide');
       //  $('#updateTablePopupWindow').jqxWindow('close');
 	});
@@ -121,11 +123,11 @@ function addUpdateTableEventListeners() {
         $('#updateTablePopupWindow').jqxWindow('close');
     });
         
-    $("#updateTableDepartmentCombobox").on('select', function (event) {
+    $("#updateTableStatusCombobox").on('select', function (event) {
             if (event.args) {
                 var item = event.args.item;
                 if (item) {
-                	$("#updateTableDepartmentInput").val(item.value);
+                	$("#updateTableStatusInput").val(item.value);
                 }
             }
         });
@@ -141,7 +143,7 @@ function initUpdateTableWindow(rowData,position) {
 	
 	var theme = getDemoTheme();
 	
-	initUpdateTableElements(rowData);
+	formatUpdateTableElements(rowData);
 	
 	// initialize the popup window and buttons.
     $("#updateTablePopupWindow").jqxWindow({
@@ -158,15 +160,11 @@ function updateTable() {
 
 	var updateTableUIData = {
 		"table.id" : $("#updateTableIdInput").val(),
-		"table.account" : $("#updateTableAccountInput").val(),
-		"table.name" : $("#updateTableRealNameInput").val(),
-		"table.password" : $("#updateTablePasswordConfirmInput").val(),
 		"table.address" : $("#updateTableAddressInput").val(),
-		"table.birthday" : $('#updateTableBirthdayInput').jqxDateTimeInput('value'),
-		"table.department" : $("#updateTableDepartmentInput").val(),
-		"table.email" : $("#updateTableEmailInput").val(),
-		"table.phone" : $("#updateTablePhoneInput").val(),
-		"table.sex" : $("#updateTableSexInput").val()
+		"table.minCustomerCount" : $('#updateTableMinCustomerCountInput').val(),
+		"table.maxCustomerCount" : $('#updateTableMaxCustomerCountInput').val(),
+		"table.status" : $("#updateTableStatusInput").val(),
+		"table.indoorPrice" : $("#updateTableIndoorPriceInput").val()
 	};
 	
 	var updateTableData = parseUIDataToTableData(updateTableUIData);
@@ -174,6 +172,7 @@ function updateTable() {
 	$.post("updateTable.action", updateTableData, function(result) {
 		if (result != null && result["id"] != null) {
 			
+			$("#updateTableResult").text("update table successfully!");
 			$("#updateTablePopupWindow").jqxWindow('close');
 			
 			var tableUIResult = parseTableDataToUIData(result);
@@ -192,7 +191,6 @@ function updateTable() {
 		} else if (result != null && result["executeResult"] != null
 				&& result["executeResult"] == false) {
 			$("#updateTableResult").text("update table failed,please check table info!");
-			
 		}
 	});
 }
@@ -206,15 +204,14 @@ function initRegisterTableElements() {
     $('#registerTableResetButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#registerTableCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
     
-    $('#acceptInput').jqxCheckBox({ width: 130, theme: theme });
+    $('#acceptInput').jqxCheckBox({ width: 130, theme: theme ,checked: false});
     
     
     $("#registerTableAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
     $("#registerTablePhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 22, theme: theme });
     $('.registerTableTextInput').jqxInput({ theme: theme });
-    var date = new Date();
-    date.setFullYear(2000, 0, 1);
-    $('#registerTableBirthdayInput').jqxDateTimeInput({ theme: theme, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
+    var date = findDateTime("2000-01-01 00:00:00");
+    $('#registerTableBirthdayInput').jqxDateTimeInput({ theme: theme,width: 180, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
     $("#registerTableSexRadioButton1").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
     $("#registerTableSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
     
@@ -278,6 +275,7 @@ function initRegisterTableElements() {
 
 function addRegisterTableEventListeners() {
 	$('#addTablePopupWindow').on('close', function (event) { 
+		emptyRegisterTableWindow();
 		$('#registerTableInfoForm').jqxValidator('hide');
       //  $('#updateTablePopupWindow').jqxWindow('close');
 	});
@@ -300,10 +298,7 @@ function addRegisterTableEventListeners() {
     });
     
     $("#registerTableCancelButton").on('click', function (event) {
-    	$('#registerTableInfoForm').jqxValidator('hide');
         $('#addTablePopupWindow').jqxWindow('close');
-    //    $('#addTablePopupWindow').jqxWindow('destroy');
-     //   removeElementFromPage("addTablePopupWindow");
         
     });
         
@@ -322,6 +317,7 @@ function addRegisterTableEventListeners() {
     });
 }
 function initRegisterTableWindow(position) {
+	emptyRegisterTableWindow();
 	$("#addTablePopupWindow").removeAttr("style");
 	$("#addTablePopupWindow").attr("style","overflow:hidden");
 	
@@ -346,18 +342,20 @@ function registerTable() {
 		"table.name" : $("#registerTableRealNameInput").val(),
 		"table.password" : $("#registerTablePasswordConfirmInput").val(),
 		"table.address" : $("#registerTableAddressInput").val(),
-		"table.birthday" : $('#registerTableBirthdayInput').jqxDateTimeInput('value'),
+		"table.birthday" : $("#registerTableBirthdayInput").jqxDateTimeInput('value'),
 		"table.department" : $("#registerTableDepartmentInput").val(),
 		"table.email" : $("#registerTableEmailInput").val(),
 		"table.phone" : $("#registerTablePhoneInput").val(),
 		"table.sex" : $("#registerTableSexInput").val()
 	};
-	
-	var registerTableData = parseUIDataToTableData(registerTableUIData);
 
+	var registerTableData = parseUIDataToTableData(registerTableUIData);
+	
 	$.post("registerTable.action", registerTableData, function(result) {
 		if (result != null && result["id"] != null) {
 			result = parseTableDataToUIData(result);
+			
+			$("#registerTableResult").text("register table successfully!");
 			$('#addTablePopupWindow').jqxWindow('close');
 			
 			var commit = $("#tableDataGrid").jqxGrid('addrow', null, result);
@@ -373,8 +371,6 @@ function registerTable() {
 function showTableDetailInfo() {
 	$.post("findLoginTable.action", function(table) {
 		if (table != null && table.id != null) {
-			table = parseTableDataToUIData(table);
-			
 			$("#showUsreTable #account").text(table["account"]);
 			$("#showUsreTable #name").text(table["name"]);
 			$("#showUsreTable #password").text(table["password"]);
@@ -601,7 +597,6 @@ function addOperateTableGridEventListeners() {
 			position.y = parseInt(offset.top) - 200;
 			
 			initUpdateTableWindow(rowData,position);
-			
 		}
 	    
 	    
@@ -651,82 +646,82 @@ function parseTableGridHtml() {
 		$.post("searchTable.action", 
 			{"table.enabled": true}, 
 			function(matchedtables){
-	if(matchedtables != null && matchedtables.result != null){
-		tables = matchedtables.result;
-	}
-	
-	var tableSize = tables.length;
-	var tableData = {};
-	
-	var columns = {};
-	
-	var datafields = {};
-	for(var i = 0;i < tableSize; i++) {
-		table = parseTableDataToUIData(tables[i]);
-		if(i==0) {
-			var j=0;
-			for(var item in table) {
-				var datafield = {};
-				var column = {};
-				
-				if(item == "id"){
-					datafield["type"] = "number";
-					column["text"] = "Id";
-					
-				}else if(item == "status") {
-					datafield["type"] = "string";
-					column["text"] = "Staus";
-					
-				}else if(item == "minCustomerCount") {
-					datafield["type"] = "number";
-					column["text"] = "MinCustomerCount";
-					
-				}else if(item == "maxCustomerCount") {
-					datafield["type"] = "number";
-					column["text"] = "MaxCustomerCount";
-				}else if(item == "address") {
-					datafield["type"] = "number";
-					column["text"] = "Address";
-					
-				}else if(item == "indoorPrice") {
-					datafield["type"] = "string";
-					column["text"] = "indoorPrice";
-					
-				}else if(item == "enabled"){
-					//do nothing
-				}else {
-					datafield["type"] = "string";
-					column["text"] = "XX";
+				if(matchedtables != null && matchedtables.result != null){
+					tables = matchedtables.result;
 				}
 				
-				if(item == "enabled"){
-					
-				}else {
-					column["datafield"] = item;
-					if(item == "id") {
-						column["width"] = "50";
+				var tableSize = tables.length;
+				var tableData = {};
+				
+				var columns = {};
+				
+				var datafields = {};
+				for(var i = 0;i < tableSize; i++) {
+					table = parseTableDataToUIData(tables[i]);
+					if(i==0) {
+						var j=0;
+						for(var item in table) {
+							var datafield = {};
+							var column = {};
+							
+							if(item == "id"){
+								datafield["type"] = "number";
+								column["text"] = "Id";
+								
+							}else if(item == "status") {
+								datafield["type"] = "string";
+								column["text"] = "Staus";
+								
+							}else if(item == "minCustomerCount") {
+								datafield["type"] = "number";
+								column["text"] = "MinCustomerCount";
+								
+							}else if(item == "maxCustomerCount") {
+								datafield["type"] = "number";
+								column["text"] = "MaxCustomerCount";
+							}else if(item == "address") {
+								datafield["type"] = "number";
+								column["text"] = "Address";
+								
+							}else if(item == "indoorPrice") {
+								datafield["type"] = "string";
+								column["text"] = "indoorPrice";
+								
+							}else if(item == "enabled"){
+								//do nothing
+							}else {
+								datafield["type"] = "string";
+								column["text"] = "XX";
+							}
+							
+							if(item == "enabled"){
+								
+							}else {
+								column["datafield"] = item;
+								if(item == "id") {
+									column["width"] = "50";
+								}
+								
+								columns[j] = column;
+								
+								datafields[j] = datafield;
+								j++;
+							}
+						}
 					}
 					
-					columns[j] = column;
+					var rowData = {};
+					for(var item in table) {
+						if(item == "enabled"){
+								
+						}else {
+							rowData[item] = table[item];
+						}
 					
-					datafields[j] = datafield;
-					j++;
+					}
+					
+					tableData[i] = rowData;
 				}
-			}
-		}
-		
-		var rowData = {};
-		for(var item in table) {
-			if(item == "enabled"){
-					
-			}else {
-				rowData[item] = table[item];
-			}
-		
-		}
-		
-		tableData[i] = rowData;
-	}
 	
 	
 	var theme = getDemoTheme();
@@ -782,6 +777,7 @@ function parseTableGridHtml() {
 	initOperateTableGridElements();
 	addOperateTableGridEventListeners();
 	
+	initUpdateTableElements();
 	addUpdateTableEventListeners();
 	
 	// initialize the popup window and buttons.
@@ -799,13 +795,13 @@ function parseTableGridHtml() {
 		
 }
 
+
+
 function parseUIDataToTableData(record) {
 	if(record != null){
 		for(var attr in record) {
-			if(attr == "table.sex") {
-				record[attr] = findSexValue(record[attr]);
-			}else if(attr == "table.birthday") {
-				record[attr] = record[attr].getTime();
+			if(attr == "table.status") {
+				record[attr] = findTableStatusValue(record[attr]);
 			}
 		}
 		return record;

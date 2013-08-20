@@ -46,54 +46,29 @@
 				                        <td><input type="text" id="updateTableIdInput" class="updateTableTextInput" /></td>
 				                    </tr>
 				                    <tr>
-				                        <td>Account:</td>
-				                        <td><input type="text" id="updateTableAccountInput" class="updateTableTextInput" /></td>
+				                        <td>MinCustomerCount:</td>
+				                        <td><input type="text" id="updateTableMinCustomerCountInput" class="updateTableTextInput" /></td>
 				                    </tr>
 				                    <tr>
-				                        <td>Password:</td>
-				                        <td><input type="password" id="updateTablePasswordInput" class="updateTableTextInput" /></td>
-				                    </tr>
-				                    <tr>
-				                        <td>Confirm password:</td>
-				                        <td><input type="password" id="updateTablePasswordConfirmInput" class="updateTableTextInput" /></td>
-				                    </tr>
-				                    <tr>
-				                        <td>Real name:</td>
-				                        <td><input type="text" id="updateTableRealNameInput" class="updateTableTextInput" /></td>
-				                    </tr>
-				                    <tr>
-				                        <td>Department:</td>
-				                        <td>
-				                        	<div id='updateTableDepartmentCombobox'></div>
-				                        	<input id="updateTableDepartmentInput" type="hidden" value="2" />
-			        					</td>
-				                    </tr>
-				                    <tr>
-				                        <td>Birth date:</td>
-				                        <td><div id="updateTableBirthdayInput"></div></td>
-				                    </tr>
-				                    <tr>
-				                        <td>E-mail:</td>
-				                        <td><input type="text" id="updateTableEmailInput" placeholder="someone@mail.com" class="updateTableTextInput" /></td>
+				                        <td>MaxCustomerCount:</td>
+				                        <td><input type="text" id="updateTableMaxCustomerCountInput" class="updateTableTextInput" /></td>
 				                    </tr>
 				                    <tr>
 				                        <td>Address:</td>
-				                        <td><input type="text" id="updateTableAddressInput" placeholder="省-市-区-街道-小区-门牌号" class="updateTableTextInput" /></td>
+				                        <td><input type="text" id="updateTableAddressInput" class="updateTableTextInput" /></td>
 				                    </tr>
 				                    <tr>
-				                        <td>Phone:</td>
-				                        <td><div id="updateTablePhoneInput"></div></td>
-				                    </tr>
-				                    <tr>
-				                        <td>Sex:</td>
+				                        <td>Status:</td>
 				                        <td>
-				                        	<div style='margin-top: 10px;'>
-								            	<span id='updateTableSexRadioButton1' style='float:left;'>男</span>
-								            	<span id='updateTableSexRadioButton2' style='float:right;'>女</span>
-								            	<input id="updateTableSexInput" type="hidden" value="男" />
-								            </div>
-				                        </td>
+				                        	<div id='updateTableStatusCombobox'></div>
+				                        	<input id="updateTableStatusInput" type="hidden" value="2" />
+			        					</td>
 				                    </tr>
+				                    <tr>
+				                        <td>IndoorPrice:</td>
+				                        <td><div id="updateTableIndoorPriceInput"></div></td>
+				                    </tr>
+				                    
 				                    <tr style="text-align: center;">
 				                        <td>
 				                        	<input id="updateTableUpdateButton" type="button" value="Update" />
@@ -118,58 +93,27 @@
 				            <form id="registerTableInfoForm" action="./">
 				                <table class="registerTableTable">
 				                    <tr>
-				                        <td>Account:</td>
-				                        <td><input type="text" id="registerTableAccountInput" class="registerTableTextInput" /></td>
+				                        <td>MinCustomerCount:</td>
+				                        <td><input type="text" id="registerTableMinCustomerCountInput" class="registerTableTextInput" /></td>
 				                    </tr>
 				                    <tr>
-				                        <td>Password:</td>
-				                        <td><input type="password" id="registerTablePasswordInput" class="registerTableTextInput" /></td>
-				                    </tr>
-				                    <tr>
-				                        <td>Confirm password:</td>
-				                        <td><input type="password" id="registerTablePasswordConfirmInput" class="registerTableTextInput" /></td>
-				                    </tr>
-				                    <tr>
-				                        <td>Real name:</td>
-				                        <td><input type="text" id="registerTableRealNameInput" class="registerTableTextInput" /></td>
-				                    </tr>
-				                    <tr>
-				                        <td>Department:</td>
-				                        <td>
-				                        	<div id='registerTableDepartmentCombobox'></div>
-				                        	<input id="registerTableDepartmentInput" type="hidden" value="2" />
-			        					</td>
-				                    </tr>
-				                    <tr>
-				                        <td>Birth date:</td>
-				                        <td><div id="registerTableBirthdayInput"></div></td>
-				                    </tr>
-				                    <tr>
-				                        <td>E-mail:</td>
-				                        <td><input type="text" id="registerTableEmailInput" placeholder="someone@mail.com" class="registerTableTextInput" /></td>
+				                        <td>MaxCustomerCount:</td>
+				                        <td><input type="text" id="registerTableMaxCustomerCountInput" class="registerTableTextInput" /></td>
 				                    </tr>
 				                    <tr>
 				                        <td>Address:</td>
-				                        <td><div id="registerTableAddressInput"></div></td>
+				                        <td><input type="text" id="registerTableAddressInput" class="registerTableTextInput" /></td>
 				                    </tr>
 				                    <tr>
-				                        <td>Phone:</td>
-				                        <td><div id="registerTablePhoneInput"></div></td>
-				                    </tr>
-				                    <tr>
-				                        <td>Sex:</td>
+				                        <td>Status:</td>
 				                        <td>
-				                        	<div style='margin-top: 10px;'>
-								            	<span id='registerTableSexRadioButton1' style='float:left;'>男</span>
-								            	<span id='registerTableSexRadioButton2' style='float:right;'>女</span>
-								            	<input id="registerTableSexInput" type="hidden" value="2" />
-								            </div>
-				                        </td>
+				                        	<div id='registerTableStatusCombobox'></div>
+				                        	<input id="registerTableStatusInput" type="hidden" value="2" />
+			        					</td>
 				                    </tr>
 				                    <tr>
-				                        <td colspan="2" style="padding: 5px;">
-				                        	<div id="acceptInput" style="margin-left: 50px;">I accept terms</div>
-				                        </td>
+				                        <td>IndoorPrice:</td>
+				                        <td><div id="registerTableIndoorPriceInput"></div></td>
 				                    </tr>
 				                    <tr style="text-align: center;">
 				                        <td>
