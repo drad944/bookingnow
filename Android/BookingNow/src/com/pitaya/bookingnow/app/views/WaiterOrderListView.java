@@ -163,17 +163,9 @@ public class WaiterOrderListView extends OrderListView{
 		try {
 			 this.mAdapter = new OrderListAdapter(this.getContext(), this.mListView){
 		        	
-		        	private void updateOrderStatus(int position, int status){
-		        		View view = mListView.getChildAt(position);
-		        		if(view != null && (TextView)view.findViewById(R.id.info2) != null){
-		        			((TextView)view.findViewById(R.id.info2)).setText(Order.getOrderStatusString(status));
-		        		}
-		        	}
-		        	
 		        	@Override
 		        	public View getView(int position, View convertView, ViewGroup parent) {
 			    		View view = convertView;
-			    		final int index = position;
 			    		Order order = orderlist.get(position);
 			    		if(view == null){
 			    			view = View.inflate(parent.getContext(), R.layout.orderinfoview, null);
@@ -183,6 +175,8 @@ public class WaiterOrderListView extends OrderListView{
 			    			holder.info3 = (TextView)view.findViewById(R.id.info3);
 			    			holder.info4 = (TextView)view.findViewById(R.id.info4);
 			    			holder.info5 = (TextView)view.findViewById(R.id.info5);
+			    			holder.info4.setVisibility(View.GONE);
+			    			holder.info5.setVisibility(View.GONE);
 			    			view.setTag(holder);
 			    		}
 			    		
@@ -202,7 +196,6 @@ public class WaiterOrderListView extends OrderListView{
 			
 			    			@Override
 			    			public void onOrderStatusChanged(Order order, int status) {
-			    				//updateOrderStatus(index, status);
 			    				viewHolder.info2.setText(Order.getOrderStatusString(order.getStatus()));
 			    			}
 			    			
@@ -213,8 +206,6 @@ public class WaiterOrderListView extends OrderListView{
 			    		Date date = new Date();
 			    		date.setTime(order.getModificationTime());
 			    		viewHolder.info3.setText(dateFm.format(date));
-			    		viewHolder.info4.setVisibility(View.GONE);
-			    		viewHolder.info5.setVisibility(View.GONE);
 			    		return view;
 		        	}
 		        };
@@ -255,7 +246,7 @@ public class WaiterOrderListView extends OrderListView{
 				mParentView.showOrderDetail(mAdapter.getOrderList().get(position), false, WaiterOrderLeftView.MYORDERS);
 				mParentView.setLastItem(mAdapter.getOrderList().get(position).getOrderKey());
 				mAdapter.setSelectItem(position);
-				mAdapter.notifyDataSetInvalidated();
+				mAdapter.notifyDataSetChanged();
 			}
         	
         });

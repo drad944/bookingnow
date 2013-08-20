@@ -1,30 +1,22 @@
 package com.pitaya.bookingnow.app.service;
 
-import com.pitaya.bookingnow.app.HomeActivity;
 import com.pitaya.bookingnow.app.R;
-import com.pitaya.bookingnow.app.data.HttpHandler;
-import com.pitaya.bookingnow.app.data.ProgressHandler;
-import com.pitaya.bookingnow.app.model.Food;
+import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.ToastUtil;
 
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.app.Service;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,6 +27,7 @@ import org.json.JSONObject;
 
 import com.pitaya.bookingnow.message.FoodMessage;
 import com.pitaya.bookingnow.message.Message;
+import com.pitaya.bookingnow.message.TableMessage;
 
 public class MessageService extends Service{
 	
@@ -48,9 +41,7 @@ public class MessageService extends Service{
 	private String ip;
 	private int port;
 	private int mUpdateNotifyID = 1;
-	private boolean isUpdating = false;
-	
-	private AlertDialog menuUpdateDialog;
+	private int lastNotifyID = 2;
 	
 	private MessageService(String ip, int port){
 		this.handlers = new ConcurrentHashMap<String, List<Handler>>();
@@ -59,8 +50,8 @@ public class MessageService extends Service{
 	
 	public MessageService(){
 		this.handlers = new ConcurrentHashMap<String, List<Handler>>();
-		this.ip = "192.168.0.102";
-		this.port = 19191;
+		this.ip = HttpService.IP;
+		this.port = HttpService.PORT;
 	}
 	
     @Override
@@ -144,18 +135,11 @@ public class MessageService extends Service{
 	}
 	
 	private void start(String ip, int port){
-		if(this.clientAgent == null || !clientAgent.isReady()){
-			if(this.clientAgent != null){
-				this.clientAgent.interrupt();
-				try {
-					this.clientAgent.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				this.clientAgent = null;
-			}
+		if(this.clientAgent == null || (!clientAgent.isReady() && !clientAgent.isConnecting())){
 			clientAgent = new Client(ip, port, this);
 			clientAgent.start();
+		} else if(clientAgent.isConnecting()){
+			ToastUtil.showToast(this, "正在连接服务器...", Toast.LENGTH_SHORT);
 		}
 	}
 	
@@ -182,9 +166,17 @@ public class MessageService extends Service{
 	        }
 		} else {
 			Log.i(TAG, "This category message has not been registered: " + message.getCategory());
-			if(message instanceof FoodMessage){
+			//Handle message which is not processed by other handlers here
+			if(message.getCategory().equals(Constants.FOOD_MESSAGE) && message instanceof FoodMessage){
 				showUpdateNotification();
 			}
+		}
+		//Handle message no matter it has been processed by other handlers here
+		if(message.getCategory().equals(Constants.TABLE_MESSAGE) && message instanceof TableMessage){
+			TableMessage msg = (TableMessage)message;
+			String text = msg.getOrder().getCustomerName() + "(" + msg.getOrder().getPhoneNumber()+ ")" 
+					+ "的订单有符合人数的座位:" + msg.getTable().getLabel();
+			showNotification("新的空位", text);
 		}
 	}
 	
@@ -248,5 +240,13 @@ public class MessageService extends Service{
         .setContentTitle("BookingNow")
         .setContentText(text);
         mNM.notify(mUpdateNotifyID, mBuilder.build());
+    }
+    
+    private void showNotification(String title, CharSequence text) {
+        mBuilder = new NotificationCompat.Builder(this)
+        .setSmallIcon(R.drawable.ic_launcher)
+        .setContentTitle(title)
+        .setContentText(text);
+        mNM.notify(lastNotifyID++, mBuilder.build());
     }
 }

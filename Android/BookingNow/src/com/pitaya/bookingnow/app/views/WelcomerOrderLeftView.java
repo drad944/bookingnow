@@ -8,8 +8,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -37,12 +41,18 @@ import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.model.Table;
 import com.pitaya.bookingnow.app.model.Order.OnOrderStatusChangedListener;
 import com.pitaya.bookingnow.app.service.DataService;
+import com.pitaya.bookingnow.app.service.MessageService;
 import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.service.UserManager;
 import com.pitaya.bookingnow.app.util.Constants;
 import com.pitaya.bookingnow.app.util.ToastUtil;
 import com.pitaya.bookingnow.app.data.HttpHandler;
+import com.pitaya.bookingnow.app.data.MessageHandler;
 import com.pitaya.bookingnow.app.data.WorkerOrderDetailAdapter;
+import com.pitaya.bookingnow.message.Message;
+import com.pitaya.bookingnow.message.OrderDetailMessage;
+import com.pitaya.bookingnow.message.OrderMessage;
+import com.pitaya.bookingnow.message.TableMessage;
 
 public class WelcomerOrderLeftView extends OrderLeftView{
 	
@@ -56,11 +66,41 @@ public class WelcomerOrderLeftView extends OrderLeftView{
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		if(this.mContentContainer.getStatus() != null){
+			this.lastSelectItem = (String)this.mContentContainer.getStatus();
+		}
+		mMessageHandler.setOnMessageListener(new MessageHandler.OnMessageListener(){
+
+			@Override
+			public void onMessage(Message message) {
+				if(message instanceof OrderMessage){
+					OrderMessage msg = (OrderMessage)message;
+					if(msg.getAction().equals(Constants.ACTION_REMOVE)){
+						Order removedorder =  new Order(msg.getOrderId(), null, null, 
+								null, null, 0, null);
+						int i = 0;
+						boolean isRemoved = false;
+						for(Order order : mOrderListView.getOrderList()){
+							if(order.getOrderKey().equals(removedorder.getOrderKey())){
+								mOrderListView.getOrderList().remove(i);
+								isRemoved = true;
+								break;
+							}
+							i++;
+						}
+						if(isRemoved){
+							mOrderListView.refresh();
+						}
+					}
+				}
+			}
+			
+		});
 		this.mOrderListView = new WelcomerOrderListView(this.getActivity(), this);
 		mOrderListView.setupViews();
+		this.doBindService();
 		return mOrderListView;
 	}
-	
 	
 	public void showOrderDetail(Order order, boolean isForce){
 		order.enrichFoods(this.getActivity());

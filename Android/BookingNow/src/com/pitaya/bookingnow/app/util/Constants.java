@@ -130,5 +130,6 @@ public class Constants {
 	public static final String REGISTER_MESSAGE = "register_message";
 	public static final String RESULT_MESSAGE = "result_message";
 	public static final String FOOD_MESSAGE = "food_message";
+	public static final String TABLE_MESSAGE = "table_message";
 	public static final String SYSTEM_MESSAGE = "system_message";
 }

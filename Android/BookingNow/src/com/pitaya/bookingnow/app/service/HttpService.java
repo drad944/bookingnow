@@ -39,11 +39,15 @@ import android.util.Log;
 public class HttpService {
 	
 	private static final String TAG = "HttpService";
+	public static String IP = "192.168.0.102";
+	public static int PORT = 19191;
 	private static String URL = "http://192.168.0.102:18080/Booking/";
 	private static ExecutorService pool;
 	
 	static {
 		pool = Executors.newFixedThreadPool(10);
+		IP = "192.168.0.102";
+		PORT = 19191;
 	}
 	
 	public static void setUrl(String url){

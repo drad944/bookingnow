@@ -125,7 +125,7 @@ public class Client extends Thread{
 	    }
 	    
 	    public boolean isReady(){
-	    	return this.socket != null && this.socket.isConnected();
+	    	return this.socket != null && !this.socket.isClosed() && this.socket.isConnected();
 	    }
 	    
 	    public boolean isConnecting(){
