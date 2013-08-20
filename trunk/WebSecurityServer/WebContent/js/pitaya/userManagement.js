@@ -127,7 +127,6 @@ function initUpdateUserElements() {
 };
 
 function formatUpdateUserElements(rowData) {
-	var theme = getDemoTheme();
     
     var d1 = {};
 	if (rowData["birthday"] != null) {
@@ -135,7 +134,7 @@ function formatUpdateUserElements(rowData) {
 	}else {
 		d1= new Date();
 	}
-    $('#updateUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 180, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
+    $('#updateUserBirthdayInput').jqxDateTimeInput({formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
     
     if(rowData["sex"] != null && rowData["sex"] == '女') {
     	$("#updateUserSexRadioButton1").jqxRadioButton({checked: false});
@@ -158,16 +157,6 @@ function formatUpdateUserElements(rowData) {
 	$("#updateUserEmailInput").val(rowData["email"]);
 	$("#updateUserPhoneInput").val(rowData["phone"]);
 	$("#updateUserSexInput").val(rowData["sex"]);
-    
-    var userDepartmentData = [
-          //  { value: 1, label: "USER_DEPARTMENT" },
-            { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
-            { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
-            { value: 4, label: "USER_DEPARTMENT_FINANCE" },
-            { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
-            { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
-            { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
-        ];
     
 	// Create a jqxComboBox
 	$("#updateUserDepartmentCombobox").jqxComboBox({ selectedIndex: findDepartmentValue($("#updateUserDepartmentInput").val()) - 2});
