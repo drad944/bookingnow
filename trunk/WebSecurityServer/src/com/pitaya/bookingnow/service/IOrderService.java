@@ -27,6 +27,8 @@ public interface IOrderService {
 	
 	Order searchOrderById(Long id);
 	
+	Order getTablesOfOrder(Long id);
+	
 	MyResult addNewOrder(Order order);
 	
 	MyResult updateNewOrderToConfirmed(Order order);

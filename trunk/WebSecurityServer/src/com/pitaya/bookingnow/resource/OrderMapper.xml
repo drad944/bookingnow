@@ -700,6 +700,19 @@
 		</where>
 	</select>
 	
+	<select id="getTablesOfOrder" resultMap="Order_BaseResultMap" parameterType="java.lang.Long">
+		select
+			<include refid="Max_Order_Base_Column_List" />
+			,
+			<include refid="Table_Detail_Base_Column_List" />
+			,
+			<include refid="Table_Base_Column_List" />
+		from pitaya_order O
+			left outer join pitaya_order_table_detail TD on TD.order_id = O.id
+			left outer join pitaya_table T on TD.table_id = T.id
+		where O.id = #{id,jdbcType=BIGINT} and O.enabled = true
+	</select>
+	
 	
 	<select id="searchFullOrdersByFullOrderInfo" resultMap="Order_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Order">
 		select
