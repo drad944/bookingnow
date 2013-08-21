@@ -5,6 +5,9 @@
 function emptyRegisterTableWindow(){
 	//init registerTableWindow widget data
 	$("#registerTableStatusCombobox").jqxComboBox({ selectedIndex: 0});
+	$("#registerTableMinCustomerCountInput").jqxNumberInput('val',0);
+	$("#registerTableMaxCustomerCountInput").jqxNumberInput('val',0);
+	$("#registerTableIndoorPriceInput").jqxNumberInput('val',0);
 	
 	//init registerTableWindow store data
 	$("#registerTableAddressInput").val(null);
@@ -12,16 +15,21 @@ function emptyRegisterTableWindow(){
 	$("#registerTableMaxCustomerCountInput").val(null);
 	$("#registerTableIndoorPriceInput").val(null);
 	$("#registerTableStatusInput").val(null);
+	$("#registerTableResult").text("");
 }
 
 function emptyUpdateTableWindow(){
 	$("#updateTableStatusCombobox").jqxComboBox({ selectedIndex: 0});
+	$("#registerTableMinCustomerCountInput").jqxNumberInput('val',0);
+	$("#registerTableMaxCustomerCountInput").jqxNumberInput('val',0);
+	$("#registerTableIndoorPriceInput").jqxNumberInput('val',0);
 	
 	$("#updateTableAddressInput").val(null);
 	$("#updateTableMinCustomerCountInput").val(null);
 	$("#updateTableMaxCustomerCountInput").val(null);
 	$("#updateTableIndoorPriceInput").val(null);
 	$("#updateTableStatusInput").val(null);
+	$("#updateTableResult").text("");
 }
 
 function initUpdateTableElements() {
@@ -36,7 +44,7 @@ function initUpdateTableElements() {
 	$('#updateTableAddressInput').jqxInput({ theme: theme });
     $('#updateTableMinCustomerCountInput').jqxNumberInput({ width: 70, height: 25,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
     $('#updateTableMaxCustomerCountInput').jqxNumberInput({ width: 70, height: 25,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
-    $('#updateTableIndoorPriceInput').jqxNumberInput({ width: 70, height: 25, digits: 2,symbolPosition: 'right', symbol: '￥', theme: theme, spinButtons: true});
+    $('#updateTableIndoorPriceInput').jqxNumberInput({ width: 70, height: 25, digits: 3,symbolPosition: 'right', symbol: '￥', theme: theme, spinButtons: true});
     var tableStatusData = [
                                  { value: 2, label: "TABLE_EMPTY"},
                                  { value: 3, label: "TABLE_BOOKING"},
@@ -95,15 +103,16 @@ function initUpdateTableElements() {
 };
 
 function formatUpdateTableElements(rowData) {
-    
+    $("#updateTableIdInput").val(rowData["id"]);
     $("#updateTableAddressInput").val(rowData["address"]);
-	
     $("#updateTableMinCustomerCountInput").val(rowData["minCustomerCount"]);
 	$("#updateTableMaxCustomerCountInput").val(rowData["maxCustomerCount"]);
 	$("#updateTableIndoorPriceInput").val(rowData["indoorPrice"]);
+	$("#updateTableStatusInput").val(rowData["status"]);
 	
-	("#updateTableMinCustomerCountInput").jqxNumberInput('val',rowData["minCustomerCount"]);
+	$("#updateTableMinCustomerCountInput").jqxNumberInput('val',rowData["minCustomerCount"]);
 	$("#updateTableMaxCustomerCountInput").jqxNumberInput('val',rowData["maxCustomerCount"]);
+	$("#updateTableIndoorPriceInput").jqxNumberInput('val',rowData["indoorPrice"]);
 	$("#updateTableStatusCombobox").jqxComboBox({ selectedIndex: findTableStatusValue($("#updateTableStatusInput").val()) - 2});
 }
 
@@ -147,7 +156,7 @@ function initUpdateTableWindow(rowData,position) {
 	
 	// initialize the popup window and buttons.
     $("#updateTablePopupWindow").jqxWindow({
-    	position:position, isModal: true,width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#updateTableCancelButton"), modalOpacity: 0.01,
+    	position:position, isModal: true,width: 350, height: 300, resizable: true, theme: theme, cancelButton: $("#updateTableCancelButton"), modalOpacity: 0.01,
     	initContent: function () {
             $('#updateTablePopupWindow').jqxWindow('focus');
         }
@@ -198,37 +207,30 @@ function updateTable() {
 
 
 function initRegisterTableElements() {
+    
 	var theme = getDemoTheme();
     $("#registerTableDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
     $('#registerTableRegisterButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#registerTableResetButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#registerTableCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
     
-    $('#acceptInput').jqxCheckBox({ width: 130, theme: theme ,checked: false});
-    
-    
-    $("#registerTableAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
-    $("#registerTablePhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 22, theme: theme });
     $('.registerTableTextInput').jqxInput({ theme: theme });
-    var date = findDateTime("2000-01-01 00:00:00");
-    $('#registerTableBirthdayInput').jqxDateTimeInput({ theme: theme,width: 180, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
-    $("#registerTableSexRadioButton1").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
-    $("#registerTableSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
     
-    var tableDepartmentData = [
-                              //  { value: 1, label: "USER_DEPARTMENT" },
-                                { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
-                                { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
-                                { value: 4, label: "USER_DEPARTMENT_FINANCE" },
-                                { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
-                                { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
-                                { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
-                            ];
-                        
+	$('#registerTableAddressInput').jqxInput({ theme: theme });
+    $('#registerTableMinCustomerCountInput').jqxNumberInput({ width: 70, height: 25,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
+    $('#registerTableMaxCustomerCountInput').jqxNumberInput({ width: 70, height: 25,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
+    $('#registerTableIndoorPriceInput').jqxNumberInput({ width: 70, height: 25, digits: 3,symbolPosition: 'right', symbol: '￥', theme: theme, spinButtons: true});
+    var tableStatusData = [
+                                 { value: 2, label: "TABLE_EMPTY"},
+                                 { value: 3, label: "TABLE_BOOKING"},
+                                 { value: 4, label: "TABLE_USING"}
+                             ];
+    
+    
 	// Create a jqxComboBox
-	$("#registerTableDepartmentCombobox").jqxComboBox({ 
+	$("#registerTableStatusCombobox").jqxComboBox({ 
 		selectedIndex: 0, 
-		source: tableDepartmentData, 
+		source: tableStatusData, 
 		displayMember: "label", 
 		valueMember: "value", 
 		width: 150, 
@@ -239,33 +241,7 @@ function initRegisterTableElements() {
     // initialize validator.
     $('#registerTableInfoForm').jqxValidator({
      rules: [
-            { input: '#registerTableAccountInput', message: 'Tablename is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#registerTableAccountInput', message: 'Your tablename must be between 3 and 12 characters!', action: 'keyup, blur', rule: 'length=3,12' },
-            { input: '#registerTableRealNameInput', message: 'Real Name is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#registerTableRealNameInput', message: 'Your real name must contain only letters!', action: 'keyup', rule: 'notNumber' },
-            { input: '#registerTableRealNameInput', message: 'Your real name must be between 3 and 12 characters!', action: 'keyup', rule: 'length=3,12' },
-            
-            { input: '#registerTablePasswordInput', message: 'Password is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#registerTablePasswordInput', message: 'Your password must be between 6 and 20 characters!', action: 'keyup, blur', rule: 'length=6,20' },
-            { input: '#registerTablePasswordConfirmInput', message: 'Confirm Password is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#registerTablePasswordConfirmInput', message: 'Confirm Passwords doesn\'t match!', action: 'keyup, focus', rule: function (input, commit) {
-                // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
-                    if (input.val() === $('#registerTablePasswordInput').val()) {
-                        return true;
-                    }
-                    return false;
-            	}
-            },
-            { input: '#registerTableBirthdayInput', message: 'Your birth date must be between 1/1/1900 and ' + ((new Date()).getFullYear() + 1), action: 'valuechanged', rule: function (input, commit) {
-                var date = $('#registerTableBirthdayInput').jqxDateTimeInput('value');
-                var result = date.getFullYear() >= 1900 && date.getFullYear() <= (new Date()).getFullYear();
-                // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
-                return result;
-            	}
-            },
-            { input: '#registerTableEmailInput', message: 'E-mail is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#registerTableEmailInput', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' },
-            { input: '#acceptInput', message: 'You have to accept the terms', action: 'change', rule: 'required', position: 'right:0,0'}
+            { input: '#registerTableAddressInput', message: 'address is required!', action: 'keyup, blur', rule: 'required' }
             ], 
             theme: theme
     });
@@ -284,29 +260,17 @@ function addRegisterTableEventListeners() {
         $('#registerTableInfoForm').jqxValidator('validate');
     });
     
-    $("#registerTableSexRadioButton1").on('change', function (event) {
-        var checked = event.args.checked;
-        if (checked) {
-        	 $("#registerTableSexInput").val("男");
-        }
-    });
-    $("#registerTableSexRadioButton2").on('change', function (event) {
-        var checked = event.args.checked;
-        if (checked) {
-        	$("#registerTableSexInput").val("女");
-        }
-    });
     
     $("#registerTableCancelButton").on('click', function (event) {
         $('#addTablePopupWindow').jqxWindow('close');
         
     });
         
-    $("#registerTableDepartmentCombobox").on('select', function (event) {
+    $("#registerTableStatusCombobox").on('select', function (event) {
             if (event.args) {
                 var item = event.args.item;
                 if (item) {
-                	$("#registerTableDepartmentInput").val(item.value);
+                	$("#registerTableStatusInput").val(item.value);
                 }
             }
         });
@@ -323,7 +287,7 @@ function initRegisterTableWindow(position) {
 	
 	var theme = getDemoTheme();
 	$("#addTablePopupWindow").jqxWindow({
-		position:position,isModal: true,width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#registerTableCancelButton"), 
+		position:position,isModal: true,width: 350, height: 300, resizable: true, theme: theme, cancelButton: $("#registerTableCancelButton"), 
     	modalOpacity: 0.01,
     	
     	initContent: function () {
@@ -336,22 +300,19 @@ function initRegisterTableWindow(position) {
 
 
 function registerTable() {
-
 	var registerTableUIData = {
-		"table.account" : $("#registerTableAccountInput").val(),
-		"table.name" : $("#registerTableRealNameInput").val(),
-		"table.password" : $("#registerTablePasswordConfirmInput").val(),
+		"table.id" : $("#registerTableIdInput").val(),
 		"table.address" : $("#registerTableAddressInput").val(),
-		"table.birthday" : $("#registerTableBirthdayInput").jqxDateTimeInput('value'),
-		"table.department" : $("#registerTableDepartmentInput").val(),
-		"table.email" : $("#registerTableEmailInput").val(),
-		"table.phone" : $("#registerTablePhoneInput").val(),
-		"table.sex" : $("#registerTableSexInput").val()
+		"table.minCustomerCount" : $('#registerTableMinCustomerCountInput').val(),
+		"table.maxCustomerCount" : $('#registerTableMaxCustomerCountInput').val(),
+		"table.status" : $("#registerTableStatusInput").val(),
+		"table.indoorPrice" : $("#registerTableIndoorPriceInput").val()
 	};
-
+	
 	var registerTableData = parseUIDataToTableData(registerTableUIData);
 	
-	$.post("registerTable.action", registerTableData, function(result) {
+	
+	$.post("addTable.action", registerTableData, function(result) {
 		if (result != null && result["id"] != null) {
 			result = parseTableDataToUIData(result);
 			

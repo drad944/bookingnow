@@ -23,6 +23,7 @@ function emptyRegisterUserWindow(){
 	$("#registerUserDepartmentInput").val(null);
 	
 	$("#registerUserEmailInput").val(null);
+	$("#registerUserResult").text("");
 }
 
 function emptyUpdateUserWindow(){
@@ -45,6 +46,7 @@ function emptyUpdateUserWindow(){
 	$("#updateUserDepartmentInput").val(null);
 	
 	$("#updateUserEmailInput").val(null);
+	$("#updateUserResult").text("");
 }
 
 function initUpdateUserElements() {

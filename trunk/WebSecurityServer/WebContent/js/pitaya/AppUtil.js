@@ -390,7 +390,7 @@ function findDepartmentString(value) {
 		 }
 	 }
 	 
-	 return null;
+	 return value;
 }
 
 function findDepartmentValue(label) {
@@ -409,7 +409,7 @@ function findDepartmentValue(label) {
 		 }
 	 }
 	 
-	 return null;
+	 return label;
 }
 
 function findTableStatusValue(label) {
@@ -424,7 +424,7 @@ function findTableStatusValue(label) {
 		 }
 	 }
 	 
-	 return null;
+	 return label;
 }
 
 function findTableStatusLable(value) {
@@ -439,5 +439,5 @@ function findTableStatusLable(value) {
 		 }
 	 }
 	 
-	 return null;
+	 return value;
 }
