@@ -40,6 +40,8 @@
     <string name="commitpartsuccess">加工中的食品无法删除或减少数量</string>
     <string name="commitfail">提交失败</string>
     <string name="rememberme">自动登录</string>
+    <string name="operationerror">操作失败,请联系我们获取帮助</string>
+    <string name="operationfail">操作失败，请检查网络</string>
     
     <string name="order_list_title_table">桌号</string>
     <string name="order_list_title_submitter">提交者</string>

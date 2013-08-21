@@ -36,6 +36,7 @@ import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
 import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.ContentUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,8 +93,8 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		}
 		
 		private int getPopupWindowSize(int items){
-			int height = (items + 1) * 40 + 8;
-			return height > 700 ? 600 : height;
+			int height = (items + 1) * ContentUtil.getPixelsByDP(40) + ContentUtil.getPixelsByDP(10);
+			return height > ContentUtil.getPixelsByDP(600) ? ContentUtil.getPixelsByDP(600) : height;
 		}
 		
 		@Override
@@ -138,7 +139,8 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 
 								@Override
 								public void OnDataSetChanged() {
-									popupWindow.update(700, getPopupWindowSize(mContentContainer.getOrder().getFoods().size()));
+									popupWindow.update(ContentUtil.getPixelsByDP(700), 
+											getPopupWindowSize(mContentContainer.getOrder().getFoods().size()));
 								}
 								
 							});
@@ -149,14 +151,14 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 									@Override
 									public void afterGetFoodsStatus() {
 										orderPreview.setAdapter(orderAdapter);
-										popupWindow.update(700,getPopupWindowSize(mContentContainer.getOrder().getFoods().size()));
+										popupWindow.update(ContentUtil.getPixelsByDP(700), getPopupWindowSize(mContentContainer.getOrder().getFoods().size()));
 									}
 			            			
 			            		});
 			            		OrderService.getFoodsOfOrder(Long.parseLong(mContentContainer.getOrder().getOrderKey()), handler);
 							} else {
 								orderPreview.setAdapter(orderAdapter);
-								popupWindow.update(700,getPopupWindowSize(mContentContainer.getOrder().getFoods().size()));
+								popupWindow.update(ContentUtil.getPixelsByDP(700), getPopupWindowSize(mContentContainer.getOrder().getFoods().size()));
 							}
 						} catch (IllegalArgumentException e) {
 							e.printStackTrace();

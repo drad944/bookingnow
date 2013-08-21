@@ -39,29 +39,23 @@ public class ContentView extends ViewGroup {
 	public ContentView(Context context) {
 		super(context);
 		this.context = context;
-		final float scale = getContext().getResources().getDisplayMetrics().density;
-		this.menuWidth =  (int) (200 * scale + 0.5f);
 		init();
 	}
 
 	public ContentView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.context = context;
-		final float scale = getContext().getResources().getDisplayMetrics().density;
-		this.menuWidth =  (int) (200 * scale + 0.5f);
 		init();
 	}
 
 	public ContentView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		this.context = context;
-		final float scale = getContext().getResources().getDisplayMetrics().density;
-		this.menuWidth =  (int) (200 * scale + 0.5f);
 		init();
 	}
-
-	public int getMenuWidth(){
-		return this.menuWidth;
+	
+	public void setMenuWidth(int menuwidth){
+		this.menuWidth = menuwidth;
 	}
 	
 	@Override
@@ -149,7 +143,6 @@ public class ContentView extends ViewGroup {
 						mLastMotionY = y;
 						if(xMoved && this.mCurrentContentView.canIntercept() && isRight){
 							Log.e(TAG, "Catch the move action:" + this.mCurrentContentView.canIntercept() + " " +isRight);
-
 							return true;
 						}
 						break;

@@ -245,8 +245,12 @@ public class WaiterOrderListView extends OrderListView{
 					long arg3) {
 				mParentView.showOrderDetail(mAdapter.getOrderList().get(position), false, WaiterOrderLeftView.MYORDERS);
 				mParentView.setLastItem(mAdapter.getOrderList().get(position).getOrderKey());
+				Integer old = mAdapter.getSelectItem();
+				if(old != null){
+					mListView.getChildAt(old).setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
+				}
+				mListView.getChildAt(position).setBackgroundColor(getContext().getResources().getColor(R.color.common_background));
 				mAdapter.setSelectItem(position);
-				mAdapter.notifyDataSetChanged();
 			}
         	
         });

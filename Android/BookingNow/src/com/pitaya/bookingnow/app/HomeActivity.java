@@ -116,6 +116,7 @@ public class HomeActivity extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
+		ContentUtil.init(this);
 		this.setHomeContent();
 		mMessageHandler = new MessageHandler();
 		mMessageHandler.setOnMessageListener(new MessageHandler.OnMessageListener() {
@@ -215,7 +216,8 @@ public class HomeActivity extends FragmentActivity {
 	private void setHomeContent(){
 		if(homecontent == null){
 			ArrayList<BaseContentView> contentViews = new ArrayList<BaseContentView>();
-			homecontent = new SlideContent(this, contentViews);
+			//Set menu with to 200dp
+			homecontent = new SlideContent(this, 200, contentViews);
 			this.mLeftMenu = getLayoutInflater().inflate(R.layout.leftmenu, null);
 			
 			LinearLayout menuitems = (LinearLayout)(mLeftMenu.findViewById(R.id.leftmenu));

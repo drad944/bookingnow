@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -28,6 +29,7 @@ import com.pitaya.bookingnow.app.model.Order.OnFoodStatusChangedListener;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.UserManager;
 import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.ContentUtil;
 
 public class OrderDetailAdapter extends BaseAdapter {
     
@@ -165,7 +167,7 @@ public class OrderDetailAdapter extends BaseAdapter {
             viewHolder.totalPriceText.setLayoutParams(lp);
         }
 		View foodstepper = View.inflate(mContext, R.layout.foodstepper, null);
-        RelativeLayout.LayoutParams fsRL_LP = new RelativeLayout.LayoutParams(250,
+        RelativeLayout.LayoutParams fsRL_LP = new RelativeLayout.LayoutParams(ContentUtil.getPixelsByDP(250),
         		ViewGroup.LayoutParams.WRAP_CONTENT);
         fsRL_LP.addRule(RelativeLayout.RIGHT_OF, viewHolder.nameText.getId());
         fooditemRL.addView(foodstepper, fsRL_LP);

@@ -6,9 +6,11 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import com.pitaya.bookingnow.app.R;
@@ -21,6 +23,7 @@ public class OrderContentView extends BaseContentView{
 	private static final String TAG = "OrderContentView";
 	private View mView;
 	private OrderLeftView mLeftView;
+	private View mDetailView;
 	private int currentUserRole;
 	
 	public OrderContentView(String key, Context context, SlideContent home) {
@@ -46,30 +49,31 @@ public class OrderContentView extends BaseContentView{
 				case Constants.ROLE_WAITER:
 					mView.findViewById(R.id.orderlist).setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
 							LayoutParams.MATCH_PARENT, 0.6f));
-					mView.findViewById(R.id.orderdetail).setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+					mDetailView = mView.findViewById(R.id.orderdetail);
+					mDetailView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
 							LayoutParams.MATCH_PARENT, 0.4f));
-					mLeftView = new WaiterOrderLeftView();
+					mLeftView = new WaiterOrderLeftView(this);
 					break;
 				case Constants.ROLE_WELCOME:
 					mView.findViewById(R.id.orderlist).setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
 							LayoutParams.MATCH_PARENT, 0.55f));
-					mView.findViewById(R.id.orderdetail).setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+					mDetailView = mView.findViewById(R.id.orderdetail);
+					mDetailView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
 							LayoutParams.MATCH_PARENT, 0.45f));
-					mLeftView = new WelcomerOrderLeftView();
+					mLeftView = new WelcomerOrderLeftView(this);
 					break;
 				case Constants.ROLE_CHEF:
 					mView.findViewById(R.id.orderlist).setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
 							LayoutParams.MATCH_PARENT, 0.75f));
-					mView.findViewById(R.id.orderdetail).setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+					mDetailView = mView.findViewById(R.id.orderdetail);
+					mDetailView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
 							LayoutParams.MATCH_PARENT, 0.25f));
-					mLeftView = new KitchenOrderLeftView();
+					mLeftView = new KitchenOrderLeftView(this);
 					break;
 			}
 		}
-		if(mLeftView != null){
-			mLeftView.setContainer(this);
-		} else {
-			Log.w(TAG, "Unsupported user role:" + UserManager.getUserRole());
+		if(mLeftView == null){
+			Log.e(TAG, "Unsupported user role:" + UserManager.getUserRole());
 			return;
 		}
 		fragmentTransaction.replace(R.id.orderlist, mLeftView);

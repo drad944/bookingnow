@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:background="@android:color/white"
-    android:layout_width="match_parent" 
+    android:baselineAligned="false"
+    android:layout_width="wrap_content" 
     android:layout_height="match_parent">
 
     <FrameLayout
@@ -12,11 +13,28 @@
             android:layout_width="0px" 
             android:layout_height="match_parent"/>
 
-    <FrameLayout
+    <!--HorizontalScrollView
+        android:layout_weight="3"
+        android:layout_width="0px" 
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="horizontal"
+        android:id="@+id/orderdetailview"
+        android:background="?android:attr/detailsElementBackground">
+        <LinearLayout
             android:id="@+id/orderdetail"
-            android:layout_weight="3"
-            android:layout_width="0px" 
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="?android:attr/detailsElementBackground" />
+            android:gravity="center">
+        </LinearLayout>
+        
+    </HorizontalScrollView-->
+    <FrameLayout
+        android:id="@+id/orderdetail" 
+        android:layout_weight="3"
+        android:layout_width="0px" 
+        android:layout_height="match_parent"
+        android:background="?android:attr/detailsElementBackground"/>
 
 </LinearLayout>

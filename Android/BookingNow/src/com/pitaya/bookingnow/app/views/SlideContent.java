@@ -2,6 +2,8 @@ package com.pitaya.bookingnow.app.views;
 
 import java.util.ArrayList;
 
+import com.pitaya.bookingnow.app.util.ContentUtil;
+
 import android.content.Context;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -12,21 +14,23 @@ public class SlideContent extends RelativeLayout {
 	private ContentView mContentView;
 	private ArrayList<BaseContentView> contentViews;
 	
-	public SlideContent(Context context, ArrayList<BaseContentView> views) {
+	public SlideContent(Context context, int menuwidth, ArrayList<BaseContentView> views) {
 		super(context);
-		init(context);
+		init(context, menuwidth);
 		this.contentViews = views;
 	}
 
-	private void init(Context context) {
+	private void init(Context context, int menuwidth) {
 		LayoutParams behindParams = new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.MATCH_PARENT);
 		mMenuView = new LeftMenuView(context);
+		mMenuView.setMenuWidth(ContentUtil.getPixelsByDP(menuwidth));
 		addView(mMenuView, behindParams);
 		
 		LayoutParams contentParams = new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.MATCH_PARENT);
 		mContentView = new ContentView(context);
+		mContentView.setMenuWidth(ContentUtil.getPixelsByDP(menuwidth));
 		addView(mContentView, contentParams);
 	}
 	

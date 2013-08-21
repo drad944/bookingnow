@@ -20,6 +20,7 @@ import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.service.UserManager;
 import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.ToastUtil;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -34,6 +35,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 public class WaitingOrderListView extends OrderListView{
 
@@ -83,7 +85,7 @@ public class WaitingOrderListView extends OrderListView{
 							try {
 								JSONObject jresp = new JSONObject(response);
 								if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
-									//TODO handle fail
+									ToastUtil.showToast(getContext(), getContext().getResources().getString(R.string.operationerror), Toast.LENGTH_LONG);
 									return;
 								} else {
 									tablesView.close();
@@ -119,6 +121,7 @@ public class WaitingOrderListView extends OrderListView{
 
 						@Override
 						public void onFail(String action, int statuscode) {
+							ToastUtil.showToast(getContext(), getContext().getResources().getString(R.string.operationfail), Toast.LENGTH_LONG);
 							Log.e(TAG, "[OrderService.submitOrder] Network error:" + statuscode);
 						}
 					});
@@ -243,8 +246,12 @@ public class WaitingOrderListView extends OrderListView{
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
 				mParentView.showOrderDetail(mAdapter.getOrderList().get(position), false, WaiterOrderLeftView.WAITING_ORDERS);
+				Integer old = mAdapter.getSelectItem();
+				if(old != null){
+					mListView.getChildAt(old).setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
+				}
+				mListView.getChildAt(position).setBackgroundColor(getContext().getResources().getColor(R.color.common_background));
 				mAdapter.setSelectItem(position);
-				mAdapter.notifyDataSetChanged();
 			}
         	
         });

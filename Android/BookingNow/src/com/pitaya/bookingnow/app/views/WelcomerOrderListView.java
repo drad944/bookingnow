@@ -15,6 +15,7 @@ import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.service.UserManager;
 import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.ContentUtil;
 import com.pitaya.bookingnow.app.util.ToastUtil;
 import com.pitaya.bookingnow.app.data.HttpHandler;
 import com.pitaya.bookingnow.app.data.OrderListAdapter;
@@ -62,8 +63,8 @@ public class WelcomerOrderListView extends OrderListView{
 		((TextView)this.mHeaderView.findViewById(R.id.title5)).setText(R.string.order_list_title_submittime);
 		
 		final View seatsSearchPopupView = View.inflate(this.getContext(), R.layout.seatssearchwindow, null);
-		final PopupWindow popupWindow =  new PopupWindow(seatsSearchPopupView, 300,  
-               200 , true);
+		final PopupWindow popupWindow =  new PopupWindow(seatsSearchPopupView, ContentUtil.getPixelsByDP(300),  
+				ContentUtil.getPixelsByDP(200) , true);
 		popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(false);
         popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
@@ -79,7 +80,6 @@ public class WelcomerOrderListView extends OrderListView{
 
 			@Override
 			public void onClick(View v) {
-				//send request to server;
 				EditText peoplecountview = (EditText)seatsSearchPopupView.findViewById(R.id.peoplecount);
 				final int customercount = Integer.parseInt(peoplecountview.getText().toString());
 				OrderService.getAvailableTables(Constants.TABLE_EMPTY, new HttpHandler(){
@@ -179,6 +179,7 @@ public class WelcomerOrderListView extends OrderListView{
     									mAdapter.setSelectItem(size - 1);
     									mAdapter.notifyDataSetChanged();
     								}
+    								popupWindow.dismiss();
 								}
 							} catch (JSONException e) {
 								e.printStackTrace();
@@ -350,7 +351,6 @@ public class WelcomerOrderListView extends OrderListView{
 				}
 				mListView.getChildAt(position).setBackgroundColor(getContext().getResources().getColor(R.color.common_background));
 				mAdapter.setSelectItem(position);
-				//mAdapter.notifyDataSetChanged();
 			}
         	
         });

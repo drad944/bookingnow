@@ -47,6 +47,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -60,8 +61,8 @@ public class WaiterOrderLeftView extends OrderLeftView{
 	private OrderListsViewPagerAdapter mAdapter;
 	private OrderListsViewPager mOrdersViewPager;
 	
-	public WaiterOrderLeftView(){
-		super();
+	public WaiterOrderLeftView(OrderContentView v){
+		super(v);
 	}
 	
 	public boolean canInterrupt(){
@@ -152,13 +153,13 @@ public class WaiterOrderLeftView extends OrderLeftView{
 
 						@Override
 						public void afterGetFoodsStatus() {
-							showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class);
+							showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class, 0);
 						}
             			
             		});
             		OrderService.getFoodsOfOrder(Long.parseLong(order.getOrderKey()), handler);
             	} else {
-            		showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class);
+            		showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class, 0);
             	}
     			break;
     		case WAITING_ORDERS:
@@ -166,7 +167,7 @@ public class WaiterOrderLeftView extends OrderLeftView{
     			handler.setAfterGetFoodsListener(new GetOrderFoodsHandler.AfterGetFoodsListener(){
 					@Override
 					public void afterGetFoods() {
-						showOrderDetail(order, isForce, PreviewOrderDetailAdapter.class);
+						showOrderDetail(order, isForce, PreviewOrderDetailAdapter.class, 0);
 					}
     			});
     			OrderService.getFoodsOfOrder(Long.parseLong(order.getOrderKey()), handler);

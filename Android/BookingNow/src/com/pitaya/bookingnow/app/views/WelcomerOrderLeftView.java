@@ -60,8 +60,8 @@ public class WelcomerOrderLeftView extends OrderLeftView{
 	
 	private OrderListView mOrderListView;
 	
-	public WelcomerOrderLeftView(){
-		super();
+	public WelcomerOrderLeftView(OrderContentView v){
+		super(v);
 	}
 	
 	@Override
@@ -107,7 +107,7 @@ public class WelcomerOrderLeftView extends OrderLeftView{
     	if(order.getStatus() == Constants.ORDER_WAITING && order.isDirty()){
     		order.enrichUpdateFoods(this.getActivity());
     	}
-		super.showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class);
+		super.showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class, 650);
 	}
 
 }
