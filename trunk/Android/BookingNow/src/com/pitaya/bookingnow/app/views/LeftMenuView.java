@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 public class LeftMenuView extends ViewGroup {
 
 	private FrameLayout mContainer;
+	private int menuWidth;
 	
 	public LeftMenuView(Context context) {
 		super(context);
@@ -29,8 +30,6 @@ public class LeftMenuView extends ViewGroup {
 				height);
 		final int menuWidth = getChildMeasureSpec(widthMeasureSpec, 0,
 				mContainer.getWidth());
-		Log.i("ad", "menuWidth----------------" + menuWidth);
-		Log.i("ad", "contentHeight----------------" + contentHeight);
 		mContainer.measure(menuWidth, contentHeight);
 	}
 	
@@ -38,9 +37,11 @@ public class LeftMenuView extends ViewGroup {
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		final int width = r - l;
 		final int height = b - t;
-		final float scale = getContext().getResources().getDisplayMetrics().density;
-		int menuWidth =  (int) (200 * scale + 0.5f);
 		mContainer.layout(0, 0, menuWidth, height);
+	}
+	
+	public void setMenuWidth(int value){
+		this.menuWidth = value;
 	}
 
 	public void setView(View v) {

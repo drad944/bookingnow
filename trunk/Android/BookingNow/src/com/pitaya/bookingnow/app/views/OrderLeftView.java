@@ -34,11 +34,12 @@ public class OrderLeftView extends Fragment{
 	protected boolean mIsBound = false;
 	protected ServiceConnection mConnection;
 	
-	public OrderLeftView(){
+	public OrderLeftView(OrderContentView v){
 		mMessageHandler = new MessageHandler();
+		this.setContainer(v);
 	}
 	
-	public void setContainer(OrderContentView v){
+	private void setContainer(OrderContentView v){
 		this.mContentContainer = v;
 	}
 	
@@ -78,7 +79,7 @@ public class OrderLeftView extends Fragment{
 		return this.lastSelectItem;
 	}
 	
-	public void showOrderDetail(Order order, boolean isForce, Class<? extends OrderDetailAdapter> orderDetailAdapterClz){
+	public void showOrderDetail(Order order, boolean isForce, Class<? extends OrderDetailAdapter> orderDetailAdapterClz, int viewwidth){
         String key = order.getOrderKey();
         OrderDetailFragment details = null;
     	Fragment fragment = getFragmentManager().findFragmentById(R.id.orderdetail);
@@ -88,7 +89,7 @@ public class OrderLeftView extends Fragment{
         if (details == null || isForce || !details.getShownOrder().getOrderKey().equals(key)) {
         	FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
     		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    		fragmentTransaction.replace(R.id.orderdetail, OrderDetailFragment.newInstance(order, mContentContainer, orderDetailAdapterClz));
+    		fragmentTransaction.replace(R.id.orderdetail, OrderDetailFragment.newInstance(order, mContentContainer, orderDetailAdapterClz, viewwidth));
     		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
     		fragmentTransaction.commit();
         }
@@ -101,6 +102,10 @@ public class OrderLeftView extends Fragment{
 		 } else {
 			 return null;
 		 }
+	}
+	
+	protected OrderDetailFragment getCurrentDetailFragment(){
+		return (OrderDetailFragment)getFragmentManager().findFragmentById(R.id.orderdetail);
 	}
 	
 	protected void doBindService() {

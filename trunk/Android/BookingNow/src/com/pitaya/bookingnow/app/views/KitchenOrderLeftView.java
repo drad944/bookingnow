@@ -27,11 +27,9 @@ public class KitchenOrderLeftView extends OrderLeftView{
 	private static final String TAG = "KitchenOrderLeftView";
 	private MessageHandler mMessageHandler;
 	private CookingItemsListFragment mContent;
-	private MessageService mMessageService;
-	private boolean mIsBound = false;
 	
-	public KitchenOrderLeftView(){
-		super();
+	public KitchenOrderLeftView(OrderContentView v){
+		super(v);
 	}
 	
 	@Override
