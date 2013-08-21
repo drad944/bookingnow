@@ -272,6 +272,7 @@ function parseMenuHtml() {
         $("#eventLog").text("Id: " + event.args.id + ", Text: " + $(event.args).text());
         if(event.args.id == 1) {
         	openContentPage('framework_main','page/common/orderManagement.html','content');
+        	parseOrderGridHtml();
         }else if(event.args.id == 2) {
         	openContentPage('framework_main','page/common/foodManagement.html','content');
         }else if(event.args.id == 3) {
@@ -436,6 +437,47 @@ function findTableStatusLable(value) {
 	 for(var i = 0;i < tableStatusData.length;i++) {
 		 if(tableStatusData[i].value == value) {
 			 return tableStatusData[i].label;
+		 }
+	 }
+	 
+	 return value;
+}
+
+function findOrderStatusValue(label) {
+	 var orderStatusData = [
+	                                { value: 1, label: "ORDER_NEW" },
+	                                { value: 2, label: "ORDER_WELCOMER_NEW" },
+	                                { value: 3, label: "ORDER_WAITING" },
+	                                { value: 4, label: "ORDER_COMMITED" },
+	                                { value: 5, label: "ORDER_PAYING" },
+	                                { value: 6, label: "ORDER_FINISHED" },
+	                                { value: 7, label: "ORDER_UNAVAILABLE" },
+	                                { value: 8, label: "ORDER_AVAILABLE" }
+	                            ];
+	 for(var i = 0;i < orderStatusData.length;i++) {
+		 if(orderStatusData[i].label == label) {
+			 return orderStatusData[i].value;
+		 }
+	 }
+	 
+	 return label;
+}
+
+function findOrderStatusLable(value) {
+	 var orderStatusData = [
+	                                { value: 1, label: "ORDER_NEW" },
+	                                { value: 2, label: "ORDER_WELCOMER_NEW" },
+	                                { value: 3, label: "ORDER_WAITING" },
+	                                { value: 4, label: "ORDER_COMMITED" },
+	                                { value: 5, label: "ORDER_PAYING" },
+	                                { value: 6, label: "ORDER_FINISHED" },
+	                                { value: 7, label: "ORDER_UNAVAILABLE" },
+	                                { value: 8, label: "ORDER_AVAILABLE" }
+	                                
+	                            ];
+	 for(var i = 0;i < orderStatusData.length;i++) {
+		 if(orderStatusData[i].value == value) {
+			 return orderStatusData[i].label;
 		 }
 	 }
 	 

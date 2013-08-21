@@ -4,228 +4,11 @@
 <meta charset="UTF-8">
 <title>order management</title>
 
-	<link rel="stylesheet" type="text/css" href="../../css/head.css">
-	<link rel="stylesheet" href="../../css/jqwidgets/styles/jqx.base.css" type="text/css" />
-	
-	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
-	<script type="text/javascript" src="../../js/AppUtil.js"></script>
-	
-    <script type="text/javascript" src="../../js/jqwidgets/jqxcore.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxdata.js"></script>
-    
-     
-    <script type="text/javascript" src="../../js/jqwidgets/jqxbuttons.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxdropdownlist.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxlistbox.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxscrollbar.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxmenu.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.filter.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.sort.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.pager.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.selection.js"></script> 
-    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.columnsresize.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.columnsreorder.js"></script> 
-    
-     <script type="text/javascript" src="../../js/jqwidgets/jqxnumberinput.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxwindow.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxinput.js"></script>
-    
-    <script type="text/javascript" src="../../js/jqwidgets/gettheme.js"></script>
-    <script type="text/javascript">
-         $(document).ready(function () {
-         		$.post("searchOrder.action", 
-		    			{"order.enabled": true}, 
-		    			function(matchedOrders){
-	if(matchedOrders != null && matchedOrders.result != null){
-		orders = matchedOrders.result;
-	}
-	
-	
-	var orderSize = orders.length;
-	var orderData = {};
-	
-	var columns = {};
-	
-	var datafields = {};
-	for(var i = 0;i < orderSize; i++) {
-		order = orders[i];
-		if(i==0) {
-			var j=0;
-			
-			for(var item in order) {
-				var datafield = {};
-				var column = {};
-				
-				if(item == "id"){
-					datafield["type"] = "number";
-					column["text"] = "Id";
-					
-				}else if(item == "allowance") {
-					datafield["type"] = "number";
-					column["text"] = "Allowance";
-					
-				}else if(item == "customer_count") {
-					datafield["type"] = "number";
-					column["text"] = "Customer_count";
-					
-				}else if(item == "customer_id") {
-					datafield["type"] = "number";
-					column["text"] = "Customer_id";
-					
-				}else if(item == "modifyTime") {
-					datafield["type"] = "number";
-					column["text"] = "ModifyTime";
-					
-				}else if(item == "prePay") {
-					datafield["type"] = "number";
-					column["text"] = "PrePay";
-					
-				}else if(item == "status") {
-					datafield["type"] = "number";
-					column["text"] = "Status";
-					
-				}else if(item == "submit_time") {
-					datafield["type"] = "number";
-					column["text"] = "Submit_time";
-					
-				}else if(item == "total_price") {
-					datafield["type"] = "number";
-					column["text"] = "Total_price";
-					
-				}else if(item == "user_id") {
-					datafield["type"] = "number";
-					column["text"] = "User_id";
-					
-				}else if(item == "enabled") {
-					datafield["type"] = "boolean";
-					column["text"] = "Enabled";
-					
-				}else if(item == "customer" || item == "food_details" ||item == "table_details" ||item == "user"){
-					//do nothing
-				}else {
-					datafield["type"] = "string";
-					column["text"] = "XX";
-				}
-				
-				if(item == "customer" || item == "food_details" ||item == "table_details" ||item == "user"){
-					
-				}else {
-					column["datafield"] = item;
-					if(item == "id") {
-						column["width"] = "50";
-					}
-					
-					columns[j] = column;
-					
-					datafields[j] = datafield;
-					j++;
-				}
-			}
-		}
-		
-		var rowData = {};
-		for(var item in order) {
-			if(item == "customer" || item == "food_details" ||item == "table_details" ||item == "user"){
-					
-			}else {
-				rowData[item] = order[item];
-			}
-			
-		}
-		
-		orderData[i] = rowData;
-	}
-	
-         
-            var theme = getDemoTheme();
-            
-            var source =
-            {
-                localdata: orderData,
-                datatype: "local",
-                datafields:datafields,
-                addrow: function (rowid, rowdata, position, commit) {
-                    // synchronize with the server - send insert command
-                    // call commit with parameter true if the synchronization with the server is successful 
-                    //and with parameter false if the synchronization failed.
-                    // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
-                    commit(true);
-                },
-                deleterow: function (rowid, commit) {
-                    // synchronize with the server - send delete command
-                    // call commit with parameter true if the synchronization with the server is successful 
-                    //and with parameter false if the synchronization failed.
-                    commit(true);
-                },
-                updaterow: function (rowid, newdata, commit) {
-                    // synchronize with the server - send update command
-                    // call commit with parameter true if the synchronization with the server is successful 
-                    // and with parameter false if the synchronization failed.
-                    commit(true);
-                }
-            };
-            var dataAdapter = new $.jqx.dataAdapter(source);
-            // initialize jqxGrid
-            $("#orderDataGrid").jqxGrid(
-            {
-                width: 1000,
-                height: 350,
-                source: dataAdapter,
-                theme: theme,
-                columns: columns,
-                selectionmode: 'multiplerowsextended',
-                sortable: true,
-                pageable: true,
-                autoheight: true,
-                columnsresize: true,
-              //  columnsreorder: true,
-            });
-            $("#addOrderRowButton").jqxButton({ theme: theme });
-            $("#addmultiplerowsbutton").jqxButton({ theme: theme });
-            $("#deleteOrderRowButton").jqxButton({ theme: theme });
-            $("#updateOrderRowButton").jqxButton({ theme: theme });
-            // update row.
-            $("#updateOrderRowButton").on('click', function () {
-                var datarow = generaterow();
-                var selectedrowindex = $("#orderDataGrid").jqxGrid('getselectedrowindex');
-                var rowscount = $("#orderDataGrid").jqxGrid('getdatainformation').rowscount;
-                if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
-                    var id = $("#orderDataGrid").jqxGrid('getrowid', selectedrowindex);
-                    var commit = $("#orderDataGrid").jqxGrid('updaterow', id, datarow);
-                    $("#orderDataGrid").jqxGrid('ensurerowvisible', selectedrowindex);
-                }
-            });
-            // create new row.
-            $("#addOrderRowButton").on('click', function () {
-                var datarow = generaterow();
-                var commit = $("#orderDataGrid").jqxGrid('addrow', null, datarow);
-            });
-            // create new rows.
-            $("#addmultiplerowsbutton").on('click', function () {
-                $("#orderDataGrid").jqxGrid('beginupdate');
-                for (var i = 0; i < 10; i++) {
-                    var datarow = generaterow();
-                    var commit = $("#orderDataGrid").jqxGrid('addrow', null, datarow);
-                }
-                $("#orderDataGrid").jqxGrid('endupdate');
-            });
-            // delete row.
-            $("#deleteOrderRowButton").on('click', function () {
-                var selectedrowindex = $("#orderDataGrid").jqxGrid('getselectedrowindex');
-                var rowscount = $("#orderDataGrid").jqxGrid('getdatainformation').rowscount;
-                if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
-                    var id = $("#orderDataGrid").jqxGrid('getrowid', selectedrowindex);
-                    var commit = $("#orderDataGrid").jqxGrid('deleterow', id);
-                }
-            });
-        });
-    });
-    </script>
 </head>
 	
 <body>
 	<div id="content">
+	
 		<div id='jqxWidget' style="font-size: 13px; font-family: Verdana; float: left;">
 			<div id="J_Nav" class="main-nav">
 				<ul>
@@ -249,9 +32,163 @@
 					
 				</ul>
 			</div>
-        	<div style="float: left;" id="orderDataGrid"></div>
-    	</div>
-		
+        	
+	        
+        	<div id="orderDataGrid" style="float: left;" ></div>
+
+				<div id="updateOrderPopupWindow" style="overflow:hidden;visibility:hidden;">
+					<div><h3>Update Order</h3></div>
+					<div id="updateOrderDiv">
+				        <div>
+				            <form id="updateOrderInfoForm" action="./">
+				                <table class="updateOrderTable">
+				                	<tr style="display:none">
+				                        <td>Id:</td>
+				                        <td><input type="text" id="updateOrderIdInput" class="updateOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Account:</td>
+				                        <td><input type="text" id="updateOrderAccountInput" class="updateOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Password:</td>
+				                        <td><input type="password" id="updateOrderPasswordInput" class="updateOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Confirm password:</td>
+				                        <td><input type="password" id="updateOrderPasswordConfirmInput" class="updateOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Real name:</td>
+				                        <td><input type="text" id="updateOrderRealNameInput" class="updateOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Department:</td>
+				                        <td>
+				                        	<div id='updateOrderDepartmentCombobox'></div>
+				                        	<input id="updateOrderDepartmentInput" type="hidden" value="2" />
+			        					</td>
+				                    </tr>
+				                    <tr>
+				                        <td>Birth date:</td>
+				                        <td><div id="updateOrderBirthdayInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>E-mail:</td>
+				                        <td><input type="text" id="updateOrderEmailInput" placeholder="someone@mail.com" class="updateOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Address:</td>
+				                        <td><input type="text" id="updateOrderAddressInput" placeholder="省-市-区-街道-小区-门牌号" class="updateOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Phone:</td>
+				                        <td><div id="updateOrderPhoneInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Sex:</td>
+				                        <td>
+				                        	<div style='margin-top: 10px;'>
+								            	<span id='updateOrderSexRadioButton1' style='float:left;'>男</span>
+								            	<span id='updateOrderSexRadioButton2' style='float:right;'>女</span>
+								            	<input id="updateOrderSexInput" type="hidden" value="男" />
+								            </div>
+				                        </td>
+				                    </tr>
+				                    <tr style="text-align: center;">
+				                        <td>
+				                        	<input id="updateOrderUpdateButton" type="button" value="Update" />
+				                        </td>
+				                        <td>
+				                        	<input id="updateOrderResetButton" type="reset" value="Reset" />
+				                        	<input id="updateOrderCancelButton" type="button" value="Cancel" />
+				                        </td>
+				                    </tr>
+				                </table>
+				            </form>
+				        </div>
+				        <div id="updateOrderResult"></div>
+		    		</div>
+				</div>
+			
+				<div id="addOrderPopupWindow" style="overflow:hidden;visibility:hidden;">
+					<div><h3>Register Order</h3></div>
+					<div id="registerOrderDiv">
+		        		
+				        <div>
+				            <form id="registerOrderInfoForm" action="./">
+				                <table class="registerOrderTable">
+				                    <tr>
+				                        <td>Account:</td>
+				                        <td><input type="text" id="registerOrderAccountInput" class="registerOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Password:</td>
+				                        <td><input type="password" id="registerOrderPasswordInput" class="registerOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Confirm password:</td>
+				                        <td><input type="password" id="registerOrderPasswordConfirmInput" class="registerOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Real name:</td>
+				                        <td><input type="text" id="registerOrderRealNameInput" class="registerOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Department:</td>
+				                        <td>
+				                        	<div id='registerOrderDepartmentCombobox'></div>
+				                        	<input id="registerOrderDepartmentInput" type="hidden" value="2" />
+			        					</td>
+				                    </tr>
+				                    <tr>
+				                        <td>Birth date:</td>
+				                        <td><div id="registerOrderBirthdayInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>E-mail:</td>
+				                        <td><input type="text" id="registerOrderEmailInput" placeholder="someone@mail.com" class="registerOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Address:</td>
+				                        <td><div id="registerOrderAddressInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Phone:</td>
+				                        <td><div id="registerOrderPhoneInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Sex:</td>
+				                        <td>
+				                        	<div style='margin-top: 10px;'>
+								            	<span id='registerOrderSexRadioButton1' style='float:left;'>男</span>
+								            	<span id='registerOrderSexRadioButton2' style='float:right;'>女</span>
+								            	<input id="registerOrderSexInput" type="hidden" value="男" />
+								            </div>
+				                        </td>
+				                    </tr>
+				                    <tr>
+				                        <td colspan="2" style="padding: 5px;">
+				                        	<div id="acceptInput" style="margin-left: 50px;">I accept terms</div>
+				                        </td>
+				                    </tr>
+				                    <tr style="text-align: center;">
+				                        <td>
+				                        	<input id="registerOrderRegisterButton" type="button" value="Register" />
+				                        </td>
+				                        <td>
+				                        	<input id="registerOrderResetButton" type="reset" value="Reset" />
+				                        	<input id="registerOrderCancelButton" type="button" value="Cancel" />
+				                        </td>
+				                    </tr>
+				                </table>
+				            </form>
+				        </div>
+				        <div id="registerOrderResult"></div>
+		    		</div>
+				</div>
+				
+		</div>
 	</div>
 	
 </body>
