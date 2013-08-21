@@ -204,11 +204,22 @@ function loadProperties(){
 
 
 function parseMenuHtml() {
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: true,
+			ns: 'bookingnow.top.menu'
+		};
+	 
+	i18n.init(option);
+	i18n.t("add");
+	
     var theme = getDemoTheme();
     var data = [
     {
         "id": "1",
-        "text": "订单管理",
+        "text": "bookingnow.top.menu:add",
         "parentid": "-1",
         "subMenuWidth": '250px'
     },
