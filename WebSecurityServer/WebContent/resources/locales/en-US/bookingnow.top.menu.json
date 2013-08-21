@@ -1,0 +1,25 @@
+{
+	"add": "addone",
+	"menu":{
+		"orderManagement":{
+			"home":"orderManagement"
+	          
+		},
+		"foodManagement":{
+			"home":"foodManagement"
+		},
+		"userManagement":{
+			"home":"userManagement",
+			"showAllUsers":"showAllUsers",
+			"registerUser":"registerUser",
+			"userDetailInfo":"userDetailInfo",
+			"changeUserImage":"changeUserImage"
+		},
+		"tableManagement":{
+			"home":"tableManagement"
+		},
+		"map":{
+			"home":"map"
+		}
+	}
+}
