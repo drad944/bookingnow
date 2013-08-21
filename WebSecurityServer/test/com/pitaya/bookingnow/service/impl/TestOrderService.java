@@ -178,6 +178,14 @@ public class TestOrderService {
 	}
 	
 	@Test
+	public void testUpdateOrderToPaying() {
+		Order order = new Order();
+		order.setId(1l);
+		MyResult result = orderService.updateOrderToPaying(order);
+		
+	}
+	
+	@Test
 	public void testSearchFullOrdersByFullOrder() {
 		Order order = new Order();
 		User user = new User();
