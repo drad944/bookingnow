@@ -3,6 +3,17 @@
  */
 
 function emptyRegisterUserWindow(){
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.userManagement'
+		};
+	 
+	i18n.init(option);
+	
 	//init registerUserWindow widget data
 	$("#registerUserPhoneInput").jqxMaskedInput({value: null });
 	$('#registerUserBirthdayInput').jqxDateTimeInput({value:findDateTime("2000-01-01 00:00:00")});
@@ -12,7 +23,7 @@ function emptyRegisterUserWindow(){
     $('#acceptInput').jqxCheckBox({checked: false});
 
     //init registerUserWindow store data
-	$("registerUserSexInput").val("男");
+	$("registerUserSexInput").val(i18n.t("sex.male"));
 	$("#registerUserIdInput").val(null);
 	$("#registerUserAccountInput").val(null);
 	$("#registerUserRealNameInput").val(null);
@@ -27,6 +38,17 @@ function emptyRegisterUserWindow(){
 }
 
 function emptyUpdateUserWindow(){
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.userManagement'
+		};
+	 
+	i18n.init(option);
+	
 	//init registerUserWindow widget data
 	$("#updateUserPhoneInput").jqxMaskedInput({value: null });
 	$('#updateUserBirthdayInput').jqxDateTimeInput({value:findDateTime("2000-01-01 00:00:00")});
@@ -35,7 +57,7 @@ function emptyUpdateUserWindow(){
     $("#updateUserSexRadioButton2").jqxRadioButton({checked: false});
     $('#acceptInput').jqxCheckBox({checked: false});
 
-	$("updateUserSexInput").val("男");
+	$("updateUserSexInput").val(i18n.t("sex.male"));
 	$("#updateUserIdInput").val(null);
 	$("#updateUserAccountInput").val(null);
 	$("#updateUserRealNameInput").val(null);
@@ -50,6 +72,17 @@ function emptyUpdateUserWindow(){
 }
 
 function initUpdateUserElements() {
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.userManagement'
+		};
+	 
+	i18n.init(option);
+	
 	var theme = getDemoTheme();
     $("#updateUserDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
     $('#updateUserUpdateButton').jqxButton({ width: 60, height: 25, theme: theme });
@@ -67,19 +100,18 @@ function initUpdateUserElements() {
     
 	$("#updateUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25,checked: true, theme: theme });
 	$("#updateUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25,  theme: theme });
-	$("updateUserSexInput").val("男");
+	$("updateUserSexInput").val(i18n.t("sex.male"));
     
     
   
     
     var userDepartmentData = [
-          //  { value: 1, label: "USER_DEPARTMENT" },
-            { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
-            { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
-            { value: 4, label: "USER_DEPARTMENT_FINANCE" },
-            { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
-            { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
-            { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
+				{ value: 2, label: i18n.t("department.BUSSINESS") },
+				{ value: 3, label: i18n.t("department.PRODUCTION") },
+				{ value: 4, label: i18n.t("department.FINANCE") },
+				{ value: 5, label: i18n.t("department.PERSONNEL") },
+				{ value: 6, label: i18n.t("department.DEVERLOPE") },
+				{ value: 7, label: i18n.t("department.MANAGEMENT") }
         ];
     
 	// Create a jqxComboBox
@@ -96,16 +128,16 @@ function initUpdateUserElements() {
     // initialize validator.
     $('#updateUserInfoForm').jqxValidator({
      rules: [
-            { input: '#updateUserAccountInput', message: 'Username is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateUserAccountInput', message: 'Your username must be between 3 and 12 characters!', action: 'keyup, blur', rule: 'length=3,12' },
-            { input: '#updateUserRealNameInput', message: 'Real Name is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateUserRealNameInput', message: 'Your real name must contain only letters!', action: 'keyup', rule: 'notNumber' },
-            { input: '#updateUserRealNameInput', message: 'Your real name must be between 3 and 12 characters!', action: 'keyup', rule: 'length=3,12' },
+            { input: '#updateUserAccountInput', message: i18n.t("validation.message.requireAccount"), action: 'keyup, blur', rule: 'required' },
+            { input: '#updateUserAccountInput', message: i18n.t("validation.message.accountLength"), action: 'keyup, blur', rule: 'length=3,12' },
+            { input: '#updateUserRealNameInput', message: i18n.t("validation.message.requireUsername"), action: 'keyup, blur', rule: 'required' },
+            { input: '#updateUserRealNameInput', message: i18n.t("validation.message.requireUsernameLetter"), action: 'keyup', rule: 'notNumber' },
+            { input: '#updateUserRealNameInput', message: i18n.t("validation.message.usernameLength"), action: 'keyup', rule: 'length=3,12' },
             
-            { input: '#updateUserPasswordInput', message: 'Password is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateUserPasswordInput', message: 'Your password must be between 6 and 20 characters!', action: 'keyup, blur', rule: 'length=6,20' },
-            { input: '#updateUserPasswordConfirmInput', message: 'Confirm Password is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateUserPasswordConfirmInput', message: 'Confirm Passwords doesn\'t match!', action: 'keyup, focus', rule: function (input, commit) {
+            { input: '#updateUserPasswordInput', message: i18n.t("validation.message.requirePassword"), action: 'keyup, blur', rule: 'required' },
+            { input: '#updateUserPasswordInput', message: i18n.t("validation.message.passwordLength"), action: 'keyup, blur', rule: 'length=6,20' },
+            { input: '#updateUserPasswordConfirmInput', message: i18n.t("validation.message.requireConfirmPassword"), action: 'keyup, blur', rule: 'required' },
+            { input: '#updateUserPasswordConfirmInput', message: i18n.t("validation.message.NomatchPassword"), action: 'keyup, focus', rule: function (input, commit) {
                 // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
                     if (input.val() === $('#updateUserPasswordInput').val()) {
                         return true;
@@ -113,15 +145,15 @@ function initUpdateUserElements() {
                     return false;
             	}
             },
-            { input: '#updateUserBirthdayInput', message: 'Your birth date must be between 1/1/1900 and ' + ((new Date()).getFullYear() + 1), action: 'valuechanged', rule: function (input, commit) {
+            { input: '#updateUserBirthdayInput', message: i18n.t("validation.message.birthdayRange",{year:((new Date()).getFullYear() + 1)}), action: 'valuechanged', rule: function (input, commit) {
                 var date = $('#updateUserBirthdayInput').jqxDateTimeInput('value');
                 var result = date.getFullYear() >= 1900 && date.getFullYear() <= (new Date()).getFullYear();
                 // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
                 return result;
             	}
             },
-            { input: '#updateUserEmailInput', message: 'E-mail is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateUserEmailInput', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' }
+            { input: '#updateUserEmailInput', message: i18n.t("validation.message.requireEmail"), action: 'keyup, blur', rule: 'required' },
+            { input: '#updateUserEmailInput', message: i18n.t("validation.message.invalidEmail"), action: 'keyup', rule: 'email' }
             ], 
             theme: theme
     });
@@ -129,7 +161,17 @@ function initUpdateUserElements() {
 };
 
 function formatUpdateUserElements(rowData) {
-    
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.userManagement'
+		};
+	 
+	i18n.init(option);
+	
     var d1 = {};
 	if (rowData["birthday"] != null) {
 		d1 = findDateTime(rowData["birthday"]);
@@ -138,7 +180,7 @@ function formatUpdateUserElements(rowData) {
 	}
     $('#updateUserBirthdayInput').jqxDateTimeInput({formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
     
-    if(rowData["sex"] != null && rowData["sex"] == '女') {
+    if(rowData["sex"] != null && rowData["sex"] == i18n.t("sex.female")) {
     	$("#updateUserSexRadioButton1").jqxRadioButton({checked: false});
     	$("#updateUserSexRadioButton2").jqxRadioButton({checked: true});
     }else {
@@ -177,13 +219,35 @@ function addUpdateUserEventListeners() {
     $("#updateUserSexRadioButton1").on('change', function (event) {
         var checked = event.args.checked;
         if (checked) {
-        	 $("#updateUserSexInput").val("男");
+        	var option = {
+        			fallbackLng: 'zh',
+        			lng: 'en-US',
+        	//		lng: 'zh-CN',
+        			resGetPath: 'resources/locales/__lng__/__ns__.json',
+        			getAsync: false,
+        			ns: 'bookingnow.content.userManagement'
+        		};
+        	 
+        	i18n.init(option);
+        	
+        	 $("#updateUserSexInput").val(i18n.t("sex.male"));
         }
     });
     $("#updateUserSexRadioButton2").on('change', function (event) {
         var checked = event.args.checked;
         if (checked) {
-        	$("#updateUserSexInput").val("女");
+        	var option = {
+        			fallbackLng: 'zh',
+        			lng: 'en-US',
+        	//		lng: 'zh-CN',
+        			resGetPath: 'resources/locales/__lng__/__ns__.json',
+        			getAsync: false,
+        			ns: 'bookingnow.content.userManagement'
+        		};
+        	 
+        	i18n.init(option);
+        	
+        	$("#updateUserSexInput").val(i18n.t("sex.female"));
         }
     });
     
@@ -243,9 +307,20 @@ function updateUser() {
 	var updateUserData = parseUIDataToUserData(updateUserUIData);
 
 	$.post("updateUser.action", updateUserData, function(result) {
+		var option = {
+    			fallbackLng: 'zh',
+    			lng: 'en-US',
+    	//		lng: 'zh-CN',
+    			resGetPath: 'resources/locales/__lng__/__ns__.json',
+    			getAsync: false,
+    			ns: 'bookingnow.content.userManagement'
+    		};
+    	 
+    	i18n.init(option);
+    	
 		if (result != null && result["id"] != null) {
 			
-			$("#updateUserResult").text("update user successfully!");
+			$("#updateUserResult").text(i18n.t("result.updateSuccess"));
 			$("#updateUserPopupWindow").jqxWindow('close');
 			
 			var userUIResult = parseUserDataToUIData(result);
@@ -259,11 +334,11 @@ function updateUser() {
                 $("#userDataGrid").jqxGrid('ensurerowvisible', selectedrowindex);
             }
 			
-			$("#eventLog").text("update user successfully!");
+			$("#eventLog").text(i18n.t("result.updateSuccess"));
 
 		} else if (result != null && result["executeResult"] != null
 				&& result["executeResult"] == false) {
-			$("#updateUserResult").text("update user failed,please check user info!");
+			$("#updateUserResult").text(i18n.t("result.updateFail"));
 		}
 	});
 }
@@ -271,6 +346,17 @@ function updateUser() {
 
 
 function initRegisterUserElements() {
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.userManagement'
+		};
+	 
+	i18n.init(option);
+	
 	var theme = getDemoTheme();
     $("#registerUserDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
     $('#registerUserRegisterButton').jqxButton({ width: 60, height: 25, theme: theme });
@@ -289,13 +375,12 @@ function initRegisterUserElements() {
     $("#registerUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
     
     var userDepartmentData = [
-                              //  { value: 1, label: "USER_DEPARTMENT" },
-                                { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
-                                { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
-                                { value: 4, label: "USER_DEPARTMENT_FINANCE" },
-                                { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
-                                { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
-                                { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
+			{ value: 2, label: i18n.t("department.BUSSINESS") },
+			{ value: 3, label: i18n.t("department.PRODUCTION") },
+			{ value: 4, label: i18n.t("department.FINANCE") },
+			{ value: 5, label: i18n.t("department.PERSONNEL") },
+			{ value: 6, label: i18n.t("department.DEVERLOPE") },
+			{ value: 7, label: i18n.t("department.MANAGEMENT") }
                             ];
                         
 	// Create a jqxComboBox
@@ -312,16 +397,16 @@ function initRegisterUserElements() {
     // initialize validator.
     $('#registerUserInfoForm').jqxValidator({
      rules: [
-            { input: '#registerUserAccountInput', message: 'Username is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#registerUserAccountInput', message: 'Your username must be between 3 and 12 characters!', action: 'keyup, blur', rule: 'length=3,12' },
-            { input: '#registerUserRealNameInput', message: 'Real Name is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#registerUserRealNameInput', message: 'Your real name must contain only letters!', action: 'keyup', rule: 'notNumber' },
-            { input: '#registerUserRealNameInput', message: 'Your real name must be between 3 and 12 characters!', action: 'keyup', rule: 'length=3,12' },
+            { input: '#registerUserAccountInput', message: i18n.t("validation.message.requireAccount"), action: 'keyup, blur', rule: 'required' },
+            { input: '#registerUserAccountInput', message: i18n.t("validation.message.accountLength"), action: 'keyup, blur', rule: 'length=3,12' },
+            { input: '#registerUserRealNameInput', message: i18n.t("validation.message.requireUsername"), action: 'keyup, blur', rule: 'required' },
+            { input: '#registerUserRealNameInput', message: i18n.t("validation.message.requireUsernameLetter"), action: 'keyup', rule: 'notNumber' },
+            { input: '#registerUserRealNameInput', message: i18n.t("validation.message.usernameLength"), action: 'keyup', rule: 'length=3,12' },
             
-            { input: '#registerUserPasswordInput', message: 'Password is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#registerUserPasswordInput', message: 'Your password must be between 6 and 20 characters!', action: 'keyup, blur', rule: 'length=6,20' },
-            { input: '#registerUserPasswordConfirmInput', message: 'Confirm Password is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#registerUserPasswordConfirmInput', message: 'Confirm Passwords doesn\'t match!', action: 'keyup, focus', rule: function (input, commit) {
+            { input: '#registerUserPasswordInput', message: i18n.t("validation.message.requirePassword"), action: 'keyup, blur', rule: 'required' },
+            { input: '#registerUserPasswordInput', message: i18n.t("validation.message.passwordLength"), action: 'keyup, blur', rule: 'length=6,20' },
+            { input: '#registerUserPasswordConfirmInput', message: i18n.t("validation.message.requireConfirmPassword"), action: 'keyup, blur', rule: 'required' },
+            { input: '#registerUserPasswordConfirmInput', message: i18n.t("validation.message.NomatchPassword"), action: 'keyup, focus', rule: function (input, commit) {
                 // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
                     if (input.val() === $('#registerUserPasswordInput').val()) {
                         return true;
@@ -329,16 +414,16 @@ function initRegisterUserElements() {
                     return false;
             	}
             },
-            { input: '#registerUserBirthdayInput', message: 'Your birth date must be between 1/1/1900 and ' + ((new Date()).getFullYear() + 1), action: 'valuechanged', rule: function (input, commit) {
+            { input: '#registerUserBirthdayInput', message: i18n.t("validation.message.birthdayRange",{year:((new Date()).getFullYear() + 1)}), action: 'valuechanged', rule: function (input, commit) {
                 var date = $('#registerUserBirthdayInput').jqxDateTimeInput('value');
                 var result = date.getFullYear() >= 1900 && date.getFullYear() <= (new Date()).getFullYear();
                 // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
                 return result;
             	}
             },
-            { input: '#registerUserEmailInput', message: 'E-mail is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#registerUserEmailInput', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' },
-            { input: '#acceptInput', message: 'You have to accept the terms', action: 'change', rule: 'required', position: 'right:0,0'}
+            { input: '#registerUserEmailInput', message: i18n.t("validation.message.requireEmail"), action: 'keyup, blur', rule: 'required' },
+            { input: '#registerUserEmailInput', message: i18n.t("validation.message.invalidEmail"), action: 'keyup', rule: 'email' },
+            { input: '#acceptInput', message: i18n.t("validation.message.acceptService"), action: 'change', rule: 'required', position: 'right:0,0'}
             ], 
             theme: theme
     });
@@ -360,13 +445,24 @@ function addRegisterUserEventListeners() {
     $("#registerUserSexRadioButton1").on('change', function (event) {
         var checked = event.args.checked;
         if (checked) {
-        	 $("#registerUserSexInput").val("男");
+        	var option = {
+        			fallbackLng: 'zh',
+        			lng: 'en-US',
+        	//		lng: 'zh-CN',
+        			resGetPath: 'resources/locales/__lng__/__ns__.json',
+        			getAsync: false,
+        			ns: 'bookingnow.content.userManagement'
+        		};
+        	 
+        	i18n.init(option);
+        	
+        	 $("#registerUserSexInput").val(i18n.t("sex.male"));
         }
     });
     $("#registerUserSexRadioButton2").on('change', function (event) {
         var checked = event.args.checked;
         if (checked) {
-        	$("#registerUserSexInput").val("女");
+        	$("#registerUserSexInput").val(i18n.t("sex.female"));
         }
     });
     
@@ -425,24 +521,37 @@ function registerUser() {
 	var registerUserData = parseUIDataToUserData(registerUserUIData);
 	
 	$.post("registerUser.action", registerUserData, function(result) {
+		var option = {
+    			fallbackLng: 'zh',
+    			lng: 'en-US',
+    	//		lng: 'zh-CN',
+    			resGetPath: 'resources/locales/__lng__/__ns__.json',
+    			getAsync: false,
+    			ns: 'bookingnow.content.userManagement'
+    		};
+    	 
+    	i18n.init(option);
+    	
 		if (result != null && result["id"] != null) {
 			result = parseUserDataToUIData(result);
 			
-			$("#registerUserResult").text("register user successfully!");
+			$("#registerUserResult").text(i18n.t("result.insertSuccess"));
 			$('#addUserPopupWindow').jqxWindow('close');
 			
 			var commit = $("#userDataGrid").jqxGrid('addrow', null, result);
 			
-			$("#eventLog").text("register user successfully!");
+			$("#eventLog").text(i18n.t("result.insertSuccess"));
 		} else if (result != null && result["executeResult"] != null
 				&& result["executeResult"] == false) {
-			$("#registerUserResult").text("register user failed,please check user info!");
+			$("#registerUserResult").text(i18n.t("result.insertFail"));
 		}
 	});
 }
 
 function showUserDetailInfo() {
 	$.post("findLoginUser.action", function(user) {
+		
+		user = parseUserDataToUIData(user);
 		if (user != null && user.id != null) {
 			$("#showUsreTable #account").text(user["account"]);
 			$("#showUsreTable #name").text(user["name"]);
@@ -719,6 +828,17 @@ function parseUserGridHtml() {
 		$.post("findUser.action", 
 			{"user.enabled": true}, 
 			function(matchedusers){
+				var option = {
+	        			fallbackLng: 'zh',
+	        			lng: 'en-US',
+	        	//		lng: 'zh-CN',
+	        			resGetPath: 'resources/locales/__lng__/__ns__.json',
+	        			getAsync: false,
+	        			ns: 'bookingnow.content.userManagement'
+	        		};
+	        	 
+	        	i18n.init(option);
+	        	
 	if(matchedusers != null && matchedusers.result != null){
 		users = matchedusers.result;
 	}
@@ -742,63 +862,63 @@ function parseUserGridHtml() {
 				
 				if(item == "id"){
 					datafield["type"] = "number";
-					column["text"] = "Id";
+					column["text"] = i18n.t("field.id");
 					
 				}else if(item == "modifyTime") {
 					datafield["type"] = "number";
-					column["text"] = "ModifyTime";
+					column["text"] = i18n.t("field.modifyTime");
 					
 				}else if(item == "image_size") {
 					datafield["type"] = "number";
-					column["text"] = "Image_size";
+					column["text"] = i18n.t("field.image_size");
 					
 				}else if(item == "image_relative_path") {
 					datafield["type"] = "string";
-					column["text"] = "Image_relative_path";
+					column["text"] = i18n.t("field.image_relative_path");
 					column["cellsrenderer"] = imageRenderer;
 				}else if(item == "account") {
 					datafield["type"] = "string";
-					column["text"] = "Account";
+					column["text"] = i18n.t("field.account");
 					
 				}else if(item == "name") {
 					datafield["type"] = "string";
-					column["text"] = "Name";
+					column["text"] = i18n.t("field.name");
 					
 				}else if(item == "password") {
 					datafield["type"] = "string";
-					column["text"] = "Password";
+					column["text"] = i18n.t("field.password");
 					
 				}else if(item == "phone") {
 					datafield["type"] = "string";
-					column["text"] = "Phone";
+					column["text"] = i18n.t("field.phone");
 					
 				}else if(item == "sex") {
 					datafield["type"] = "string";
-					column["text"] = "Sex";
+					column["text"] = i18n.t("field.sex");
 					
 				}else if(item == "email") {
 					datafield["type"] = "string";
-					column["text"] = "Email";
+					column["text"] = i18n.t("field.email");
 					
 				}else if(item == "address") {
 					datafield["type"] = "string";
-					column["text"] = "Address";
+					column["text"] = i18n.t("field.address");
 					
 				}else if(item == "birthday") {
 					datafield["type"] = "string";
-					column["text"] = "Birthday";
+					column["text"] = i18n.t("field.birthday");
 					
 				}else if(item == "description") {
 					datafield["type"] = "string";
-					column["text"] = "Description";
+					column["text"] = i18n.t("field.description");
 					
 				}else if(item == "department") {
 					datafield["type"] = "string";
-					column["text"] = "Department";
+					column["text"] = i18n.t("field.department");
 					
 				}else if(item == "sub_system") {
 					datafield["type"] = "number";
-					column["text"] = "Sub_system";
+					column["text"] = i18n.t("field.sub_system");
 					
 				}else if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
 					//do nothing
@@ -884,7 +1004,7 @@ function parseUserGridHtml() {
 	
 	// display selected row index.
     $("#userDataGrid").on('rowselect', function (event) {
-        $("#eventLog").text("select row index : " + event.args.rowindex);
+        $("#eventLog").text(i18n.t("grid.selectRow",{index:event.args.rowindex}));
     });
 	
 	initOperateUserGridElements();

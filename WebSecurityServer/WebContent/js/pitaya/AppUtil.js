@@ -187,78 +187,60 @@ function parseOrderToGrid(matchedOrders) {
 	
 } 
 
-function loadProperties(){
-	jQuery.i18n.properties({
-		name:'bookingNow',
-		path:'../../resources/i18n/',
-		//language:'en_US',
-		mode:'map',
-		callback: function() {
-			$('#user_account').text($.i18n.prop('user_account')); 
-			$('#user_password').text($.i18n.prop('user_password')); 
-			$('#user_login').val($.i18n.prop('user_login'));
-			$('#user_reset').val($.i18n.prop('user_reset'));
-		} 
-	});
-}
-
 
 function parseMenuHtml() {
 	var option = {
 			fallbackLng: 'zh',
 			lng: 'en-US',
+	//		lng: 'zh-CN',
 			resGetPath: 'resources/locales/__lng__/__ns__.json',
-			getAsync: true,
+			getAsync: false,
 			ns: 'bookingnow.top.menu'
 		};
 	 
 	i18n.init(option);
-	var addString = i18n.t("add");
-	if (addString != null) {
-		
-	}
 	
     var theme = getDemoTheme();
     var data = [
     {
         "id": "1",
-        "text": "bookingnow.top.menu:add",
+        "text": i18n.t("menu.orderManagement.home"),
         "parentid": "-1",
         "subMenuWidth": '250px'
     },
     {
-        "text": "菜单管理",
+        "text": i18n.t("menu.foodManagement.home"),
         "id": "2",
         "parentid": "-1",
         "subMenuWidth": '250px'
     }, {
         "id": "3",
         "parentid": "-1",
-        "text": "用户管理"
+        "text": i18n.t("menu.userManagement.home")
     }, {
         "id": "4",
         "parentid": "-1",
-        "text": "餐桌管理"
+        "text": i18n.t("menu.tableManagement.home")
     }, {
         "id": "5",
         "parentid": "-1",
-        "text": "地图"
+        "text": i18n.t("menu.map.home")
     }, {
         "id": "6",
         "parentid": "3",
-        "text": "查看用户"
+        "text": i18n.t("menu.userManagement.showAllUsers")
     }, {
         "id": "7",
         "parentid": "3",
-        "text": "注册用户"
+        "text": i18n.t("menu.userManagement.registerUser")
     }, {
         "id": "8",
         "parentid": "3",
-        "text": "用户详情"
+        "text": i18n.t("menu.userManagement.userDetailInfo")
     }, {
         "id": "9",
         "parentid": "3",
-        "text": "修改头像"
+        "text": i18n.t("menu.userManagement.changeUserImage")
     }];
     // prepare the data
     var source =
@@ -338,18 +320,40 @@ function parseMenuHtml() {
 
 
 function findSexString(value) {
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.userManagement'
+		};
+	 
+	i18n.init(option);
+	
 	if(value == 2) {
-		return "男";
+		return i18n.t("sex.male");
 	}else if(value == 3){
-		return "女";
+		return i18n.t("sex.female");
 	}
-	return "G";
+	return i18n.t("sex.other");
 }
 
 function findSexValue(label) {
-	if(label == "男") {
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.userManagement'
+		};
+	 
+	i18n.init(option);
+	
+	if(label == i18n.t("sex.male")) {
 		return 2;
-	}else if(label == "女"){
+	}else if(label == i18n.t("sex.female")){
 		return 3;
 	}
 	return 1;
@@ -389,14 +393,24 @@ Date.prototype.Format = function (fmt) {
 
 
 function findDepartmentString(value) {
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.userManagement'
+		};
+	 
+	i18n.init(option);
+	
 	 var userDepartmentData = [
-	                              //  { value: 1, label: "USER_DEPARTMENT" },
-	                                { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
-	                                { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
-	                                { value: 4, label: "USER_DEPARTMENT_FINANCE" },
-	                                { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
-	                                { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
-	                                { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
+	                                { value: 2, label: i18n.t("department.BUSSINESS") },
+	                                { value: 3, label: i18n.t("department.PRODUCTION") },
+	                                { value: 4, label: i18n.t("department.FINANCE") },
+	                                { value: 5, label: i18n.t("department.PERSONNEL") },
+	                                { value: 6, label: i18n.t("department.DEVERLOPE") },
+	                                { value: 7, label: i18n.t("department.MANAGEMENT") }
 	                            ];
 	 
 	 for(var i = 0;i < userDepartmentData.length;i++) {
@@ -409,14 +423,24 @@ function findDepartmentString(value) {
 }
 
 function findDepartmentValue(label) {
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.userManagement'
+		};
+	 
+	i18n.init(option);
+	
 	 var userDepartmentData = [
-	                              //  { value: 1, label: "USER_DEPARTMENT" },
-	                                { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
-	                                { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
-	                                { value: 4, label: "USER_DEPARTMENT_FINANCE" },
-	                                { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
-	                                { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
-	                                { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
+									{ value: 2, label: i18n.t("department.BUSSINESS") },
+									{ value: 3, label: i18n.t("department.PRODUCTION") },
+									{ value: 4, label: i18n.t("department.FINANCE") },
+									{ value: 5, label: i18n.t("department.PERSONNEL") },
+									{ value: 6, label: i18n.t("department.DEVERLOPE") },
+									{ value: 7, label: i18n.t("department.MANAGEMENT") }
 	                            ];
 	 for(var i = 0;i < userDepartmentData.length;i++) {
 		 if(userDepartmentData[i].label == label) {
@@ -428,10 +452,21 @@ function findDepartmentValue(label) {
 }
 
 function findTableStatusValue(label) {
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.tableManagement'
+		};
+	 
+	i18n.init(option);
+	
 	 var tableStatusData = [
-	                                { value: 2, label: "TABLE_EMPTY" },
-	                                { value: 3, label: "TABLE_BOOKING" },
-	                                { value: 4, label: "TABLE_USING" }
+	                                { value: 2, label: i18n.t("status.EMPTY") },
+	                                { value: 3, label: i18n.t("status.BOOKING") },
+	                                { value: 4, label: i18n.t("status.USING") }
 	                            ];
 	 for(var i = 0;i < tableStatusData.length;i++) {
 		 if(tableStatusData[i].label == label) {
@@ -443,10 +478,20 @@ function findTableStatusValue(label) {
 }
 
 function findTableStatusLable(value) {
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.tableManagement'
+		};
+	 
+	i18n.init(option);
 	 var tableStatusData = [
-	                                { value: 2, label: "TABLE_EMPTY" },
-	                                { value: 3, label: "TABLE_BOOKING" },
-	                                { value: 4, label: "TABLE_USING" }
+	                                { value: 2, label: i18n.t("status.EMPTY") },
+	                                { value: 3, label: i18n.t("status.BOOKING") },
+	                                { value: 4, label: i18n.t("status.USING") }
 	                            ];
 	 for(var i = 0;i < tableStatusData.length;i++) {
 		 if(tableStatusData[i].value == value) {
@@ -458,15 +503,25 @@ function findTableStatusLable(value) {
 }
 
 function findOrderStatusValue(label) {
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.orderManagement'
+		};
+	 
+	i18n.init(option);
 	 var orderStatusData = [
-	                                { value: 1, label: "ORDER_NEW" },
-	                                { value: 2, label: "ORDER_WELCOMER_NEW" },
-	                                { value: 3, label: "ORDER_WAITING" },
-	                                { value: 4, label: "ORDER_COMMITED" },
-	                                { value: 5, label: "ORDER_PAYING" },
-	                                { value: 6, label: "ORDER_FINISHED" },
-	                                { value: 7, label: "ORDER_UNAVAILABLE" },
-	                                { value: 8, label: "ORDER_AVAILABLE" }
+	                                { value: 1, label: i18n.t("status.NEW") },
+	                                { value: 2, label: i18n.t("status.WELCOMER_NEW") },
+	                                { value: 3, label: i18n.t("status.WAITING") },
+	                                { value: 4, label: i18n.t("status.COMMITED") },
+	                                { value: 5, label: i18n.t("status.PAYING") },
+	                                { value: 6, label: i18n.t("status.FINISHED") },
+	                                { value: 7, label: i18n.t("status.UNAVAILABLE") },
+	                                { value: 8, label: i18n.t("status.AVAILABLE") }
 	                            ];
 	 for(var i = 0;i < orderStatusData.length;i++) {
 		 if(orderStatusData[i].label == label) {
@@ -478,16 +533,25 @@ function findOrderStatusValue(label) {
 }
 
 function findOrderStatusLable(value) {
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.orderManagement'
+		};
+	 
+	i18n.init(option);
 	 var orderStatusData = [
-	                                { value: 1, label: "ORDER_NEW" },
-	                                { value: 2, label: "ORDER_WELCOMER_NEW" },
-	                                { value: 3, label: "ORDER_WAITING" },
-	                                { value: 4, label: "ORDER_COMMITED" },
-	                                { value: 5, label: "ORDER_PAYING" },
-	                                { value: 6, label: "ORDER_FINISHED" },
-	                                { value: 7, label: "ORDER_UNAVAILABLE" },
-	                                { value: 8, label: "ORDER_AVAILABLE" }
-	                                
+	                                { value: 1, label: i18n.t("status.NEW") },
+	                                { value: 2, label: i18n.t("status.WELCOMER_NEW") },
+	                                { value: 3, label: i18n.t("status.WAITING") },
+	                                { value: 4, label: i18n.t("status.COMMITED") },
+	                                { value: 5, label: i18n.t("status.PAYING") },
+	                                { value: 6, label: i18n.t("status.FINISHED") },
+	                                { value: 7, label: i18n.t("status.UNAVAILABLE") },
+	                                { value: 8, label: i18n.t("status.AVAILABLE") }
 	                            ];
 	 for(var i = 0;i < orderStatusData.length;i++) {
 		 if(orderStatusData[i].value == value) {
