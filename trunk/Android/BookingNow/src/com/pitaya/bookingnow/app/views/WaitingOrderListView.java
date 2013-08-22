@@ -76,7 +76,7 @@ public class WaitingOrderListView extends OrderListView{
 				}
 				Order selectedOrder = WaitingOrderListView.this.mAdapter.getOrderList().get(currentItem);
 				if(selectedOrder != null){
-					selectedOrder.setUserId(UserManager.getUserId());
+					selectedOrder.setUserId(UserManager.getUserId(getContext()));
 					selectedOrder.setTables(tables);
 					OrderService.commitWaitingOrder(selectedOrder, new HttpHandler(){
 						

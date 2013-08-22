@@ -60,46 +60,46 @@ public class WaiterOrderListView extends OrderListView{
 			
 			@Override
 			public void onConfirm(ArrayList<Table> selectedTables) {
-					final ArrayList<Table> tables = selectedTables;
-					OrderService.submitOrder(tables, new HttpHandler(){
-					
-					@Override
-					public void onSuccess(String action, String response) {
-						try {
-							JSONObject jresp = new JSONObject(response);
-							if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
-								//TODO handle fail
-								return;
-							}
-							Long user_id = jresp.getJSONObject("user").getLong("id");
-							String username = jresp.getJSONObject("user").getString("name");
-							Long order_id = jresp.getLong("id");
-							Long timestamp =  jresp.getLong("modifyTime");
-							Long submit_ts = jresp.getLong("submit_time");
-							int status = jresp.getInt("status");
-							Order order = new Order(tables, order_id, user_id, username, timestamp);
-							order.setStatus(status);
-							order.setSubmitTime(submit_ts);
-							DataService.saveNewOrder(getContext(), order);
-							if(mAdapter != null){
-								mAdapter.getOrderList().add(order);
-								int size = mAdapter.getOrderList().size();
-								mParentView.showOrderDetail(order, false, WaiterOrderLeftView.MYORDERS);
-								mParentView.setLastItem(order.getOrderKey());
-								mAdapter.setSelectItem(size - 1);
-								mAdapter.notifyDataSetChanged();
-							}
-						} catch (JSONException e) {
-							e.printStackTrace();
+				final ArrayList<Table> tables = selectedTables;
+				OrderService.submitOrder(getContext(), tables, new HttpHandler(){
+				
+				@Override
+				public void onSuccess(String action, String response) {
+					try {
+						JSONObject jresp = new JSONObject(response);
+						if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
+							//TODO handle fail
+							return;
 						}
-						tablesView.close();
+						Long user_id = jresp.getJSONObject("user").getLong("id");
+						String username = jresp.getJSONObject("user").getString("name");
+						Long order_id = jresp.getLong("id");
+						Long timestamp =  jresp.getLong("modifyTime");
+						Long submit_ts = jresp.getLong("submit_time");
+						int status = jresp.getInt("status");
+						Order order = new Order(tables, order_id, user_id, username, timestamp);
+						order.setStatus(status);
+						order.setSubmitTime(submit_ts);
+						DataService.saveNewOrder(getContext(), order);
+						if(mAdapter != null){
+							mAdapter.getOrderList().add(order);
+							int size = mAdapter.getOrderList().size();
+							mParentView.showOrderDetail(order, false, WaiterOrderLeftView.MYORDERS);
+							mParentView.setLastItem(order.getOrderKey());
+							mAdapter.setSelectItem(size - 1);
+							mAdapter.notifyDataSetChanged();
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
 					}
+					tablesView.close();
+				}
 
-					@Override
-					public void onFail(String action, int statuscode) {
-						Log.e(TAG, "[OrderService.submitOrder] Network error:" + statuscode);
-					}
-				});
+				@Override
+				public void onFail(String action, int statuscode) {
+					Log.e(TAG, "[OrderService.submitOrder] Network error:" + statuscode);
+				}
+			});
 			}
 		});
 		
