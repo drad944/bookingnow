@@ -142,6 +142,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 				@Override
 				public void onServiceDisconnected(ComponentName name) {
 					mMessageService = null;
+					mIsBound = false;
 				}
 
 			};
