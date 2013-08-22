@@ -67,7 +67,7 @@ public class OrderListView extends RelativeLayout{
         addView(mListView, lp);
         
         
-        OrderService.getOrderByStatus(this.isGetOrderByUser(), this.getOrderStatus(), new HttpHandler(){
+        OrderService.getOrderByStatus(getContext(), this.isGetOrderByUser(), this.getOrderStatus(), new HttpHandler(){
 			@Override
 			public void onSuccess(String action, String response) {
 				try {

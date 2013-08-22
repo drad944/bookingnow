@@ -152,7 +152,7 @@ public class WelcomerOrderListView extends OrderListView{
 				if(customername != null && ! customername.equals("") 
 						&& phone != null && phone.length() > 7
 						&& count > 0){
-					OrderService.submitWaitingOrder(customername, phone, count, new HttpHandler(){
+					OrderService.submitWaitingOrder(getContext(), customername, phone, count, new HttpHandler(){
 						
 						public void onSuccess(String action, String response){
 							try {
@@ -161,7 +161,7 @@ public class WelcomerOrderListView extends OrderListView{
 									//TODO handle fail
 								} else {
     								Long order_id = jresp.getLong("id");
-    								Long user_id = UserManager.getUserId();
+    								Long user_id = UserManager.getUserId(getContext());
     								Long timestamp =  jresp.getLong("modifyTime");
     								Long submit_ts = jresp.getLong("submit_time");
     								int count = jresp.getInt("customer_count");

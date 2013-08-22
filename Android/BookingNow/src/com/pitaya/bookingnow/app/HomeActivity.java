@@ -95,6 +95,9 @@ public class HomeActivity extends FragmentActivity {
 			mBoundService.registerHandler(Constants.RESULT_MESSAGE, mMessageHandler);
 			mBoundService.registerHandler(Constants.FOOD_MESSAGE, mMessageHandler);
 			if(mBoundService.isReady()){
+				/* We register the result message too late, so
+				 * do the things here
+				 */
 				doAutoLogin();
 				checkMenuUpdate();
 				mOnlineInfoView.setText("状态: 在线" );
@@ -191,19 +194,22 @@ public class HomeActivity extends FragmentActivity {
 		super.onDestroy();
 		Log.i(TAG, "onDestroy");
 		mBoundService.unregisterHandler(mMessageHandler);
-		UserManager.setUserRole(null);
-		mBoundService.sendMessage(new RegisterMessage(UserManager.getUserId(), "unregister"));
 		this.doUnbindService();
     }
 	
+	private synchronized void updateUserInfo(){
+		Integer role = UserManager.getUserRole(this);
+	}
+	
 	private synchronized void refreshMenuByRole(){
-		Integer role = UserManager.getUserRole();
+		Integer role = UserManager.getUserRole(this);
 		if(role != null){
 			this.mLeftMenu.findViewById(R.id.order_btn).setVisibility(View.VISIBLE);
 			this.mLeftMenu.findViewById(R.id.login_btn).setVisibility(View.GONE);
 			this.mLeftMenu.findViewById(R.id.logout_btn).setVisibility(View.VISIBLE);
 			this.mUserInfoView.setVisibility(View.VISIBLE);
 			this.mUserInfoView.setText("用户: " + this.username);
+			this.mOnlineInfoView
 		} else {
 			this.mLeftMenu.findViewById(R.id.order_btn).setVisibility(View.GONE);
 			this.mLeftMenu.findViewById(R.id.login_btn).setVisibility(View.VISIBLE);
@@ -265,13 +271,10 @@ public class HomeActivity extends FragmentActivity {
 			menuitem.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view) {
-	           	 	if(HomeActivity.this.mIsBound 
-	           	 			&& HomeActivity.this.mBoundService.sendMessage(new RegisterMessage(UserManager.getUserId(), "unregister"))){
-	           	 		Log.e(TAG, "Fail to send unregister message");
+	           	 	if(HomeActivity.this.mIsBound){
+	           	 		mBoundService.sendMessage(new RegisterMessage(UserManager.getUserId(HomeActivity.this), "unregister"));
 	           	 	}
-					UserManager.setUserRole(null);
-					SharedPreferences settings = getSharedPreferences(UserManager.SETTING_INFOS, 0);
-					settings.edit().remove(UserManager.NAME).remove(UserManager.PASSWORD).commit();
+	           	 	UserManager.setLoginUser(HomeActivity.this, null);
 					HomeActivity.this.refreshMenuByRole();
 					HomeActivity.this.homecontent.selectItem("menu");
 				}
@@ -396,7 +399,7 @@ public class HomeActivity extends FragmentActivity {
 			this.checkMenuUpdate();
 			this.mOnlineInfoView.setText("状态: 在线");
 		} else {
-			UserManager.setUserRole(null);
+			UserManager.setLoginUser(this, null);
 			this.refreshMenuByRole();
 			this.mOnlineInfoView.setText("状态: 离线");
 		}
@@ -419,17 +422,15 @@ public class HomeActivity extends FragmentActivity {
 				if(this.isRemeberMe){
 					SharedPreferences settings = getSharedPreferences(UserManager.SETTING_INFOS, 0);
 					settings.edit()
-							  .putString(UserManager.NAME, this.username)
-							  .putString(UserManager.PASSWORD, this.password)
+							  .putString(UserManager.AUTO_LOGIN_NAME, this.username)
+							  .putString(UserManager.AUTO_LOGIN_PASSWORD, this.password)
 							  .commit();
 				}
 				ToastUtil.showToast(this, "登录成功", Toast.LENGTH_SHORT);
 				this.refreshMenuByRole();
 				this.homecontent.selectItem("menu");
 				if(this.mIsBound){
-					if(this.mBoundService.sendMessage(new RegisterMessage(id, "register"))){
-	           	 		Log.e(TAG, "Fail to send register message");
-	           	 	}
+					this.mBoundService.sendMessage(new RegisterMessage(id, "register"));
 				}
 			}
 		} catch (JSONException e) {
@@ -447,7 +448,7 @@ public class HomeActivity extends FragmentActivity {
 	}
 	
 	private void doAutoLogin(){
-		if(UserManager.getUserRole() == null){
+		if(UserManager.getUserRole(HomeActivity.this) == null){
 			String [] userinfo = UserManager.getUsernameAndPassword(this);
 			if(userinfo != null){
 				//auto login

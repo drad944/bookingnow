@@ -36,15 +36,15 @@ public class OrderService {
 		}
 	}
 	
-	public static void getOrderByStatus(boolean byUser, ArrayList<Integer> statuses, HttpHandler callback){
+	public static void getOrderByStatus(Context context, boolean byUser, ArrayList<Integer> statuses, HttpHandler callback){
 		JSONObject jreq = new JSONObject();
-		JSONObject jparams = new JSONObject(); 
+		JSONObject jparams = new JSONObject();
 		try {
 			if(statuses != null){
 				jparams.put("orderStatusList", new JSONArray(statuses));
 			}
 			if(byUser){
-				jparams.put("user_id", UserManager.getUserId());
+				jparams.put("user_id", UserManager.getUserId(context));
 			}
 			jreq.put("params", jparams);
 			HttpService.post("searchByStatusOfOrder.action", new StringEntity(jreq.toString()), callback);
@@ -55,12 +55,12 @@ public class OrderService {
 		}
 	}
 	
-	public static void submitWaitingOrder(String customer, String phone, int count, HttpHandler callback){
+	public static void submitWaitingOrder(Context context, String customer, String phone, int count, HttpHandler callback){
 		JSONObject jreq = new JSONObject();
 		JSONObject jorder = new JSONObject();
 		try {
 			JSONObject juser = new JSONObject();
-			juser.put("id", UserManager.getUserId());
+			juser.put("id", UserManager.getUserId(context));
 			jorder.put("user", juser);
 			JSONObject jcustomer = new JSONObject();
 			jcustomer.put("name", customer);
@@ -76,7 +76,7 @@ public class OrderService {
 		}
 	}
 	
-	public static void submitOrder(ArrayList<Table> tables, HttpHandler callback){
+	public static void submitOrder(Context context, ArrayList<Table> tables, HttpHandler callback){
 		JSONObject jreq = new JSONObject();
 		JSONObject jorder = new JSONObject();
 		try {
@@ -90,7 +90,7 @@ public class OrderService {
 			} 
 			jorder.put("table_details", jtables);
 			JSONObject juser = new JSONObject();
-			juser.put("id", UserManager.getUserId());
+			juser.put("id", UserManager.getUserId(context));
 			jorder.put("user", juser);
 			jreq.put("order", jorder);
 			HttpService.post("submitNewOrder.action", new StringEntity(jreq.toString()), callback);
@@ -258,7 +258,7 @@ public class OrderService {
 		try {
 			jorder.put("id", Long.parseLong(order.getOrderKey()));
 			JSONObject juser = new JSONObject();
-			juser.put("id", UserManager.getUserId());
+			juser.put("id", UserManager.getUserId(context));
 			jorder.put("user", juser);
 			if(order.getFoods() != null && order.getFoods().size() > 0){
 				Map<String, Long> versions = new HashMap<String, Long>();

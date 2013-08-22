@@ -43,9 +43,9 @@ public class OrderContentView extends BaseContentView{
 		container.addView(mView);
 		FragmentManager fragmentManager = ((FragmentActivity)this.mContext).getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		if(mLeftView == null || currentUserRole != UserManager.getUserRole()){
-			currentUserRole = UserManager.getUserRole();
-			switch(UserManager.getUserRole()){
+		if(mLeftView == null || currentUserRole != UserManager.getUserRole(this.mContext)){
+			currentUserRole = UserManager.getUserRole(this.mContext);
+			switch(currentUserRole){
 				case Constants.ROLE_WAITER:
 					mView.findViewById(R.id.orderlist).setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
 							LayoutParams.MATCH_PARENT, 0.6f));
@@ -73,7 +73,7 @@ public class OrderContentView extends BaseContentView{
 			}
 		}
 		if(mLeftView == null){
-			Log.e(TAG, "Unsupported user role:" + UserManager.getUserRole());
+			Log.e(TAG, "Unsupported user role:" + UserManager.getUserRole(this.mContext));
 			return;
 		}
 		fragmentTransaction.replace(R.id.orderlist, mLeftView);
