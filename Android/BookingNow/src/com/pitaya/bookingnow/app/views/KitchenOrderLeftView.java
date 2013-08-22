@@ -25,7 +25,6 @@ import android.view.ViewGroup;
 public class KitchenOrderLeftView extends OrderLeftView{
 	
 	private static final String TAG = "KitchenOrderLeftView";
-	private MessageHandler mMessageHandler;
 	private CookingItemsListFragment mContent;
 	
 	public KitchenOrderLeftView(OrderContentView v){
@@ -34,10 +33,8 @@ public class KitchenOrderLeftView extends OrderLeftView{
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		doBindService();
 		View view = inflater.inflate(R.layout.orderleftview4kitchen, null);
 		this.showCookingItemsList();
-		mMessageHandler = new MessageHandler();
 		mMessageHandler.setOnMessageListener(new MessageHandler.OnMessageListener(){
 
 			@Override

@@ -20,6 +20,7 @@ import com.pitaya.bookingnow.app.data.MessageHandler;
 import com.pitaya.bookingnow.app.data.ProgressHandler;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.model.Order;
+import com.pitaya.bookingnow.app.model.User;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuContentProvider;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
@@ -72,17 +73,21 @@ public class HomeActivity extends FragmentActivity {
 	
 	private SlideContent homecontent;
 	private View mLeftMenu;
-	private TextView mUserInfoView;
-	private TextView mOnlineInfoView;
+	private TextView mInfoView;
+	private View mOrderBtn;
+	private View mLoginBtn;
+	private View mLogoutBtn;
 	
 	private AlertDialog loginDialog;
 	private AlertDialog menuUpdateDialog;
+	private ProgressDialog mProgressingDialog;
 	
 	private MessageHandler mMessageHandler;
-	private MessageService mBoundService;
+	private MessageService mMessageService;
 	private boolean mIsBound = false;
 	private boolean isUpdating = false;
-	private boolean isRemeberMe = false;
+	private boolean isRemeberMeAfterLogin = false;
+	private boolean isLogining = false;
 	private String username;
 	private String password;
 	
@@ -90,28 +95,29 @@ public class HomeActivity extends FragmentActivity {
 
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			Log.i(TAG, "Service connected");
-			mBoundService = ((MessageService.MessageBinder)service).getService();
-			mBoundService.registerHandler(Constants.RESULT_MESSAGE, mMessageHandler);
-			mBoundService.registerHandler(Constants.FOOD_MESSAGE, mMessageHandler);
-			if(mBoundService.isReady()){
-				/* We register the result message too late, so
+			Log.d(TAG, "Service connected");
+			mMessageService = ((MessageService.MessageBinder)service).getService();
+		    mIsBound = true;
+			mMessageService.registerHandler(Constants.RESULT_MESSAGE, mMessageHandler);
+			mMessageService.registerHandler(Constants.FOOD_MESSAGE, mMessageHandler);
+			if(mMessageService.isReady()){
+				/* 
+				 * Maybe we register the result message too late, so
 				 * do the things here
 				 */
+				refreshMenuByRole();
 				doAutoLogin();
-				checkMenuUpdate();
-				mOnlineInfoView.setText("状态: 在线" );
-			} else if(mBoundService.isConnecting()){
-				mOnlineInfoView.setText("状态: 连接中..." );
-			} else {
-				mOnlineInfoView.setText("状态: 离线" );
 			}
+			checkMenuUpdate();
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
-			Log.i(TAG, "Service disconnected");
-			mBoundService = null;
+			Log.d(TAG, "Service disconnected");
+		    mIsBound = false;
+			mMessageService = null;
+			UserManager.setLoginUser(HomeActivity.this, null);
+			refreshMenuByRole();
 		}
 
 	};
@@ -120,7 +126,6 @@ public class HomeActivity extends FragmentActivity {
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 		ContentUtil.init(this);
-		this.setHomeContent();
 		mMessageHandler = new MessageHandler();
 		mMessageHandler.setOnMessageListener(new MessageHandler.OnMessageListener() {
 			
@@ -138,6 +143,7 @@ public class HomeActivity extends FragmentActivity {
 	            }
 			}
 		});
+		this.setHomeContent();
 		setOrder();
 	}
 	
@@ -154,14 +160,12 @@ public class HomeActivity extends FragmentActivity {
 	
 	void doBindService() {
 		bindService(new Intent(this, MessageService.class), mConnection, Context.BIND_AUTO_CREATE);
-	    mIsBound = true;
 	}
 	
 	void doUnbindService() {
 	    if (mIsBound) {
 	        // Detach our existing connection.
 	        unbindService(mConnection);
-	        mIsBound = false;
 	    }
 	}
 	
@@ -179,43 +183,38 @@ public class HomeActivity extends FragmentActivity {
 		super.onResume();
 		this.doStartService();
 		if(!this.mIsBound){
-			new Thread(){
-				@Override
-				public void run(){
-					HomeActivity.this.doBindService();
-				}
-				
-			}.start();
+			this.doBindService();
+		} else {
+			this.refreshMenuByRole();
 		}
 	}
 	
 	@Override  
 	public void onDestroy() {
 		super.onDestroy();
-		Log.i(TAG, "onDestroy");
-		mBoundService.unregisterHandler(mMessageHandler);
+		Log.d(TAG, "onDestroy");
+		mMessageService.unregisterHandler(mMessageHandler);
 		this.doUnbindService();
     }
-	
-	private synchronized void updateUserInfo(){
-		Integer role = UserManager.getUserRole(this);
-	}
 	
 	private synchronized void refreshMenuByRole(){
 		Integer role = UserManager.getUserRole(this);
 		if(role != null){
-			this.mLeftMenu.findViewById(R.id.order_btn).setVisibility(View.VISIBLE);
-			this.mLeftMenu.findViewById(R.id.login_btn).setVisibility(View.GONE);
-			this.mLeftMenu.findViewById(R.id.logout_btn).setVisibility(View.VISIBLE);
-			this.mUserInfoView.setVisibility(View.VISIBLE);
-			this.mUserInfoView.setText("用户: " + this.username);
-			this.mOnlineInfoView
+			this.mOrderBtn.setVisibility(View.VISIBLE);
+			this.mLogoutBtn.setVisibility(View.VISIBLE);
+			this.mInfoView.setVisibility(View.VISIBLE);
+			this.mLoginBtn.setVisibility(View.GONE);
+			this.mInfoView.setText(UserManager.getUsername(this) + " (" + UserManager.getRoleName() +")");
 		} else {
-			this.mLeftMenu.findViewById(R.id.order_btn).setVisibility(View.GONE);
-			this.mLeftMenu.findViewById(R.id.login_btn).setVisibility(View.VISIBLE);
-			this.mLeftMenu.findViewById(R.id.logout_btn).setVisibility(View.GONE);
-			this.mUserInfoView.setVisibility(View.GONE);
-			this.mUserInfoView.setText("");
+			this.mOrderBtn.setVisibility(View.GONE);
+			this.mLogoutBtn.setVisibility(View.GONE);
+			this.mInfoView.setVisibility(View.GONE);
+			if(this.mIsBound && this.mMessageService.isReady() 
+					&& UserManager.getUsernameAndPassword(this) == null){
+				this.mLoginBtn.setVisibility(View.VISIBLE);
+			} else {
+				this.mLoginBtn.setVisibility(View.GONE);
+			}
 		}
 	}
 	
@@ -228,9 +227,8 @@ public class HomeActivity extends FragmentActivity {
 			
 			LinearLayout menuitems = (LinearLayout)(mLeftMenu.findViewById(R.id.leftmenu));
 			
-			this.mUserInfoView = (TextView)menuitems.findViewById(R.id.userinfo);
-			this.mOnlineInfoView = (TextView)menuitems.findViewById(R.id.onlineinfo);
-			this.mOnlineInfoView.setText("状态: 离线");
+			this.mInfoView = (TextView)menuitems.findViewById(R.id.logininfo);
+
 			View menuitem = menuitems.findViewById(R.id.menu_btn);
 			menuitem.setOnClickListener(new OnClickListener(){
 				@Override
@@ -240,46 +238,42 @@ public class HomeActivity extends FragmentActivity {
 				}
 			});
 			
-			menuitem = menuitems.findViewById(R.id.order_btn);
-			menuitem.setOnClickListener(new OnClickListener(){
+			this.mOrderBtn = menuitems.findViewById(R.id.order_btn);
+			mOrderBtn.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view) {
-					if(homecontent.getCurrentContentViewKey().equals("menu")){
-						Order currentOrder =  ((FoodMenuContentView)homecontent.getContentView("menu")).getOrder();
-						if(currentOrder != null && currentOrder.isDirty() && currentOrder.getStatus() != Constants.ORDER_NEW){
-							showConfirmDialog("order");
-						} else {
-							homecontent.selectItem("order");
-						}
-					} else {
-						homecontent.selectItem("order");
-					}
+					homecontent.selectItem("order");
 				}
 				
 			});
+			mOrderBtn.setVisibility(View.GONE);
 			
-			menuitem = menuitems.findViewById(R.id.login_btn);
-			menuitem.setOnClickListener(new OnClickListener(){
+			this.mLoginBtn = menuitems.findViewById(R.id.login_btn);
+			mLoginBtn.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view) {
 					showLoginDialog();
 				}
 				
 			});
+			mLoginBtn.setVisibility(View.GONE);
 			
-			menuitem = menuitems.findViewById(R.id.logout_btn);
-			menuitem.setOnClickListener(new OnClickListener(){
+			this.mLogoutBtn = menuitems.findViewById(R.id.logout_btn);
+			mLogoutBtn.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view) {
 	           	 	if(HomeActivity.this.mIsBound){
-	           	 		mBoundService.sendMessage(new RegisterMessage(UserManager.getUserId(HomeActivity.this), "unregister"));
+	           	 		mMessageService.sendMessage(new RegisterMessage(UserManager.getUserId(HomeActivity.this), "unregister"));
 	           	 	}
+	           	 	UserManager.cleanRemeberMe(HomeActivity.this);
 	           	 	UserManager.setLoginUser(HomeActivity.this, null);
 					HomeActivity.this.refreshMenuByRole();
 					HomeActivity.this.homecontent.selectItem("menu");
+					((FoodMenuContentView)HomeActivity.this.homecontent.getContentView("menu")).setOrderAndRefresh(null);
 				}
 				
 			});
+			mLogoutBtn.setVisibility(View.GONE);
 			
 			menuitem = menuitems.findViewById(R.id.setting_btn);
 			menuitem.setOnClickListener(new OnClickListener(){
@@ -289,19 +283,14 @@ public class HomeActivity extends FragmentActivity {
 				}
 				
 			});
+			
 			OrderContentView orderview = new OrderContentView("order", this, homecontent);
 			contentViews.add(orderview);
 			FoodMenuContentView menucontentview = new FoodMenuContentView("menu", this, homecontent);
 			contentViews.add(menucontentview);
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			homecontent.setMenu(this.mLeftMenu);
 		}
 		setContentView(homecontent);
-		this.refreshMenuByRole();
+		homecontent.setMenu(this.mLeftMenu);
 	}
 	
 	private void showConfirmDialog(final String key){
@@ -317,23 +306,20 @@ public class HomeActivity extends FragmentActivity {
 		        	   homecontent.selectItem(key);
 		           }
 		       });
+		 
 		 builder.setNegativeButton(R.string.cancel,
 		       new DialogInterface.OnClickListener()
 		       {
-		 
 		           @Override
 		           public void onClick(DialogInterface dialog, int which)
 		           {
 		        	   return;
 		           }
 		       });
+		 
 		 builder.create().show();
 	}
-	
-	private void showConnectResultToast(String result){
-		 ToastUtil.showToast(this, result , Toast.LENGTH_SHORT);
-	}
-	
+
 	private void showLoginDialog(){
          if(loginDialog == null){
         	 LayoutInflater factory = LayoutInflater.from(HomeActivity.this);  
@@ -342,138 +328,183 @@ public class HomeActivity extends FragmentActivity {
              .setTitle(getResources().getString(R.string.login_title))
              .setView(dialogView)
              .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener(){
-                  @Override  
+
+            	  @Override  
                   public void onClick(DialogInterface dialog, int which) {
-                 	 final ProgressDialog progressingDialog  = ProgressDialog.show(HomeActivity.this, getResources().getString(R.string.waiting), getResources().getString(R.string.logining), true);  
-                 	 HomeActivity.this.username = ((EditText)dialogView.findViewById(R.id.username)).getText().toString();
-                 	 HomeActivity.this.password = ((EditText)dialogView.findViewById(R.id.password)).getText().toString();
-                 	 HomeActivity.this.isRemeberMe = ((CheckBox)dialogView.findViewById(R.id.autologin)).isChecked();
-                 	 UserManager.login(username, password, new HttpHandler(){
-	                    		@Override
-	                 			public void onSuccess(String action, String response){
-	                    			progressingDialog.dismiss();
-	                 				if(response == null || response.trim().equals("")){
-	                 					handleLoginError("服务器错误");
-	                 				} else{
-	                 					try {
-											JSONObject juser = new JSONObject(response);
-											afterLoginSuccess(juser, false);
-										} catch (JSONException e) {
-											e.printStackTrace();
-											handleLoginError("服务器错误");
-										}
-	                 				}
-	                 			}
-	                 			
-	                 			@Override
-	                 			public void onFail(String action, int errorcode){
-	                 				progressingDialog.dismiss();
-	                 				Log.e(TAG, "Fail to login with error code: " + errorcode);
-	                 				handleLoginError("请检查网络连接");
-	                 			}
-                 	 });
-                  }  
-              })
-              .create();
+	            		 if(isLogining == true){
+	            			return;
+	            		 } else {
+	            			 isLogining = true;
+	            		 }
+	                 	 HomeActivity.this.username = ((EditText)dialogView.findViewById(R.id.username)).getText().toString();
+	                 	 HomeActivity.this.password = ((EditText)dialogView.findViewById(R.id.password)).getText().toString();
+	                 	 HomeActivity.this.isRemeberMeAfterLogin = ((CheckBox)dialogView.findViewById(R.id.autologin)).isChecked();
+	                 	 RegisterMessage message = new RegisterMessage(username, password, "register");
+	                 	 if(HomeActivity.this.mIsBound && HomeActivity.this.mMessageService.isReady()
+	                 			 && HomeActivity.this.mMessageService.sendMessage(message)){
+	                 		 mProgressingDialog  = ProgressDialog.show(HomeActivity.this, 
+	                 				getResources().getString(R.string.waiting), getResources().getString(R.string.logining), true);
+	                 	 } else {
+	                 		 isLogining = false;
+	                 		 ToastUtil.showToast(HomeActivity.this, "登录失败, 请检查网络", Toast.LENGTH_LONG);
+	                 	 }
+            	  }
+             }).create();
+//                 	 UserManager.login(username, password, new HttpHandler(){
+//	                    		@Override
+//	                 			public void onSuccess(String action, String response){
+//	                    			progressingDialog.dismiss();
+//	                 				if(response == null || response.trim().equals("")){
+//	                 					handleLoginError("服务器错误");
+//	                 				} else{
+//	                 					try {
+//											JSONObject juser = new JSONObject(response);
+//											afterLoginSuccess(juser, false);
+//										} catch (JSONException e) {
+//											e.printStackTrace();
+//											handleLoginError("服务器错误");
+//										}
+//	                 				}
+//	                 			}
+//	                 			
+//	                 			@Override
+//	                 			public void onFail(String action, int errorcode){
+//	                 				progressingDialog.dismiss();
+//	                 				Log.e(TAG, "Fail to login with error code: " + errorcode);
+//	                 				handleLoginError("请检查网络连接");
+//	                 			}
+//                 	 });
          }
          loginDialog.show();
     }
 	
-	private void handleLoginError(String detail){
-		ToastUtil.showToast(this, detail, Toast.LENGTH_SHORT);
-		this.showLoginDialog();
-	}
-	
 	private void handleRegisterResultMsg(ResultMessage message){
 		if(message.getResult() == Constants.SUCCESS){
-			Log.i(TAG, "Success to register client to message service: " + message.getDetail());
+			Log.i(TAG, "Success to register client to server: " + message.getDetail());
+			String detail = message.getDetail();
+			if(detail != null && !detail.equals("")){
+				String [] infos = detail.split("###");
+				try{
+					User user = new User(Long.parseLong(infos[0]), infos[1], Integer.parseInt(infos[2]));
+					UserManager.setLoginUser(this, user);
+					if(this.isRemeberMeAfterLogin){
+						UserManager.rememberMe(this, this.username, this.password);
+					}
+					ToastUtil.showToast(this, "登录成功", Toast.LENGTH_SHORT);
+					this.refreshMenuByRole();
+				} catch (Exception e){
+					Log.e(TAG, "Fail to parse register result message: " + detail);
+				}
+			}
 		} else if(message.getResult() == Constants.FAIL){
-			Log.e(TAG, "Fail to register client to message service: " + message.getDetail());
+			Log.e(TAG, "Fail to register to server: " + message.getDetail());
+			ToastUtil.showToast(this, message.getDetail(), Toast.LENGTH_SHORT);
 		}
+		if(mProgressingDialog != null){
+			mProgressingDialog.dismiss();
+		}
+		this.isLogining = false;
 	}
 	
 	private void handleConnectResultMsg(ResultMessage message){
-		showConnectResultToast(message.getDetail());
+		ToastUtil.showToast(this, message.getDetail() , Toast.LENGTH_SHORT);
 		if(message.getResult() == Constants.SUCCESS){
-			this.doAutoLogin();
-			this.checkMenuUpdate();
-			this.mOnlineInfoView.setText("状态: 在线");
-		} else {
-			UserManager.setLoginUser(this, null);
 			this.refreshMenuByRole();
-			this.mOnlineInfoView.setText("状态: 离线");
+			this.doAutoLogin();
+		} else {
+			this.refreshMenuByRole();
+			this.homecontent.selectItem("menu");
+			((FoodMenuContentView)this.homecontent.getContentView("menu")).setOrderAndRefresh(null);
 		}
+		this.checkMenuUpdate();
 	}
 	
-	private void afterLoginSuccess(JSONObject jresp, boolean isAuto){
-		String error = null;
-		try {
-			if(jresp.has("result") && jresp.getInt("result") == Constants.FAIL){
-				error = jresp.getString("detail");
-			} else {
-				Long id = jresp.getLong("id");
-				JSONArray roles = jresp.getJSONArray("role_Details");
-				JSONObject firstrole = roles.getJSONObject(0);
-				JSONObject jrole = firstrole.getJSONObject("role");
-				int role = jrole.getInt("type");
-				Log.i(TAG, "Login sucessfully: id is " + id + " role is " + role);
-				UserManager.setUserId(id);
-				UserManager.setUserRole(role);
-				if(this.isRemeberMe){
-					SharedPreferences settings = getSharedPreferences(UserManager.SETTING_INFOS, 0);
-					settings.edit()
-							  .putString(UserManager.AUTO_LOGIN_NAME, this.username)
-							  .putString(UserManager.AUTO_LOGIN_PASSWORD, this.password)
-							  .commit();
-				}
-				ToastUtil.showToast(this, "登录成功", Toast.LENGTH_SHORT);
-				this.refreshMenuByRole();
-				this.homecontent.selectItem("menu");
-				if(this.mIsBound){
-					this.mBoundService.sendMessage(new RegisterMessage(id, "register"));
-				}
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-			error = "服务器返回异常:" + jresp.toString();
-		}
-		if(error != null){
-			Log.e(TAG, "Auto login fail: " + error);
-			if(!isAuto){
-				this.handleLoginError(error);
-			} else {
-				ToastUtil.showToast(this, error, Toast.LENGTH_SHORT);
-			}
-		}
-	}
+//	private void afterLoginSuccess(JSONObject jresp, boolean isAuto){
+//		String error = null;
+//		try {
+//			if(jresp.has("result") && jresp.getInt("result") == Constants.FAIL){
+//				error = jresp.getString("detail");
+//			} else {
+//				Long id = jresp.getLong("id");
+//				JSONArray roles = jresp.getJSONArray("role_Details");
+//				JSONObject firstrole = roles.getJSONObject(0);
+//				JSONObject jrole = firstrole.getJSONObject("role");
+//				int role = jrole.getInt("type");
+//				Log.i(TAG, "Login sucessfully: id is " + id + " role is " + role);
+//				
+//				if(this.isRemeberMeAfterLogin){
+//					SharedPreferences settings = getSharedPreferences(UserManager.SETTING_INFOS, 0);
+//					settings.edit()
+//							  .putString(UserManager.AUTO_LOGIN_NAME, this.username)
+//							  .putString(UserManager.AUTO_LOGIN_PASSWORD, this.password)
+//							  .commit();
+//				}
+//				ToastUtil.showToast(this, "登录成功", Toast.LENGTH_SHORT);
+//				this.refreshMenuByRole();
+//				this.homecontent.selectItem("menu");
+//				if(this.mIsBound){
+//					this.mMessageService.sendMessage(new RegisterMessage(id, "register"));
+//				}
+//			}
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//			error = "服务器返回异常:" + jresp.toString();
+//		}
+//		if(error != null){
+//			Log.e(TAG, "Auto login fail: " + error);
+//			if(!isAuto){
+//				this.handleLoginError(error);
+//			} else {
+//				ToastUtil.showToast(this, error, Toast.LENGTH_SHORT);
+//			}
+//		}
+//	}
 	
 	private void doAutoLogin(){
+		if(isLogining == true){
+			return;
+		} else {
+			isLogining = true;
+		}
 		if(UserManager.getUserRole(HomeActivity.this) == null){
 			String [] userinfo = UserManager.getUsernameAndPassword(this);
 			if(userinfo != null){
 				//auto login
-				this.username = userinfo[0];
-				UserManager.login(userinfo[0], userinfo[1], new HttpHandler(){
-				
-					@Override
-					public void onSuccess(String action, String response){
-						if(response != null && !response.equals("")){
-							try {
-								JSONObject jresp =  new JSONObject(response);
-								afterLoginSuccess(jresp, true);
-							} catch (JSONException e) {
-								e.printStackTrace();
-								ToastUtil.showToast(HomeActivity.this, "登录失败，服务器错误", Toast.LENGTH_SHORT);
-							}
-						}
-					}
-					
-					@Override
-					public void onFail(String action, int statuscode){
-						Log.e(TAG, "Login fail with error code:" + statuscode);
-					}
-				});
+				this.isRemeberMeAfterLogin = false;
+				String username = userinfo[0];
+				String password = userinfo[1];
+				RegisterMessage message = new RegisterMessage(username, password, "register");
+				if(this.mIsBound && this.mMessageService.isReady() && this.mMessageService.sendMessage(message)){
+					ToastUtil.showToast(this, "自动登录中...", Toast.LENGTH_SHORT);
+				} else {
+					isLogining = false;
+					ToastUtil.showToast(this, "自动登录失败, 请检查网络", Toast.LENGTH_LONG);
+				}
+//				UserManager.login(userinfo[0], userinfo[1], new HttpHandler(){
+//				
+//					@Override
+//					public void onSuccess(String action, String response){
+//						if(response != null && !response.equals("")){
+//							try {
+//								JSONObject jresp =  new JSONObject(response);
+//								afterLoginSuccess(jresp, true);
+//							} catch (JSONException e) {
+//								e.printStackTrace();
+//								ToastUtil.showToast(HomeActivity.this, "登录失败，服务器错误", Toast.LENGTH_SHORT);
+//							}
+//						}
+//					}
+//					
+//					@Override
+//					public void onFail(String action, int statuscode){
+//						Log.e(TAG, "Login fail with error code:" + statuscode);
+//					}
+//				});
+			} else {
+				isLogining = false;
 			}
+		} else {
+			isLogining = false;
 		}
 	}
 	

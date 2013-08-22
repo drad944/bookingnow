@@ -12,22 +12,22 @@
         android:orientation="vertical"
         android:showDividers = "middle"
         android:padding="10dp">
-       <TextView
-            android:id="@+id/userinfo"
-		    android:layout_width="match_parent"   
-		    android:layout_height="50dp"
-		    android:gravity="left|center"
-		    android:textColor="@android:color/black"
-		    android:textAppearance="?android:attr/textAppearanceLarge">
-       </TextView>
-       <TextView
-            android:id="@+id/onlineinfo"
-		    android:layout_width="match_parent"   
-		    android:layout_height="50dp"
-		    android:gravity="left|center"
-		    android:textColor="@android:color/black"
-		    android:textAppearance="?android:attr/textAppearanceLarge">
-       </TextView>
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:showDividers = "middle"
+           android:layout_marginBottom="10dp"
+           android:padding="10dp">
+	       <TextView
+	            android:id="@+id/logininfo"
+			    android:layout_width="match_parent"   
+			    android:layout_height="50dp"
+			    android:gravity="center"
+			    android:textColor="@android:color/black"
+			    android:textAppearance="?android:attr/textAppearanceLarge">
+	       </TextView>
+       </LinearLayout>
        <TextView
             android:id="@+id/menu_btn"
 		    android:layout_width="match_parent"   

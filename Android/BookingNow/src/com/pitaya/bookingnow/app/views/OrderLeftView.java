@@ -111,7 +111,6 @@ public class OrderLeftView extends Fragment{
 	protected void doBindService() {
 		this.getActivity().bindService(new Intent(this.getActivity(), MessageService.class), 
 				getServiceConnection(), Context.BIND_AUTO_CREATE);
-	    mIsBound = true;
 	}
 	
 	protected void doUnbindService() {
@@ -134,6 +133,7 @@ public class OrderLeftView extends Fragment{
 			@Override
 			public void onServiceConnected(ComponentName name, IBinder service) {
 				mMessageService = ((MessageService.MessageBinder)service).getService();
+				mIsBound = true;
 				for(String category : getMessageCategories()){
 					mMessageService.registerHandler(category, mMessageHandler);
 				}

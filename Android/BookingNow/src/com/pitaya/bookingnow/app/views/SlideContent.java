@@ -42,24 +42,21 @@ public class SlideContent extends RelativeLayout {
 		String currentKey = this.mContentView.getCurrent();
 		if(currentKey == null || currentKey.equals(key)){
 			mContentView.toggle();
-			//mContentView.invalidate();
-			return;
-		}
-		for(int i=0; i < this.contentViews.size(); i++){
-			if(key.equals(this.contentViews.get(i).getKey())){
-				this.setContent(this.contentViews.get(i));
-				if(!mContentView.isMenuOFF()){
-					mContentView.closeMenu();
+		} else {
+			for(int i=0; i < this.contentViews.size(); i++){
+				if(key.equals(this.contentViews.get(i).getKey())){
+					this.setContent(this.contentViews.get(i));
+					if(!mContentView.isMenuOFF()){
+						mContentView.closeMenu();
+					}
+					break;
 				}
-				//mContentView.invalidate();
-				break;
 			}
 		}
 	}
 
 	public void setMenu(View v) {
 		mMenuView.setView(v);
-		mMenuView.invalidate();
 		this.setContent(getContentView("menu"));
 	}
 	
@@ -73,16 +70,15 @@ public class SlideContent extends RelativeLayout {
 				return this.contentViews.get(i);
 			}
 		}
-		return null;
-	}
-	
-	private void setContent(BaseContentView v) {
-		mContentView.setupView(v);
-		mContentView.invalidate();
+		return this.contentViews.get(0);
 	}
 	
 	public void showMenu() {
 		mContentView.toggle();
 	}
 	
+	private void setContent(BaseContentView v) {
+		mContentView.setupView(v);
+	}
+
 }

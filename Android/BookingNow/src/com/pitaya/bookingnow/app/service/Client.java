@@ -52,6 +52,7 @@ public class Client extends Thread{
             	}
 	        } catch (UnknownHostException e) {
 	        	if(this.service != null){
+	        		UserManager.setLoginUser(this.service, null);
     				this.service.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "无法识别的服务器"));
     			}
 	        	error = true;
@@ -59,6 +60,7 @@ public class Client extends Thread{
 	            e.printStackTrace();
 	        } catch (IOException e) {
 	        	if(this.service != null){
+	        		UserManager.setLoginUser(this.service, null);
     				this.service.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "无法连接到服务器或连接中断"));
     			}
 	        	error = true;
@@ -85,6 +87,7 @@ public class Client extends Thread{
 	       		socket = null;
 		    	isConnecting = false;
 	        	if(this.service != null && error == false){
+	        		UserManager.setLoginUser(this.service, null);
     				this.service.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "与服务器连接中断"));
     			}
 	        }
