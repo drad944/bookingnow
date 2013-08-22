@@ -1301,8 +1301,8 @@ public class OrderService implements IOrderService{
 		if (order != null && order.getId() != null) {
 			if (order.getUser() != null && order.getUser().getId() != null) {
 				Order realOrder = orderDao.selectFullOrderByPrimaryKey(order.getId());
-				
 				if (realOrder != null && realOrder.getId() != null) {
+					Long oldUserId = realOrder.getUser_id();
 					User realUser = userDao.selectByPrimaryKey(order.getUser().getId());
 					if (realUser != null && realUser.getId() != null) {
 						realOrder.setUser_id(realUser.getId());
@@ -1362,6 +1362,11 @@ public class OrderService implements IOrderService{
 								if (orderDao.updateByPrimaryKeySelective(realOrder) == 1) {
 									result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(realOrder.getId()));
 									result.setExecuteResult(true);
+									OrderMessage message = new OrderMessage();
+									message.setAction(Constants.ACTION_REMOVE);
+									message.setOrderId(realOrder.getId());
+									this.messageService.sendMessageToGroupExcept(Constants.ROLE_WAITER, realOrder.getUser_id(), message);
+									this.messageService.sendMessageToOne(oldUserId, message);
 								}else {
 									throw new RuntimeException("-------- failed to insert order in DB.");
 								}
@@ -1433,8 +1438,10 @@ public class OrderService implements IOrderService{
 											nextOrder = waitingOrder;
 									}
 								}
-								waitingOrders.remove(nextorderidx);
-								messages.add(new TableMessage(freeTable, nextOrder));
+								if(nextorderidx != -1){
+									waitingOrders.remove(nextorderidx);
+									messages.add(new TableMessage(freeTable, nextOrder));
+								}
 							} else {
 								break;
 							}

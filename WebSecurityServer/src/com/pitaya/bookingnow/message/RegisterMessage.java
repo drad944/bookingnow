@@ -8,6 +8,8 @@ public class RegisterMessage extends Message{
 	
 	private Long userId;
 	private String action;
+	private String username;
+	private String password;
 	
 	public RegisterMessage(){
 		super(Constants.REGISTER_MESSAGE);
@@ -18,6 +20,14 @@ public class RegisterMessage extends Message{
 		this.userId = id;
 	}
 
+	public void setAction(String act){
+		this.action = act;
+	}
+	
+	public String getAction(){
+		return this.action;
+	}
+	
 	public void setUserId(Long id){
 		this.userId = id;
 	}
@@ -26,12 +36,20 @@ public class RegisterMessage extends Message{
 		return this.userId;
 	}
 	
-	public void setAction(String act){
-		this.action = act;
+	public void setUsername(String uname){
+		this.username = uname;
 	}
 	
-	public String getAction(){
-		return this.action;
+	public String getUsername(){
+		return this.username;
+	}
+	
+	public void setPassword(String pwd){
+		this.password = pwd;
+	}
+	
+	public String getPassword(){
+		return this.password;
 	}
 
 }

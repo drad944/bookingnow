@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import com.pitaya.bookingnow.entity.security.Role;
 import com.pitaya.bookingnow.entity.security.User;
 import com.pitaya.bookingnow.entity.security.User_Role_Detail;
 import com.pitaya.bookingnow.message.FoodMessage;
@@ -34,6 +35,7 @@ import com.pitaya.bookingnow.message.ResultMessage;
 import com.pitaya.bookingnow.service.impl.security.UserService;
 import com.pitaya.bookingnow.service.security.IUserService;
 import com.pitaya.bookingnow.util.Constants;
+import com.pitaya.bookingnow.util.MyResult;
 
 class ClientAgent extends Thread{
 	
@@ -56,7 +58,7 @@ class ClientAgent extends Thread{
 	
 	public void run(){
 		try{
-			in = new BufferedReader(new InputStreamReader(client_socket.getInputStream()));   
+			in = new BufferedReader(new InputStreamReader(client_socket.getInputStream(), "utf-8"));   
 			out = new PrintWriter(client_socket.getOutputStream());   
 			String message = null;
 			while((message = in.readLine()) != null){
@@ -294,6 +296,7 @@ public class MessageService {
 			for(ClientAgent client : this.clients){
 				client.sendMessage(parseMessage(message));
 			}
+			logger.debug("Send message to all clients.");
 			return true;
 		}
 		return false;
@@ -308,7 +311,7 @@ public class MessageService {
 				entry.getValue().sendMessage(msgstring);
 				success = true;
 			}
-			logger.info("Send message to group: " + groupType);
+			logger.debug("Send message to group: " + groupType);
 		}
 		return success;
 	}
@@ -324,7 +327,7 @@ public class MessageService {
 					success = true;
 				}
 			}
-			logger.info("Send message to group: " + groupType + " except this one: " + userid);
+			logger.debug("Send message to group: " + groupType + " except this one: " + userid);
 		}
 		return success;
 	}
@@ -335,6 +338,7 @@ public class MessageService {
 				for(Entry<Long, ClientAgent> subentry : entry.getValue().entrySet()){
 					if(subentry.getKey().equals(userid)){
 						subentry.getValue().sendMessage(parseMessage(message));
+						logger.debug("Send message to user: " + userid);
 						return true;
 					}
 				}
@@ -354,22 +358,40 @@ public class MessageService {
 	synchronized void onMessage(String msgstring, ClientAgent clientAgent){
 		Message message = unparseMessage(msgstring);
 		if(message instanceof RegisterMessage){
-			if(((RegisterMessage)message).getAction().equals("register")){
-				Long id = ((RegisterMessage)message).getUserId();
+			RegisterMessage msg = (RegisterMessage)message;
+			if(msg.getAction().equals("register")){
+				String username = msg.getUsername();
+				String password = msg.getPassword();
 				ResultMessage resultmsg = null;
-				User user  = userService.getUserRole(id);
-				if(user != null && user.getRole_Details() != null && user.getRole_Details().size() > 0){
-					clientAgent.userId = id;
-					clientAgent.role = user.getRole_Details().get(0).getRole().getType();
-					if(this.addClient(clientAgent)){
-						resultmsg = new ResultMessage(Constants.REGISTER_REQUEST, 
-								Constants.SUCCESS, String.valueOf(clientAgent.role));
+				if(username != null && password != null){
+					User loginuser = new User();
+					loginuser.setAccount(username);
+					loginuser.setPassword(password);
+					MyResult loginresult = userService.login(loginuser);
+					if(loginresult.isExecuteResult()){
+						User logonuser = loginresult.getUser();
+						Role role = logonuser.getRole_Details().get(0).getRole();
+						clientAgent.userId = logonuser.getId();
+						clientAgent.role = role.getType();
+						if(this.addClient(clientAgent)){
+							String detail = String.valueOf(logonuser.getId()) + "###";
+							detail += logonuser.getName() + "###";
+							detail += String.valueOf(role.getType());
+							resultmsg = new ResultMessage(Constants.REGISTER_REQUEST, 
+									Constants.SUCCESS, detail);
+						} else {
+							resultmsg = new ResultMessage(Constants.REGISTER_REQUEST, 
+									Constants.SUCCESS, "无效用户");
+						}
 					} else {
 						resultmsg = new ResultMessage(Constants.REGISTER_REQUEST, 
-								Constants.FAIL, "Can't login two clients with same user!");
+								Constants.FAIL, loginresult.getErrorDetails().get("Error"));
 					}
-					clientAgent.sendMessage(parseMessage(resultmsg));
+				} else {
+					resultmsg = new ResultMessage(Constants.REGISTER_REQUEST, 
+							Constants.FAIL, "请输入用户名和密码");
 				}
+				clientAgent.sendMessage(parseMessage(resultmsg));
 			} else {
 				this.removeClient(clientAgent, false);
 			}
@@ -389,7 +411,7 @@ public class MessageService {
 			this.clients.add(clientAgent);
 			logger.info("Add new client");
 		}
-		if(clientAgent.userId != null && clientAgent.role != null){
+		if(clientAgent.userId != null && clientAgent.role != null) {
 			Map<Long, ClientAgent> group = this.groups.get(clientAgent.role);
 			if(group == null){
 				group = new ConcurrentHashMap<Long, ClientAgent>();
@@ -397,8 +419,7 @@ public class MessageService {
 			}
 			if(group.get(clientAgent.userId) != null){
 				if(group.get(clientAgent.userId) == clientAgent){
-					logger.debug("The same client already registered [user id: " + clientAgent.userId + "]");
-					return false;
+					logger.warn("The same client already registered [user id: " + clientAgent.userId + "]");
 				} else {
 					logger.debug("Client with same user id already registered [user id: " + clientAgent.userId + "], shutdown it first");
 					group.get(clientAgent.userId).shutdown();
