@@ -1,10 +1,13 @@
 package com.pitaya.bookingnow.app.views;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -30,13 +33,20 @@ import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.OrderDetailPreviewActivity;
 import com.pitaya.bookingnow.app.data.CustomerOrderDetailAdapter;
 import com.pitaya.bookingnow.app.data.GetOrderFoodsStatusHandler;
+import com.pitaya.bookingnow.app.data.MessageHandler;
 import com.pitaya.bookingnow.app.data.OrderDetailAdapter;
+import com.pitaya.bookingnow.app.model.CookingItem;
 import com.pitaya.bookingnow.app.model.Food;
+import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
+import com.pitaya.bookingnow.app.service.MessageService;
 import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.util.Constants;
 import com.pitaya.bookingnow.app.util.ContentUtil;
+import com.pitaya.bookingnow.message.Message;
+import com.pitaya.bookingnow.message.OrderDetailMessage;
+import com.pitaya.bookingnow.message.OrderMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,9 +63,15 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		private ViewPager mFoodMenuViewPager;
 		private FoodMenuAdapter mFoodMenuAdapter;
 		private FoodMenuContentView mContentContainer;
+		
+		private MessageHandler mMessageHandler;
+		private MessageService mMessageService;
+		protected boolean mIsBound = false;
+		protected ServiceConnection mConnection;
 				 
 		public FoodMenuContentFragment(){
 			super();
+			mMessageHandler = new MessageHandler();
 		}
 		
 		public void setContainer(FoodMenuContentView v){
@@ -90,6 +106,46 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 					mFoodMenuAdapter.refresh(i);
 				}
 			}
+		}
+		
+		protected void doBindService() {
+			this.getActivity().bindService(new Intent(this.getActivity(), MessageService.class), 
+					getServiceConnection(), Context.BIND_AUTO_CREATE);
+		}
+		
+		protected void doUnbindService() {
+		    if (mIsBound) {
+		    	this.getActivity().unbindService(mConnection);
+		        mIsBound = false;
+		    }
+		}
+		
+		protected ArrayList<String> getMessageCategories(){
+			ArrayList<String> categories = new ArrayList<String>();
+			categories.add(Constants.ORDER_MESSAGE);
+			return categories;
+		}
+		
+		protected ServiceConnection getServiceConnection(){ 
+			
+			mConnection = new ServiceConnection() {
+		
+				@Override
+				public void onServiceConnected(ComponentName name, IBinder service) {
+					mMessageService = ((MessageService.MessageBinder)service).getService();
+					mIsBound = true;
+					for(String category : getMessageCategories()){
+						mMessageService.registerHandler(category, mMessageHandler);
+					}
+				}
+		
+				@Override
+				public void onServiceDisconnected(ComponentName name) {
+					mMessageService = null;
+				}
+
+			};
+			return mConnection;
 		}
 		
 		private int getPopupWindowSize(int items){
@@ -181,7 +237,31 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 				}
 				
 			});
-			
+			mMessageHandler.setOnMessageListener(new MessageHandler.OnMessageListener(){
+
+				@Override
+				public void onMessage(Message message) {
+					if(message instanceof OrderDetailMessage){
+						OrderDetailMessage msg = (OrderDetailMessage)message;
+						if(msg.getUpdateItems() != null && msg.getUpdateItems().size() > 0){
+							CookingItem item = msg.getUpdateItems().get(0);
+							if(mContentContainer != null && mContentContainer.getOrder() != null){
+								Order currentOrder = mContentContainer.getOrder();
+								if(currentOrder.getOrderKey().equals(String.valueOf(item.getOrderId()))){
+									for(Entry<Order.Food, Integer> entry : currentOrder.getFoods().entrySet()){
+										if(item.getId().equals(entry.getKey().getId())){
+											entry.getKey().setStatus(item.getStatus());
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				
+			});
+			this.doBindService();
 			return mFoodMenuContentView;
 	    }
 		
@@ -200,7 +280,13 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			super.onPause();
 			Log.i(TAG, "onPause in FoodMenuContentFragment" +this.hashCode());
 		}
-
+		
+		@Override
+		public void onDestroyView(){
+			super.onDestroyView();
+			mMessageService.unregisterHandler(mMessageHandler);
+			this.doUnbindService();
+		}
 
 		@Override
 		public Loader<Cursor> onCreateLoader(int id, Bundle args) {

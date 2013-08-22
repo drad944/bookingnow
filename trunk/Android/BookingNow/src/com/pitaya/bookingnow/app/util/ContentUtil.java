@@ -5,12 +5,11 @@ import android.app.Activity;
 import android.util.DisplayMetrics;
 
 public class ContentUtil {
-
-	private static DisplayMetrics METRIC;
-	private static float SCALE;
-	private static double WIDTHDP;
-	private static double HEIGHTDP;
 	
+	public static float SCALE;
+	public static double WIDTHDP;
+	public static double HEIGHTDP;
+	private static DisplayMetrics METRIC;
 	
 	public static void init(Context context){
 		METRIC = context.getResources().getDisplayMetrics();

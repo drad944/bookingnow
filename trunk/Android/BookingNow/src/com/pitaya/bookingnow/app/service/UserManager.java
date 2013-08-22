@@ -31,8 +31,20 @@ public class UserManager {
 
 	private static final String TAG = "UserManager";
 	
+	public static String getRoleName(){
+		switch(role){
+			case Constants.ROLE_WAITER:
+				return "服务员";
+			case Constants.ROLE_WELCOME:
+				return "迎宾";
+			case Constants.ROLE_CHEF:
+				return "厨房";
+		}
+		return "未知";
+	}
+	
 	public static Integer getUserRole(Context context){
-		if(role == null){
+		if(role == null || role == -1){
 			SharedPreferences settings = context.getSharedPreferences(SETTING_INFOS, 0);
 			role = settings.getInt(ROLE_ID, -1);
 		}
@@ -44,7 +56,7 @@ public class UserManager {
 	}
 	
 	public static Long getUserId(Context context){
-		if(userId == null){
+		if(userId == null || userId == -1){
 			SharedPreferences settings = context.getSharedPreferences(SETTING_INFOS, 0);
 			userId = settings.getLong(USER_ID, -1L);
 		}
@@ -56,7 +68,7 @@ public class UserManager {
 	}
 	
 	public static String getUsername(Context context){
-		if(username == null){
+		if(username == null || username.equals("")){
 			SharedPreferences settings = context.getSharedPreferences(SETTING_INFOS, 0);
 			username = settings.getString(USERNAME, "");
 		}
@@ -75,12 +87,18 @@ public class UserManager {
 			  .putLong(UserManager.USER_ID, user.getUserId())
 			  .putInt(UserManager.ROLE_ID, user.getRole())
 			  .commit();
+			  role = user.getRole();
+			  userId = user.getUserId();
+			  username = user.getUsername();
 		} else {
 			settings.edit()
 			  .remove(UserManager.USERNAME)
 			  .remove(UserManager.USER_ID)
 			  .remove(UserManager.ROLE_ID)
 			  .commit();
+			role = null;
+			userId = null;
+			username = null;
 		}
 	}
 	
@@ -95,6 +113,24 @@ public class UserManager {
         	params[1] = password;
         }
         return params;
+	}
+	
+	public static void rememberMe(Context context, String username, String password){
+		if(username != null && password != null){
+			SharedPreferences settings = context.getSharedPreferences(UserManager.SETTING_INFOS, 0);
+			settings.edit()
+					  .putString(UserManager.AUTO_LOGIN_NAME, username)
+					  .putString(UserManager.AUTO_LOGIN_PASSWORD, password)
+					  .commit();
+		}
+	}
+	
+	public static void cleanRemeberMe(Context context){
+		SharedPreferences settings = context.getSharedPreferences(UserManager.SETTING_INFOS, 0);
+		settings.edit()
+				  .remove(UserManager.AUTO_LOGIN_NAME)
+				  .remove(UserManager.AUTO_LOGIN_PASSWORD)
+				  .commit();
 	}
 	
 	public static void login(String username, String password, HttpHandler handler){
