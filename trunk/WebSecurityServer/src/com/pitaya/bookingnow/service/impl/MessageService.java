@@ -1,8 +1,10 @@
 package com.pitaya.bookingnow.service.impl;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -42,7 +44,8 @@ class ClientAgent extends Thread{
 	private static Log logger =  LogFactory.getLog(ClientAgent.class);
 	Socket client_socket;
 	MessageService service;
-	PrintWriter out;
+	OutputStreamWriter out;
+	BufferedWriter bwriter;
 	BufferedReader in;
 	Long userId;
 	Integer role;
@@ -58,8 +61,9 @@ class ClientAgent extends Thread{
 	
 	public void run(){
 		try{
-			in = new BufferedReader(new InputStreamReader(client_socket.getInputStream(), "utf-8"));   
-			out = new PrintWriter(client_socket.getOutputStream());   
+			in = new BufferedReader(new InputStreamReader(client_socket.getInputStream(), "UTF-8"));
+			out = new OutputStreamWriter(client_socket.getOutputStream(), "UTF-8");  
+			bwriter = new BufferedWriter(out);  
 			String message = null;
 			while((message = in.readLine()) != null){
 				logger.debug("Receive message from client: ["+this.userId+"], content:" + message);
@@ -93,7 +97,11 @@ class ClientAgent extends Thread{
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			out.close();
+			try {
+				bwriter.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 			if(client_socket != null && !client_socket.isClosed()){
 				 try {
 					client_socket.close();
@@ -118,8 +126,13 @@ class ClientAgent extends Thread{
 		}
 		while(this.messages.size() > 0){
 			String msg = this.messages.get(0);
-			out.println(msg);
-			out.flush();
+			try {
+				bwriter.write(msg + "\r\n");
+				bwriter.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+				logger.error("Fail to send message to client [" + this.userId + "]");
+			}
 			this.messages.remove(0);
 		}
 
