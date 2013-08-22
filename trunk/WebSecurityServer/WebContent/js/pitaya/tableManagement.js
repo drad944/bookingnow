@@ -33,6 +33,17 @@ function emptyUpdateTableWindow(){
 }
 
 function initUpdateTableElements() {
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.tableManagement'
+		};
+	 
+	i18n.init(option);
+	
 	var theme = getDemoTheme();
     $("#updateTableDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
     $('#updateTableUpdateButton').jqxButton({ width: 60, height: 25, theme: theme });
@@ -46,9 +57,9 @@ function initUpdateTableElements() {
     $('#updateTableMaxCustomerCountInput').jqxNumberInput({ width: 70, height: 25,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
     $('#updateTableIndoorPriceInput').jqxNumberInput({ width: 70, height: 25, digits: 3,symbolPosition: 'right', symbol: '￥', theme: theme, spinButtons: true});
     var tableStatusData = [
-                                 { value: 2, label: "TABLE_EMPTY"},
-                                 { value: 3, label: "TABLE_BOOKING"},
-                                 { value: 4, label: "TABLE_USING"}
+                                { value: 2, label: i18n.t("status.EMPTY") },
+                                { value: 3, label: i18n.t("status.BOOKING") },
+                                { value: 4, label: i18n.t("status.USING") }
                              ];
      
  	$("#updateTableStatusCombobox").jqxComboBox({ 
@@ -179,9 +190,20 @@ function updateTable() {
 	var updateTableData = parseUIDataToTableData(updateTableUIData);
 
 	$.post("updateTable.action", updateTableData, function(result) {
+		var option = {
+				fallbackLng: 'zh',
+				lng: 'en-US',
+		//		lng: 'zh-CN',
+				resGetPath: 'resources/locales/__lng__/__ns__.json',
+				getAsync: false,
+				ns: 'bookingnow.content.tableManagement'
+			};
+		 
+		i18n.init(option);
+		
 		if (result != null && result["id"] != null) {
 			
-			$("#updateTableResult").text("update table successfully!");
+			$("#updateTableResult").text(i18n.t("result.updateSuccess"));
 			$("#updateTablePopupWindow").jqxWindow('close');
 			
 			var tableUIResult = parseTableDataToUIData(result);
@@ -199,7 +221,7 @@ function updateTable() {
 
 		} else if (result != null && result["executeResult"] != null
 				&& result["executeResult"] == false) {
-			$("#updateTableResult").text("update table failed,please check table info!");
+			$("#updateTableResult").text(i18n.t("result.updateFail"));
 		}
 	});
 }
@@ -207,6 +229,16 @@ function updateTable() {
 
 
 function initRegisterTableElements() {
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.tableManagement'
+		};
+	 
+	i18n.init(option);
     
 	var theme = getDemoTheme();
     $("#registerTableDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
@@ -221,9 +253,9 @@ function initRegisterTableElements() {
     $('#registerTableMaxCustomerCountInput').jqxNumberInput({ width: 70, height: 25,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
     $('#registerTableIndoorPriceInput').jqxNumberInput({ width: 70, height: 25, digits: 3,symbolPosition: 'right', symbol: '￥', theme: theme, spinButtons: true});
     var tableStatusData = [
-                                 { value: 2, label: "TABLE_EMPTY"},
-                                 { value: 3, label: "TABLE_BOOKING"},
-                                 { value: 4, label: "TABLE_USING"}
+                                { value: 2, label: i18n.t("status.EMPTY") },
+                                { value: 3, label: i18n.t("status.BOOKING") },
+                                { value: 4, label: i18n.t("status.USING") }
                              ];
     
     
@@ -313,18 +345,29 @@ function registerTable() {
 	
 	
 	$.post("addTable.action", registerTableData, function(result) {
+		var option = {
+				fallbackLng: 'zh',
+				lng: 'en-US',
+		//		lng: 'zh-CN',
+				resGetPath: 'resources/locales/__lng__/__ns__.json',
+				getAsync: false,
+				ns: 'bookingnow.content.tableManagement'
+			};
+		 
+		i18n.init(option);
+		
 		if (result != null && result["id"] != null) {
 			result = parseTableDataToUIData(result);
 			
-			$("#registerTableResult").text("register table successfully!");
+			$("#registerTableResult").text(i18n.t("result.insertSuccess"));
 			$('#addTablePopupWindow').jqxWindow('close');
 			
 			var commit = $("#tableDataGrid").jqxGrid('addrow', null, result);
 			
-			$("#eventLog").text("register table successfully!");
+			$("#eventLog").text(i18n.t("result.insertSuccess"));
 		} else if (result != null && result["executeResult"] != null
 				&& result["executeResult"] == false) {
-			$("#registerTableResult").text("register table failed,please check table info!");
+			$("#registerTableResult").text(i18n.t("result.insertFail"));
 		}
 	});
 }
@@ -402,6 +445,17 @@ function parseTableGridHtml() {
 		$.post("searchTable.action", 
 			{"table.enabled": true}, 
 			function(matchedtables){
+				var option = {
+				//		fallbackLng: 'zh',
+						lng: 'en-US',
+				//		lng: 'zh-CN',
+						resGetPath: 'resources/locales/__lng__/__ns__.json',
+						getAsync: false,
+						ns: 'bookingnow.content.tableManagement'
+					};
+				 
+				i18n.init(option);
+				
 				if(matchedtables != null && matchedtables.result != null){
 					tables = matchedtables.result;
 				}
@@ -422,32 +476,32 @@ function parseTableGridHtml() {
 							
 							if(item == "id"){
 								datafield["type"] = "number";
-								column["text"] = "Id";
+								column["text"] = i18n.t("field.id");
 								
 							}else if(item == "status") {
 								datafield["type"] = "string";
-								column["text"] = "Staus";
+								column["text"] = i18n.t("field.status");
 								
 							}else if(item == "minCustomerCount") {
 								datafield["type"] = "number";
-								column["text"] = "MinCustomerCount";
+								column["text"] = i18n.t("field.minCustomerCount");
 								
 							}else if(item == "maxCustomerCount") {
 								datafield["type"] = "number";
-								column["text"] = "MaxCustomerCount";
+								column["text"] = i18n.t("field.maxCustomerCount");
 							}else if(item == "address") {
 								datafield["type"] = "number";
-								column["text"] = "Address";
+								column["text"] = i18n.t("field.address");
 								
 							}else if(item == "indoorPrice") {
 								datafield["type"] = "string";
-								column["text"] = "indoorPrice";
+								column["text"] = i18n.t("field.indoorPrice");
 								
 							}else if(item == "enabled"){
 								//do nothing
 							}else {
 								datafield["type"] = "string";
-								column["text"] = "XX";
+								column["text"] = i18n.t("field.xx");
 							}
 							
 							if(item == "enabled"){
@@ -527,7 +581,7 @@ function parseTableGridHtml() {
 	
 	// display selected row index.
     $("#tableDataGrid").on('rowselect', function (event) {
-        $("#eventLog").text("select row index : " + event.args.rowindex);
+        $("#eventLog").text(i18n.t("grid.selectRow", {index: event.args.rowindex}));
     });
 	
 	initOperateTableGridElements();
