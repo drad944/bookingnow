@@ -142,6 +142,7 @@ public class OrderLeftView extends Fragment{
 			@Override
 			public void onServiceDisconnected(ComponentName name) {
 				mMessageService = null;
+				mIsBound = false;
 			}
 
 		};

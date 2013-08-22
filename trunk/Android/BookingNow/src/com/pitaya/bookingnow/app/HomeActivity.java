@@ -164,8 +164,8 @@ public class HomeActivity extends FragmentActivity {
 	
 	void doUnbindService() {
 	    if (mIsBound) {
-	        // Detach our existing connection.
 	        unbindService(mConnection);
+			mIsBound = false;
 	    }
 	}
 	

@@ -1,9 +1,10 @@
 package com.pitaya.bookingnow.app.service;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -20,7 +21,8 @@ public class Client extends Thread{
 	    private String ip;
 	    private int port;
 	    private BufferedReader in;
-	    private PrintWriter out;
+	    private OutputStreamWriter out;
+	    private BufferedWriter bwriter;
 	    private MessageService service;
 	    private volatile boolean isConnecting = false;
 
@@ -74,8 +76,12 @@ public class Client extends Thread{
 						e.printStackTrace();
 					}
 				}
-	       		if(out != null){
-					out.close();
+	       		if(bwriter != null){
+	       			try {
+						bwriter.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 	       		} 
 	       		if (socket != null && !socket.isClosed()){
 					try {
@@ -101,8 +107,12 @@ public class Client extends Thread{
 					 e.printStackTrace();
 				}	 
 	    	 }
-   		     if(out != null){
-			    out.close();
+   		     if(bwriter != null){
+			    try {
+			    	bwriter.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
    		     }
 			 if (socket != null && !socket.isClosed()){
 				try {
@@ -118,8 +128,8 @@ public class Client extends Thread{
 
 	    public synchronized boolean sendMessage(String msg) {
 	        try {
-	        	out.println(msg);
-	        	out.flush();
+	        	this.bwriter.write(msg + "\r\n");
+	        	this.bwriter.flush();
 	        	return true;
 	        } catch (Exception e) {
 	            Log.e(LOGTAG, "Fail to send message:" + msg);
@@ -137,8 +147,9 @@ public class Client extends Thread{
   	    
 	    private void setupConnection() throws UnknownHostException, IOException {
 	        socket = new Socket(ip, port);
-        	in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        	out = new PrintWriter(socket.getOutputStream());
+        	in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+        	out = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");  
+			bwriter = new BufferedWriter(out);  
 	    }
 
 }
