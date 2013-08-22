@@ -105,16 +105,18 @@ public class UserService implements IUserService {
 		if (user != null) {
 			User loginUser = userDao.login(user);
 			if (loginUser != null && loginUser.getId() != null) {
-				result.setExecuteResult(true);
-				result.setUser(loginUser);
-				return result;
+				if(loginUser.getRole_Details() != null && loginUser.getRole_Details().size() > 0){
+					result.setExecuteResult(true);
+					result.setUser(loginUser);
+				} else {
+					result.getErrorDetails().put("Error", "该用户尚未分配角色");
+				}
 			}else {
-				result.getErrorDetails().put("user_exist", "can not find user in DB data.");
+				result.getErrorDetails().put("Error", "用户名或密码错误");
 			}
-		}else {
-			result.getErrorDetails().put("user_exist", "can not find user in client data.");
+		} else {
+			result.getErrorDetails().put("Error", "未知错误");
 		}
-		
 		return result;
 	}
 
