@@ -31,18 +31,24 @@
 				} 
 			});
 		*/	
-			i18n.init({ns:'translation'});
-			
-			i18n.init(function(t) {
-			  // translate nav
-			  
-				$(".nav").i18n();
-			  // programatical access
-			  var appName = t("app.name");
-			})
+			i18n.init({
+			ns:'translation',
+			lng:"en-US",
+			getAsync: false
+        	
+        });
+			$(".nav").i18n();
 			var x = i18n.t("app.name");
 			if(x) {
 			}
+			i18n.init(function(t) {
+			  // translate nav
+			  
+				
+			  // programatical access
+			  var appName = t("app.name");
+			})
+			
 		}		
 );
 	 
