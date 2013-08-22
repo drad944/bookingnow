@@ -11,9 +11,9 @@
 	<!--
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
-	<script type="text/javascript" src="../../js/pitaya/AppUtil.js"></script>
-	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
-	<script type="text/javascript" src="../../js/i18next-1.6.3.js"></script>
+	<script type="text/javascript" src="js/pitaya/AppUtil.js"></script>
+	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/i18next-1.6.3.js"></script>
 	
 	<script language="javascript">
 	 $(document).ready(function (){
@@ -31,15 +31,18 @@
 				} 
 			});
 		*/	
-			i18n.init({ns:'/locales/translation'});
+			i18n.init({ns:'translation'});
+			
 			i18n.init(function(t) {
 			  // translate nav
-			  $(".nav").i18n();
-			
+			  
+				$(".nav").i18n();
 			  // programatical access
 			  var appName = t("app.name");
 			})
-			
+			var x = i18n.t("app.name");
+			if(x) {
+			}
 		}		
 );
 	 

@@ -213,7 +213,10 @@ function parseMenuHtml() {
 		};
 	 
 	i18n.init(option);
-	i18n.t("add");
+	var addString = i18n.t("add");
+	if (addString != null) {
+		
+	}
 	
     var theme = getDemoTheme();
     var data = [
