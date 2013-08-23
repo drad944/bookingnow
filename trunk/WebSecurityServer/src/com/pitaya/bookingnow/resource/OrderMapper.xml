@@ -217,6 +217,35 @@
 		
 	</sql>
 	
+	<sql id="Max_TEMP_Table_Base_Column_List">
+		T_id,
+		T_enabled,  
+		T_status, 
+		T_minCustomerCount,
+		T_maxCustomerCount, 
+		T_address,
+		T_indoorPrice
+	</sql>
+	
+	<sql id="Max_TEMP_Food_Base_Column_List">
+		F_id, 
+		F_recommendation,
+		F_status, 
+		F_name, 
+		F_version,
+		F_period,
+		F_price,
+		F_category,
+		F_description,
+		F_enabled,
+		F_large_image_relative_path,
+		F_small_image_relative_path,
+		F_large_image_absolute_path,
+		F_small_image_absolute_path,
+		F_large_image_size,
+		F_small_image_size
+	</sql>
+	
 	<sql id="Order_Base_Column_List">
 		O.id as O_id, 
 		O.status as O_status, 
@@ -315,7 +344,9 @@
 	</sql>
 	
 	<sql id="Min_Table_Detail_Base_Column_List">
-		TD.id as TD_id
+		TD.id as TD_id,
+		TD.order_id as TD_order_id,
+		TD.table_id as TD_table_id
 	</sql>
 	
 	<sql id="Min_Table_Base_Column_List">
@@ -328,7 +359,9 @@
 		FD.id as FD_id,
 		FD.status as FD_status,
 		FD.count as FD_count,
-		FD.isFree as FD_isFree
+		FD.isFree as FD_isFree,
+		FD.order_id as FD_order_id,
+		FD.food_id as FD_food_id
 	</sql>
 	
 	<sql id="Min_Food_Base_Column_List">
@@ -336,6 +369,51 @@
 		F.status as F_status,
 		F.enabled as F_enabled
 	</sql>
+	
+	
+	
+	
+	
+	<sql id="Min_TEMP_User_Base_Column_List">
+		U_id, 
+		U_name
+	</sql>
+	
+	<sql id="Min_TEMP_Customer_Base_Column_List">
+		C_id, 
+		C_name,
+		C_phone
+	</sql>
+	
+	<sql id="Min_TEMP_Table_Detail_Base_Column_List">
+		TD_id,
+		TD_order_id,
+		TD_table_id
+	</sql>
+	
+	<sql id="Min_TEMP_Table_Base_Column_List">
+		T_id,
+		T_status, 
+		T_address
+	</sql>
+	
+	<sql id="Min_TEMP_Food_Detail_Base_Column_List">
+		FD_id,
+		FD_status,
+		FD_count,
+		FD_isFree,
+		FD_order_id,
+		FD_food_id
+	</sql>
+	
+	<sql id="Min_TEMP_Food_Base_Column_List">
+		F_id,
+		F_status,
+		F_enabled
+	</sql>
+	
+	
+	
 	
 	<sql id="Base_Column_List">
 		id, 
@@ -356,50 +434,116 @@
 		select
 			<include refid="Min_Order_Base_Column_List" />
 			,
-			<include refid="Min_User_Base_Column_List" />
+			INTERAL_FDF.*
 			,
-			<include refid="Min_Customer_Base_Column_List" />
+			INTERAL_TDT.*
 			,
-			<include refid="Min_Table_Detail_Base_Column_List" />
+			<include refid="Min_TEMP_User_Base_Column_List" />
 			,
-			<include refid="Min_Table_Base_Column_List" />
-			,
-			<include refid="Min_Food_Detail_Base_Column_List" />
-			,
-			<include refid="Min_Food_Base_Column_List" />
+			<include refid="Min_TEMP_Customer_Base_Column_List" />
 		from pitaya_order O 
-			left outer join pitaya_user U on O.user_id = U.id
-			left outer join pitaya_customer C on O.customer_id = C.id
-			left outer join pitaya_order_table_detail TD on TD.order_id = O.id
-			left outer join pitaya_table T on TD.table_id = T.id
-			left outer join pitaya_order_food_detail FD on FD.order_id = O.id
-			left outer join pitaya_food F on FD.food_id = F.id
+			left outer join 
+			(
+				select
+					<include refid="Min_Food_Detail_Base_Column_List" />
+					,
+					<include refid="Min_TEMP_Food_Base_Column_List" />
+				from pitaya_order_food_detail FD
+					left outer join (
+										select <include refid="Min_Food_Base_Column_List" />
+										from pitaya_food F
+										where F.enabled = true
+									) as F on FD.food_id = F.F_id 
+				where FD.enabled = true
+			) 		as		INTERAL_FDF on INTERAL_FDF.FD_order_id = O.id
+			
+			left outer join 
+			(
+				select
+					<include refid="Min_Table_Detail_Base_Column_List" />
+					,
+					<include refid="Min_TEMP_Table_Base_Column_List" />
+				from pitaya_order_table_detail TD
+					left outer join (
+										select <include refid="Min_Table_Base_Column_List" />
+										from pitaya_table T
+										where T.enabled = true
+									) as T on TD.table_id = T.T_id
+				where TD.enabled = true
+			) 		as		INTERAL_TDT on INTERAL_TDT.TD_order_id = O.id
+			
+			left outer join 
+			(
+				select <include refid="Min_User_Base_Column_List" />
+				from pitaya_user U
+				where U.enabled = true
+			) 		as		U on O.user_id = U.U_id
+			
+			left outer join 
+			(
+				select <include refid="Min_Customer_Base_Column_List" />
+				from pitaya_customer C
+				where C.enabled = true
+			) 		as		C on O.customer_id = C.C_id
+			
 		where O.id = #{id,jdbcType=BIGINT} and O.enabled = true
 	</select>
-	
 	
 	<select id="searchMinFullOrders" resultMap="Order_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
 		select
 			<include refid="Min_Order_Base_Column_List" />
 			,
-			<include refid="Min_User_Base_Column_List" />
+			INTERAL_FDF.*
 			,
-			<include refid="Min_Customer_Base_Column_List" />
+			INTERAL_TDT.*
 			,
-			<include refid="Min_Table_Detail_Base_Column_List" />
+			<include refid="Min_TEMP_User_Base_Column_List" />
 			,
-			<include refid="Min_Table_Base_Column_List" />
-			,
-			<include refid="Min_Food_Detail_Base_Column_List" />
-			,
-			<include refid="Min_Food_Base_Column_List" />
+			<include refid="Min_TEMP_Customer_Base_Column_List" />
 		from pitaya_order O 
-			left outer join pitaya_user U on O.user_id = U.id
-			left outer join pitaya_customer C on O.customer_id = C.id
-			left outer join pitaya_order_table_detail TD on TD.order_id = O.id
-			left outer join pitaya_table T on TD.table_id = T.id
-			left outer join pitaya_order_food_detail FD on FD.order_id = O.id
-			left outer join pitaya_food F on FD.food_id = F.id
+			left outer join 
+			(
+				select
+					<include refid="Min_Food_Detail_Base_Column_List" />
+					,
+					<include refid="Min_TEMP_Food_Base_Column_List" />
+				from pitaya_order_food_detail FD
+					left outer join (
+										select <include refid="Min_Food_Base_Column_List" />
+										from pitaya_food F
+										where F.enabled = true
+									) as F on FD.food_id = F.F_id 
+				where FD.enabled = true
+			) 		as		INTERAL_FDF on INTERAL_FDF.FD_order_id = O.id
+			
+			left outer join 
+			(
+				select
+					<include refid="Min_Table_Detail_Base_Column_List" />
+					,
+					<include refid="Min_TEMP_Table_Base_Column_List" />
+				from pitaya_order_table_detail TD
+					left outer join (
+										select <include refid="Min_Table_Base_Column_List" />
+										from pitaya_table T
+										where T.enabled = true
+									) as T on TD.table_id = T.T_id
+				where TD.enabled = true
+			) 		as		INTERAL_TDT on INTERAL_TDT.TD_order_id = O.id
+			
+			left outer join 
+			(
+				select <include refid="Min_User_Base_Column_List" />
+				from pitaya_user U
+				where U.enabled = true
+			) 		as		U on O.user_id = U.U_id
+			
+			left outer join 
+			(
+				select <include refid="Min_Customer_Base_Column_List" />
+				from pitaya_customer C
+				where C.enabled = true
+			) 		as		C on O.customer_id = C.C_id
 		<where>
 			O.enabled = true
 			<if test="user_id != null">
@@ -421,24 +565,166 @@
 		select
 			<include refid="Min_Order_Base_Column_List" />
 			,
-			<include refid="Min_User_Base_Column_List" />
+			INTERAL_FDF.*
 			,
-			<include refid="Min_Customer_Base_Column_List" />
+			INTERAL_TDT.*
 			,
-			<include refid="Min_Table_Detail_Base_Column_List" />
+			<include refid="Min_TEMP_User_Base_Column_List" />
 			,
-			<include refid="Min_Table_Base_Column_List" />
-			,
-			<include refid="Min_Food_Detail_Base_Column_List" />
-			,
-			<include refid="Min_Food_Base_Column_List" />
+			<include refid="Min_TEMP_Customer_Base_Column_List" />
 		from pitaya_order O 
-			left outer join pitaya_user U on O.user_id = U.id
-			left outer join pitaya_customer C on O.customer_id = C.id
-			left outer join pitaya_order_table_detail TD on TD.order_id = O.id
-			left outer join pitaya_table T on TD.table_id = T.id
-			left outer join pitaya_order_food_detail FD on FD.order_id = O.id
-			left outer join pitaya_food F on FD.food_id = F.id
+			left outer join 
+			(
+				select
+					<include refid="Min_Food_Detail_Base_Column_List" />
+					,
+					<include refid="Min_TEMP_Food_Base_Column_List" />
+				from pitaya_order_food_detail FD
+					left outer join (
+										select <include refid="Min_Food_Base_Column_List" />
+										from pitaya_food F
+										where F.enabled = true
+									) as F on FD.food_id = F.F_id 
+				where FD.enabled = true
+			) 		as		INTERAL_FDF on INTERAL_FDF.FD_order_id = O.id
+			
+			left outer join 
+			(
+				select
+					<include refid="Min_Table_Detail_Base_Column_List" />
+					,
+					<include refid="Min_TEMP_Table_Base_Column_List" />
+				from pitaya_order_table_detail TD
+					left outer join (
+										select <include refid="Min_Table_Base_Column_List" />
+										from pitaya_table T
+										where T.enabled = true
+									) as T on TD.table_id = T.T_id
+				where TD.enabled = true
+			) 		as		INTERAL_TDT on INTERAL_TDT.TD_order_id = O.id
+			
+			left outer join 
+			(
+				select <include refid="Min_User_Base_Column_List" />
+				from pitaya_user U
+				<where>
+					<if test="user != null">
+						<if test="user.id != null">
+							and U.id = #{user.id,jdbcType=BIGINT}
+						</if>
+						
+						<if test="user.modifyTime != null">
+							and U.modifyTime = #{user.modifyTime,jdbcType=BIGINT}
+						</if>
+						<if test="user.image_size != null">
+							and U.image_size = #{user.image_size,jdbcType=INTEGER}
+						</if>
+						<if test="user.image_relative_path != null">
+							and U.image_relative_path = #{user.image_relative_path,jdbcType=VARCHAR}
+						</if>
+						<if test="user.image_absolute_path != null">
+							and U.image_absolute_path = #{user.image_absolute_path,jdbcType=VARCHAR}
+						</if>
+						
+						<if test="user.account != null">
+							and U.account = #{user.account,jdbcType=VARCHAR}
+						</if>
+						<if test="user.name != null">
+							and U.name = #{user.name,jdbcType=VARCHAR}
+						</if>
+						<if test="user.password != null">
+							and U.password = #{user.password,jdbcType=VARCHAR}
+						</if>
+						<if test="user.phone != null">
+							and U.phone = #{user.phone,jdbcType=VARCHAR}
+						</if>
+						<if test="user.sex != null">
+							and U.sex = #{user.sex,jdbcType=INTEGER}
+						</if>
+						<if test="user.email != null">
+							and U.email = #{user.email,jdbcType=VARCHAR}
+						</if>
+						<if test="user.address != null">
+							and U.address = #{user.address,jdbcType=VARCHAR}
+						</if>
+						<if test="user.birthday != null">
+							and U.birthday = #{user.birthday,jdbcType=BIGINT}
+						</if>
+						<if test="user.description != null">
+							and U.description = #{user.description,jdbcType=VARCHAR}
+						</if>
+						<if test="user.department != null">
+							and U.department = #{user.department,jdbcType=INTEGER}
+						</if>
+						<if test="user.sub_system != null">
+							and U.sub_system = #{user.sub_system,jdbcType=INTEGER}
+						</if>
+						<if test="user.enabled != null">
+							and U.enabled = #{user.enabled,jdbcType=BIT}
+						</if>
+						<if test="user.enabled == null">
+							and U.enabled = true
+						</if>
+					</if>
+				</where>
+			) 		as		U on O.user_id = U.U_id
+			
+			left outer join 
+			(
+				select <include refid="Min_Customer_Base_Column_List" />
+				from pitaya_customer C
+				<where>
+					<if test="customer != null"> 	
+						<if test="customer.id != null">
+							and C.id = #{customer.id,jdbcType=BIGINT}
+						</if>
+						
+						<if test="customer.modifyTime != null">
+							and C.modifyTime = #{customer.modifyTime,jdbcType=BIGINT}
+						</if>
+						<if test="customer.image_size != null">
+							and C.image_size = #{customer.image_size,jdbcType=INTEGER}
+						</if>
+						<if test="customer.image_relative_path != null">
+							and C.image_relative_path = #{customer.image_relative_path,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.image_absolute_path != null">
+							and C.image_absolute_path = #{customer.image_absolute_path,jdbcType=VARCHAR}
+						</if>
+						
+						<if test="customer.name != null">
+							and C.name = #{customer.name,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.account != null">
+							and C.account = #{customer.account,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.password != null">
+							and C.password = #{customer.password,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.phone != null">
+							and C.phone = #{customer.phone,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.sex != null">
+							and C.sex = #{customer.sex,jdbcType=INTEGER}
+						</if>
+						<if test="customer.email != null">
+							and C.email = #{customer.email,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.address != null">
+							and C.address = #{customer.address,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.birthday != null">
+							and C.birthday = #{customer.birthday,jdbcType=BIGINT}
+						</if>
+						<if test="customer.enabled != null">
+							and C.enabled = #{customer.enabled,jdbcType=BIT}
+						</if>
+						<if test="customer.enabled == null">
+							and C.enabled = true
+						</if>
+					</if>	
+				</where>
+			) 		as		C on O.customer_id = C.C_id
 		<where>
 			<if test="status != null">
 				O.status = #{status,jdbcType=INTEGER}
@@ -474,115 +760,6 @@
 				and O.enabled = true
 			</if>
 			
-			<if test="user != null">
-				<if test="user.id != null">
-					and U.id = #{user.id,jdbcType=BIGINT}
-				</if>
-				
-				<if test="user.modifyTime != null">
-					and U.modifyTime = #{user.modifyTime,jdbcType=BIGINT}
-				</if>
-				<if test="user.image_size != null">
-					and U.image_size = #{user.image_size,jdbcType=INTEGER}
-				</if>
-				<if test="user.image_relative_path != null">
-					and U.image_relative_path = #{user.image_relative_path,jdbcType=VARCHAR}
-				</if>
-				<if test="user.image_absolute_path != null">
-					and U.image_absolute_path = #{user.image_absolute_path,jdbcType=VARCHAR}
-				</if>
-				
-				<if test="user.account != null">
-					and U.account = #{user.account,jdbcType=VARCHAR}
-				</if>
-				<if test="user.name != null">
-					and U.name = #{user.name,jdbcType=VARCHAR}
-				</if>
-				<if test="user.password != null">
-					and U.password = #{user.password,jdbcType=VARCHAR}
-				</if>
-				<if test="user.phone != null">
-					and U.phone = #{user.phone,jdbcType=VARCHAR}
-				</if>
-				<if test="user.sex != null">
-					and U.sex = #{user.sex,jdbcType=INTEGER}
-				</if>
-				<if test="user.email != null">
-					and U.email = #{user.email,jdbcType=VARCHAR}
-				</if>
-				<if test="user.address != null">
-					and U.address = #{user.address,jdbcType=VARCHAR}
-				</if>
-				<if test="user.birthday != null">
-					and U.birthday = #{user.birthday,jdbcType=BIGINT}
-				</if>
-				<if test="user.description != null">
-					and U.description = #{user.description,jdbcType=VARCHAR}
-				</if>
-				<if test="user.department != null">
-					and U.department = #{user.department,jdbcType=INTEGER}
-				</if>
-				<if test="user.sub_system != null">
-					and U.sub_system = #{user.sub_system,jdbcType=INTEGER}
-				</if>
-				<if test="user.enabled != null">
-					and U.enabled = #{user.enabled,jdbcType=BIT}
-				</if>
-				<if test="user.enabled == null">
-					and U.enabled = true
-				</if>
-			</if>
-				
-			<if test="customer != null"> 	
-				<if test="customer.id != null">
-					and C.id = #{customer.id,jdbcType=BIGINT}
-				</if>
-				
-				<if test="customer.modifyTime != null">
-					and C.modifyTime = #{customer.modifyTime,jdbcType=BIGINT}
-				</if>
-				<if test="customer.image_size != null">
-					and C.image_size = #{customer.image_size,jdbcType=INTEGER}
-				</if>
-				<if test="customer.image_relative_path != null">
-					and C.image_relative_path = #{customer.image_relative_path,jdbcType=VARCHAR}
-				</if>
-				<if test="customer.image_absolute_path != null">
-					and C.image_absolute_path = #{customer.image_absolute_path,jdbcType=VARCHAR}
-				</if>
-				
-				<if test="customer.name != null">
-					and C.name = #{customer.name,jdbcType=VARCHAR}
-				</if>
-				<if test="customer.account != null">
-					and C.account = #{customer.account,jdbcType=VARCHAR}
-				</if>
-				<if test="customer.password != null">
-					and C.password = #{customer.password,jdbcType=VARCHAR}
-				</if>
-				<if test="customer.phone != null">
-					and C.phone = #{customer.phone,jdbcType=VARCHAR}
-				</if>
-				<if test="customer.sex != null">
-					and C.sex = #{customer.sex,jdbcType=INTEGER}
-				</if>
-				<if test="customer.email != null">
-					and C.email = #{customer.email,jdbcType=VARCHAR}
-				</if>
-				<if test="customer.address != null">
-					and C.address = #{customer.address,jdbcType=VARCHAR}
-				</if>
-				<if test="customer.birthday != null">
-					and C.birthday = #{customer.birthday,jdbcType=BIGINT}
-				</if>
-				<if test="customer.enabled != null">
-					and C.enabled = #{customer.enabled,jdbcType=BIT}
-				</if>
-				<if test="customer.enabled == null">
-					and C.enabled = true
-				</if>
-			</if>	
-				
 		</where>
 	</select>
 	
@@ -593,12 +770,14 @@
 			,
 			FDF.* from pitaya_order O 
 			left outer join 
-			(select
+			(
+			select
 			<include refid="Max_Food_Detail_Base_Column_List" />
 			,
 			<include refid="Max_Food_Base_Column_List" />
  			from pitaya_order_food_detail FD 
- 			left outer join (select F.* from pitaya_food F where F.enabled = true) as F on FD.food_id = F.id where FD.enabled = true)
+ 			left outer join (select F.* from pitaya_food F where F.enabled = true) as F on FD.food_id = F.id where FD.enabled = true
+ 			)
  			as FDF on O.id = FDF.FD_order_id
 			where O.id = #{id,jdbcType=BIGINT} and O.enabled = true
 	</select>
@@ -718,24 +897,166 @@
 		select
 			<include refid="Max_Order_Base_Column_List" />
 			,
-			<include refid="Max_User_Base_Column_List" />
+			INTERAL_FDF.*
 			,
-			<include refid="Max_Customer_Base_Column_List" />
+			INTERAL_TDT.*
 			,
-			<include refid="Max_Table_Detail_Base_Column_List" />
+			<include refid="Min_TEMP_User_Base_Column_List" />
 			,
-			<include refid="Max_Table_Base_Column_List" />
-			,
-			<include refid="Max_Food_Detail_Base_Column_List" />
-			,
-			<include refid="Max_Food_Base_Column_List" />
+			<include refid="Min_TEMP_Customer_Base_Column_List" />
 		from pitaya_order O 
-			left outer join pitaya_user U on O.user_id = U.id
-			left outer join pitaya_customer C on O.customer_id = C.id
-			left outer join pitaya_order_table_detail TD on TD.order_id = O.id
-			left outer join pitaya_table T on TD.table_id = T.id
-			left outer join pitaya_order_food_detail FD on FD.order_id = O.id
-			left outer join pitaya_food F on FD.food_id = F.id
+			left outer join 
+			(
+				select
+					<include refid="Max_Food_Detail_Base_Column_List" />
+					,
+					<include refid="Max_TEMP_Food_Base_Column_List" />
+				from pitaya_order_food_detail FD
+					left outer join (
+										select <include refid="Max_Food_Base_Column_List" />
+										from pitaya_food F
+										where F.enabled = true
+									) as F on FD.food_id = F.F_id 
+				where FD.enabled = true
+			) 		as		INTERAL_FDF on INTERAL_FDF.FD_order_id = O.id
+			
+			left outer join 
+			(
+				select
+					<include refid="Max_Table_Detail_Base_Column_List" />
+					,
+					<include refid="Max_TEMP_Table_Base_Column_List" />
+				from pitaya_order_table_detail TD
+					left outer join (
+										select <include refid="Max_Table_Base_Column_List" />
+										from pitaya_table T
+										where T.enabled = true
+									) as T on TD.table_id = T.T_id
+				where TD.enabled = true
+			) 		as		INTERAL_TDT on INTERAL_TDT.TD_order_id = O.id
+			
+			left outer join 
+			(
+				select <include refid="Max_User_Base_Column_List" />
+				from pitaya_user U
+				<where>
+					<if test="user != null">
+						<if test="user.id != null">
+							and U.id = #{user.id,jdbcType=BIGINT}
+						</if>
+						
+						<if test="user.modifyTime != null">
+							and U.modifyTime = #{user.modifyTime,jdbcType=BIGINT}
+						</if>
+						<if test="user.image_size != null">
+							and U.image_size = #{user.image_size,jdbcType=INTEGER}
+						</if>
+						<if test="user.image_relative_path != null">
+							and U.image_relative_path = #{user.image_relative_path,jdbcType=VARCHAR}
+						</if>
+						<if test="user.image_absolute_path != null">
+							and U.image_absolute_path = #{user.image_absolute_path,jdbcType=VARCHAR}
+						</if>
+						
+						<if test="user.account != null">
+							and U.account = #{user.account,jdbcType=VARCHAR}
+						</if>
+						<if test="user.name != null">
+							and U.name = #{user.name,jdbcType=VARCHAR}
+						</if>
+						<if test="user.password != null">
+							and U.password = #{user.password,jdbcType=VARCHAR}
+						</if>
+						<if test="user.phone != null">
+							and U.phone = #{user.phone,jdbcType=VARCHAR}
+						</if>
+						<if test="user.sex != null">
+							and U.sex = #{user.sex,jdbcType=INTEGER}
+						</if>
+						<if test="user.email != null">
+							and U.email = #{user.email,jdbcType=VARCHAR}
+						</if>
+						<if test="user.address != null">
+							and U.address = #{user.address,jdbcType=VARCHAR}
+						</if>
+						<if test="user.birthday != null">
+							and U.birthday = #{user.birthday,jdbcType=BIGINT}
+						</if>
+						<if test="user.description != null">
+							and U.description = #{user.description,jdbcType=VARCHAR}
+						</if>
+						<if test="user.department != null">
+							and U.department = #{user.department,jdbcType=INTEGER}
+						</if>
+						<if test="user.sub_system != null">
+							and U.sub_system = #{user.sub_system,jdbcType=INTEGER}
+						</if>
+						<if test="user.enabled != null">
+							and U.enabled = #{user.enabled,jdbcType=BIT}
+						</if>
+						<if test="user.enabled == null">
+							and U.enabled = true
+						</if>
+					</if>
+				</where>
+			) 		as		U on O.user_id = U.U_id
+			
+			left outer join 
+			(
+				select <include refid="Max_Customer_Base_Column_List" />
+				from pitaya_customer C
+				<where>
+					<if test="customer != null"> 	
+						<if test="customer.id != null">
+							and C.id = #{customer.id,jdbcType=BIGINT}
+						</if>
+						
+						<if test="customer.modifyTime != null">
+							and C.modifyTime = #{customer.modifyTime,jdbcType=BIGINT}
+						</if>
+						<if test="customer.image_size != null">
+							and C.image_size = #{customer.image_size,jdbcType=INTEGER}
+						</if>
+						<if test="customer.image_relative_path != null">
+							and C.image_relative_path = #{customer.image_relative_path,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.image_absolute_path != null">
+							and C.image_absolute_path = #{customer.image_absolute_path,jdbcType=VARCHAR}
+						</if>
+						
+						<if test="customer.name != null">
+							and C.name = #{customer.name,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.account != null">
+							and C.account = #{customer.account,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.password != null">
+							and C.password = #{customer.password,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.phone != null">
+							and C.phone = #{customer.phone,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.sex != null">
+							and C.sex = #{customer.sex,jdbcType=INTEGER}
+						</if>
+						<if test="customer.email != null">
+							and C.email = #{customer.email,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.address != null">
+							and C.address = #{customer.address,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.birthday != null">
+							and C.birthday = #{customer.birthday,jdbcType=BIGINT}
+						</if>
+						<if test="customer.enabled != null">
+							and C.enabled = #{customer.enabled,jdbcType=BIT}
+						</if>
+						<if test="customer.enabled == null">
+							and C.enabled = true
+						</if>
+					</if>	
+				</where>
+			) 		as		C on O.customer_id = C.C_id
 		<where>
 			<if test="status != null">
 				O.status = #{status,jdbcType=INTEGER}
@@ -770,111 +1091,7 @@
 			<if test="enabled == null">
 				and O.enabled = true
 			</if>
-			<if test="user != null">
-				<if test="user.id != null">
-					and U.id = #{user.id,jdbcType=BIGINT}
-				</if>
-				<if test="user.modifyTime != null">
-					and U.modifyTime = #{user.modifyTime,jdbcType=BIGINT}
-				</if>
-				<if test="user.image_size != null">
-					and U.image_size = #{user.image_size,jdbcType=INTEGER}
-				</if>
-				<if test="user.image_relative_path != null">
-					and U.image_relative_path = #{user.image_relative_path,jdbcType=VARCHAR}
-				</if>
-				<if test="user.image_absolute_path != null">
-					and U.image_absolute_path = #{user.image_absolute_path,jdbcType=VARCHAR}
-				</if>
-				<if test="user.account != null">
-					and U.account = #{user.account,jdbcType=VARCHAR}
-				</if>
-				<if test="user.name != null">
-					and U.name = #{user.name,jdbcType=VARCHAR}
-				</if>
-				<if test="user.password != null">
-					and U.password = #{user.password,jdbcType=VARCHAR}
-				</if>
-				<if test="user.phone != null">
-					and U.phone = #{user.phone,jdbcType=VARCHAR}
-				</if>
-				<if test="user.sex != null">
-					and U.sex = #{user.sex,jdbcType=INTEGER}
-				</if>
-				<if test="user.email != null">
-					and U.email = #{user.email,jdbcType=VARCHAR}
-				</if>
-				<if test="user.address != null">
-					and U.address = #{user.address,jdbcType=VARCHAR}
-				</if>
-				<if test="user.birthday != null">
-					and U.birthday = #{user.birthday,jdbcType=BIGINT}
-				</if>
-				<if test="user.description != null">
-					and U.description = #{user.description,jdbcType=VARCHAR}
-				</if>
-				<if test="user.department != null">
-					and U.department = #{user.department,jdbcType=INTEGER}
-				</if>
-				<if test="user.sub_system != null">
-					and U.sub_system = #{user.sub_system,jdbcType=INTEGER}
-				</if>
-				<if test="user.enabled != null">
-					and U.enabled = #{user.enabled,jdbcType=BIT}
-				</if>
-				<if test="user.enabled == null">
-					and U.enabled = true
-				</if>
-			</if>
-				
-			<if test="customer != null"> 	
-				<if test="customer.id != null">
-					and C.id = #{customer.id,jdbcType=BIGINT}
-				</if>
-				<if test="customer.modifyTime != null">
-					and C.modifyTime = #{customer.modifyTime,jdbcType=BIGINT}
-				</if>
-				<if test="customer.image_size != null">
-					and C.image_size = #{customer.image_size,jdbcType=INTEGER}
-				</if>
-				<if test="customer.image_relative_path != null">
-					and C.image_relative_path = #{customer.image_relative_path,jdbcType=VARCHAR}
-				</if>
-				<if test="customer.image_absolute_path != null">
-					and C.image_absolute_path = #{customer.image_absolute_path,jdbcType=VARCHAR}
-				</if>
-				<if test="customer.name != null">
-					and C.name = #{customer.name,jdbcType=VARCHAR}
-				</if>
-				<if test="customer.account != null">
-					and C.account = #{customer.account,jdbcType=VARCHAR}
-				</if>
-				<if test="customer.password != null">
-					and C.password = #{customer.password,jdbcType=VARCHAR}
-				</if>
-				<if test="customer.phone != null">
-					and C.phone = #{customer.phone,jdbcType=VARCHAR}
-				</if>
-				<if test="customer.sex != null">
-					and C.sex = #{customer.sex,jdbcType=INTEGER}
-				</if>
-				<if test="customer.email != null">
-					and C.email = #{customer.email,jdbcType=VARCHAR}
-				</if>
-				<if test="customer.address != null">
-					and C.address = #{customer.address,jdbcType=VARCHAR}
-				</if>
-				<if test="customer.birthday != null">
-					and C.birthday = #{customer.birthday,jdbcType=BIGINT}
-				</if>
-				<if test="customer.enabled != null">
-					and C.enabled = #{customer.enabled,jdbcType=BIT}
-				</if>
-				<if test="customer.enabled != null">
-					and C.enabled = true
-				</if>
-			</if>	
-				
+			
 		</where>
 	</select>
 	

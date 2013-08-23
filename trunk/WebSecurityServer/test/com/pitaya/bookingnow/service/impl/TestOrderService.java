@@ -170,6 +170,12 @@ public class TestOrderService {
 	}
 	
 	@Test
+	public void testSearchMinFullOrderByPrimaryKey() {
+		Order realOrder = orderService.searchMinFullOrderByPrimaryKey(1l);
+		showFullOrderInfo(realOrder);
+	}
+	
+	@Test
 	public void testSearchOrderById() {
 		Order order = new Order();
 		order.setId(1l);
