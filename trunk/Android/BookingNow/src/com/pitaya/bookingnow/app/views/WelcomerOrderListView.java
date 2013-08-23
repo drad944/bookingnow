@@ -346,7 +346,7 @@ public class WelcomerOrderListView extends OrderListView{
 				mParentView.showOrderDetail(mAdapter.getOrderList().get(position), false);
 				mParentView.setLastItem(mAdapter.getOrderList().get(position).getOrderKey());
 				Integer old = mAdapter.getSelectItem();
-				if(old != null){
+				if(old != null && old != -1){
 					mListView.getChildAt(old).setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
 				}
 				mListView.getChildAt(position).setBackgroundColor(getContext().getResources().getColor(R.color.common_background));

@@ -73,7 +73,7 @@ public class OrderDetailFragment extends Fragment {
         }
         mView = new ListView(getActivity());
         if(this.mViewWidth <= 0){
-        	 mView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        	mView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         } else {
         	mView.setLayoutParams(new LayoutParams(ContentUtil.getPixelsByDP(this.mViewWidth), LayoutParams.MATCH_PARENT));
         }
@@ -103,11 +103,12 @@ public class OrderDetailFragment extends Fragment {
 	public void onDestroy(){
 		super.onDestroy();
 		if(this.mOrder != null){
-			this.mOrder.setOnDirtyChangedListener(null);
 			this.mOrder.removeOnStatusChangedListeners();
-			this.mOrder.removemOnDirtyChangedListeners();
-			for(Entry<Food, Integer> entry : mOrder.getFoods().entrySet()){
-				entry.getKey().setOnFoodStatusChangedListener(null);
+			this.mOrder.removeOnDirtyChangedListener();
+			if(mOrder.getFoods() != null){
+				for(Entry<Food, Integer> entry : mOrder.getFoods().entrySet()){
+					entry.getKey().setOnFoodStatusChangedListener(null);
+				}
 			}
 		}
 	}

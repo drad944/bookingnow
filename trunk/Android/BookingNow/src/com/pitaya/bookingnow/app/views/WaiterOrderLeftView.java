@@ -172,6 +172,9 @@ public class WaiterOrderLeftView extends OrderLeftView{
     			});
     			OrderService.getFoodsOfOrder(Long.parseLong(order.getOrderKey()), handler);
     			break;
+    		default:
+    			showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class, 0);
+    			break;
     	}
 	}
 	

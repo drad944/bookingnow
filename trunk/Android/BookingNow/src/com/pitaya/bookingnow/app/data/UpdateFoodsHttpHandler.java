@@ -34,7 +34,6 @@ public class UpdateFoodsHttpHandler extends HttpHandler{
 		try {
 			JSONObject jresp = new JSONObject(response);
 			if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
-				//TODO handle fail
 				fail = true;
 			} else {
 				if(jresp.has("new")){
@@ -46,6 +45,7 @@ public class UpdateFoodsHttpHandler extends HttpHandler{
 						Order.Food food = mOrder.searchFood(food_id);
 						if(food != null){
 							food.setId(jorder_food.getLong("id"));
+							food.setStatus(jorder_food.getInt("status"));
 							DataService.saveFoodId(mContext, mOrder, food);
 						} else {
 							Log.e(TAG, "Can not find food in order");
@@ -100,12 +100,14 @@ public class UpdateFoodsHttpHandler extends HttpHandler{
 				ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
 			}
 		} else {
-			ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitfail), Toast.LENGTH_LONG);
+			ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.operationerror), 
+					Toast.LENGTH_LONG);
 		}
 	}
 	
 	@Override
 	public void onFail(String action, int statusCode){
-		ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitfail), Toast.LENGTH_SHORT);
+		ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.operationfail),
+				Toast.LENGTH_SHORT);
 	}
 }

@@ -99,7 +99,7 @@ public class CustomerOrderDetailAdapter extends OrderDetailAdapter {
 	
 					@Override
 					public void onClick(View v) {
-						mOrder.removeAllFood(mContext);
+						mOrder.resetAllFoods(mContext);
 						CustomerOrderDetailAdapter.this.notifyDataSetChanged();
 						if(CustomerOrderDetailAdapter.this.mListener != null){
 							CustomerOrderDetailAdapter.this.mListener.OnDataSetChanged();
