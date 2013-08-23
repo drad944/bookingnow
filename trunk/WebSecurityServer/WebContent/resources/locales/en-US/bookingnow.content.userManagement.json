@@ -22,12 +22,11 @@
 			"requirePassword":"Password is required!",
 			"passwordLength":"Your password must be between 6 and 20 characters!",
 			"requireConfirmPassword":"Confirm Password is required!",
-			"NomatchPassword":"Confirm Passwords doesn\'t match!",
+			"NomatchPassword":"Confirm Passwords does not match!",
 			"birthdayRange":"Your birth date must be between 1/1/1900 and __year__",
 			"requireEmail":"E-mail is required!",
 			"invalidEmail":"Invalid e-mail!",
 			"acceptService":"You have to accept the terms"
-			
 		}
 	},
 	"result":{
