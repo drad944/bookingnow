@@ -25,6 +25,8 @@ public interface IOrderService {
 	
 	List<Order> searchOrdersByFullOrder(Order order);
 	
+	Order searchMinFullOrderByPrimaryKey(Long id);
+	
 	Order searchOrderById(Long id);
 	
 	Order getTablesOfOrder(Long id);

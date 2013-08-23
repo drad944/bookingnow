@@ -1466,4 +1466,12 @@ public class OrderService implements IOrderService{
 		return order;
 	}
 
+	@Override
+	public Order searchMinFullOrderByPrimaryKey(Long id) {
+		if (id != null) {
+			return orderDao.selectMinFullOrderByPrimaryKey(id);
+		}
+		return null;
+	}
+
 }

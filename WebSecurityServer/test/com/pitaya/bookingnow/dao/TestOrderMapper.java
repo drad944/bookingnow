@@ -21,6 +21,148 @@ public class TestOrderMapper {
 	static {
 		sqlSessionFactory = MyBatisUtil.getSqlSessionFactory();
 	}
+	
+	public void showFullOrderInfo(Order realOrder) {
+		String space = "    ";
+		String orderString = " order ";
+		String userString = " user ";
+		String customerString = " customer ";
+		String food_detailString = " food_detail ";
+		String foodString = " food ";
+		String table_detailString = " table_detail ";
+		String tableString = " table ";
+		
+		if (realOrder != null) {
+			System.out.println(orderString + "Id : " + realOrder.getId());
+			System.out.println(orderString + "Allowance : " + realOrder.getAllowance());
+			System.out.println(orderString + "Customer_count : " + realOrder.getCustomer_count());
+			System.out.println(orderString + "Customer_id : " + realOrder.getCustomer_id());
+			System.out.println(orderString + "ModifyTime : " + realOrder.getModifyTime());
+			System.out.println(orderString + "PrePay : " + realOrder.getPrePay());
+			System.out.println(orderString + "Status : " + realOrder.getStatus());
+			System.out.println(orderString + "Submit_time : " + realOrder.getSubmit_time());
+			System.out.println(orderString + "Total_price : " + realOrder.getTotal_price());
+			System.out.println(orderString + "User_id : " + realOrder.getUser_id());
+			System.out.println(orderString + "Enabled : " + realOrder.getEnabled());
+			
+			User realUser = realOrder.getUser();
+			if (realUser != null) {
+				System.out.println(space + userString  + "Id : " + realUser.getId());
+				System.out.println(space + userString  + "Image_absolute_path : " + realUser.getImage_absolute_path());
+				System.out.println(space + userString  + "Image_relative_path : " + realUser.getImage_relative_path());
+				System.out.println(space + userString  + "Image_size : " + realUser.getImage_size());
+				System.out.println(space + userString  + "ModifyTime : " + realUser.getModifyTime());
+				System.out.println(space + userString  + "Account : " + realUser.getAccount());
+				System.out.println(space + userString  + "Address : " + realUser.getAddress());
+				System.out.println(space + userString  + "Description : " + realUser.getDescription());
+				System.out.println(space + userString  + "Email : " + realUser.getEmail());
+				System.out.println(space + userString  + "Name : " + realUser.getName());
+				System.out.println(space + userString  + "Password : " + realUser.getPassword());
+				System.out.println(space + userString  + "Phone : " + realUser.getPhone());
+				System.out.println(space + userString  + "Birthday : " + realUser.getBirthday());
+				System.out.println(space + userString  + "Department : " + realUser.getDepartment());
+				System.out.println(space + userString  + "Sex : " + realUser.getSex());
+				System.out.println(space + userString  + "Sub_system : " + realUser.getSub_system());
+				System.out.println(space + userString  + "Enabled : " + realUser.getEnabled());
+			}
+			
+			Customer realCustomer = realOrder.getCustomer();
+			if (realCustomer != null) {
+				System.out.println(space + customerString  + "Id : " + realCustomer.getId());
+				System.out.println(space + customerString  + "Image_absolute_path : " + realCustomer.getImage_absolute_path());
+				System.out.println(space + customerString  + "Image_relative_path : " + realCustomer.getImage_relative_path());
+				System.out.println(space + customerString  + "Image_size : " + realCustomer.getImage_size());
+				System.out.println(space + customerString  + "ModifyTime : " + realCustomer.getModifyTime());
+				System.out.println(space + customerString  + "Account : " + realCustomer.getAccount());
+				System.out.println(space + customerString  + "Address : " + realCustomer.getAddress());
+				System.out.println(space + customerString  + "Email : " + realCustomer.getEmail());
+				System.out.println(space + customerString  + "Name : " + realCustomer.getName());
+				System.out.println(space + customerString  + "Password : " + realCustomer.getPassword());
+				System.out.println(space + customerString  + "Phone : " + realCustomer.getPhone());
+				System.out.println(space + customerString  + "Birthday : " + realCustomer.getBirthday());
+				System.out.println(space + customerString  + "Sex : " + realCustomer.getSex());
+				System.out.println(space + customerString  + "Enabled : " + realCustomer.getEnabled());
+			}
+			
+			
+			List<Order_Food_Detail> realFood_Details = realOrder.getFood_details();
+			 for (int j = 0; j < realFood_Details.size(); j++) {
+				 Order_Food_Detail realFood_Detail = realFood_Details.get(j);
+				 if (realFood_Detail != null) {
+					System.out.println(space + food_detailString  + "Id : " + realFood_Detail.getId());
+					System.out.println(space + food_detailString  + "Count : " + realFood_Detail.getCount());
+					System.out.println(space + food_detailString  + "Food_id : " + realFood_Detail.getFood_id());
+					System.out.println(space + food_detailString  + "Last_modify_time : " + realFood_Detail.getLast_modify_time());
+					System.out.println(space + food_detailString  + "Order_id : " + realFood_Detail.getOrder_id());
+					System.out.println(space + food_detailString  + "Preference : " + realFood_Detail.getPreference());
+					System.out.println(space + food_detailString  + "Status : " + realFood_Detail.getStatus());
+					System.out.println(space + food_detailString  + "Enabled : " + realFood_Detail.getEnabled());
+					System.out.println(space + food_detailString  + "IsFree : " + realFood_Detail.getIsFree());
+					if (realFood_Detail.getFood() != null) {
+						Food realFood = realFood_Detail.getFood();
+						System.out.println(space + space + foodString + "Id : " + realFood.getId());
+						System.out.println(space + space + foodString + "Category : " + realFood.getCategory());
+						System.out.println(space + space + foodString + "Description : " + realFood.getDescription());
+						System.out.println(space + space + foodString + "Large_image_absolute_path : " + realFood.getLarge_image_absolute_path());
+						System.out.println(space + space + foodString + "Large_image_relative_path : " + realFood.getLarge_image_relative_path());
+						System.out.println(space + space + foodString + "Name : " + realFood.getName());
+						System.out.println(space + space + foodString + "Small_image_absolute_path : " + realFood.getSmall_image_absolute_path());
+						System.out.println(space + space + foodString + "Small_image_relative_path : " + realFood.getSmall_image_relative_path());
+						System.out.println(space + space + foodString + "Large_image_size : " + realFood.getLarge_image_size());
+						System.out.println(space + space + foodString + "Period : " + realFood.getPeriod());
+						System.out.println(space + space + foodString + "Price : " + realFood.getPrice());
+						System.out.println(space + space + foodString + "Recommendation : " + realFood.getRecommendation());
+						System.out.println(space + space + foodString + "Small_image_size : " + realFood.getSmall_image_size());
+						System.out.println(space + space + foodString + "Status : " + realFood.getStatus());
+						System.out.println(space + space + foodString + "Version : " + realFood.getVersion());
+						System.out.println(space + space + foodString + "Enabled : " + realFood.getEnabled());
+						System.out.println(space + space + foodString + "Large_image : " + realFood.getLarge_image());
+						System.out.println(space + space + foodString + "Small_image : " + realFood.getSmall_image());
+						
+					}
+				}
+			}
+			 
+			 List<Order_Table_Detail> realTable_Details = realOrder.getTable_details();
+			 for (int j = 0; j < realTable_Details.size(); j++) {
+				 Order_Table_Detail realTable_Detail = realTable_Details.get(j);
+				 if (realTable_Detail != null) {
+					System.out.println(space + table_detailString + "Id : " + realTable_Detail.getId());
+					System.out.println(space + table_detailString + "Order_id : " + realTable_Detail.getOrder_id());
+					System.out.println(space + table_detailString + "RealCustomerCount : " + realTable_Detail.getRealCustomerCount());
+					System.out.println(space + table_detailString + "Table_id : " + realTable_Detail.getTable_id());
+					System.out.println(space + table_detailString + "Enabled : " + realTable_Detail.getEnabled());
+					if (realTable_Detail.getTable() != null) {
+						Table realTable = realTable_Detail.getTable();
+						System.out.println(space + space + tableString + "id : " + realTable.getId());
+						System.out.println(space + space + tableString + "Address : " + realTable.getAddress());
+						System.out.println(space + space + tableString + "IndoorPrice : " + realTable.getIndoorPrice());
+						System.out.println(space + space + tableString + "MaxCustomerCount : " + realTable.getMaxCustomerCount());
+						System.out.println(space + space + tableString + "MinCustomerCount : " + realTable.getMinCustomerCount());
+						System.out.println(space + space + tableString + "Status : " + realTable.getStatus());
+					}
+					System.out.println("-------------------------------------------------------");
+				}
+			}
+		}
+	}
+	
+	@Test
+	public void testSelectMinFullOrderByPrimaryKey() {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			OrderMapper orderMapper = sqlSession.getMapper(OrderMapper.class);
+
+			Order order = null;
+
+			order = orderMapper.selectFullOrderByPrimaryKey((long) 1);
+
+			showFullOrderInfo(order);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
 
 	@Test
 	public void testSelectFullOrderByPrimaryKey() {
