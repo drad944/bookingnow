@@ -95,11 +95,15 @@ public class HomeActivity extends FragmentActivity {
 
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			Log.d(TAG, "Service connected");
+			Log.i(TAG, "Service connected");
 			mMessageService = ((MessageService.MessageBinder)service).getService();
 		    mIsBound = true;
 			mMessageService.registerHandler(Constants.RESULT_MESSAGE, mMessageHandler);
 			mMessageService.registerHandler(Constants.FOOD_MESSAGE, mMessageHandler);
+			Long userid = mMessageService.getUserId();
+			if(userid == null || userid == -1L){
+				UserManager.setLoginUser(HomeActivity.this, null);
+			}
 			if(mMessageService.isReady()){
 				/* 
 				 * Maybe we register the result message too late, so
@@ -185,6 +189,10 @@ public class HomeActivity extends FragmentActivity {
 		if(!this.mIsBound){
 			this.doBindService();
 		} else {
+			Long userid = this.mMessageService.getUserId();
+			if(userid == null || userid == -1L){
+				UserManager.setLoginUser(this, null);
+			}
 			this.refreshMenuByRole();
 		}
 	}
@@ -224,11 +232,9 @@ public class HomeActivity extends FragmentActivity {
 			//Set menu with to 200dp
 			homecontent = new SlideContent(this, 200, contentViews);
 			this.mLeftMenu = getLayoutInflater().inflate(R.layout.leftmenu, null);
-			
 			LinearLayout menuitems = (LinearLayout)(mLeftMenu.findViewById(R.id.leftmenu));
 			
 			this.mInfoView = (TextView)menuitems.findViewById(R.id.logininfo);
-
 			View menuitem = menuitems.findViewById(R.id.menu_btn);
 			menuitem.setOnClickListener(new OnClickListener(){
 				@Override
@@ -268,8 +274,9 @@ public class HomeActivity extends FragmentActivity {
 	           	 	UserManager.cleanRemeberMe(HomeActivity.this);
 	           	 	UserManager.setLoginUser(HomeActivity.this, null);
 					HomeActivity.this.refreshMenuByRole();
-					HomeActivity.this.homecontent.selectItem("menu");
 					((FoodMenuContentView)HomeActivity.this.homecontent.getContentView("menu")).setOrderAndRefresh(null);
+					HomeActivity.this.homecontent.refreshItem("menu");
+					
 				}
 				
 			});
@@ -288,9 +295,14 @@ public class HomeActivity extends FragmentActivity {
 			contentViews.add(orderview);
 			FoodMenuContentView menucontentview = new FoodMenuContentView("menu", this, homecontent);
 			contentViews.add(menucontentview);
+			homecontent.setMenu(this.mLeftMenu);
+		}
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 		setContentView(homecontent);
-		homecontent.setMenu(this.mLeftMenu);
 	}
 	
 	private void showConfirmDialog(final String key){
@@ -387,6 +399,9 @@ public class HomeActivity extends FragmentActivity {
 				try{
 					User user = new User(Long.parseLong(infos[0]), infos[1], Integer.parseInt(infos[2]));
 					UserManager.setLoginUser(this, user);
+					if(this.mIsBound){
+						this.mMessageService.setUserId(user.getUserId());
+					}
 					if(this.isRemeberMeAfterLogin){
 						UserManager.rememberMe(this, this.username, this.password);
 					}

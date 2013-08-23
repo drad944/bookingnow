@@ -54,6 +54,18 @@ public class SlideContent extends RelativeLayout {
 			}
 		}
 	}
+	
+	public void refreshItem(String key){
+		for(int i=0; i < this.contentViews.size(); i++){
+			if(key.equals(this.contentViews.get(i).getKey())){
+				this.setContent(this.contentViews.get(i));
+				if(!mContentView.isMenuOFF()){
+					mContentView.closeMenu();
+				}
+				break;
+			}
+		}
+	}
 
 	public void setMenu(View v) {
 		mMenuView.setView(v);

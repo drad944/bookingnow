@@ -100,7 +100,7 @@ public class WaiterOrderLeftView extends OrderLeftView{
 						Order order =  new Order(msg.getOrderId(), null, null, 
 								msg.getPhone(), msg.getCustomer(), msg.getPeopleCount(), msg.getTimestamp());
 						order.setSubmitTime(msg.getTimestamp());
-						order.setStatus(Constants.ORDER_WELCOMER_NEW);
+						order.setStatus(-1);
 						mAdapter.addNewWaitingOrder(order);
 					} else if(msg.getAction().equals(Constants.ACTION_REMOVE)){
 						Order order =  new Order(msg.getOrderId(), null, null, 
@@ -122,7 +122,7 @@ public class WaiterOrderLeftView extends OrderLeftView{
 	
 	public void moveOrderToMineList(Order order){
 		if(this.mAdapter.mOrderListViews.size() == 2){
-			OrderListView waiterOrderListV = this.mAdapter.mOrderListViews.get(0);
+			final OrderListView waiterOrderListV = this.mAdapter.mOrderListViews.get(0);
 			OrderListView waitingOrderListV = this.mAdapter.mOrderListViews.get(1);
 			ArrayList<Order> waitingOrderList = waitingOrderListV.mAdapter.getOrderList();
 			for(int i=0; i < waitingOrderList.size(); i++){
@@ -277,8 +277,7 @@ public class WaiterOrderLeftView extends OrderLeftView{
 				boolean isRemoved = false;
 				for(Order order : mOrderListViews.get(1).getOrderList()){
 					if(order.getOrderKey().equals(removedorder.getOrderKey())){
-						mOrderListViews.get(1).getOrderList().remove(i);
-						isRemoved = true;
+						order.remove(getActivity());
 						break;
 					}
 					i++;

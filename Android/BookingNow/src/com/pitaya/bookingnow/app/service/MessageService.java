@@ -43,10 +43,6 @@ public class MessageService extends Service{
 	private int mUpdateNotifyID = 1;
 	private int lastNotifyID = 2;
 	
-	private MessageService(String ip, int port){
-		this.handlers = new ConcurrentHashMap<String, List<Handler>>();
-	}
-	
 	public MessageService(){
 		this.handlers = new ConcurrentHashMap<String, List<Handler>>();
 		this.ip = HttpService.IP;
@@ -76,25 +72,15 @@ public class MessageService extends Service{
         this.shutdown();
         Toast.makeText(this, "BookingNow message service stopped", Toast.LENGTH_SHORT).show();
     }
+
+    public void setUserId(Long id){
+    	this.clientAgent.setUserId(id);
+    }
     
-	public static MessageService initService(String ip, int port){
-		if(_instance == null){
-			_instance = new MessageService(ip, port);
-		} else if(!_instance.isReady() && !_instance.isConnecting()){
-			_instance.start(ip, port);
-		}
-		return _instance;
-	}
-	
-	public static MessageService getService(){
-		return _instance;
-	}
-	
-	public static void shutdownService(){
-		_instance.clientAgent.shutdown();
-		_instance = null;
-	}
-	
+    public Long getUserId(){
+    	return this.clientAgent.getUserId();
+    }
+    
 	public void registerHandler(String key, Handler handler){
 		List<Handler> handlerList = this.handlers.get(key);
 		if(handlerList == null){

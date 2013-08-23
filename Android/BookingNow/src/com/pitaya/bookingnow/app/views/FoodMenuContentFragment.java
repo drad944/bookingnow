@@ -375,16 +375,6 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 						mTitleList.add(entry.getKey());
 			        }
 				}
-
-			    public void updateFoods(Map<String, ArrayList<Food>> foods){
-			    	mFoodMenus = new HashMap<Integer, FoodMenuView>();
-			    	mTitleList = new ArrayList<String>();
-			    	mFoodPages = foods;
-			        for(Entry<String, ArrayList<Food>> entry : foods.entrySet()){
-						mTitleList.add(entry.getKey());
-			        }
-			        this.notifyDataSetChanged();
-			    }
 			    
 			    public void refresh(int index){
 			    	if(index < mFoodMenus.size()){

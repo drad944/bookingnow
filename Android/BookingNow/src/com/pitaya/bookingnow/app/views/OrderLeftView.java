@@ -95,6 +95,7 @@ public class OrderLeftView extends Fragment{
         		fragmentTransaction.commit();
             }
         } else {
+        	//Display none
         	Fragment fragment = getFragmentManager().findFragmentById(R.id.orderdetail);
         	if(fragment != null){
             	FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
