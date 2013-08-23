@@ -33,6 +33,7 @@ public interface OrderMapper {
     Order selectFoodsInOrderByPrimaryKey(Long id);
     
     Order selectMinFullOrderByPrimaryKey(Long id);
+    Order selectOrderByPrimaryKey(Long id);
     
     List<Order> searchMinFullOrdersByFullOrderInfo(Order order);
     

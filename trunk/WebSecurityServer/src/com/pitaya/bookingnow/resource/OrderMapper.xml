@@ -429,6 +429,13 @@
 		enabled
 	</sql>
 	
+	<select id="selectOrderByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select 
+			<include refid="Base_Column_List" />
+		from pitaya_order
+		where enabled = true and id = #{id,jdbcType=BIGINT}
+	</select>
+	
 	<select id="selectMinFullOrderByPrimaryKey" resultMap="Order_BaseResultMap"
 		parameterType="java.lang.Long">
 		select

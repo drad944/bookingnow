@@ -61,4 +61,6 @@ public interface IOrderService {
 	
 	MyResult deleteOrder(Order order);
 	
+	MyResult switchStatusForOrder(Order order);
+	
 }

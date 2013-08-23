@@ -189,7 +189,7 @@ public class OrderAction extends BaseAction{
 	
 	/*		
 	 * 		update welcomer_new order to new
-	 */
+	 
 	public String updateTablesOfWaitingOrder() {
 		if (order != null) {
 			if(order.getTable_details() != null){
@@ -213,6 +213,7 @@ public class OrderAction extends BaseAction{
 			return "Fail";
 		}
 	}
+	*/
 	
 	/*
 	 * 		Update new or waiting order to committed 
@@ -229,7 +230,7 @@ public class OrderAction extends BaseAction{
 					return "Fail";
 				}
 			} else if(order.getTable_details() != null){
-				result = orderService.updateWaitingOrderToConfirmed(order);
+				result = orderService.switchStatusForOrder(order);
 				if (result.isExecuteResult()) {
 					order = result.getOrder();
 					return "commitWaitingOrderSuccess";
