@@ -1457,4 +1457,25 @@ public class OrderService implements IOrderService{
 		return null;
 	}
 
+	@Override
+	public MyResult switchStatusForOrder(Order order) {
+		MyResult result = new MyResult();
+		
+		if (order != null && order.getId() != null) {
+			Order realOrder = orderDao.selectOrderByPrimaryKey(order.getId());
+			if (realOrder != null) {
+				if (realOrder.getStatus() == Constants.ORDER_WAITING) {
+					return updateWaitingOrderToConfirmed(order);
+				}else if (realOrder.getStatus() == Constants.ORDER_WELCOMER_NEW) {
+					return updateTablesOfWaitingOrder(order);
+				}
+			}else {
+				result.getErrorDetails().put("order_exist", "can not find order in DB.");
+			}
+		}else {
+			result.getErrorDetails().put("order_exist", "can not find order in client.");
+		}
+		return result;
+	}
+
 }
