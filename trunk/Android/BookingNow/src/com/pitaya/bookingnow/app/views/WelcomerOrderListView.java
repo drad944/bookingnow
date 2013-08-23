@@ -303,6 +303,7 @@ public class WelcomerOrderListView extends OrderListView{
 					};
 					viewHolder.setStatusListener(statuslistener);
 		    		order.addOnStatusChangedListener(statuslistener);
+		    		order.setOnOrderRemoveListener(mOrderRemoveListener);
 					SimpleDateFormat dateFm = new SimpleDateFormat("MM月dd日 HH:mm"); 
 					Date date = new Date();
 					date.setTime(order.getSubmitTime());
@@ -341,19 +342,45 @@ public class WelcomerOrderListView extends OrderListView{
         this.mListView.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+			public void onItemClick(AdapterView<?> arg0, View item, int position,
 					long arg3) {
 				mParentView.showOrderDetail(mAdapter.getOrderList().get(position), false);
 				mParentView.setLastItem(mAdapter.getOrderList().get(position).getOrderKey());
 				Integer old = mAdapter.getSelectItem();
-				if(old != null && old != -1){
+				if(old != null && old != -1 && mListView.getChildAt(old) != null){
 					mListView.getChildAt(old).setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
 				}
-				mListView.getChildAt(position).setBackgroundColor(getContext().getResources().getColor(R.color.common_background));
+				item.setBackgroundColor(getContext().getResources().getColor(R.color.common_background));
 				mAdapter.setSelectItem(position);
 			}
         	
         });
 	}
 	
+    private Order.OnOrderRemoveListener mOrderRemoveListener = new Order.OnOrderRemoveListener(){
+		@Override
+		public void onRemove(Order order) {
+			int i = 0;
+			for(; i < mAdapter.getOrderList().size(); i++){
+				if(mAdapter.getOrderList().get(i) == order){
+					mAdapter.getOrderList().remove(i);
+					break;
+				}
+			}
+			if(mAdapter.getSelectItem() == i){
+				if(mAdapter.getOrderList().size() > 0 && i <= mAdapter.getOrderList().size()){
+					if(i == mAdapter.getOrderList().size()){
+						i -= 1;
+					}
+					Order replaceorder = mAdapter.getOrderList().get(i);
+					mParentView.showOrderDetail(replaceorder, false);
+					mParentView.setLastItem(replaceorder.getOrderKey());
+					mAdapter.setSelectItem(i);
+				} else {
+					mParentView.showOrderDetail(null, false);
+				}
+			}
+			mAdapter.notifyDataSetChanged();
+		}
+    };
 }

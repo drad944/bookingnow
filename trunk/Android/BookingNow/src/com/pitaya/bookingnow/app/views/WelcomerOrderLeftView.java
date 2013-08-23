@@ -58,7 +58,7 @@ public class WelcomerOrderLeftView extends OrderLeftView{
 	
 	private final static String TAG = "WelcomerOrderLeftView";
 	
-	private OrderListView mOrderListView;
+	private WelcomerOrderListView mOrderListView;
 	
 	public WelcomerOrderLeftView(OrderContentView v){
 		super(v);
@@ -69,6 +69,8 @@ public class WelcomerOrderLeftView extends OrderLeftView{
 		if(this.mContentContainer.getStatus() != null){
 			this.lastSelectItem = (String)this.mContentContainer.getStatus();
 		}
+		this.mOrderListView = new WelcomerOrderListView(this.getActivity(), this);
+		mOrderListView.setupViews();
 		mMessageHandler.setOnMessageListener(new MessageHandler.OnMessageListener(){
 
 			@Override
@@ -82,31 +84,31 @@ public class WelcomerOrderLeftView extends OrderLeftView{
 						boolean isRemoved = false;
 						for(Order order : mOrderListView.getOrderList()){
 							if(order.getOrderKey().equals(removedorder.getOrderKey())){
-								mOrderListView.getOrderList().remove(i);
+								order.remove(getActivity());
 								isRemoved = true;
 								break;
 							}
 							i++;
 						}
-						if(isRemoved){
-							mOrderListView.refresh();
-						}
+//						if(isRemoved){
+//							mOrderListView.refresh();
+//						}
 					}
 				}
 			}
 			
 		});
-		this.mOrderListView = new WelcomerOrderListView(this.getActivity(), this);
-		mOrderListView.setupViews();
 		this.doBindService();
 		return mOrderListView;
 	}
 	
 	public void showOrderDetail(Order order, boolean isForce){
-		order.enrichFoods(this.getActivity());
-    	if(order.getStatus() == Constants.ORDER_WAITING && order.isDirty()){
-    		order.enrichUpdateFoods(this.getActivity());
-    	}
+		if(order != null){
+			order.enrichFoods(this.getActivity());
+	    	if(order.getStatus() == Constants.ORDER_WAITING && order.isDirty()){
+	    		order.enrichUpdateFoods(this.getActivity());
+	    	}
+		}
 		super.showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class, 650);
 	}
 

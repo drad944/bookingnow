@@ -70,8 +70,9 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
 						    public void onSuccess(String action, String response) {
 								try {
 									JSONObject jresp = new JSONObject(response);
-									if(jresp.has("executeResult") || jresp.getBoolean("executeResult") == false){
-										//hanle fail
+									//if success, there won't be executeResult in the response
+									if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
+										ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.operationerror), Toast.LENGTH_LONG);
 									} else {
 										JSONArray jorder_foods = jresp.getJSONArray("food_details");
 										for(int i=0; i < jorder_foods.length(); i++){
@@ -91,12 +92,11 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
 										mOrder.setStatus(jresp.getInt("status"));
 										mOrder.markDirty(mContext, false);
 										ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
-										return;
 									}
 								} catch (JSONException e) {
 									e.printStackTrace();
+									ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.operationerror), Toast.LENGTH_LONG);
 								}
-								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.operationerror), Toast.LENGTH_LONG);
 						    }
 							
 							@Override
@@ -121,28 +121,7 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
 
 					@Override
 					public void onClick(View v) {
-						OrderService.cancelOrder(mOrder, new HttpHandler(){
-							
-							@Override
-						    public void onSuccess(String action, String response) {
-								try {
-									JSONObject jresp = new JSONObject(response);
-									if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == true){
-										mOrder.remove(mContext);
-										return;
-									}
-								} catch (JSONException e) {
-									e.printStackTrace();
-								}
-								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.operationerror), Toast.LENGTH_SHORT);
-							}
-							
-							@Override
-							public void onFail(String action, int statusCode){
-								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.operationfail), Toast.LENGTH_SHORT);
-							}
-						});
-						
+						OrderService.cancelOrder(mOrder, new CancelOrderHandler(mContext , mOrder));
 					}
 					
 				});
@@ -207,7 +186,6 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
 										} catch (JSONException e) {
 											e.printStackTrace();
 										}
-										//TODO handle fail
 									}
 
 									@Override
@@ -238,7 +216,9 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
 
 						@Override
 						public void onClick(View v) {
-							//TODO send request to cancel a order, if any food is in cooking, this will fail
+							if(mOrder.getStatus() == Constants.ORDER_WAITING){
+								 OrderService.cancelOrder(mOrder, new CancelOrderHandler(mContext, mOrder));
+							}
 						}
     					
     				});
@@ -296,6 +276,7 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
 					
 					@Override
 					public void onClick(View v) {
+						OrderService.cancelOrder(mOrder, new CancelOrderHandler(mContext , mOrder));
 					}
 					
 				});

@@ -181,8 +181,8 @@ public class Order implements Serializable{
 			for(Entry<Food, Integer> entry : getFoods().entrySet()){
 				entry.getKey().setOnFoodStatusChangedListener(null);
 			}
-			this.foods = null;
 		}
+		this.foods = new LinkedHashMap<Order.Food, Integer>();
 		if(this.mOnRemoveListener != null){
 			this.mOnRemoveListener.onRemove(this);
 		}

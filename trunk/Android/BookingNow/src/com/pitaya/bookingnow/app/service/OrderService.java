@@ -239,11 +239,7 @@ public class OrderService {
 			user.put("id", order.getSubmitterId());
 			jorder.put("user", user);
 			jreq.put("order", jorder);
-			if(order.getStatus() == Constants.ORDER_WELCOMER_NEW){
-				HttpService.post("updateTablesOfWaitingOrder.action", new StringEntity(jreq.toString()), callback);
-			} else if(order.getStatus() == Constants.ORDER_WAITING){
-				HttpService.post("commitOrder.action", new StringEntity(jreq.toString()), callback);
-			}
+			HttpService.post("commitOrder.action", new StringEntity(jreq.toString()), callback);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {

@@ -46,8 +46,9 @@ public class HttpService {
 	
 	static {
 		pool = Executors.newFixedThreadPool(10);
-		IP = "10.111.3.116";
+		IP = "192.168.0.102";
 		PORT = 19191;
+		URL = "http://" + IP + ":18080/Booking/";
 	}
 	
 	public static void setUrl(String url){

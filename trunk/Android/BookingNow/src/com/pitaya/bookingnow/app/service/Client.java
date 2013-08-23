@@ -24,6 +24,7 @@ public class Client extends Thread{
 	    private OutputStreamWriter out;
 	    private BufferedWriter bwriter;
 	    private MessageService service;
+	    private Long userid;
 	    private volatile boolean isConnecting = false;
 
 	    public Client(String ip, int port, MessageService ms) {
@@ -99,6 +100,14 @@ public class Client extends Thread{
 	        }
 	    }
 
+	    public void setUserId(Long id){
+	    	this.userid = id;
+	    }
+	    
+	    public Long getUserId(){
+	    	return this.userid;
+	    }
+	    
 	    public void shutdown(){
 	    	 if(in != null){
 				try {
@@ -123,7 +132,6 @@ public class Client extends Thread{
 				}
 			 }
 			 socket = null;
-			 this.interrupt();
 	    }
 
 	    public synchronized boolean sendMessage(String msg) {

@@ -71,7 +71,7 @@ public class WaitingOrderListView extends OrderListView{
 				}
 				final ArrayList<Table> tables = selectedTables;
 				Integer currentItem = WaitingOrderListView.this.mAdapter.getSelectItem();
-				if(currentItem == null){
+				if(currentItem == null || currentItem == -1){
 					return;
 				}
 				Order selectedOrder = WaitingOrderListView.this.mAdapter.getOrderList().get(currentItem);
@@ -191,14 +191,7 @@ public class WaitingOrderListView extends OrderListView{
 
 		try {
 			mAdapter = new OrderListAdapter(this.getContext(), this.mListView){
-					
-				private void updateOrderStatus(int position, int status){
-					View view = ((ListView)mView).getChildAt(position);
-					if(view != null && (TextView)view.findViewById(R.id.info4) != null){
-						((TextView)view.findViewById(R.id.info4)).setText(Order.getOrderStatusString(status));
-					}
-				}
-				
+
 				@Override
 				public View getView(int position, View convertView, ViewGroup parent) {
 					View view = convertView;
@@ -221,6 +214,7 @@ public class WaitingOrderListView extends OrderListView{
 					} else {
 						view.setBackgroundColor(mContext.getResources().getColor(android.R.color.white));
 					}
+					order.setOnOrderRemoveListener(mOrderRemoveListener);
 					viewHolder.info1.setText(order.getCustomerName());
 					viewHolder.info2.setText(order.getPhoneNumber());
 					viewHolder.info3.setText(String.valueOf(order.getPeopleCount()));
@@ -243,20 +237,34 @@ public class WaitingOrderListView extends OrderListView{
         this.mListView.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+			public void onItemClick(AdapterView<?> arg0, View item, int position,
 					long arg3) {
 				mParentView.showOrderDetail(mAdapter.getOrderList().get(position), false, WaiterOrderLeftView.WAITING_ORDERS);
 				Integer old = mAdapter.getSelectItem();
-				if(old != null){
+				if(old != null && old != -1 && mListView.getChildAt(old) != null){
 					mListView.getChildAt(old).setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
 				}
-				mListView.getChildAt(position).setBackgroundColor(getContext().getResources().getColor(R.color.common_background));
+				item.setBackgroundColor(getContext().getResources().getColor(R.color.common_background));
 				mAdapter.setSelectItem(position);
 			}
         	
         });
 		
-
 	}
+    
+    private Order.OnOrderRemoveListener mOrderRemoveListener = new Order.OnOrderRemoveListener(){
+		
+    	@Override
+		public void onRemove(Order order) {
+			int i = 0;
+			for(; i < mAdapter.getOrderList().size(); i++){
+				if(mAdapter.getOrderList().get(i) == order){
+					mAdapter.getOrderList().remove(i);
+					break;
+				}
+			}
+			mAdapter.notifyDataSetChanged();
+		}
+    };
 	
 }
