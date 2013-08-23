@@ -923,50 +923,39 @@ public class OrderService implements IOrderService{
 	@Override
 	public MyResult cancelOrder(Order order) {
 		/*
-		 * welcomer cancel order which is order status is new,waiting,
-		 * in:order_id,user_id,order status:confirmed,food status:confirmed
-		 * 
+		 * waiter or welcomer cancel order which is order status is new,welcomer_new, 
+		 * waiting,
+		 * in: order_id
 		 */
 		MyResult result = new MyResult();
+		result.setExecuteResult(false);
 		if(order != null && order.getId() != null) {
 			Order realOrder = orderDao.selectFullOrderByPrimaryKey(order.getId());
+			//check order existed in database
 			if(realOrder != null && realOrder.getId() != null){
-				if ((realOrder.getStatus() != null && realOrder.getStatus() == Constants.ORDER_NEW)
-						|| (realOrder.getStatus() != null && realOrder.getStatus() == Constants.ORDER_WAITING)){
-					
-					//check order existed in client data and DB data
+				if (realOrder.getStatus() != null && (realOrder.getStatus() == Constants.ORDER_NEW
+						|| realOrder.getStatus() == Constants.ORDER_WELCOMER_NEW
+						|| realOrder.getStatus() == Constants.ORDER_WAITING)){
 					List<Order_Food_Detail> realFood_Details = realOrder.getFood_details();
-					
 					if (realFood_Details != null && realFood_Details.size() > 0) {
-						
-						//check food list existed in client data
 						for (int i = 0; i < realFood_Details.size(); i++) {
 							Order_Food_Detail realFood_Detail = realFood_Details.get(i);
 							
-							//validate food count is not 0
 							if (realFood_Detail != null && realFood_Detail.getId() != null){
-								//add new food
 								Food realFood = realFood_Detail.getFood();
-								
-								//check food existed in client data and DB data
 								if (realFood != null && realFood.getId() != null) {
 									realFood_Detail.setEnabled(false);
 									realFood_Detail.setStatus(Constants.FOOD_UNAVAILABLE);
-									if(food_detailDao.updateByPrimaryKeySelective(realFood_Detail) == 1) {
-										//total price increase and get success info of insert into DB table.
-										
-									}else {
+									if(food_detailDao.updateByPrimaryKeySelective(realFood_Detail) != 1) {
 										throw new RuntimeException("failed to delete food detail in DB.");
 									}
-								}else {
-									result.getErrorDetails().put("food_exist", "can not find food in client data");
+								} else {
+									result.getErrorDetails().put("Warn", "Invalid food " + realFood.getId());
 								}
-							}else {
-								result.getErrorDetails().put("food_detail_exist", "can not find food detail or id in DB.");
+							} else {
+								result.getErrorDetails().put("Warn", "Invalid food detail " + realFood_Detail.getId());
 							}
 						}
-					}else {
-						result.getErrorDetails().put("food_details_exist", "can not find food details in DB.");
 					}
 					
 					List<Order_Table_Detail> realTable_Details = realOrder.getTable_details();
@@ -979,56 +968,50 @@ public class OrderService implements IOrderService{
 									realTable.setStatus(Constants.TABLE_EMPTY);
 									if (tableDao.updateByPrimaryKeySelective(realTable) == 1) {
 										realTable_Detail.setEnabled(false);
-										
 										if (table_detailDao.updateByPrimaryKeySelective(realTable_Detail) == 1) {
 											result.setSubTrueCount(result.getSubTrueCount() + 1);
-										}else {
+										} else {
 											throw new RuntimeException("failed to delete table detail in DB.");
 										}
-									}else {
+									} else {
 										throw new RuntimeException("failed to update table to empty status in DB.");
 									}
-								}else {
-									result.getErrorDetails().put("table_exist", "can not find table in DB data");
+								} else {
+									result.getErrorDetails().put("Warn", "Invalid table " + realTable.getId());
 								}
-								
 							} else {
-								result.getErrorDetails().put("table_detail_exist", "can not find table detail or id in DB.");
+								result.getErrorDetails().put("Warn", "Invalid table detail " + realTable_Detail.getId());
 							}
 						}
-						
-						
-					}else {
-						result.getErrorDetails().put("table_details_exist", "can not find table details in DB.");
 					}
 					
-					Customer realCustomer = realOrder.getCustomer();
-					if (realCustomer != null && realCustomer.getId() != null) {
-						realCustomer.setEnabled(false);
-						if (customerDao.updateByPrimaryKeySelective(realCustomer) == 1) {
-							
-						}else {
-							throw new RuntimeException("failed to update customer to unavailable in DB.");
-						}
-					}else {
-						result.getErrorDetails().put("customer_exist", "can not find customer in DB.");
-					}
+//					Customer realCustomer = realOrder.getCustomer();
+//					if (realCustomer != null && realCustomer.getId() != null) {
+//						realCustomer.setEnabled(false);
+//						if (customerDao.updateByPrimaryKeySelective(realCustomer) == 1) {
+//							
+//						}else {
+//							throw new RuntimeException("failed to update customer to unavailable in DB.");
+//						}
+//					} else {
+//						result.getErrorDetails().put("customer_exist", "can not find customer in DB.");
+//					}
 					
 					order.setEnabled(false);
 					order.setStatus(Constants.ORDER_UNAVAILABLE);
 					if (orderDao.updateByPrimaryKeySelective(order) == 1) {
 						result.setExecuteResult(true);
 					}else {
-						throw new RuntimeException("can not delete order in DB.");
+						throw new RuntimeException("can not cancel order in DB.");
 					}
-				}else {
-					result.getErrorDetails().put("order_status", "can not cancel order in DB because order status is not new or waiting.");
+				} else {
+					result.getErrorDetails().put("Error", "订单状态错误");
 				}
-			}else {
-				result.getErrorDetails().put("order_exist", "can not find order in DB.");
+			} else {
+				result.getErrorDetails().put("Error", "无效的订单");
 			}
-		}else {
-			result.getErrorDetails().put("order_exist", "can not find order in client data");
+		} else {
+			result.getErrorDetails().put("Error", "Missing order parameters");
 		}
 		return result;
 	}

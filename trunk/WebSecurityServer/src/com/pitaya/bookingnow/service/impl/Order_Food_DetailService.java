@@ -176,8 +176,6 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 		 */
 		MyResult result = new MyResult();
 		SearchParams params = new SearchParams();
-		
-		Map<String, List<Order_Food_Detail>> resultFoods = new HashMap<String, List<Order_Food_Detail>>();
 				
 		List<Order_Food_Detail> newFood_Details = null;
 		List<Order_Food_Detail> deleteFood_Details = null;
