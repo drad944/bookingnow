@@ -180,7 +180,6 @@
 	        <result name="submitWaitingSuccess" type="json">
 	            <param name="excludeNullProperties">true</param>
 				<param name="root">order</param>
-				
 	        </result>
 	        
 	        <result name="updateFoodsOfWaitingOrderSuccess" type="json">
@@ -267,10 +266,12 @@
 	        </result>
 	        
 	        <result name="searchFoodsInFood_DetailSuccess" type="json">
+	            <param name="excludeNullProperties">true</param>
 				<param name="root">matchedFoods</param>
 	        </result>
 	        
 	        <result name="updateFoodsOfFood_DetailSuccess" type="json">
+	            <param name="excludeNullProperties">true</param>
 				<param name="root">changeFoods</param>
 	        </result>
 	        

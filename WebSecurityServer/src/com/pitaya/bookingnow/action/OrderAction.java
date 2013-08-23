@@ -127,6 +127,15 @@ public class OrderAction extends BaseAction{
 		return "removeFail";
 	}
 	
+	public String cancelOrder() {
+		this.result = this.orderService.cancelOrder(order);
+		if(this.result.isExecuteResult()){
+			return "Success";
+		} else {
+			return "Fail";
+		}
+	}
+	
 	/*		
 	 * 		submit a welcomer_new order
 	 */
