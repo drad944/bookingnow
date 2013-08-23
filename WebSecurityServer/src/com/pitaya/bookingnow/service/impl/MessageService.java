@@ -433,6 +433,7 @@ public class MessageService {
 			if(group.get(clientAgent.userId) != null){
 				if(group.get(clientAgent.userId) == clientAgent){
 					logger.warn("The same client already registered [user id: " + clientAgent.userId + "]");
+					return true;
 				} else {
 					logger.debug("Client with same user id already registered [user id: " + clientAgent.userId + "], shutdown it first");
 					group.get(clientAgent.userId).shutdown();
@@ -453,6 +454,8 @@ public class MessageService {
 					&& this.groups.get(clientAgent.role).get(clientAgent.userId) == clientAgent){
 				this.groups.get(clientAgent.role).remove(clientAgent.userId);
 				logger.info("Unregister client [user id: " + clientAgent.userId + " and role type: " + clientAgent.role + "]");
+				clientAgent.userId = null;
+				clientAgent.role = Constants.ROLE_TYPE;
 			}
 		}
 		if(isRemoved){
