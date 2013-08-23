@@ -45,7 +45,6 @@ public class MessageService extends Service{
 	
 	private MessageService(String ip, int port){
 		this.handlers = new ConcurrentHashMap<String, List<Handler>>();
-        //_instance = this;
 	}
 	
 	public MessageService(){

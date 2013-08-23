@@ -131,6 +131,10 @@ public class OrderService {
 			int i = 0;
 			try {
 				int status = -1;
+				/*
+				 * Only the modification of waiting or committed order
+				 * will be sent to server
+				 */
 				if(order.getStatus() == Constants.ORDER_WAITING){
 					status = Constants.FOOD_NEW;
 				} else if(order.getStatus() == Constants.ORDER_COMMITED){
@@ -289,6 +293,22 @@ public class OrderService {
 				HttpService.post("updateFoodsOfWaitingOrder.action", new StringEntity(jreq.toString()), callback);
 			}
 			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void cancelOrder(Order order, HttpHandler callback){
+		JSONObject jorder = new JSONObject();
+		JSONObject jreq = new JSONObject();
+		try {
+			jorder.put("id", Long.parseLong(order.getOrderKey()));
+			jreq.put("order", jorder);
+			HttpService.post("cancelOrder.action", new StringEntity(jreq.toString()), callback);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {

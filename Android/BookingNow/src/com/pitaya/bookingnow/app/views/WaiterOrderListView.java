@@ -241,15 +241,39 @@ public class WaiterOrderListView extends OrderListView{
         this.mListView.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+			public void onItemClick(AdapterView<?> arg0, View item, int position,
 					long arg3) {
-				mParentView.showOrderDetail(mAdapter.getOrderList().get(position), false, WaiterOrderLeftView.MYORDERS);
+				Order currentOrder = mAdapter.getOrderList().get(position);
+				currentOrder.setOnOrderRemoveListener(new Order.OnOrderRemoveListener(){
+
+					@Override
+					public void onRemove(Order order) {
+						for(int i = 0; i < mAdapter.getOrderList().size(); i++){
+							if(mAdapter.getOrderList().get(i) == order){
+								mAdapter.getOrderList().remove(i);
+								break;
+							}
+						}
+						if(mAdapter.getOrderList().size() > 0){
+							int replaceidx = mAdapter.getOrderList().size() - 1;
+							Order replaceorder = mAdapter.getOrderList().get(replaceidx);
+							mParentView.showOrderDetail(replaceorder, false, WaiterOrderLeftView.MYORDERS);
+							mParentView.setLastItem(replaceorder.getOrderKey());
+							mAdapter.setSelectItem(replaceidx);
+						} else {
+							mParentView.showOrderDetail(null, false, -1);
+						}
+						mAdapter.notifyDataSetChanged();
+					}
+					
+				});
+				mParentView.showOrderDetail(currentOrder, false, WaiterOrderLeftView.MYORDERS);
 				mParentView.setLastItem(mAdapter.getOrderList().get(position).getOrderKey());
 				Integer old = mAdapter.getSelectItem();
 				if(old != null){
 					mListView.getChildAt(old).setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
 				}
-				mListView.getChildAt(position).setBackgroundColor(getContext().getResources().getColor(R.color.common_background));
+				item.setBackgroundColor(getContext().getResources().getColor(R.color.common_background));
 				mAdapter.setSelectItem(position);
 			}
         	

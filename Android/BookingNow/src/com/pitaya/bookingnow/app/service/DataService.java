@@ -370,13 +370,14 @@ public class DataService {
 		return result;
 	}
 	
-	public static void removeOrder(Context context, String order_key){
-		context.getContentResolver().delete(OrderDetailContentProvider.CONTENT_URI,
-				OrderDetailTable.COLUMN_ORDER_KEY +"=?",
-				new String[]{order_key});
+	public static void removeOrder(Context context, Order order){
 		context.getContentResolver().delete(OrderContentProvider.CONTENT_URI,
 				OrderTable.COLUMN_ORDER_KEY +"=?",
-				new String[]{order_key});
+				new String[]{order.getOrderKey()});
+		context.getContentResolver().delete(OrderDetailContentProvider.CONTENT_URI,
+				OrderDetailTable.COLUMN_ORDER_KEY +"=?",
+				new String[]{order.getOrderKey()});
+		resetOrderUpdateDetails(context, order);
 	}
 	
 	public static void removeFoodsOfOrder(Context context, String order_key){

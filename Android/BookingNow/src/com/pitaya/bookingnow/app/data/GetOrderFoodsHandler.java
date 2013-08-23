@@ -35,7 +35,7 @@ public class GetOrderFoodsHandler extends HttpHandler{
 			} else {
 				JSONArray jorder_details = jresp.getJSONArray("food_details");
 				mOrder.resetUpdateFoods(mContext);
-				mOrder.removeAllFood(mContext);
+				mOrder.resetAllFoods(mContext);
 				for(int i=0; i < jorder_details.length(); i++){
 					JSONObject jorder_detail = jorder_details.getJSONObject(i);
 					JSONObject jfood = jorder_detail.getJSONObject("food");

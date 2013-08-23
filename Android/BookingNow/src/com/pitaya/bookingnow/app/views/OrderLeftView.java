@@ -80,19 +80,31 @@ public class OrderLeftView extends Fragment{
 	}
 	
 	public void showOrderDetail(Order order, boolean isForce, Class<? extends OrderDetailAdapter> orderDetailAdapterClz, int viewwidth){
-        String key = order.getOrderKey();
-        OrderDetailFragment details = null;
-    	Fragment fragment = getFragmentManager().findFragmentById(R.id.orderdetail);
-    	if(fragment != null && fragment instanceof OrderDetailFragment){
-    		details = (OrderDetailFragment)fragment;
-    	}
-        if (details == null || isForce || !details.getShownOrder().getOrderKey().equals(key)) {
-        	FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
-    		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    		fragmentTransaction.replace(R.id.orderdetail, OrderDetailFragment.newInstance(order, mContentContainer, orderDetailAdapterClz, viewwidth));
-    		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-    		fragmentTransaction.commit();
+        if(order != null){
+    		String key = order.getOrderKey();
+            OrderDetailFragment details = null;
+        	Fragment fragment = getFragmentManager().findFragmentById(R.id.orderdetail);
+        	if(fragment != null && fragment instanceof OrderDetailFragment){
+        		details = (OrderDetailFragment)fragment;
+        	}
+            if (details == null || isForce || !details.getShownOrder().getOrderKey().equals(key)) {
+            	FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+        		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        		fragmentTransaction.replace(R.id.orderdetail, OrderDetailFragment.newInstance(order, mContentContainer, orderDetailAdapterClz, viewwidth));
+        		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        		fragmentTransaction.commit();
+            }
+        } else {
+        	Fragment fragment = getFragmentManager().findFragmentById(R.id.orderdetail);
+        	if(fragment != null){
+            	FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+        		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        		fragmentTransaction.remove(fragment);
+        		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        		fragmentTransaction.commit();
+        	}
         }
+
 	}
 	
 	protected Order getCurrentOrder(){

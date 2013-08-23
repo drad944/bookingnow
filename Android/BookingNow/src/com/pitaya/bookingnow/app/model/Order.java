@@ -7,8 +7,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
-
 import android.content.Context;
 
 import com.pitaya.bookingnow.app.service.DataService;
@@ -36,11 +34,11 @@ public class Order implements Serializable{
 	private List<Table> tables;
 	private int peoplecount;
 	private int status;
-	//This is to tell whether a committed order is modified on local
+	//This is to tell whether a committed or waiting order is modified on local
 	private volatile boolean isDirty;
 	private transient OnDirtyChangedListener mOnDirtyChangedListener;
 	private transient ArrayList<OnOrderStatusChangedListener> mOnStatusChangedListeners;
-	private transient ArrayList<OnDirtyChangedListener> mOnDirtyChangedListeners;
+	private transient OnOrderRemoveListener mOnRemoveListener;
 	private Map<String, ArrayList<UpdateFood>> updateFoods;
 	
 	public Order(){
@@ -97,7 +95,7 @@ public class Order implements Serializable{
 	public static String getFoodStatusString(int status){
 		switch(status){
 			case Constants.FOOD_NEW:
-				return "新提交";
+				return "新增";
 			case Constants.FOOD_CONFIRMED:
 				return "等待加工";
 			case Constants.FOOD_COOKING:
@@ -173,6 +171,22 @@ public class Order implements Serializable{
 	public int getStatus(){
 		return this.status;
 	}
+	
+	public void remove(Context context){
+		DataService.removeOrder(context, this);
+		this.removeOnStatusChangedListeners();
+		this.removeOnDirtyChangedListener();
+		this.updateFoods = null;
+		if(this.foods != null){
+			for(Entry<Food, Integer> entry : getFoods().entrySet()){
+				entry.getKey().setOnFoodStatusChangedListener(null);
+			}
+			this.foods = null;
+		}
+		if(this.mOnRemoveListener != null){
+			this.mOnRemoveListener.onRemove(this);
+		}
+	}
 
 	public float getTotalPrice(){
 		float summary = 0f;
@@ -197,11 +211,6 @@ public class Order implements Serializable{
 			DataService.setOrderDirty(context, this);
 			if(this.mOnDirtyChangedListener != null){
 				this.mOnDirtyChangedListener.onDirtyChanged(this, this.isDirty);
-			}
-			if(this.mOnDirtyChangedListeners != null){
-				for(OnDirtyChangedListener listener : this.mOnDirtyChangedListeners){
-					listener.onDirtyChanged(this, this.isDirty);
-				}
 			}
 		}
 	}
@@ -263,8 +272,8 @@ public class Order implements Serializable{
 	}
 	
 	public void resetUpdateFoods(Context context){
-		this.updateFoods = null;
 		DataService.resetOrderUpdateDetails(context, this);
+		this.updateFoods = null;
 	}
 	
 	public Map<String, ArrayList<UpdateFood>> getUpdateFoods(){	
@@ -301,17 +310,13 @@ public class Order implements Serializable{
 	 * Sync the food list between memory object and database
 	 */
 	public void enrichFoods(Context context){
-		if(this.foods != null && this.foods.size() > 0){
-			this.removeAllFood(null);
-		}
+		this.resetAllFoods(null);
 		DataService.getFoodsOfOrder(context, this);
 	}
 	
 	public void enrichUpdateFoods(Context context){
-		if(this.updateFoods == null){
-			this.initUpdateFoods();
-			DataService.enrichOrderUpdateDetails(context, this);
-		}
+		this.initUpdateFoods();
+		DataService.enrichOrderUpdateDetails(context, this);
 	}
 	
 	public void addUpdateFoods(Context context, int type, Order.Food food, int quantity){
@@ -350,15 +355,32 @@ public class Order implements Serializable{
 		this.mOnDirtyChangedListener = listener;
 	}
 	
+	public void setOnOrderRemoveListener(OnOrderRemoveListener l){
+		this.mOnRemoveListener = l;
+	}
+	
 	public void addOnStatusChangedListener(OnOrderStatusChangedListener listener){
 		if(this.mOnStatusChangedListeners == null){
 			this.mOnStatusChangedListeners = new ArrayList<OnOrderStatusChangedListener>();
+		}
+		for(OnOrderStatusChangedListener l : this.mOnStatusChangedListeners){
+			if(l == listener){
+				return;
+			}
 		}
 		this.mOnStatusChangedListeners.add(listener);
 	}
 	
 	public void removeOnStatusChangedListeners(){
 		this.mOnStatusChangedListeners = null;
+	}
+	
+	public void removeOnDirtyChangedListener(){
+		this.mOnDirtyChangedListener = null;
+	}
+	
+	public void removeOnRemoveListener(){
+		this.mOnRemoveListener = null;
 	}
 	
 	public void removeOnStatusChangedListener(OnOrderStatusChangedListener listener){
@@ -372,22 +394,12 @@ public class Order implements Serializable{
 		}
 	}
 	
-	public void addOnDirtyChangedListener(OnDirtyChangedListener listener){
-		if(this.mOnDirtyChangedListeners == null){
-			this.mOnDirtyChangedListeners = new ArrayList<OnDirtyChangedListener>();
-		}
-		this.mOnDirtyChangedListeners.add(listener);
-	}
-	
-	public void removemOnDirtyChangedListeners(){
-		this.mOnDirtyChangedListeners = null;
-	}
-	
-	public void removeAllFood(Context context){
-		this.foods = new LinkedHashMap<Order.Food, Integer>();
+
+	public void resetAllFoods(Context context){
 		if(context != null){
 			DataService.removeFoodsOfOrder(context, this.getOrderKey());
 		}
+		this.foods = new LinkedHashMap<Order.Food, Integer>();
 	}
 	
 	public Order.Food searchFood(String food_key){
@@ -556,6 +568,12 @@ public class Order implements Serializable{
 	public interface OnFoodStatusChangedListener{
 		
 		public void onFoodStatusChanged(Food food, int status, int old_status);
+		
+	}
+	
+	public static interface OnOrderRemoveListener{
+		
+		public void onRemove(Order order);
 		
 	}
 }

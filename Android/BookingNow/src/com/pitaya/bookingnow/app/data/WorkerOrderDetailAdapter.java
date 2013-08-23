@@ -70,8 +70,8 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
 						    public void onSuccess(String action, String response) {
 								try {
 									JSONObject jresp = new JSONObject(response);
-									if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
-										//TODO handle fail
+									if(jresp.has("executeResult") || jresp.getBoolean("executeResult") == false){
+										//hanle fail
 									} else {
 										JSONArray jorder_foods = jresp.getJSONArray("food_details");
 										for(int i=0; i < jorder_foods.length(); i++){
@@ -91,11 +91,12 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
 										mOrder.setStatus(jresp.getInt("status"));
 										mOrder.markDirty(mContext, false);
 										ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.commitsuccess), Toast.LENGTH_SHORT);
+										return;
 									}
 								} catch (JSONException e) {
 									e.printStackTrace();
-									ToastUtil.showToast(mContext,"返回错误", Toast.LENGTH_SHORT);
 								}
+								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.operationerror), Toast.LENGTH_LONG);
 						    }
 							
 							@Override
@@ -120,8 +121,28 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
 
 					@Override
 					public void onClick(View v) {
-						//TODO send request to cancel a order and remove it from local database
-						DataService.removeOrder(mContext, mOrder.getOrderKey());
+						OrderService.cancelOrder(mOrder, new HttpHandler(){
+							
+							@Override
+						    public void onSuccess(String action, String response) {
+								try {
+									JSONObject jresp = new JSONObject(response);
+									if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == true){
+										mOrder.remove(mContext);
+										return;
+									}
+								} catch (JSONException e) {
+									e.printStackTrace();
+								}
+								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.operationerror), Toast.LENGTH_SHORT);
+							}
+							
+							@Override
+							public void onFail(String action, int statusCode){
+								ToastUtil.showToast(mContext, mContext.getResources().getString(R.string.operationfail), Toast.LENGTH_SHORT);
+							}
+						});
+						
 					}
 					
 				});
@@ -162,7 +183,6 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
 									WorkerOrderDetailAdapter.this.notifyDataSetChanged();
 								}
 							});
-							
 							OrderService.getFoodsOfOrder(Long.parseLong(mOrder.getOrderKey()), handler);
 						}
     					
@@ -288,5 +308,5 @@ public class WorkerOrderDetailAdapter extends OrderDetailAdapter{
     	}
 		return null;
 	}
-    	
+
 }
