@@ -72,7 +72,6 @@ class ClientAgent extends Thread{
 		 } catch (Exception e) {
 	        e.printStackTrace();
 		 } finally {
-			 this.service.removeClient(this, true);
 	         try {
 				 in.close();
 				 out.close();
@@ -84,6 +83,7 @@ class ClientAgent extends Thread{
 			 }
 	         client_socket = null;
 	         logger.debug("Connection to client [" + this.userId +"] is broken");
+	         this.service.removeClient(this, true);
 		 }
 	}
 	
@@ -91,7 +91,6 @@ class ClientAgent extends Thread{
 		try {
 			this.client_socket.sendUrgentData(0xff);
 		} catch (IOException e) {
-			this.service.removeClient(this, true);
 			try {
 				in.close();
 			} catch (IOException e1) {
@@ -110,7 +109,8 @@ class ClientAgent extends Thread{
 				}
 			 }
 			client_socket = null;
-			logger.debug("Connection to client [" + this.userId +"] is broken");
+			logger.debug("HeartBeat: Connection to client [" + this.userId +"] is broken");
+			this.service.removeClient(this, true);
 		}
 	}
 	
@@ -146,18 +146,26 @@ class ClientAgent extends Thread{
 	}
 	
 	void shutdown(){
-		this.service.removeClient(this, true);
+		this.sendMessage("bye");
 		try {
-			 this.sendMessage("bye");
 			 in.close();
-			 out.close();
+		} catch (IOException e) {
+			 e.printStackTrace();
+		}
+		try {
+			 bwriter.close();
+		} catch (IOException e) {
+			 e.printStackTrace();
+		}
+		try{
 			 if(client_socket != null && !client_socket.isClosed()){
 				 client_socket.close();
 			 }
 		} catch (IOException e) {
-			e.printStackTrace();
+			 e.printStackTrace();
 		}
 		logger.debug("Success to shutdown connection to client [" + this.userId + "]");
+		this.service.removeClient(this, true);
 	}
 }
 
