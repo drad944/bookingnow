@@ -563,19 +563,19 @@ function parseOrderGridHtml() {
 				if(item == "id"){
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.id");
-					
+					column["filtertype"] = 'number';
 				}else if(item == "allowance") {
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.allowance");
-					
+					column["filtertype"] = 'number';
 				}else if(item == "customer_count") {
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.customer_count");
-					
+					column["filtertype"] = 'number';
 				}else if(item == "customer_id") {
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.customer_id");
-					
+					column["filtertype"] = 'number';
 				}else if(item == "modifyTime") {
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.modifyTime");
@@ -583,11 +583,11 @@ function parseOrderGridHtml() {
 				}else if(item == "prePay") {
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.prePay");
-					
+					column["filtertype"] = 'number';
 				}else if(item == "status") {
-					datafield["type"] = "number";
+					datafield["type"] = "string";
 					column["text"] = i18n.t("field.status");
-					
+					column["filtertype"] = 'textbox';
 				}else if(item == "submit_time") {
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.submit_time");
@@ -595,11 +595,11 @@ function parseOrderGridHtml() {
 				}else if(item == "total_price") {
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.total_price");
-					
+					column["filtertype"] = 'number';
 				}else if(item == "user_id") {
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.user_id");
-					
+					column["filtertype"] = 'number';
 				}else if(item == "customer" || item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
 					//do nothing
 				}else {
@@ -674,6 +674,8 @@ function parseOrderGridHtml() {
 	    theme: theme,
 	    selectionmode: 'multiplerowsextended',
 	    sortable: true,
+	    showfilterrow: true,
+        filterable: true,
 	    pageable: true,
 	    autoheight: true,
 	    selectionmode:'singlerow',

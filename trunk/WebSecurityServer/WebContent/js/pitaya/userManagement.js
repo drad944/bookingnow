@@ -3,16 +3,6 @@
  */
 
 function emptyRegisterUserWindow(){
-	var option = {
-			fallbackLng: 'zh',
-			lng: 'en-US',
-	//		lng: 'zh-CN',
-			resGetPath: 'resources/locales/__lng__/__ns__.json',
-			getAsync: false,
-			ns: 'bookingnow.content.userManagement'
-		};
-	 
-	i18n.init(option);
 	
 	//init registerUserWindow widget data
 	$("#registerUserPhoneInput").jqxMaskedInput({value: null });
@@ -38,16 +28,6 @@ function emptyRegisterUserWindow(){
 }
 
 function emptyUpdateUserWindow(){
-	var option = {
-			fallbackLng: 'zh',
-			lng: 'en-US',
-	//		lng: 'zh-CN',
-			resGetPath: 'resources/locales/__lng__/__ns__.json',
-			getAsync: false,
-			ns: 'bookingnow.content.userManagement'
-		};
-	 
-	i18n.init(option);
 	
 	//init registerUserWindow widget data
 	$("#updateUserPhoneInput").jqxMaskedInput({value: null });
@@ -72,16 +52,6 @@ function emptyUpdateUserWindow(){
 }
 
 function initUpdateUserElements() {
-	var option = {
-			fallbackLng: 'zh',
-			lng: 'en-US',
-	//		lng: 'zh-CN',
-			resGetPath: 'resources/locales/__lng__/__ns__.json',
-			getAsync: false,
-			ns: 'bookingnow.content.userManagement'
-		};
-	 
-	i18n.init(option);
 	
 	var theme = getDemoTheme();
     $("#updateUserDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
@@ -161,16 +131,6 @@ function initUpdateUserElements() {
 };
 
 function formatUpdateUserElements(rowData) {
-	var option = {
-			fallbackLng: 'zh',
-			lng: 'en-US',
-	//		lng: 'zh-CN',
-			resGetPath: 'resources/locales/__lng__/__ns__.json',
-			getAsync: false,
-			ns: 'bookingnow.content.userManagement'
-		};
-	 
-	i18n.init(option);
 	
     var d1 = {};
 	if (rowData["birthday"] != null) {
@@ -219,16 +179,6 @@ function addUpdateUserEventListeners() {
     $("#updateUserSexRadioButton1").on('change', function (event) {
         var checked = event.args.checked;
         if (checked) {
-        	var option = {
-        			fallbackLng: 'zh',
-        			lng: 'en-US',
-        	//		lng: 'zh-CN',
-        			resGetPath: 'resources/locales/__lng__/__ns__.json',
-        			getAsync: false,
-        			ns: 'bookingnow.content.userManagement'
-        		};
-        	 
-        	i18n.init(option);
         	
         	 $("#updateUserSexInput").val(i18n.t("sex.male"));
         }
@@ -236,16 +186,6 @@ function addUpdateUserEventListeners() {
     $("#updateUserSexRadioButton2").on('change', function (event) {
         var checked = event.args.checked;
         if (checked) {
-        	var option = {
-        			fallbackLng: 'zh',
-        			lng: 'en-US',
-        	//		lng: 'zh-CN',
-        			resGetPath: 'resources/locales/__lng__/__ns__.json',
-        			getAsync: false,
-        			ns: 'bookingnow.content.userManagement'
-        		};
-        	 
-        	i18n.init(option);
         	
         	$("#updateUserSexInput").val(i18n.t("sex.female"));
         }
@@ -280,7 +220,7 @@ function initUpdateUserWindow(rowData,position) {
 	
 	// initialize the popup window and buttons.
     $("#updateUserPopupWindow").jqxWindow({
-    	position:position, isModal: true,width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
+    	position:position, isModal: true,width: 350, height: 420, resizable: false, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
     	initContent: function () {
             $('#updateUserPopupWindow').jqxWindow('focus');
         }
@@ -307,16 +247,6 @@ function updateUser() {
 	var updateUserData = parseUIDataToUserData(updateUserUIData);
 
 	$.post("updateUser.action", updateUserData, function(result) {
-		var option = {
-    			fallbackLng: 'zh',
-    			lng: 'en-US',
-    	//		lng: 'zh-CN',
-    			resGetPath: 'resources/locales/__lng__/__ns__.json',
-    			getAsync: false,
-    			ns: 'bookingnow.content.userManagement'
-    		};
-    	 
-    	i18n.init(option);
     	
 		if (result != null && result["id"] != null) {
 			
@@ -346,16 +276,6 @@ function updateUser() {
 
 
 function initRegisterUserElements() {
-	var option = {
-			fallbackLng: 'zh',
-			lng: 'en-US',
-	//		lng: 'zh-CN',
-			resGetPath: 'resources/locales/__lng__/__ns__.json',
-			getAsync: false,
-			ns: 'bookingnow.content.userManagement'
-		};
-	 
-	i18n.init(option);
 	
 	var theme = getDemoTheme();
     $("#registerUserDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
@@ -445,17 +365,6 @@ function addRegisterUserEventListeners() {
     $("#registerUserSexRadioButton1").on('change', function (event) {
         var checked = event.args.checked;
         if (checked) {
-        	var option = {
-        			fallbackLng: 'zh',
-        			lng: 'en-US',
-        	//		lng: 'zh-CN',
-        			resGetPath: 'resources/locales/__lng__/__ns__.json',
-        			getAsync: false,
-        			ns: 'bookingnow.content.userManagement'
-        		};
-        	 
-        	i18n.init(option);
-        	
         	 $("#registerUserSexInput").val(i18n.t("sex.male"));
         }
     });
@@ -492,7 +401,7 @@ function initRegisterUserWindow(position) {
 	
 	var theme = getDemoTheme();
 	$("#addUserPopupWindow").jqxWindow({
-		position:position,isModal: true,width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#registerUserCancelButton"), 
+		position:position,isModal: true,width: 350, height: 420, resizable: false, theme: theme, cancelButton: $("#registerUserCancelButton"), 
     	modalOpacity: 0.01,
     	
     	initContent: function () {
@@ -521,16 +430,6 @@ function registerUser() {
 	var registerUserData = parseUIDataToUserData(registerUserUIData);
 	
 	$.post("registerUser.action", registerUserData, function(result) {
-		var option = {
-    			fallbackLng: 'zh',
-    			lng: 'en-US',
-    	//		lng: 'zh-CN',
-    			resGetPath: 'resources/locales/__lng__/__ns__.json',
-    			getAsync: false,
-    			ns: 'bookingnow.content.userManagement'
-    		};
-    	 
-    	i18n.init(option);
     	
 		if (result != null && result["id"] != null) {
 			result = parseUserDataToUIData(result);
@@ -758,6 +657,9 @@ function releaseCrop(obj){
 }
 
 function initOperateUserGridElements() {
+	
+	
+	
 	var theme = getDemoTheme();
 	$("#addUserRowButton").jqxButton({ theme: theme });
 	$("#deleteUserRowButton").jqxButton({ theme: theme });
@@ -863,7 +765,7 @@ function parseUserGridHtml() {
 				if(item == "id"){
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.id");
-					
+					column["filtertype"] = 'number';
 				}else if(item == "modifyTime") {
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.modifyTime");
@@ -871,7 +773,7 @@ function parseUserGridHtml() {
 				}else if(item == "image_size") {
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.image_size");
-					
+					column["filtertype"] = 'number';
 				}else if(item == "image_relative_path") {
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.image_relative_path");
@@ -879,31 +781,31 @@ function parseUserGridHtml() {
 				}else if(item == "account") {
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.account");
-					
+					column["filtertype"] = 'textbox';
 				}else if(item == "name") {
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.name");
-					
+					column["filtertype"] = 'textbox';
 				}else if(item == "password") {
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.password");
-					
+					column["filtertype"] = 'textbox';
 				}else if(item == "phone") {
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.phone");
-					
+					column["filtertype"] = 'textbox';
 				}else if(item == "sex") {
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.sex");
-					
+					column["filtertype"] = 'checkedlist';
 				}else if(item == "email") {
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.email");
-					
+					column["filtertype"] = 'textbox';
 				}else if(item == "address") {
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.address");
-					
+					column["filtertype"] = 'textbox';
 				}else if(item == "birthday") {
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.birthday");
@@ -911,15 +813,15 @@ function parseUserGridHtml() {
 				}else if(item == "description") {
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.description");
-					
+					column["filtertype"] = 'textbox';
 				}else if(item == "department") {
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.department");
-					
+					column["filtertype"] = 'checkedlist';
 				}else if(item == "sub_system") {
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.sub_system");
-					
+					column["filtertype"] = 'textbox';
 				}else if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
 					//do nothing
 				}else {
@@ -994,6 +896,8 @@ function parseUserGridHtml() {
 	    theme: theme,
 	    selectionmode: 'multiplerowsextended',
 	    sortable: true,
+	    showfilterrow: true,
+        filterable: true,
 	    pageable: true,
 	    autoheight: true,
 	    selectionmode:'singlerow',
@@ -1007,6 +911,7 @@ function parseUserGridHtml() {
         $("#eventLog").text(i18n.t("grid.selectRow",{index:event.args.rowindex}));
     });
 	
+    initLocaleElements();
 	initOperateUserGridElements();
 	addOperateUserGridEventListeners();
 	
@@ -1028,7 +933,32 @@ function parseUserGridHtml() {
 		
 }
 
-
+function initLocaleElements() {
+	$("#addUserRowButton").val(i18n.t("button.operationUserGrid.addUserRow"));
+	$("#updateUserRowButton").val(i18n.t("button.operationUserGrid.updateUserRow"));
+	$("#deleteUserRowButton").val(i18n.t("button.operationUserGrid.deleteUserRow"));
+	
+	$("#registerUserSexRadioButton1").val(i18n.t("sex.male"));
+	$("#registerUserSexRadioButton2").val(i18n.t("sex.female"));
+	$("#registerUserSexInput").val(i18n.t("sex.male"));
+	
+	$("#acceptInput").val(i18n.t("service.accept"));
+	
+	$("#updateUserSexRadioButton1").val(i18n.t("sex.male"));
+	$("#updateUserSexRadioButton2").val(i18n.t("sex.female"));
+	$("#updateUserSexInput").val(i18n.t("sex.male"));
+	
+	$("#updateUserUpdateButton").val(i18n.t("button.update"));
+	$("#updateUserResetButton").val(i18n.t("button.reset"));
+	$("#updateUserCancelButton").val(i18n.t("button.cancel"));
+	
+	$("#registerUserRegisterButton").val(i18n.t("button.register"));
+	$("#registerUserResetButton").val(i18n.t("button.reset"));
+	$("#registerUserCancelButton").val(i18n.t("button.cancel"));
+	
+	$("#updateUserPopupWindow").i18n();
+	$("#addUserPopupWindow").i18n();
+}
 
 function parseUIDataToUserData(record) {
 	if(record != null){
