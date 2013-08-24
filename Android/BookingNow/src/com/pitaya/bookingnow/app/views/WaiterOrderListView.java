@@ -169,6 +169,7 @@ public class WaiterOrderListView extends OrderListView{
 			    		Order order = orderlist.get(position);
 			    		if(view == null){
 			    			view = View.inflate(parent.getContext(), R.layout.orderinfoview, null);
+			    			setViewLayoutParams(view);
 			    			ViewHolder holder = new ViewHolder();
 			    			holder.info1 = (TextView)view.findViewById(R.id.info1);
 			    			holder.info2 = (TextView)view.findViewById(R.id.info2);

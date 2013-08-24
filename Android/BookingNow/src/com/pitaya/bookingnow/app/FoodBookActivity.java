@@ -222,13 +222,22 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 	protected void onPause() {
 		 super.onPause();
 		 flipView.onPause();
-		 Intent intent = new Intent(this, HomeActivity.class);
-		 Bundle bundle = new Bundle();
-		 bundle.putSerializable("order", mOrder);
-		 intent.putExtras(bundle);
-		 startActivity(intent);
 	}
   
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		Log.i("FoodBook", "On Destroy");
+		flipView.destroyDrawingCache();
+		flipView = null;
+		System.gc();
+		Intent intent = new Intent(this, HomeActivity.class);
+		Bundle bundle = new Bundle();
+		bundle.putSerializable("order", mOrder);
+		intent.putExtras(bundle);
+		startActivity(intent);
+	}
+	
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		  Bundle bundle = this.getIntent().getExtras();
@@ -241,7 +250,7 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 		  Bundle bundle = this.getIntent().getExtras();
 		  String title = bundle.getString("category");
 		  setTitle(title);
-		  int index = bundle.getInt("index");
+		  String foodid = bundle.getString("id");
 		  mOrder = (Order)bundle.getSerializable("order");
 
 		  if (cursor != null) {
@@ -265,6 +274,17 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 					Food food = new Food(key, name, price, desc, category, isRecmd);
 					food.setVersion(version);
 					mFoodsList.add(food);
+				}
+				
+				int index = 0;
+				for(Food food : mFoodsList){
+					if(food.getKey().equals(foodid)){
+						break;
+					}
+					index++;
+				}
+				if(index >= mFoodsList.size()){
+					index = 0;
 				}
 				
 				//Update flip view

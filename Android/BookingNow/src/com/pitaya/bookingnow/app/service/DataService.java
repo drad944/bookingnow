@@ -39,7 +39,7 @@ public class DataService {
 	    		FoodMenuTable.COLUMN_REVISION,
 	    		FoodMenuTable.COLUMN_STATUS };
 		CursorLoader cursorLoader = new CursorLoader(context, FoodMenuContentProvider.CONTENT_URI, 
-				projection, null, null, FoodMenuTable.COLUMN_CATEGORY);
+				projection, null, null, FoodMenuTable.COLUMN_NAME);
 		return cursorLoader;
 	}
 	

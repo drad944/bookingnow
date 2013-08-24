@@ -7,7 +7,11 @@ import com.pitaya.bookingnow.app.util.ToastUtil;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +20,13 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,19 +38,29 @@ import org.json.JSONObject;
 
 import com.pitaya.bookingnow.message.FoodMessage;
 import com.pitaya.bookingnow.message.Message;
+import com.pitaya.bookingnow.message.ResultMessage;
 import com.pitaya.bookingnow.message.TableMessage;
 
-public class MessageService extends Service{
+public class MessageService extends Service implements Runnable {
 	
 	private static String TAG = "MessageService";
-	private static MessageService _instance;
 	private final IBinder mBinder = new MessageBinder();
 	private NotificationManager mNM;
+	private ConnectivityManager mCM;
 	private NotificationCompat.Builder mBuilder;
-	private Client clientAgent;
+	private IntentFilter mIntentFilter;
+	
+	private Socket socket;
+    private String ip;
+    private int port;
+    private BufferedReader in;
+    private OutputStreamWriter out;
+    private BufferedWriter bwriter;
+    private Long userid;
+    private volatile boolean isConnecting = false;
+    
+	//private Client clientAgent;
 	private Map<String, List<Handler>> handlers;
-	private String ip;
-	private int port;
 	private int mUpdateNotifyID = 1;
 	private int lastNotifyID = 2;
 	
@@ -52,16 +73,17 @@ public class MessageService extends Service{
     @Override
     public void onCreate() {
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        this.start(this.ip, this.port);
+        mCM = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        this.start();
+        mIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        this.registerReceiver(new ConnectionReceiver(), mIntentFilter);
         Log.i(TAG,  "In message service oncreate");
     }
 	
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Received start id " + startId + ": " + intent);
-        if(!this.isReady() && !this.isConnecting()){
-        	this.start(this.ip, this.port);
-        }
+        this.start();
         return START_STICKY;
     }
     
@@ -72,13 +94,21 @@ public class MessageService extends Service{
         this.shutdown();
         Toast.makeText(this, "BookingNow message service stopped", Toast.LENGTH_SHORT).show();
     }
+    
+    private synchronized void start(){
+    	NetworkInfo activeNetwork = mCM.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
+        if(!this.isReady() && !this.isConnecting() && isConnected){
+        	new Thread(this).start();
+        }
+    }
 
     public void setUserId(Long id){
-    	this.clientAgent.setUserId(id);
+    	this.userid = id;
     }
     
     public Long getUserId(){
-    	return this.clientAgent.getUserId();
+		return this.userid;
     }
     
 	public void registerHandler(String key, Handler handler){
@@ -110,30 +140,41 @@ public class MessageService extends Service{
 	}
 	
 	public boolean isConnecting(){
-		return this.clientAgent.isConnecting();
+		return this.isConnecting;
 	}
 	
 	private void shutdown(){
-		if(clientAgent != null){
-			clientAgent.shutdown();
-		}
-	}
-	
-	private void start(String ip, int port){
-		if(this.clientAgent == null || (!clientAgent.isReady() && !clientAgent.isConnecting())){
-			clientAgent = new Client(ip, port, this);
-			clientAgent.start();
-		} else if(clientAgent.isConnecting()){
-			ToastUtil.showToast(this, "正在连接服务器...", Toast.LENGTH_SHORT);
-		}
+		 if(in != null){
+				try {
+	        		 in.close();
+				} catch (IOException e) {
+					 e.printStackTrace();
+				}	 
+	    	 }
+		     if(bwriter != null){
+			    try {
+			    	bwriter.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		     }
+			 if (socket != null && !socket.isClosed()){
+				try {
+					socket.close();
+					Log.i(TAG, "Success to shutdown the connection to server");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			 }
+			 socket = null;
 	}
 	
 	public boolean sendMessage(Message message){
-		return this.clientAgent.sendMessage(parseMessage(message));
+		return this.sendMessage(parseMessage(message));
 	}
 	
 	public boolean isReady(){
-		return this.clientAgent.isReady();
+		return this.socket != null && !this.socket.isClosed() && this.socket.isConnected();
 	}
 	
 	void onMessage(Message message){
@@ -234,4 +275,83 @@ public class MessageService extends Service{
         .setContentText(text);
         mNM.notify(lastNotifyID++, mBuilder.build());
     }
+
+	@Override
+	public void run() {
+		isConnecting = true;
+    	boolean error = false;
+        try {
+			setupConnection();
+			isConnecting = false;
+			Log.i(TAG, "Success to connect to web server");
+        	String message = null;
+			this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.SUCCESS, "连接服务器成功"));
+        	while((message = in.readLine()) != null){
+    			this.onMessage(message);
+        		if(message.equals("bye")){
+        			shutdown();
+        			break;
+        		}
+        	}
+        } catch (UnknownHostException e) {
+        	UserManager.setLoginUser(this, null);
+			this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "无法识别的服务器"));
+        	error = true;
+        	Log.e(TAG, "Fail to connect to web server");
+            e.printStackTrace();
+        } catch (IOException e) {
+        	UserManager.setLoginUser(this, null);
+			this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "无法连接到服务器或连接中断"));
+        	error = true;
+        	Log.e(TAG, "Fail to connect to web server");
+			e.printStackTrace();
+		} finally {
+			if(in != null){
+	        	try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+       		if(bwriter != null){
+       			try {
+					bwriter.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+       		} 
+       		if (socket != null && !socket.isClosed()){
+				try {
+					socket.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+       		}
+       		socket = null;
+	    	isConnecting = false;
+        	if(error == false){
+        		UserManager.setLoginUser(this, null);
+				this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "与服务器连接中断"));
+			}
+        }
+	}
+
+    public synchronized boolean sendMessage(String msg) {
+        try {
+        	this.bwriter.write(msg + "\r\n");
+        	this.bwriter.flush();
+        	return true;
+        } catch (Exception e) {
+            Log.e(TAG, "Fail to send message:" + msg);
+            return false;
+        }
+    }
+	
+    private void setupConnection() throws UnknownHostException, IOException {
+        socket = new Socket(ip, port);
+    	in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+    	out = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");  
+		bwriter = new BufferedWriter(out);  
+    }
+
 }

@@ -33,6 +33,10 @@ public class CustomerOrderDetailAdapter extends OrderDetailAdapter {
 		super(c, view, order);
 	}
 	
+	protected int getItemViewId(){
+		return R.layout.fooditem_customer;
+	}
+	
 	private void setViewByOrderStatus(final View itemView){
 		if(itemView == null || this.mOrder == null){
 			return;

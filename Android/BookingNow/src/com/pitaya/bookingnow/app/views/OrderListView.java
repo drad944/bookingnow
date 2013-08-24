@@ -20,6 +20,7 @@ import com.pitaya.bookingnow.app.data.OrderListAdapter;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.ContentUtil;
 
 public class OrderListView extends RelativeLayout{
 	
@@ -50,7 +51,7 @@ public class OrderListView extends RelativeLayout{
     public void setupViews(){
     	this.mHeaderView = View.inflate(this.getContext(), R.layout.orderlistheader, null);
     	this.mHeaderView.setId(1);
-		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, ContentUtil.getPixelsByDP(40));
 		lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		addView(this.mHeaderView, lp);
 		

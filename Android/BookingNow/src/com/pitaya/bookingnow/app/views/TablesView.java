@@ -14,6 +14,7 @@ import com.pitaya.bookingnow.app.model.Table;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.ContentUtil;
 
 import android.content.Context;
 import android.util.Log;
@@ -56,7 +57,7 @@ public class TablesView{
 			
 		});
 		
-		mPopupView =  new PopupWindow(mTablesView, 400, 400, true);
+		mPopupView =  new PopupWindow(mTablesView, ContentUtil.getPixelsByDP(400), ContentUtil.getPixelsByDP(400), true);
 		mPopupView.setFocusable(true);
 		mPopupView.setOutsideTouchable(false);
 		mPopupView.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.common_background));

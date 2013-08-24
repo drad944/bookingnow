@@ -109,7 +109,7 @@ public class WelcomerOrderLeftView extends OrderLeftView{
 	    		order.enrichUpdateFoods(this.getActivity());
 	    	}
 		}
-		super.showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class, 650);
+		super.showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class);
 	}
 
 }

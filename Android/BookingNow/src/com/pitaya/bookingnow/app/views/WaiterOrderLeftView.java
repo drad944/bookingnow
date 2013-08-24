@@ -153,13 +153,13 @@ public class WaiterOrderLeftView extends OrderLeftView{
 
 						@Override
 						public void afterGetFoodsStatus() {
-							showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class, 0);
+							showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class);
 						}
             			
             		});
-            		OrderService.getFoodsOfOrder(Long.parseLong(order.getOrderKey()), handler);
+            		OrderService.getFoodStatusOfOrder(Long.parseLong(order.getOrderKey()), handler);
             	} else {
-            		showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class, 0);
+            		showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class);
             	}
     			break;
     		case WAITING_ORDERS:
@@ -167,13 +167,13 @@ public class WaiterOrderLeftView extends OrderLeftView{
     			handler.setAfterGetFoodsListener(new GetOrderFoodsHandler.AfterGetFoodsListener(){
 					@Override
 					public void afterGetFoods() {
-						showOrderDetail(order, isForce, PreviewOrderDetailAdapter.class, 0);
+						showOrderDetail(order, isForce, PreviewOrderDetailAdapter.class);
 					}
     			});
     			OrderService.getFoodsOfOrder(Long.parseLong(order.getOrderKey()), handler);
     			break;
     		default:
-    			showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class, 0);
+    			showOrderDetail(order, isForce, WorkerOrderDetailAdapter.class);
     			break;
     	}
 	}

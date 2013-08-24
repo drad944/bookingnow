@@ -20,6 +20,7 @@ import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.service.UserManager;
 import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.ContentUtil;
 import com.pitaya.bookingnow.app.util.ToastUtil;
 
 import android.content.Context;
@@ -31,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -55,10 +57,22 @@ public class WaitingOrderListView extends OrderListView{
     @Override
     public void setupViews(){
     	super.setupViews();
-		((TextView)this.mHeaderView.findViewById(R.id.title1)).setText(R.string.order_list_title_customer);
-		((TextView)this.mHeaderView.findViewById(R.id.title2)).setText(R.string.order_list_title_phone);
-		((TextView)this.mHeaderView.findViewById(R.id.title3)).setText(R.string.order_list_title_count);
-		((TextView)this.mHeaderView.findViewById(R.id.title4)).setText(R.string.order_list_title_submittime);
+    	TextView customerTitle = (TextView)this.mHeaderView.findViewById(R.id.title1);
+    	customerTitle.setText(R.string.order_list_title_customer);
+    	customerTitle.setLayoutParams(new LinearLayout.LayoutParams(
+    			ContentUtil.getPixelsByDP(100), LayoutParams.MATCH_PARENT));
+		TextView phoneTitle = (TextView)this.mHeaderView.findViewById(R.id.title2);
+		phoneTitle.setText(R.string.order_list_title_phone);
+		phoneTitle.setLayoutParams(new LinearLayout.LayoutParams(
+				ContentUtil.getPixelsByDP(120), LayoutParams.MATCH_PARENT));
+		TextView countTitle = (TextView)this.mHeaderView.findViewById(R.id.title3);
+		countTitle.setText(R.string.order_list_title_count);
+		countTitle.setLayoutParams(new LinearLayout.LayoutParams(
+	            ContentUtil.getPixelsByDP(50), LayoutParams.MATCH_PARENT));
+		TextView timeTitle = (TextView)this.mHeaderView.findViewById(R.id.title4);
+		timeTitle.setText(R.string.order_list_title_submittime);
+		timeTitle.setLayoutParams(new LinearLayout.LayoutParams(
+	            LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 		((TextView)this.mHeaderView.findViewById(R.id.title5)).setVisibility(View.GONE);
 		
 		final TablesView tablesView = new TablesView(this.getContext(), this.mListView);
@@ -72,6 +86,7 @@ public class WaitingOrderListView extends OrderListView{
 				final ArrayList<Table> tables = selectedTables;
 				Integer currentItem = WaitingOrderListView.this.mAdapter.getSelectItem();
 				if(currentItem == null || currentItem == -1){
+					ToastUtil.showToast(getContext(), "请先选择您要操作的订单", Toast.LENGTH_LONG);
 					return;
 				}
 				Order selectedOrder = WaitingOrderListView.this.mAdapter.getOrderList().get(currentItem);
@@ -125,6 +140,8 @@ public class WaitingOrderListView extends OrderListView{
 							Log.e(TAG, "[OrderService.submitOrder] Network error:" + statuscode);
 						}
 					});
+				} else {
+					ToastUtil.showToast(getContext(), "请先选择您要操作的订单", Toast.LENGTH_LONG);
 				}
 			}
 			
@@ -198,11 +215,20 @@ public class WaitingOrderListView extends OrderListView{
 					Order order = orderlist.get(position);
 					if(view == null){
 						view = View.inflate(parent.getContext(), R.layout.orderinfoview, null);
+						setViewLayoutParams(view);
 		    			ViewHolder holder = new ViewHolder();
 		    			holder.info1 = (TextView)view.findViewById(R.id.info1);
+		    			holder.info1.setLayoutParams(new LinearLayout.LayoutParams(
+		    					ContentUtil.getPixelsByDP(100), LayoutParams.MATCH_PARENT));
 		    			holder.info2 = (TextView)view.findViewById(R.id.info2);
+		    			holder.info2.setLayoutParams(new LinearLayout.LayoutParams(
+		    					ContentUtil.getPixelsByDP(120), LayoutParams.MATCH_PARENT));
 		    			holder.info3 = (TextView)view.findViewById(R.id.info3);
+		    			holder.info3.setLayoutParams(new LinearLayout.LayoutParams(
+		    					ContentUtil.getPixelsByDP(50), LayoutParams.MATCH_PARENT));
 		    			holder.info4 = (TextView)view.findViewById(R.id.info4);
+		    			holder.info4.setLayoutParams(new LinearLayout.LayoutParams(
+		    		            LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 		    			holder.info5 = (TextView)view.findViewById(R.id.info5);
 		    			holder.info5.setVisibility(View.GONE);
 		    			view.setTag(holder);
