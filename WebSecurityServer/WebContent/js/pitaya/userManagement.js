@@ -829,7 +829,7 @@ function parseUserGridHtml() {
 			{"user.enabled": true}, 
 			function(matchedusers){
 				var option = {
-	        			fallbackLng: 'zh',
+	        			fallbackLng: 'en-US',
 	        			lng: 'en-US',
 	        	//		lng: 'zh-CN',
 	        			resGetPath: 'resources/locales/__lng__/__ns__.json',

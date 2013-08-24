@@ -1,12 +1,39 @@
 {
 	"status":{
-			"NEW":"ORDER_NEW",
-			"WELCOMER_NEW":"ORDER_WELCOMER_NEW",
-			"WAITING":"ORDER_WAITING",
-			"COMMITED":"ORDER_COMMITED",
-			"PAYING":"ORDER_PAYING",
-			"FINISHED":"ORDER_FINISHED",
-			"UNAVAILABLE":"ORDER_UNAVAILABLE",
-			"AVAILABLE":"ORDER_AVAILABLE"
+			"EMPTY":"TABLE_EMPTY",
+			"BOOKING":"TABLE_BOOKING",
+			"USING":"TABLE_USING"
+	},
+	"result":{
+		"insertSuccess":"congratulations,insert table successfully!",
+		"insertFail":"sorry,insert table failed,please check table info!",
+		"updateSuccess":"congratulations,update table successfully!",
+		"updateFail":"sorry,update table failed,please check table info!",
+		"deleteSuccess":"congratulations,delete table successfully!",
+		"deleteFail":"sorry,delete table failed,please check table info!",
+		"searchSuccess":"congratulations,search table successfully!",
+		"searchFail":"sorry,search table failed,,please check table info!"
+	},
+	"field":{
+			"id":"Id",
+			"status":"Status",
+			"user_id":"User_id",
+			"customer_id":"Customer_id",
+			"customer_count":"Customer_count",
+			"modifyTime":"ModifyTime",
+			"allowance":"Allowance",
+			"total_price":"Total_price",
+			"prePay":"PrePay",
+			"submit_time":"Submit_time",
+			"enabled":"Enabled",
+			"user":"User",
+			"customer":"Customer",
+			"table_details":"Table_details",
+			"food_details":"Food_details",
+			"xx":"XX"
+	},
+	"grid":{
+			"selectRow":"select row index : __index__"
 	}
+	
 }

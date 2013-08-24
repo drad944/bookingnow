@@ -190,14 +190,14 @@ function parseOrderToGrid(matchedOrders) {
 
 function parseMenuHtml() {
 	var option = {
-			fallbackLng: 'zh',
+			fallbackLng: 'en-US',
 			lng: 'en-US',
 	//		lng: 'zh-CN',
 			resGetPath: 'resources/locales/__lng__/__ns__.json',
 			getAsync: false,
-			ns: 'bookingnow.top.menu'
+			ns: 'bookingnow.top.menu',
+			fallbackToDefaultNS: true
 		};
-	 
 	i18n.init(option);
 	
     var theme = getDemoTheme();

@@ -530,6 +530,17 @@ function parseOrderGridHtml() {
 		$.post("searchOrder.action", 
 			{"order.enabled": true}, 
 			function(matchedorders){
+	var option = {
+			fallbackLng: 'en-US',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.orderManagement'
+		};
+	i18n.init(option);
+				
+				
 	if(matchedorders != null && matchedorders.result != null){
 		orders = matchedorders.result;
 	}
@@ -551,49 +562,49 @@ function parseOrderGridHtml() {
 				
 				if(item == "id"){
 					datafield["type"] = "number";
-					column["text"] = "Id";
+					column["text"] = i18n.t("field.id");
 					
 				}else if(item == "allowance") {
 					datafield["type"] = "number";
-					column["text"] = "Allowance";
+					column["text"] = i18n.t("field.allowance");
 					
 				}else if(item == "customer_count") {
 					datafield["type"] = "number";
-					column["text"] = "Customer_count";
+					column["text"] = i18n.t("field.customer_count");
 					
 				}else if(item == "customer_id") {
 					datafield["type"] = "number";
-					column["text"] = "Customer_id";
+					column["text"] = i18n.t("field.customer_id");
 					
 				}else if(item == "modifyTime") {
 					datafield["type"] = "number";
-					column["text"] = "ModifyTime";
+					column["text"] = i18n.t("field.modifyTime");
 					
 				}else if(item == "prePay") {
 					datafield["type"] = "number";
-					column["text"] = "PrePay";
+					column["text"] = i18n.t("field.prePay");
 					
 				}else if(item == "status") {
 					datafield["type"] = "number";
-					column["text"] = "Status";
+					column["text"] = i18n.t("field.status");
 					
 				}else if(item == "submit_time") {
 					datafield["type"] = "number";
-					column["text"] = "Submit_time";
+					column["text"] = i18n.t("field.submit_time");
 					
 				}else if(item == "total_price") {
 					datafield["type"] = "number";
-					column["text"] = "Total_price";
+					column["text"] = i18n.t("field.total_price");
 					
 				}else if(item == "user_id") {
 					datafield["type"] = "number";
-					column["text"] = "User_id";
+					column["text"] = i18n.t("field.user_id");
 					
 				}else if(item == "customer" || item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
 					//do nothing
 				}else {
 					datafield["type"] = "string";
-					column["text"] = "XX";
+					column["text"] = i18n.t("field.xx");
 				}
 				
 				if(item == "customer" || item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
