@@ -778,12 +778,13 @@
 			FDF.* from pitaya_order O 
 			left outer join 
 			(
-			select
-			<include refid="Max_Food_Detail_Base_Column_List" />
-			,
-			<include refid="Max_Food_Base_Column_List" />
- 			from pitaya_order_food_detail FD 
- 			left outer join (select F.* from pitaya_food F where F.enabled = true) as F on FD.food_id = F.id where FD.enabled = true
+			  select
+				<include refid="Max_Food_Detail_Base_Column_List" />
+				,
+				<include refid="Max_Food_Base_Column_List" />
+ 				from pitaya_order_food_detail FD 
+ 				left outer join (select F.* from pitaya_food F where F.enabled = true) as F on FD.food_id = F.id 
+ 				where FD.enabled = true and FD.order_id = #{id,jdbcType=BIGINT}
  			)
  			as FDF on O.id = FDF.FD_order_id
 			where O.id = #{id,jdbcType=BIGINT} and O.enabled = true
@@ -1450,4 +1451,24 @@
 		enabled = #{enabled,jdbcType=BIT}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
+	
+	<select id="selectFoodStatusOfOrderByPrimaryKey" resultMap="Order_BaseResultMap"
+		parameterType="java.lang.Long">
+			select
+			O.id as O_id,
+			FD.id as FD_id,
+			FD.status as FD_status
+			from pitaya_order O 
+			left outer join 
+			(
+			  select
+				FDT.id,
+				FDT.status,
+            	FDT.order_id
+ 				from pitaya_order_food_detail FDT
+ 				where FDT.enabled = true and FDT.order_id = #{id,jdbcType=BIGINT}
+ 			)
+ 			as FD on O.id = FD.order_id
+			where O.id = #{id,jdbcType=BIGINT} and O.enabled = true
+	</select>
 </mapper>

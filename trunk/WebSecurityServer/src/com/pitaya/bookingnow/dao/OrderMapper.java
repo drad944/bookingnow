@@ -24,6 +24,8 @@ public interface OrderMapper {
     
     Order selectFullOrderByPrimaryKey(Long id);
     
+    Order selectFoodStatusOfOrderByPrimaryKey(Long id);
+    
     List<Order> searchFullOrdersByFullOrderInfo(Order order);
     
     List<Order> searchOrdersByFullOrderInfo(Order order);

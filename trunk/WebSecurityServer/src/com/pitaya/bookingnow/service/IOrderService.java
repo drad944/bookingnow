@@ -63,4 +63,6 @@ public interface IOrderService {
 	
 	MyResult switchStatusForOrder(Order order);
 	
+    Order getFoodStatusOfOrder(Long id);
+	
 }

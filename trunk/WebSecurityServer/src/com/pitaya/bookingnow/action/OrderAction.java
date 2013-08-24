@@ -80,6 +80,16 @@ public class OrderAction extends BaseAction{
 		return "Fail";
 	}
 	
+	public String getFoodStatusOfOrder(){
+		if (params != null && params.getOrder_id() != null) {
+			order = orderService.getFoodStatusOfOrder(params.getOrder_id());
+			return "searchFoodsInOrderSuccess";
+		}
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
+		return "Fail";
+	}
+	
 	public String searchOrder() {
 		
 		if (order != null) {
