@@ -1250,6 +1250,15 @@ public class OrderService implements IOrderService{
 		}
 		return null;
 	}
+	
+	@Override
+	public Order getFoodStatusOfOrder(Long id){
+		if (id != null) {
+			Order realOrder= orderDao.selectFoodStatusOfOrderByPrimaryKey(id);
+			return realOrder;
+		}
+		return null;
+	}
 
 	@Override
 	public List<Order> searchFullOrdersByFullOrder(Order order) {
