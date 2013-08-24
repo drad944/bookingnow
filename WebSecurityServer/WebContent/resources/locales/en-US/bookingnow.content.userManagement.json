@@ -12,6 +12,9 @@
 			"female":"female",
 			"other":"G"
 	},
+	"service":{
+		"accept":"I accept terms"
+	},
 	"validation":{
 		"message":{
 			"requireAccount":"Account is required!",
@@ -37,7 +40,7 @@
 		"deleteSuccess":"congratulations,delete user successfully!",
 		"deleteFail":"sorry,delete user failed,please check user info!",
 		"searchSuccess":"congratulations,search user successfully!",
-		"searchFail":"sorry,search user failed,,please check user info!"
+		"searchFail":"sorry,search user failed,please check user info!"
 	},
 	"field":{
 			"id":"Id",
@@ -61,8 +64,47 @@
 			"enabled":"Enabled",
 			"xx":"XX"
 	},
+	"fieldLabel":{
+			"id":"Id:",
+			"modifyTime":"ModifyTime:",
+			"image_size":"Image_size:",
+			"image_relative_path":"Image_relative_path:",
+			"account":"Account:",
+			"name":"Name:",
+			"password":"Password:",
+			"confirmPassword":"Confirm password:",
+			"phone":"Phone:",
+			"sex":"Sex:",
+			"email":"Email:",
+			"address":"Address:",
+			"birthday":"Birthday:",
+			"description":"Description:",
+			"department":"Department:",
+			"sub_system":"Sub_system:",
+			"role_Details":"Role_Details:",
+			"image":"Image:",
+			"image_absolute_path":"Image_absolute_path:",
+			"enabled":"Enabled:",
+			"xx":"XX:"
+	},
 	"grid":{
 			"selectRow":"select row index : __index__"
+	},
+	"button":{
+			"reset":"Reset",
+			"cancel":"Cancel",
+			"update":"Update",
+			"register":"Register",
+			"operationUserGrid":{
+				"addUserRow":"Add New Row",
+				"updateUserRow":"Update Selected Row",
+				"deleteUserRow":"Delete Selected Row"
+				
+			}
+	},
+	"window":{
+			"updateWindow":"Update User",
+			"registerWindow":"Register User"
 	}
 	
 }

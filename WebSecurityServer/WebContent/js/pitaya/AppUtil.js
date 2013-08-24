@@ -272,6 +272,8 @@ function parseMenuHtml() {
         }else if(event.args.id == 2) {
         	openContentPage('framework_main','page/common/foodManagement.html','content');
         }else if(event.args.id == 3) {
+        	openContentPage('framework_main','page/common/userManagement.html','content');
+        	parseUserGridHtml();
         	/*
         	var bodyhtml = $("body").html();
         	bodyhtml = null;

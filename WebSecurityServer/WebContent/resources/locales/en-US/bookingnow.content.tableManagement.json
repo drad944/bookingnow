@@ -12,7 +12,7 @@
 		"deleteSuccess":"congratulations,delete table successfully!",
 		"deleteFail":"sorry,delete table failed,please check table info!",
 		"searchSuccess":"congratulations,search table successfully!",
-		"searchFail":"sorry,search table failed,,please check table info!"
+		"searchFail":"sorry,search table failed,please check table info!"
 	},
 	"field":{
 			"id":"Id",
@@ -24,8 +24,34 @@
 			"enabled":"Enabled",
 			"xx":"XX"
 	},
+	"fieldLable":{
+			"id":"Id:",
+			"status":"Status:",
+			"minCustomerCount":"MinCustomerCount:",
+			"maxCustomerCount":"MaxCustomerCount:",
+			"address":"Address:",
+			"indoorPrice":"IndoorPrice:",
+			"enabled":"Enabled:",
+			"xx":"XX:"
+	},
 	"grid":{
 			"selectRow":"select row index : __index__"
+	},
+	"button":{
+			"reset":"Reset",
+			"cancel":"Cancel",
+			"update":"Update",
+			"register":"Register",
+			"operationTableGrid":{
+				"addTableRow":"Add New Row",
+				"updateTableRow":"Update Selected Row",
+				"deleteTableRow":"Delete Selected Row"
+				
+			}
+	},
+	"window":{
+			"updateWindow":"Update Table",
+			"registerWindow":"Register Table"
 	}
 	
 }

@@ -33,16 +33,6 @@ function emptyUpdateTableWindow(){
 }
 
 function initUpdateTableElements() {
-	var option = {
-			fallbackLng: 'zh',
-			lng: 'en-US',
-	//		lng: 'zh-CN',
-			resGetPath: 'resources/locales/__lng__/__ns__.json',
-			getAsync: false,
-			ns: 'bookingnow.content.tableManagement'
-		};
-	 
-	i18n.init(option);
 	
 	var theme = getDemoTheme();
     $("#updateTableDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
@@ -167,7 +157,7 @@ function initUpdateTableWindow(rowData,position) {
 	
 	// initialize the popup window and buttons.
     $("#updateTablePopupWindow").jqxWindow({
-    	position:position, isModal: true,width: 350, height: 300, resizable: true, theme: theme, cancelButton: $("#updateTableCancelButton"), modalOpacity: 0.01,
+    	position:position, isModal: true,width: 350, height: 250, resizable: false, theme: theme, cancelButton: $("#updateTableCancelButton"), modalOpacity: 0.01,
     	initContent: function () {
             $('#updateTablePopupWindow').jqxWindow('focus');
         }
@@ -190,16 +180,6 @@ function updateTable() {
 	var updateTableData = parseUIDataToTableData(updateTableUIData);
 
 	$.post("updateTable.action", updateTableData, function(result) {
-		var option = {
-				fallbackLng: 'zh',
-				lng: 'en-US',
-		//		lng: 'zh-CN',
-				resGetPath: 'resources/locales/__lng__/__ns__.json',
-				getAsync: false,
-				ns: 'bookingnow.content.tableManagement'
-			};
-		 
-		i18n.init(option);
 		
 		if (result != null && result["id"] != null) {
 			
@@ -229,16 +209,6 @@ function updateTable() {
 
 
 function initRegisterTableElements() {
-	var option = {
-			fallbackLng: 'zh',
-			lng: 'en-US',
-	//		lng: 'zh-CN',
-			resGetPath: 'resources/locales/__lng__/__ns__.json',
-			getAsync: false,
-			ns: 'bookingnow.content.tableManagement'
-		};
-	 
-	i18n.init(option);
     
 	var theme = getDemoTheme();
     $("#registerTableDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
@@ -319,7 +289,7 @@ function initRegisterTableWindow(position) {
 	
 	var theme = getDemoTheme();
 	$("#addTablePopupWindow").jqxWindow({
-		position:position,isModal: true,width: 350, height: 300, resizable: true, theme: theme, cancelButton: $("#registerTableCancelButton"), 
+		position:position,isModal: true,width: 350, height: 250, resizable: false, theme: theme, cancelButton: $("#registerTableCancelButton"), 
     	modalOpacity: 0.01,
     	
     	initContent: function () {
@@ -345,16 +315,6 @@ function registerTable() {
 	
 	
 	$.post("addTable.action", registerTableData, function(result) {
-		var option = {
-				fallbackLng: 'zh',
-				lng: 'en-US',
-		//		lng: 'zh-CN',
-				resGetPath: 'resources/locales/__lng__/__ns__.json',
-				getAsync: false,
-				ns: 'bookingnow.content.tableManagement'
-			};
-		 
-		i18n.init(option);
 		
 		if (result != null && result["id"] != null) {
 			result = parseTableDataToUIData(result);
@@ -393,7 +353,7 @@ function addOperateTableGridEventListeners() {
 			var offset = $("#tableDataGrid").offset();
 			var position = {};
 			position.x = parseInt(offset.left) + 200;
-			position.y = parseInt(offset.top) - 200;
+			position.y = parseInt(offset.top) - 150;
 			
 			initUpdateTableWindow(rowData,position);
 		}
@@ -408,7 +368,7 @@ function addOperateTableGridEventListeners() {
 		var offset = $("#tableDataGrid").offset();
 		var position = {};
 		position.x = parseInt(offset.left) + 200;
-		position.y = parseInt(offset.top) - 200;
+		position.y = parseInt(offset.top) - 150;
 		
 		
 		// show the popup window.
@@ -446,7 +406,7 @@ function parseTableGridHtml() {
 			{"table.enabled": true}, 
 			function(matchedtables){
 				var option = {
-				//		fallbackLng: 'zh',
+						fallbackLng: 'en-US',
 						lng: 'en-US',
 				//		lng: 'zh-CN',
 						resGetPath: 'resources/locales/__lng__/__ns__.json',
@@ -477,26 +437,27 @@ function parseTableGridHtml() {
 							if(item == "id"){
 								datafield["type"] = "number";
 								column["text"] = i18n.t("field.id");
-								
+								column["filtertype"] = 'number';
 							}else if(item == "status") {
 								datafield["type"] = "string";
 								column["text"] = i18n.t("field.status");
-								
+								column["filtertype"] = 'textbox';
 							}else if(item == "minCustomerCount") {
 								datafield["type"] = "number";
 								column["text"] = i18n.t("field.minCustomerCount");
-								
+								column["filtertype"] = 'number';
 							}else if(item == "maxCustomerCount") {
 								datafield["type"] = "number";
 								column["text"] = i18n.t("field.maxCustomerCount");
+								column["filtertype"] = 'number';
 							}else if(item == "address") {
 								datafield["type"] = "number";
 								column["text"] = i18n.t("field.address");
-								
+								column["filtertype"] = 'textbox';
 							}else if(item == "indoorPrice") {
-								datafield["type"] = "string";
+								datafield["type"] = "number";
 								column["text"] = i18n.t("field.indoorPrice");
-								
+								column["filtertype"] = 'number';
 							}else if(item == "enabled"){
 								//do nothing
 							}else {
@@ -571,6 +532,8 @@ function parseTableGridHtml() {
 	    theme: theme,
 	    selectionmode: 'multiplerowsextended',
 	    sortable: true,
+	    showfilterrow: true,
+        filterable: true,
 	    pageable: true,
 	    autoheight: true,
 	    selectionmode:'singlerow',
@@ -583,7 +546,7 @@ function parseTableGridHtml() {
     $("#tableDataGrid").on('rowselect', function (event) {
         $("#eventLog").text(i18n.t("grid.selectRow", {index: event.args.rowindex}));
     });
-	
+    initLocaleElements();
 	initOperateTableGridElements();
 	addOperateTableGridEventListeners();
 	
@@ -605,7 +568,20 @@ function parseTableGridHtml() {
 		
 }
 
-
+function initLocaleElements() {
+	$("#addTableRowButton").val(i18n.t("button.operationTableGrid.addTableRow"));
+	$("#updateTableRowButton").val(i18n.t("button.operationTableGrid.updateTableRow"));
+	$("#deleteTableRowButton").val(i18n.t("button.operationTableGrid.deleteTableRow"));
+	$("#updateTableUpdateButton").val(i18n.t("button.update"));
+	$("#updateTableResetButton").val(i18n.t("button.reset"));
+	$("#updateTableCancelButton").val(i18n.t("button.cancel"));
+	$("#registerTableRegisterButton").val(i18n.t("button.register"));
+	$("#registerTableResetButton").val(i18n.t("button.reset"));
+	$("#registerTableCancelButton").val(i18n.t("button.cancel"));
+	
+	$("#updateTablePopupWindow").i18n();
+	$("#addTablePopupWindow").i18n();
+}
 
 function parseUIDataToTableData(record) {
 	if(record != null){
