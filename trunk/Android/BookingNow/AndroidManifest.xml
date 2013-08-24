@@ -8,6 +8,7 @@
         android:minSdkVersion="11"
         android:targetSdkVersion="15"/>
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     
     <supports-screens
             android:normalScreens="true"
@@ -66,6 +67,11 @@
                 android:name=".service.OrderUpdateDetailContentProvider"
                 android:authorities="com.pitaya.bookingnow.orderupdatedetail.contentprovider" >
         </provider>
+        <receiver android:name=".service.ConnectionReceiver" >  
+		    <intent-filter>
+		        <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />  
+		    </intent-filter>  
+		</receiver>  
     </application>
 
 </manifest>

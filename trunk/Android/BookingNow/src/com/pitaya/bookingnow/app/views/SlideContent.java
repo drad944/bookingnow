@@ -40,7 +40,7 @@ public class SlideContent extends RelativeLayout {
 	
 	public void selectItem(String key){
 		String currentKey = this.mContentView.getCurrent();
-		if(currentKey == null || currentKey.equals(key)){
+		if(currentKey != null && currentKey.equals(key)){
 			mContentView.toggle();
 		} else {
 			for(int i=0; i < this.contentViews.size(); i++){
@@ -69,7 +69,7 @@ public class SlideContent extends RelativeLayout {
 
 	public void setMenu(View v) {
 		mMenuView.setView(v);
-		this.setContent(getContentView("menu"));
+		//this.setContent(getContentView("menu"));
 	}
 	
 	public void updateContentViews(ArrayList<BaseContentView> views){

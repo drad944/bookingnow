@@ -67,7 +67,6 @@ public class OrderLeftView extends Fragment{
 	@Override
 	public void onDestroyView(){
 		super.onDestroyView();
-		mMessageService.unregisterHandler(mMessageHandler);
 		this.doUnbindService();
 	}
 	
@@ -79,7 +78,7 @@ public class OrderLeftView extends Fragment{
 		return this.lastSelectItem;
 	}
 	
-	public void showOrderDetail(Order order, boolean isForce, Class<? extends OrderDetailAdapter> orderDetailAdapterClz, int viewwidth){
+	public void showOrderDetail(Order order, boolean isForce, Class<? extends OrderDetailAdapter> orderDetailAdapterClz){
         if(order != null){
     		String key = order.getOrderKey();
             OrderDetailFragment details = null;
@@ -90,7 +89,7 @@ public class OrderLeftView extends Fragment{
             if (details == null || isForce || !details.getShownOrder().getOrderKey().equals(key)) {
             	FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
         		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        		fragmentTransaction.replace(R.id.orderdetail, OrderDetailFragment.newInstance(order, mContentContainer, orderDetailAdapterClz, viewwidth));
+        		fragmentTransaction.replace(R.id.orderdetail, OrderDetailFragment.newInstance(order, mContentContainer, orderDetailAdapterClz));
         		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         		fragmentTransaction.commit();
             }
@@ -128,6 +127,7 @@ public class OrderLeftView extends Fragment{
 	
 	protected void doUnbindService() {
 	    if (mIsBound) {
+	    	mMessageService.unregisterHandler(mMessageHandler);
 	    	this.getActivity().unbindService(mConnection);
 	        mIsBound = false;
 	    }

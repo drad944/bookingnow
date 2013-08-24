@@ -75,58 +75,69 @@ public class WelcomerOrderListView extends OrderListView{
 		final View bookingLayout = seatsSearchPopupView.findViewById(R.id.bookinglayout);
 		final View searchLayout = seatsSearchPopupView.findViewById(R.id.searchlayout);
 		final View seatavailableInfo = seatsSearchPopupView.findViewById(R.id.seatavailable);
+		final EditText peoplecountview = (EditText)seatsSearchPopupView.findViewById(R.id.peoplecount);
 		Button searchBtn = (Button)seatsSearchPopupView.findViewById(R.id.search);
 		searchBtn.setOnClickListener(new View.OnClickListener(){
-
 			@Override
 			public void onClick(View v) {
-				EditText peoplecountview = (EditText)seatsSearchPopupView.findViewById(R.id.peoplecount);
-				final int customercount = Integer.parseInt(peoplecountview.getText().toString());
-				OrderService.getAvailableTables(Constants.TABLE_EMPTY, new HttpHandler(){
-					
-					public void onSuccess(String action, String response){
-						try {
-							JSONObject jresp = new JSONObject(response);
-							if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
-								//TODO handle fail
-							} else {
-								JSONArray jtables = jresp.getJSONArray("result");
-								String tablelabels = "";
-								int count = 0;
-								for(int i=0; i < jtables.length(); i++){
-									JSONObject jtable = jtables.getJSONObject(i);
-									if(jtable.getInt("minCustomerCount") <= customercount && customercount <= jtable.getInt("maxCustomerCount")){
-										count ++;
-										if(count <=5){
-											tablelabels += jtable.getString("address") + ",";
-										} else {
-											break;
+				
+				int customercount = 0;
+				try {
+					customercount = Integer.parseInt(peoplecountview.getText().toString());
+				} catch (Exception e){
+					Log.e(TAG, "Invaild customer number");
+				}
+				
+				if(customercount > 0){
+					final int customer_count = customercount;
+					OrderService.getAvailableTables(Constants.TABLE_EMPTY, new HttpHandler(){
+						
+						public void onSuccess(String action, String response){
+							try {
+								JSONObject jresp = new JSONObject(response);
+								if(jresp.has("executeResult") && jresp.getBoolean("executeResult") == false){
+									//TODO handle fail
+								} else {
+									JSONArray jtables = jresp.getJSONArray("result");
+									String tablelabels = "";
+									int count = 0;
+									for(int i=0; i < jtables.length(); i++){
+										JSONObject jtable = jtables.getJSONObject(i);
+										if(jtable.getInt("minCustomerCount") <= customer_count && customer_count <= jtable.getInt("maxCustomerCount")){
+											count ++;
+											if(count <=5){
+												tablelabels += jtable.getString("address") + ",";
+											} else {
+												break;
+											}
 										}
 									}
-								}
-								if(count > 0){
-									seatavailableInfo.setVisibility(View.VISIBLE);
-									tablelabels = tablelabels.substring(0, tablelabels.length() - 1);
-									if(count > 5){
-										tablelabels += "...";	
+									if(count > 0){
+										seatavailableInfo.setVisibility(View.VISIBLE);
+										tablelabels = tablelabels.substring(0, tablelabels.length() - 1);
+										if(count > 5){
+											tablelabels += "...";	
+										}
+										((TextView)seatsSearchPopupView.findViewById(R.id.seatavailable))
+											.setText(getContext().getResources().getString(R.string.seatavailable) + tablelabels);
+									} else {
+										searchLayout.setVisibility(View.GONE);
+										bookingLayout.setVisibility(View.VISIBLE);
 									}
-									((TextView)seatsSearchPopupView.findViewById(R.id.seatavailable))
-										.setText(getContext().getResources().getString(R.string.seatavailable) + tablelabels);
-								} else {
-									searchLayout.setVisibility(View.GONE);
-									bookingLayout.setVisibility(View.VISIBLE);
 								}
+							} catch (JSONException e) {
+								e.printStackTrace();
 							}
-						} catch (JSONException e) {
-							e.printStackTrace();
 						}
-					}
+						
+						public void onFail(String action, int statuscode){
+							Log.e(TAG, "[OrderService.getAvailableTables] Network error:" + statuscode);
+						}
+					});
 					
-					public void onFail(String action, int statuscode){
-						Log.e(TAG, "[OrderService.getAvailableTables] Network error:" + statuscode);
-					}
-				});
-				
+				} else {
+					ToastUtil.showToast(getContext(), "请输入正确的就餐人数", Toast.LENGTH_LONG);
+				}
 			}
 			
 		});
@@ -270,6 +281,7 @@ public class WelcomerOrderListView extends OrderListView{
 					Order order = orderlist.get(position);
 		    		if(view == null){
 		    			view = View.inflate(parent.getContext(), R.layout.orderinfoview, null);
+		    			setViewLayoutParams(view);
 		    			ViewHolder holder = new ViewHolder();
 		    			holder.info1 = (TextView)view.findViewById(R.id.info1);
 		    			holder.info2 = (TextView)view.findViewById(R.id.info2);

@@ -411,6 +411,15 @@ public class Order implements Serializable{
 		return null;
 	}
 	
+	public Order.Food searchFoodByRefId(Long id){
+		for(Entry<Food, Integer> entry : this.getFoods().entrySet()){
+			if(id.equals(entry.getKey().getId())){
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
+	
 	public synchronized int addFood(Food food, int quantity){
 		Food current_food = searchFood(food.getKey());
 		if(quantity <= 0){

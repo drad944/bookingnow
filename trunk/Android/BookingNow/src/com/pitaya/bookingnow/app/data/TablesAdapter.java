@@ -46,21 +46,29 @@ public class TablesAdapter extends BaseAdapter{
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view = convertView;
-			final int index = position;
+			final Table table = this.tables.get(position);
 			if(view == null){
 				view = new CheckBox(mContext);
 			}
-			((CheckBox)view).setText(this.tables.get(position).getLabel());
+			((CheckBox)view).setText(table.getLabel());
+			boolean hasChecked = false;
+			for(Table tempt : selectedTables){
+				if(tempt.getId().equals(table.getId())){
+					hasChecked = true;
+					break;
+				}
+			}
+			((CheckBox)view).setChecked(hasChecked);
 			((CheckBox)view).setOnCheckedChangeListener(new OnCheckedChangeListener(){
 
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView,
 						boolean isChecked) {
 					if(isChecked){
-						selectedTables.add(tables.get(index));
+						selectedTables.add(table);
 					} else {
 						int i = 0;
-						while(!selectedTables.get(i).getId().equals(tables.get(index).getId())){
+						while(!selectedTables.get(i).getId().equals(table.getId())){
 							i++;
 						}
 						if(i < selectedTables.size()){

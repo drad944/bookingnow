@@ -37,8 +37,7 @@ public class GetOrderFoodsStatusHandler extends HttpHandler{
 				JSONArray jorder_details = jresp.getJSONArray("food_details");
 				for(int i=0; i < jorder_details.length(); i++){
 					JSONObject jorder_detail = jorder_details.getJSONObject(i);
-					JSONObject jfood = jorder_detail.getJSONObject("food");
-					Order.Food food = mOrder.searchFood(String.valueOf(jfood.get("id")));
+					Order.Food food = mOrder.searchFoodByRefId(jorder_detail.getLong("id"));
 					if(food != null){
 						food.setStatus(jorder_detail.getInt("status"));
 					}

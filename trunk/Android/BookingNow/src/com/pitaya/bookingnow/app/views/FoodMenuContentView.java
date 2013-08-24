@@ -57,8 +57,7 @@ public class FoodMenuContentView extends BaseContentView{
 	
 	@Override
 	public boolean destroyView(ViewGroup container){
-		FragmentManager fragmentManager = ((FragmentActivity)this.mContext).getSupportFragmentManager(); 
-		//FragmentManager.enableDebugLogging(false);
+		FragmentManager fragmentManager = ((FragmentActivity)this.mContext).getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		fragmentTransaction.remove(mFragment);
 		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);

@@ -18,6 +18,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,16 +31,14 @@ public class OrderDetailFragment extends Fragment {
 	private ListView mView;
 	private OrderDetailAdapter mOrderDetailAdapter;
 	private OrderContentView mContentContainer;
-	private int mViewWidth;
 	private Class<? extends OrderDetailAdapter> mAdapterClazz;
 
 	public static OrderDetailFragment newInstance(Order order, OrderContentView container, 
-			Class<? extends OrderDetailAdapter> adapterclz, int width){
+			Class<? extends OrderDetailAdapter> adapterclz){
 		OrderDetailFragment instance = new OrderDetailFragment();
 		instance.setContainer(container);
 		instance.setOrder(order);
 		instance.setAdapterClass(adapterclz);
-		instance.setViewWidth(width);
 		return instance;
 	}
 	
@@ -57,10 +58,6 @@ public class OrderDetailFragment extends Fragment {
 		this.mAdapterClazz = clz;
 	}
 	
-	public void setViewWidth(int width){
-		this.mViewWidth = width;
-	}
-	
     public Order getShownOrder(){
     	return this.mOrder;
     }
@@ -72,11 +69,7 @@ public class OrderDetailFragment extends Fragment {
             return null;
         }
         mView = new ListView(getActivity());
-        if(this.mViewWidth <= 0){
-        	mView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        } else {
-        	mView.setLayoutParams(new LayoutParams(ContentUtil.getPixelsByDP(this.mViewWidth), LayoutParams.MATCH_PARENT));
-        }
+    	mView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     	try {
     		try {
 				Constructor<? extends OrderDetailAdapter> con = this.mAdapterClazz.getConstructor(Context.class, View.class, Order.class);
@@ -90,7 +83,7 @@ public class OrderDetailFragment extends Fragment {
 			} catch (NoSuchMethodException e) {
 				e.printStackTrace();
 			}
-    		mView.setAdapter(mOrderDetailAdapter);
+            mView.setAdapter(mOrderDetailAdapter);
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {

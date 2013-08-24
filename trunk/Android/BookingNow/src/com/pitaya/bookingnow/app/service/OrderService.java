@@ -36,6 +36,22 @@ public class OrderService {
 		}
 	}
 	
+	public static void getFoodStatusOfOrder(Long order_id, HttpHandler callback){
+		if(order_id == null)
+			return;
+		JSONObject jreq = new JSONObject();
+		JSONObject jparams = new JSONObject(); 
+		try {
+			jparams.put("order_id", order_id);
+			jreq.put("params", jparams);
+			HttpService.post("getFoodStatusOfOrder.action", new StringEntity(jreq.toString()), callback);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void getOrderByStatus(Context context, boolean byUser, ArrayList<Integer> statuses, HttpHandler callback){
 		JSONObject jreq = new JSONObject();
 		JSONObject jparams = new JSONObject();

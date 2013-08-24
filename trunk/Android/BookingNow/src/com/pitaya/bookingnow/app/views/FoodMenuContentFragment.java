@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -63,9 +64,12 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		private ViewPager mFoodMenuViewPager;
 		private FoodMenuAdapter mFoodMenuAdapter;
 		private FoodMenuContentView mContentContainer;
+		private CustomerOrderDetailAdapter mOrderPreviewAdapter;
 		
 		private MessageHandler mMessageHandler;
 		private MessageService mMessageService;
+		private PopupWindow mPopupWindow;
+		private ListView mOrderPreviewView;
 		protected boolean mIsBound = false;
 		protected ServiceConnection mConnection;
 				 
@@ -101,10 +105,8 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		}
 		
 		public void refreshAllPages(){
-			if(getCurrentViewIndex() != -1){
-				for(int i = 0; i < mFoodMenuAdapter.getCount(); i++){
-					mFoodMenuAdapter.refresh(i);
-				}
+			if(mFoodMenuAdapter != null){
+				mFoodMenuAdapter.refreshAllPages();
 			}
 		}
 		
@@ -115,6 +117,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		
 		protected void doUnbindService() {
 		    if (mIsBound) {
+		    	mMessageService.unregisterHandler(mMessageHandler);
 		    	this.getActivity().unbindService(mConnection);
 		        mIsBound = false;
 		    }
@@ -165,17 +168,16 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			
 			if(this.mContentContainer != null && this.mContentContainer.getOrder() != null){
 				
-				final ListView orderPreview = new ListView(getActivity());
-				final PopupWindow popupWindow =  new PopupWindow(orderPreview, 0,  
-						0, true);
-				popupWindow.setFocusable(true);
-		        popupWindow.setOutsideTouchable(false);
-		        popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
-		        popupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-		        popupWindow.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.common_background));
-		        popupWindow.setAnimationStyle(R.style.AnimBottom);
-		        popupWindow.setOnDismissListener(new OnDismissListener(){
-
+				mOrderPreviewView = new ListView(getActivity());
+				mPopupWindow =  new PopupWindow(mOrderPreviewView, 0,  0, true);
+				mPopupWindow.setFocusable(true);
+		        mPopupWindow.setOutsideTouchable(false);
+		        mPopupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+		        mPopupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+		        mPopupWindow.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.common_background));
+		        mPopupWindow.setAnimationStyle(R.style.AnimBottom);
+		        mPopupWindow.setOnDismissListener(new OnDismissListener(){
+		        
 					@Override
 					public void onDismiss() {
 						refreshAllPages();
@@ -183,49 +185,90 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		        	
 		        });
 				
+		        mOrderPreviewAdapter = null;
+				try {
+					mOrderPreviewAdapter = new CustomerOrderDetailAdapter(getActivity(), 
+							mOrderPreviewView, mContentContainer.getOrder());
+					mOrderPreviewAdapter.setDataSetChangedListener(new OrderDetailAdapter.DataSetChangedListener(){
+
+						@Override
+						public void OnDataSetChanged() {
+							if(mPopupWindow.isShowing()){
+								mPopupWindow.update(ContentUtil.getPixelsByDP(700), 
+										getPopupWindowSize(mContentContainer.getOrder().getFoods().size()));
+							}
+						}
+						
+					});
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+
+				if(mOrderPreviewAdapter != null){
+					mOrderPreviewView.setAdapter(mOrderPreviewAdapter);
+				}
+		        
 				showOrderBtn.setOnClickListener(new OnClickListener(){
 					
 					@Override
 					public void onClick(View arg0) {
-						//get current good items						
-				        popupWindow.showAtLocation(mFoodMenuContentView, 
+				        mPopupWindow.showAtLocation(mFoodMenuContentView, 
 				        		Gravity.CENTER_HORIZONTAL|Gravity.CENTER_HORIZONTAL, 0, 0);
-						try {
-							final CustomerOrderDetailAdapter orderAdapter = new CustomerOrderDetailAdapter(getActivity(), orderPreview, mContentContainer.getOrder());
-							orderAdapter.setDataSetChangedListener(new OrderDetailAdapter.DataSetChangedListener(){
-
+						if(mContentContainer.getOrder().getStatus() == Constants.ORDER_COMMITED){
+		            		GetOrderFoodsStatusHandler handler = new GetOrderFoodsStatusHandler(getActivity(), mContentContainer.getOrder());
+		            		handler.setAfterGetFoodsStatusListener(new GetOrderFoodsStatusHandler.AfterGetFoodsStatusListener(){
+		
 								@Override
-								public void OnDataSetChanged() {
-									popupWindow.update(ContentUtil.getPixelsByDP(700), 
-											getPopupWindowSize(mContentContainer.getOrder().getFoods().size()));
-								}
-								
-							});
-							if(mContentContainer.getOrder().getStatus() == Constants.ORDER_COMMITED){
-			            		GetOrderFoodsStatusHandler handler = new GetOrderFoodsStatusHandler(getActivity(), mContentContainer.getOrder());
-			            		handler.setAfterGetFoodsStatusListener(new GetOrderFoodsStatusHandler.AfterGetFoodsStatusListener(){
-			
-									@Override
-									public void afterGetFoodsStatus() {
-										orderPreview.setAdapter(orderAdapter);
-										popupWindow.update(ContentUtil.getPixelsByDP(700), getPopupWindowSize(mContentContainer.getOrder().getFoods().size()));
+								public void afterGetFoodsStatus() {
+									if(mOrderPreviewAdapter != null){
+										if(mContentContainer.getOrder() != mOrderPreviewAdapter.getOrder()){
+											mOrderPreviewAdapter.setOrder(mContentContainer.getOrder());
+										}
+										mOrderPreviewAdapter.refresh();
 									}
-			            			
-			            		});
-			            		OrderService.getFoodsOfOrder(Long.parseLong(mContentContainer.getOrder().getOrderKey()), handler);
-							} else {
-								orderPreview.setAdapter(orderAdapter);
-								popupWindow.update(ContentUtil.getPixelsByDP(700), getPopupWindowSize(mContentContainer.getOrder().getFoods().size()));
+								}
+		            			
+		            		});
+		            		OrderService.getFoodStatusOfOrder(Long.parseLong(mContentContainer.getOrder().getOrderKey()), handler);
+						} else {
+							if(mOrderPreviewAdapter != null){
+								if(mContentContainer.getOrder() != mOrderPreviewAdapter.getOrder()){
+									mOrderPreviewAdapter.setOrder(mContentContainer.getOrder());
+								}
+								mOrderPreviewAdapter.refresh();
 							}
-						} catch (IllegalArgumentException e) {
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
 						}
 					}
 					
+				});
+				
+				mMessageHandler.setOnMessageListener(new MessageHandler.OnMessageListener(){
+
+					@Override
+					public void onMessage(Message message) {
+						if(message instanceof OrderDetailMessage){
+							OrderDetailMessage msg = (OrderDetailMessage)message;
+							if(msg.getUpdateItems() != null && msg.getUpdateItems().size() > 0){
+								CookingItem item = msg.getUpdateItems().get(0);
+								if(mContentContainer != null && mContentContainer.getOrder() != null){
+									Order currentOrder = mContentContainer.getOrder();
+									if(currentOrder.getOrderKey().equals(String.valueOf(item.getOrderId()))){
+										for(Entry<Order.Food, Integer> entry : currentOrder.getFoods().entrySet()){
+											if(item.getId().equals(entry.getKey().getId())){
+												entry.getKey().setStatus(item.getStatus());
+												break;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 					
 				});
+				this.doBindService();
 			} else {
 				showOrderBtn.setVisibility(View.GONE);
 			}
@@ -238,31 +281,6 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 				}
 				
 			});
-			mMessageHandler.setOnMessageListener(new MessageHandler.OnMessageListener(){
-
-				@Override
-				public void onMessage(Message message) {
-					if(message instanceof OrderDetailMessage){
-						OrderDetailMessage msg = (OrderDetailMessage)message;
-						if(msg.getUpdateItems() != null && msg.getUpdateItems().size() > 0){
-							CookingItem item = msg.getUpdateItems().get(0);
-							if(mContentContainer != null && mContentContainer.getOrder() != null){
-								Order currentOrder = mContentContainer.getOrder();
-								if(currentOrder.getOrderKey().equals(String.valueOf(item.getOrderId()))){
-									for(Entry<Order.Food, Integer> entry : currentOrder.getFoods().entrySet()){
-										if(item.getId().equals(entry.getKey().getId())){
-											entry.getKey().setStatus(item.getStatus());
-											break;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-				
-			});
-			this.doBindService();
 			return mFoodMenuContentView;
 	    }
 		
@@ -285,7 +303,6 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		@Override
 		public void onDestroyView(){
 			super.onDestroyView();
-			mMessageService.unregisterHandler(mMessageHandler);
 			this.doUnbindService();
 		}
 
@@ -376,10 +393,17 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			        }
 				}
 			    
-			    public void refresh(int index){
-			    	if(index < mFoodMenus.size()){
-			    		mFoodMenus.get(index).needUpdateImage(false);
-			    		mFoodMenus.get(index).refresh();
+			    public void refresh(int i){
+			    	if(mFoodMenus.get(i) != null){
+			    		mFoodMenus.get(i).needUpdateImage(false);
+			    		mFoodMenus.get(i).refresh();
+			    	}
+			    }
+			    
+			    public void refreshAllPages(){
+			    	for(Entry<Integer, FoodMenuView> entry : mFoodMenus.entrySet()){
+			    		entry.getValue().needUpdateImage(false);
+			    		entry.getValue().refresh();
 			    	}
 			    }
 			    

@@ -73,7 +73,8 @@ public class HomeActivity extends FragmentActivity {
 	
 	private SlideContent homecontent;
 	private View mLeftMenu;
-	private TextView mInfoView;
+	private View mInfoView;
+	private TextView mInfoText;
 	private View mOrderBtn;
 	private View mLoginBtn;
 	private View mLogoutBtn;
@@ -102,6 +103,7 @@ public class HomeActivity extends FragmentActivity {
 			mMessageService.registerHandler(Constants.FOOD_MESSAGE, mMessageHandler);
 			Long userid = mMessageService.getUserId();
 			if(userid == null || userid == -1L){
+				//This should be a new message service due to crash or forced closed
 				UserManager.setLoginUser(HomeActivity.this, null);
 			}
 			if(mMessageService.isReady()){
@@ -147,6 +149,7 @@ public class HomeActivity extends FragmentActivity {
 	            }
 			}
 		});
+		this.doStartService();
 		this.setHomeContent();
 		setOrder();
 	}
@@ -158,16 +161,47 @@ public class HomeActivity extends FragmentActivity {
 		setOrder();
 	}
 	
-	void doStartService(){
+	@Override
+	public void onResume() {
+		super.onResume();
+		if(!this.mIsBound){
+			this.doBindService();
+		} else {
+			boolean isServiceReady = true;
+			if(!this.mMessageService.isReady() && !this.mMessageService.isConnecting()){
+				this.doStartService();
+				isServiceReady = false;
+			}
+			Long userid = this.mMessageService.getUserId();
+			if(userid == null || userid == -1L){
+				UserManager.setLoginUser(this, null);
+			}
+			this.refreshMenuByRole();
+			if(isServiceReady){
+				this.doAutoLogin();
+				this.checkMenuUpdate();
+			}
+		}
+	}
+	
+	@Override  
+	public void onDestroy() {
+		super.onDestroy();
+		Log.d(TAG, "onDestroy");
+		this.doUnbindService();
+    }
+	
+	private void doStartService(){
 		this.startService(new Intent(this, MessageService.class));
 	}
 	
-	void doBindService() {
+	private void doBindService() {
 		bindService(new Intent(this, MessageService.class), mConnection, Context.BIND_AUTO_CREATE);
 	}
 	
-	void doUnbindService() {
+	private void doUnbindService() {
 	    if (mIsBound) {
+	    	mMessageService.unregisterHandler(mMessageHandler);
 	        unbindService(mConnection);
 			mIsBound = false;
 	    }
@@ -181,30 +215,6 @@ public class HomeActivity extends FragmentActivity {
 		}
 	}
 	
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		this.doStartService();
-		if(!this.mIsBound){
-			this.doBindService();
-		} else {
-			Long userid = this.mMessageService.getUserId();
-			if(userid == null || userid == -1L){
-				UserManager.setLoginUser(this, null);
-			}
-			this.refreshMenuByRole();
-		}
-	}
-	
-	@Override  
-	public void onDestroy() {
-		super.onDestroy();
-		Log.d(TAG, "onDestroy");
-		mMessageService.unregisterHandler(mMessageHandler);
-		this.doUnbindService();
-    }
-	
 	private synchronized void refreshMenuByRole(){
 		Integer role = UserManager.getUserRole(this);
 		if(role != null){
@@ -212,7 +222,7 @@ public class HomeActivity extends FragmentActivity {
 			this.mLogoutBtn.setVisibility(View.VISIBLE);
 			this.mInfoView.setVisibility(View.VISIBLE);
 			this.mLoginBtn.setVisibility(View.GONE);
-			this.mInfoView.setText(UserManager.getUsername(this) + " (" + UserManager.getRoleName() +")");
+			this.mInfoText.setText(UserManager.getUsername(this) + " (" + UserManager.getRoleName() +")");
 		} else {
 			this.mOrderBtn.setVisibility(View.GONE);
 			this.mLogoutBtn.setVisibility(View.GONE);
@@ -234,12 +244,17 @@ public class HomeActivity extends FragmentActivity {
 			this.mLeftMenu = getLayoutInflater().inflate(R.layout.leftmenu, null);
 			LinearLayout menuitems = (LinearLayout)(mLeftMenu.findViewById(R.id.leftmenu));
 			
-			this.mInfoView = (TextView)menuitems.findViewById(R.id.logininfo);
+			this.mInfoView = menuitems.findViewById(R.id.infoview);
+			this.mInfoText = (TextView)menuitems.findViewById(R.id.infotext);
+			this.mInfoView.setVisibility(View.GONE);
+			
 			View menuitem = menuitems.findViewById(R.id.menu_btn);
 			menuitem.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view) {
-					((FoodMenuContentView)homecontent.getContentView("menu")).setOrder(null);
+					if(!homecontent.getCurrentContentViewKey().equals("menu")){
+						((FoodMenuContentView)homecontent.getContentView("menu")).setOrder(null);
+					}
 					homecontent.selectItem("menu");
 				}
 			});
@@ -274,9 +289,8 @@ public class HomeActivity extends FragmentActivity {
 	           	 	UserManager.cleanRemeberMe(HomeActivity.this);
 	           	 	UserManager.setLoginUser(HomeActivity.this, null);
 					HomeActivity.this.refreshMenuByRole();
-					((FoodMenuContentView)HomeActivity.this.homecontent.getContentView("menu")).setOrderAndRefresh(null);
+					((FoodMenuContentView)HomeActivity.this.homecontent.getContentView("menu")).setOrder(null);
 					HomeActivity.this.homecontent.refreshItem("menu");
-					
 				}
 				
 			});
@@ -303,6 +317,7 @@ public class HomeActivity extends FragmentActivity {
 			e.printStackTrace();
 		}
 		setContentView(homecontent);
+		homecontent.selectItem("menu");
 	}
 	
 	private void showConfirmDialog(final String key){
@@ -423,13 +438,12 @@ public class HomeActivity extends FragmentActivity {
 	
 	private void handleConnectResultMsg(ResultMessage message){
 		ToastUtil.showToast(this, message.getDetail() , Toast.LENGTH_SHORT);
+		this.refreshMenuByRole();
 		if(message.getResult() == Constants.SUCCESS){
-			this.refreshMenuByRole();
 			this.doAutoLogin();
 		} else {
-			this.refreshMenuByRole();
-			this.homecontent.selectItem("menu");
-			((FoodMenuContentView)this.homecontent.getContentView("menu")).setOrderAndRefresh(null);
+			((FoodMenuContentView)this.homecontent.getContentView("menu")).setOrder(null);
+			this.homecontent.refreshItem("menu");
 		}
 		this.checkMenuUpdate();
 	}

@@ -8,13 +8,17 @@ import java.util.Date;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.RelativeLayout.LayoutParams;
 
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.model.Order.OnOrderStatusChangedListener;
+import com.pitaya.bookingnow.app.util.ContentUtil;
 
 public class OrderListAdapter extends BaseAdapter{
 
@@ -27,6 +31,10 @@ public class OrderListAdapter extends BaseAdapter{
         mContext = c;
         mView = view;
     }
+	
+	protected void setViewLayoutParams(View view){
+		view.setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, ContentUtil.getPixelsByDP(30)));
+	}
 	
 	@Override
 	public int getCount() {

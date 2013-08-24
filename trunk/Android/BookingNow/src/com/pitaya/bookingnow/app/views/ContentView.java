@@ -132,7 +132,7 @@ public class ContentView extends ViewGroup {
 						mLastMotionX = x;
 						mLastMotionY = y;
 						if(this.mCurrentContentView.canIntercept() && !this.isMenuOFF()){
-							Log.e(TAG, "Catch the down action:" + this.mCurrentContentView.canIntercept() + " " +!this.isMenuOFF());
+							//Log.d(TAG, "Catch the down action:" + this.mCurrentContentView.canIntercept() + " " +!this.isMenuOFF());
 							return true;
 						}
 						break;
@@ -142,7 +142,7 @@ public class ContentView extends ViewGroup {
 						mLastMotionX = x;
 						mLastMotionY = y;
 						if(xMoved && this.mCurrentContentView.canIntercept() && isRight){
-							Log.e(TAG, "Catch the move action:" + this.mCurrentContentView.canIntercept() + " " +isRight);
+							//Log.d(TAG, "Catch the move action:" + this.mCurrentContentView.canIntercept() + " " +isRight);
 							return true;
 						}
 						break;
