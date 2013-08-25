@@ -34,7 +34,6 @@ function emptyUpdateTableWindow(){
 
 function initUpdateTableElements() {
 	
-	var theme = getDemoTheme();
     $("#updateTableDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
     $('#updateTableUpdateButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#updateTableResetButton').jqxButton({ width: 60, height: 25, theme: theme });
@@ -151,8 +150,6 @@ function addUpdateTableEventListeners() {
 function initUpdateTableWindow(rowData,position) {
 	$("#updateTablePopupWindow").removeAttr("style");
 	
-	var theme = getDemoTheme();
-	
 	formatUpdateTableElements(rowData);
 	
 	// initialize the popup window and buttons.
@@ -210,7 +207,6 @@ function updateTable() {
 
 function initRegisterTableElements() {
     
-	var theme = getDemoTheme();
     $("#registerTableDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
     $('#registerTableRegisterButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#registerTableResetButton').jqxButton({ width: 60, height: 25, theme: theme });
@@ -287,7 +283,6 @@ function initRegisterTableWindow(position) {
 	$("#addTablePopupWindow").removeAttr("style");
 	$("#addTablePopupWindow").attr("style","overflow:hidden");
 	
-	var theme = getDemoTheme();
 	$("#addTablePopupWindow").jqxWindow({
 		position:position,isModal: true,width: 350, height: 250, resizable: false, theme: theme, cancelButton: $("#registerTableCancelButton"), 
     	modalOpacity: 0.01,
@@ -335,7 +330,6 @@ function registerTable() {
 
 
 function initOperateTableGridElements() {
-	var theme = getDemoTheme();
 	$("#addTableRowButton").jqxButton({ theme: theme });
 	$("#deleteTableRowButton").jqxButton({ theme: theme });
 	$("#updateTableRowButton").jqxButton({ theme: theme });
@@ -494,8 +488,6 @@ function parseTableGridHtml() {
 					tableData[i] = rowData;
 				}
 	
-	
-	var theme = getDemoTheme();
 	
 	var source =
 	{

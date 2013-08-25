@@ -53,7 +53,6 @@ function emptyUpdateUserWindow(){
 
 function initUpdateUserElements() {
 	
-	var theme = getDemoTheme();
     $("#updateUserDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
     $('#updateUserUpdateButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#updateUserResetButton').jqxButton({ width: 60, height: 25, theme: theme });
@@ -258,8 +257,6 @@ function addUpdateUserEventListeners() {
 function initUpdateUserWindow(rowData,position) {
 	$("#updateUserPopupWindow").removeAttr("style");
 	
-	var theme = getDemoTheme();
-	
 	formatUpdateUserElements(rowData);
 	
 	// initialize the popup window and buttons.
@@ -321,7 +318,6 @@ function updateUser() {
 
 function initRegisterUserElements() {
 	
-	var theme = getDemoTheme();
     $("#registerUserDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
     $('#registerUserRegisterButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#registerUserResetButton').jqxButton({ width: 60, height: 25, theme: theme });
@@ -443,7 +439,6 @@ function initRegisterUserWindow(position) {
 	$("#addUserPopupWindow").removeAttr("style");
 	$("#addUserPopupWindow").attr("style","overflow:hidden");
 	
-	var theme = getDemoTheme();
 	$("#addUserPopupWindow").jqxWindow({
 		position:position,isModal: true,width: 350, height: 420, resizable: false, theme: theme, cancelButton: $("#registerUserCancelButton"), 
     	modalOpacity: 0.01,
@@ -702,7 +697,6 @@ function releaseCrop(obj){
 
 function initOperateUserGridElements() {
 	
-	var theme = getDemoTheme();
 	$("#addUserRowButton").jqxButton({ theme: theme });
 	$("#deleteUserRowButton").jqxButton({ theme: theme });
 	$("#updateUserRowButton").jqxButton({ theme: theme });
@@ -909,8 +903,6 @@ function parseUserGridHtml() {
 		userData[i] = rowData;
 	}
 	
-	
-	var theme = getDemoTheme();
 	
 	var source =
 	{
