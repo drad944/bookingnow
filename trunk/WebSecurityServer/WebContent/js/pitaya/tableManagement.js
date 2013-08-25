@@ -546,7 +546,7 @@ function parseTableGridHtml() {
     $("#tableDataGrid").on('rowselect', function (event) {
         $("#eventLog").text(i18n.t("grid.selectRow", {index: event.args.rowindex}));
     });
-    initLocaleElements();
+    initTableManagementLocaleElements();
 	initOperateTableGridElements();
 	addOperateTableGridEventListeners();
 	
@@ -568,7 +568,7 @@ function parseTableGridHtml() {
 		
 }
 
-function initLocaleElements() {
+function initTableManagementLocaleElements() {
 	$("#addTableRowButton").val(i18n.t("button.operationTableGrid.addTableRow"));
 	$("#updateTableRowButton").val(i18n.t("button.operationTableGrid.updateTableRow"));
 	$("#deleteTableRowButton").val(i18n.t("button.operationTableGrid.deleteTableRow"));
