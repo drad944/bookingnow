@@ -50,7 +50,7 @@ function emptyUpdateOrderWindow(){
 }
 
 function initUpdateOrderElements() {
-	var theme = getDemoTheme();
+//	var theme = getDemoTheme();
     $("#updateOrderDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
     $('#updateOrderUpdateButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#updateOrderResetButton').jqxButton({ width: 60, height: 25, theme: theme });
@@ -210,7 +210,7 @@ function addUpdateOrderEventListeners() {
 function initUpdateOrderWindow(rowData,position) {
 	$("#updateOrderPopupWindow").removeAttr("style");
 	
-	var theme = getDemoTheme();
+//	var theme = getDemoTheme();
 	
 	formatUpdateOrderElements(rowData);
 	
@@ -271,7 +271,7 @@ function updateOrder() {
 
 
 function initRegisterOrderElements() {
-	var theme = getDemoTheme();
+//	var theme = getDemoTheme();
     $("#registerOrderDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
     $('#registerOrderRegisterButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#registerOrderResetButton').jqxButton({ width: 60, height: 25, theme: theme });
@@ -394,7 +394,7 @@ function initRegisterOrderWindow(position) {
 	$("#addOrderPopupWindow").removeAttr("style");
 	$("#addOrderPopupWindow").attr("style","overflow:hidden");
 	
-	var theme = getDemoTheme();
+//	var theme = getDemoTheme();
 	$("#addOrderPopupWindow").jqxWindow({
 		position:position,isModal: true,width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#registerOrderCancelButton"), 
     	modalOpacity: 0.01,
@@ -460,7 +460,7 @@ function showOrderDetailInfo() {
 
 
 function initOperateOrderGridElements() {
-	var theme = getDemoTheme();
+//	var theme = getDemoTheme();
 	$("#addOrderRowButton").jqxButton({ theme: theme });
 	$("#deleteOrderRowButton").jqxButton({ theme: theme });
 	$("#updateOrderRowButton").jqxButton({ theme: theme });
@@ -637,7 +637,7 @@ function parseOrderGridHtml() {
 	}
 	
 	
-	var theme = getDemoTheme();
+//	var theme = getDemoTheme();
 	
 	var source =
 	{
