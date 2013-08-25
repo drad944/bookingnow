@@ -46,7 +46,7 @@ function emptyUpdateUserWindow(){
 	$("#updateUserAddressInput").val(null);
 	
 	$("#updateUserDepartmentInput").val(null);
-	
+	$("#updateUserRolesInput").val(null);
 	$("#updateUserEmailInput").val(null);
 	$("#updateUserResult").text("");
 }
@@ -72,29 +72,50 @@ function initUpdateUserElements() {
 	$("#updateUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25,  theme: theme });
 	$("updateUserSexInput").val(i18n.t("sex.male"));
     
-    
+	var userDepartmentData = [
+	          				{ value: 2, label: i18n.t("department.BUSSINESS") },
+	          				{ value: 3, label: i18n.t("department.PRODUCTION") },
+	          				{ value: 4, label: i18n.t("department.FINANCE") },
+	          				{ value: 5, label: i18n.t("department.PERSONNEL") },
+	          				{ value: 6, label: i18n.t("department.DEVERLOPE") },
+	          				{ value: 7, label: i18n.t("department.MANAGEMENT") }
+	                  ];
+	              
+  	// Create a jqxComboBox
+  	$("#updateUserDepartmentCombobox").jqxComboBox({ 
+  		selectedIndex: 0, 
+  		source: userDepartmentData, 
+  		displayMember: "label", 
+  		valueMember: "value", 
+  		width: 150, 
+  		height: 25, 
+  		theme: theme 
+  	});
   
-    
-    var userDepartmentData = [
-				{ value: 2, label: i18n.t("department.BUSSINESS") },
-				{ value: 3, label: i18n.t("department.PRODUCTION") },
-				{ value: 4, label: i18n.t("department.FINANCE") },
-				{ value: 5, label: i18n.t("department.PERSONNEL") },
-				{ value: 6, label: i18n.t("department.DEVERLOPE") },
-				{ value: 7, label: i18n.t("department.MANAGEMENT") }
+    var userRoleData = [
+				{ value: 2, label: i18n.t("role.ANONYMOUS") },
+				{ value: 3, label: i18n.t("role.CUSTOMER") },
+				{ value: 4, label: i18n.t("role.CUSTOMER_VIP1") },
+				{ value: 5, label: i18n.t("role.CUSTOMER_VIP2") },
+				{ value: 6, label: i18n.t("role.WELCOMER") },
+				{ value: 7, label: i18n.t("role.CHEF") },
+				{ value: 8, label: i18n.t("role.WAITER") },
+				{ value: 9, label: i18n.t("role.CASHIER") },
+				{ value: 10, label: i18n.t("role.MANAGER") },
+				{ value: 11, label: i18n.t("role.ADMIN") }
         ];
     
 	// Create a jqxComboBox
-	$("#updateUserDepartmentCombobox").jqxComboBox({ 
-		selectedIndex: 0, 
-		source: userDepartmentData, 
+	$("#updateUserRolesCombobox").jqxComboBox({ 
+		checkboxes: true, 
+		source: userRoleData, 
 		displayMember: "label", 
 		valueMember: "value", 
 		width: 150, 
 		height: 25, 
 		theme: theme 
 	});
-    
+//	$("#updateUserRolesCombobox").jqxComboBox('checkIndex', 0);
     // initialize validator.
     $('#updateUserInfoForm').jqxValidator({
      rules: [
@@ -157,6 +178,7 @@ function formatUpdateUserElements(rowData) {
 	$("#updateUserAddressInput").val(rowData["address"]);
 	
 	$("#updateUserDepartmentInput").val(rowData["department"]);
+	$("#updateUserRolesInput").val(rowData["roles"]);
 	
 	$("#updateUserEmailInput").val(rowData["email"]);
 	$("#updateUserPhoneInput").val(rowData["phone"]);
@@ -164,6 +186,11 @@ function formatUpdateUserElements(rowData) {
     
 	// Create a jqxComboBox
 	$("#updateUserDepartmentCombobox").jqxComboBox({ selectedIndex: findDepartmentValue($("#updateUserDepartmentInput").val()) - 2});
+	
+	var roleValues = findRoleValue($("#updateUserRolesInput").val());
+	for(var i = 0;i< roleValues.length;i++) {
+		$("#updateUserRolesCombobox").jqxComboBox('checkIndex', roleValues[i] - 2);
+	}
 }
 
 function addUpdateUserEventListeners() {
@@ -205,6 +232,23 @@ function addUpdateUserEventListeners() {
             }
         });
     
+    $("#updateUserRolesCombobox").on('checkChange', function (event) {
+        if (event.args) {
+            var item = event.args.item;
+            if (item) {
+                var items = $("#updateUserRolesCombobox").jqxComboBox('getCheckedItems');
+                var checkedItems = "";
+                $.each(items, function (index) {
+                    checkedItems += this.label + ", ";                          
+                });
+                if(checkedItems.length > 0) {
+                	checkedItems = checkedItems.substring(0, checkedItems.length - 1);
+                }
+                $("#updateUserRolesInput").val(checkedItems);
+            }
+        }
+    });
+    
     $('#updateUserInfoForm').on('validationSuccess', function (event) { 
     	// Some code here. 
     	updateUser();
@@ -220,7 +264,7 @@ function initUpdateUserWindow(rowData,position) {
 	
 	// initialize the popup window and buttons.
     $("#updateUserPopupWindow").jqxWindow({
-    	position:position, isModal: true,width: 350, height: 420, resizable: false, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
+    	position:position, isModal: true,width: 350, height: 440, resizable: false, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
     	initContent: function () {
             $('#updateUserPopupWindow').jqxWindow('focus');
         }
@@ -658,8 +702,6 @@ function releaseCrop(obj){
 
 function initOperateUserGridElements() {
 	
-	
-	
 	var theme = getDemoTheme();
 	$("#addUserRowButton").jqxButton({ theme: theme });
 	$("#deleteUserRowButton").jqxButton({ theme: theme });
@@ -667,6 +709,7 @@ function initOperateUserGridElements() {
 }	
 
 function addOperateUserGridEventListeners() {
+	
 	// update row.
 	$("#updateUserRowButton").on('click', function () {
 		selectedupdaterowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
@@ -727,7 +770,7 @@ function addOperateUserGridEventListeners() {
 
 
 function parseUserGridHtml() {
-		$.post("findUser.action", 
+		$.post("findRoleWithUser.action", 
 			{"user.enabled": true}, 
 			function(matchedusers){
 				var option = {
@@ -771,9 +814,11 @@ function parseUserGridHtml() {
 					column["text"] = i18n.t("field.modifyTime");
 					
 				}else if(item == "image_size") {
+					
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.image_size");
 					column["filtertype"] = 'number';
+					
 				}else if(item == "image_relative_path") {
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.image_relative_path");
@@ -822,6 +867,10 @@ function parseUserGridHtml() {
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.sub_system");
 					column["filtertype"] = 'textbox';
+				}else if(item == "roles"){
+					datafield["type"] = "string";
+					column["text"] = i18n.t("field.role_Details.role.name");
+					column["filtertype"] = 'textbox';
 				}else if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
 					//do nothing
 				}else {
@@ -835,6 +884,8 @@ function parseUserGridHtml() {
 					column["datafield"] = item;
 					if(item == "id") {
 						column["width"] = "50";
+					}else if(item == "roles") {
+						column["width"] = "200";
 					}
 					
 					columns[j] = column;
@@ -983,6 +1034,24 @@ function parseUserDataToUIData(user) {
 				user[attr] = findSexString(user[attr]);
 			}else if(attr == "birthday") {
 				user[attr] = new Date(user[attr]).Format("yyyy-MM-dd HH:mm:ss");
+			}else if(attr == "role_Details") {
+				var roleDetails = user[attr];
+				var roles = "";
+				for(var i=0;i< roleDetails.length;i++) {
+					var roleDetail = roleDetails[i];
+					for(var item in roleDetail) {
+						if(item == "role") {
+							var role = roleDetail[item];
+							if(role != null && role != "undefined" && role["name"] != null){
+								roles = roles + role["name"] + ",";
+							}
+						}
+					}
+				}
+				if(roles.length > 0) {
+					roles = roles.substring(0, roles.length - 1);
+				}
+				user["roles"] = roles;
 			}
 		}
 		return user;

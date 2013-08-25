@@ -125,13 +125,21 @@
 	
 	<sql id="Role_Detail_Base_Column_List">
 		UR.id as UR_id, 
-		UR.enabled as UR_enabled
+		UR.enabled as UR_enabled,
+		UR.role_id as UR_role_id,
+		UR.user_id as UR_user_id
 	</sql>
 	
 	<sql id="Role_Base_Column_List">
 		R.id as R_id, 
 		R.name as R_name,
 		R.type as R_type
+	</sql>
+	
+	<sql id="Role_TEMP_Base_Column_List">
+		R_id, 
+		R_name,
+		R_type
 	</sql>
 	
 	<select id="existUser" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">
@@ -168,15 +176,24 @@
 	
 	<select id="searchUsersWithRole" resultMap="User_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">
 		select
-		<include refid="User_Base_Column_List" />
-		,
-		<include refid="Role_Detail_Base_Column_List" />
-		,
-		<include refid="Role_Base_Column_List" />
-		
+			<include refid="User_Base_Column_List" />
+			,
+			INTERAL_URD.*
 		from pitaya_user U
-			left outer join pitaya_user_role_detail UR on UR.user_id = U.id
-			left outer join pitaya_role R on R.id = UR.role_id
+			left outer join 
+				(
+					select
+						<include refid="Role_Detail_Base_Column_List" />
+						,
+						<include refid="Role_TEMP_Base_Column_List" />
+					from pitaya_user_role_detail UR
+						left outer join (
+											select <include refid="Role_Base_Column_List" />
+											from pitaya_role R
+											where R.enabled = true
+										) as R on R.R_id = UR.role_id
+					where UR.enabled = true
+				) 		as		INTERAL_URD on INTERAL_URD.UR_user_id = U.id
 		<where>
 			<if test="modifyTime != null">
 				U.modifyTime = #{modifyTime,jdbcType=BIGINT}
@@ -316,6 +333,9 @@
 			left outer join pitaya_role R on R.id = UR.role_id
 		where U.id = #{id,jdbcType=BIGINT}
 	</select>
+	
+	
+	
 	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Long">

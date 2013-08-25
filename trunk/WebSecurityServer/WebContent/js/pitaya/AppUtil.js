@@ -393,6 +393,87 @@ Date.prototype.Format = function (fmt) {
     return fmt;
 };
 
+function findRoleString(value) {
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.userManagement'
+		};
+	 
+	i18n.init(option);
+	
+	var values = value.split(",");
+	
+	var userRoleData = [
+	    				{ value: 2, label: i18n.t("role.ANONYMOUS") },
+	    				{ value: 3, label: i18n.t("role.CUSTOMER") },
+	    				{ value: 4, label: i18n.t("role.CUSTOMER_VIP1") },
+	    				{ value: 5, label: i18n.t("role.CUSTOMER_VIP2") },
+	    				{ value: 6, label: i18n.t("role.WELCOMER") },
+	    				{ value: 7, label: i18n.t("role.CHEF") },
+	    				{ value: 8, label: i18n.t("role.WAITER") },
+	    				{ value: 9, label: i18n.t("role.CASHIER") },
+	    				{ value: 10, label: i18n.t("role.MANAGER") },
+	    				{ value: 11, label: i18n.t("role.ADMIN") }
+	            ];
+	var valueString = "";
+	 for(var j=0;j < values.length;j++) {
+		 var tempValue = values[j];
+		 for(var i = 0;i < userRoleData.length;i++) {
+			 if(userRoleData[i].value == tempValue) {
+				 valueString = valueString + userRoleData[i].label + ",";
+			 }
+		 }
+	 }
+	 if(valueString.length > 0) {
+		 valueString = valueString.substring(0, valueString.length - 1);
+	 }
+	 
+	 return valueString;
+}
+
+function findRoleValue(label) {
+	var option = {
+			fallbackLng: 'zh',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.userManagement'
+		};
+	 
+	i18n.init(option);
+	
+	var labels = label.split(",");
+	
+	var userRoleData = [
+	    				{ value: 2, label: i18n.t("role.ANONYMOUS") },
+	    				{ value: 3, label: i18n.t("role.CUSTOMER") },
+	    				{ value: 4, label: i18n.t("role.CUSTOMER_VIP1") },
+	    				{ value: 5, label: i18n.t("role.CUSTOMER_VIP2") },
+	    				{ value: 6, label: i18n.t("role.WELCOMER") },
+	    				{ value: 7, label: i18n.t("role.CHEF") },
+	    				{ value: 8, label: i18n.t("role.WAITER") },
+	    				{ value: 9, label: i18n.t("role.CASHIER") },
+	    				{ value: 10, label: i18n.t("role.MANAGER") },
+	    				{ value: 11, label: i18n.t("role.ADMIN") }
+	            ];
+	var labelString = new Array();
+	 for(var j=0;j < labels.length;j++) {
+		 var tempLabel = labels[j];
+		 for(var i = 0;i < userRoleData.length;i++) {
+			 if(userRoleData[i].label == tempLabel) {
+				 labelString[j] = userRoleData[i].value;
+				 break;
+			 }
+		 }
+	 }
+	 
+	 return labelString;
+}
 
 function findDepartmentString(value) {
 	var option = {
