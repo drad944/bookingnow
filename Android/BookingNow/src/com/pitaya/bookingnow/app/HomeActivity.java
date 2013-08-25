@@ -177,6 +177,7 @@ public class HomeActivity extends FragmentActivity {
 				UserManager.setLoginUser(this, null);
 			}
 			this.refreshMenuByRole();
+			//If service is not ready, these will be done until handleconnectresult
 			if(isServiceReady){
 				this.doAutoLogin();
 				this.checkMenuUpdate();
@@ -441,11 +442,11 @@ public class HomeActivity extends FragmentActivity {
 		this.refreshMenuByRole();
 		if(message.getResult() == Constants.SUCCESS){
 			this.doAutoLogin();
+			this.checkMenuUpdate();
 		} else {
 			((FoodMenuContentView)this.homecontent.getContentView("menu")).setOrder(null);
 			this.homecontent.refreshItem("menu");
 		}
-		this.checkMenuUpdate();
 	}
 	
 //	private void afterLoginSuccess(JSONObject jresp, boolean isAuto){

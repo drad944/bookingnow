@@ -13,6 +13,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,12 +43,14 @@ import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
 import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.views.FoodMenuView;
 
-public class FoodBookActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class FoodGalleryActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>{
 	
 	public static final int MENU_LOADER =  0;
 	
-	private FlipViewController flipView;
+	private ViewPager mFoodMenuViewPager; 
+	private FoodViewAdapter mAdapter;
 	private Order mOrder;
 	private TextWatcher mTextWatcher;
 	private TextView mPriceText;
@@ -62,26 +67,22 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 
 		  this.setHomeContent();
 		  mFoodsList = new ArrayList<Food>();
-		  flipView = (FlipViewController) findViewById(R.id.flipView);
-		  flipView.setOnViewFlipListener(new FlipViewController.ViewFlipListener() {
-
-		      @Override
-		      public void onViewFlipped(View view, int position) {
-		    	  if(mFoodsList.size() > position){
-		    		  mCurrentFood = mFoodsList.get(position);
-		    	  	  updateCurrentFoodInfo();
-		    	  }
-		      }
-		    });
-		  flipView.setOnTouchListener(new View.OnTouchListener(){
+		  mFoodMenuViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener(){
 
 			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-			    InputMethodManager imm = (InputMethodManager)FoodBookActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE); 
-        	    if(imm.isActive()){
-        	    	imm.hideSoftInputFromWindow(flipView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        	    }
-				return false;
+			public void onPageScrollStateChanged(int arg0) {
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+			}
+
+			@Override
+			public void onPageSelected(int index) {
+				if(index < mFoodsList.size()){
+					mCurrentFood = mFoodsList.get(index);
+					updateCurrentFoodInfo();
+				}
 			}
 			  
 		  });
@@ -116,8 +117,9 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
     }
 
     private void setHomeContent(){
-    	setContentView(R.layout.foodbooklayout);
-    	RelativeLayout fooditemRL = (RelativeLayout)findViewById(R.id.foodbookitem);
+    	setContentView(R.layout.foodgallerylayout);
+    	RelativeLayout fooditemRL = (RelativeLayout)findViewById(R.id.fooditem);
+    	mFoodMenuViewPager = (ViewPager) fooditemRL.findViewById(R.id.foodimagepager);
         mFoodNameText = (TextView) fooditemRL.findViewById(R.id.foodname);
         mFoodStepper = View.inflate(this, R.layout.foodstepper, null);
 	    RelativeLayout.LayoutParams fsRL_LP = new RelativeLayout.LayoutParams(
@@ -149,11 +151,11 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 					
 					
 					if(mOrder.getStatus() != Constants.ORDER_PAYING && mOrder.getStatus() != Constants.ORDER_FINISHED){
-						int result = DataService.updateOrderDetails(FoodBookActivity.this, mOrder, bookingfood, quantity);
+						int result = DataService.updateOrderDetails(FoodGalleryActivity.this, mOrder, bookingfood, quantity);
 						if(result != Order.IGNORED && (mOrder.getStatus() == Constants.ORDER_COMMITED
 								|| mOrder.getStatus() == Constants.ORDER_WAITING)){
-							mOrder.addUpdateFoods(FoodBookActivity.this, result, bookingfood, quantity);
-							mOrder.markDirty(FoodBookActivity.this, true);
+							mOrder.addUpdateFoods(FoodGalleryActivity.this, result, bookingfood, quantity);
+							mOrder.markDirty(FoodGalleryActivity.this, true);
 						}
 					}
 
@@ -215,23 +217,21 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 	@Override
 	protected void onResume() {
 		 super.onResume();
-		 flipView.onResume();
 	}
 	
 	@Override
 	protected void onPause() {
 		 super.onPause();
-		 flipView.onPause();
 	}
   
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		Log.i("FoodBook", "On Destroy");
-		unbindDrawables(findViewById(R.id.foodbookitem));
-		flipView.destroyDrawingCache();
-		flipView.onDestroy();
-		flipView = null;
+		if(this.mAdapter != null){
+			this.mAdapter.recycle();
+		}
+		//unbindDrawables(this.mFoodMenuViewPager);
 		System.gc();
 		Intent intent = new Intent(this, HomeActivity.class);
 		Bundle bundle = new Bundle();
@@ -247,6 +247,9 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
         if (view instanceof ViewGroup) {
             for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
             	unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            if(! (view instanceof AdapterView)){
+            	((ViewGroup) view).removeAllViews();
             }
         }
     }
@@ -299,57 +302,11 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 				if(index >= mFoodsList.size()){
 					index = 0;
 				}
-				
-				//Update flip view
-				flipView.setAdapter(new BaseAdapter() {
-					
-				      @Override
-				      public int getCount() {
-				        return mFoodsList.size();
-				      }
-
-				      @Override
-				      public Object getItem(int position) {
-				        return position;
-				      }
-
-				      @Override
-				      public long getItemId(int position) {
-				        return position;
-				      }
-
-				      @Override
-				      public View getView(int position, View convertView, ViewGroup parent) {
-				        View view = convertView;
-				        Food food = mFoodsList.get(position);
-				        if (view == null) {
-				          final Context context = parent.getContext();
-				          view = new ImageView(context);
-				          ((ImageView)view).setScaleType(ScaleType.FIT_CENTER);
-				        }
-
-				         boolean needReload = true;
-				         AsyncImageTask previousTask = AsyncDrawable.getTask(((ImageView)view));
-				         if (previousTask != null) {
-					           if (previousTask.getPageIndex() == position && previousTask.getImageName()
-					               .equals(food.getLargeImageName()))  {
-					        	   needReload = false;
-					           } else {
-					        	   previousTask.cancel(true);
-					           }
-				         }
-
-				         if (needReload) {
-					           AsyncImageTask task = new FlipAsyncImageTask(flipView, FoodBookActivity.this, ((ImageView)view),
-					        		   position, food.getLargeImageName());
-					           ((ImageView)view).setImageDrawable(new AsyncDrawable(FoodBookActivity.this.getResources(), 
-					        		   placeholderBitmap, task));
-					           task.execute();
-				         }
-				         return view;
-				      }
-				      
-				}, index);
+				if(this.mAdapter == null){
+					this.mAdapter = new FoodViewAdapter();
+				}
+				this.mFoodMenuViewPager.setAdapter(mAdapter);
+				this.mFoodMenuViewPager.setCurrentItem(index, true);
 				//Update current food
 				if(mFoodsList.size() > index){
 					this.mCurrentFood = mFoodsList.get(index);
@@ -361,6 +318,69 @@ public class FoodBookActivity extends Activity implements LoaderManager.LoaderCa
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		 Log.e("FoodBookActivity", "In loader reset");
+	}
+	
+	private class FoodViewAdapter extends PagerAdapter {
+		
+		private ArrayList<ImageView> foodImageViews = new ArrayList<ImageView>();
+		private static final int SIZE = 3;
+		
+		@Override
+		public int getCount() {
+			return mFoodsList.size();
+		}
+
+		@Override
+		public boolean isViewFromObject(View arg0, Object arg1) {
+			return arg0 == arg1;
+		}
+		
+	    @Override
+	    public void destroyItem(View container, int position, Object object) {  
+	    	//leave the work in recycle, we only use SIZE imageview to display
+	    }
+	    
+	    public void recycle(){
+	    	for(ImageView foodImageView : this.foodImageViews){
+		    	if(foodImageView.getDrawable() != null){
+		    		foodImageView.getDrawable().setCallback(null);
+		    	}
+	    	}
+	    }
+	    
+	    @Override  
+	    public Object instantiateItem(View container, int position) {
+	         Food food = mFoodsList.get(position);
+	         ImageView foodImageView = null;
+	         int index = position%SIZE;
+	         if(index < foodImageViews.size() && foodImageViews.get(index) != null){
+	        	 foodImageView = foodImageViews.get(index);
+	         } else {
+	        	 foodImageView = new ImageView(FoodGalleryActivity.this);
+	        	 foodImageView.setScaleType(ScaleType.FIT_CENTER);
+	        	 foodImageViews.add(foodImageView);
+	        	 ((ViewPager) container).addView(foodImageView);  
+	         }
+	         boolean needReload = true;
+	         AsyncImageTask previousTask = AsyncDrawable.getTask(foodImageView);
+	         if (previousTask != null) {
+		           if (previousTask.getPageIndex() == position && previousTask.getImageName()
+		               .equals(food.getLargeImageName()))  {
+		        	   needReload = false;
+		           } else {
+		        	   previousTask.cancel(true);
+		           }
+	         }
+	         if (needReload) {
+		           AsyncImageTask task = new AsyncImageTask(FoodGalleryActivity.this, foodImageView, 
+		        		   position,  food.getLargeImageName());
+		           foodImageView.setImageDrawable(new AsyncDrawable(FoodGalleryActivity.this.getResources(), 
+		        		   placeholderBitmap, task));
+		           task.execute();
+	         }
+	        return foodImageView;
+	    }
+		
 	}
 	
 }

@@ -15,13 +15,13 @@ public class AsyncImageTask extends AsyncTask<Void, Void, Bitmap> {
 	  protected final WeakReference<ImageView> imageViewRef;
 	  protected final int pageIndex;
 	  protected final String imageName;
-	  protected Context context;
+	  protected final WeakReference<Context> contextRef;
 
 	  public AsyncImageTask(Context context, ImageView imageView, int pageIndex, String imageName) {
 		  imageViewRef = new WeakReference<ImageView>(imageView);
 		  this.pageIndex = pageIndex;
 		  this.imageName = imageName;
-		  this.context = context;
+		  this.contextRef = new WeakReference<Context>(context);
 	  }
 	
 	  public int getPageIndex() {
@@ -34,8 +34,12 @@ public class AsyncImageTask extends AsyncTask<Void, Void, Bitmap> {
 	
 	  @Override
 	  protected Bitmap doInBackground(Void... params) {
-
-		  return FileUtil.readBitmap(this.context, imageName);
+		  Context ctx = contextRef.get();
+		  if(ctx != null){
+			  return FileUtil.readBitmap(ctx, imageName);
+		  } else {
+			  return null;
+		  }
 	  }
 	
 	  @Override

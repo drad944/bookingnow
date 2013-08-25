@@ -2,9 +2,7 @@ package com.pitaya.bookingnow.app.service;
 
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.util.Constants;
-import com.pitaya.bookingnow.app.util.ToastUtil;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
@@ -59,7 +57,6 @@ public class MessageService extends Service implements Runnable {
     private Long userid;
     private volatile boolean isConnecting = false;
     
-	//private Client clientAgent;
 	private Map<String, List<Handler>> handlers;
 	private int mUpdateNotifyID = 1;
 	private int lastNotifyID = 2;
@@ -74,9 +71,9 @@ public class MessageService extends Service implements Runnable {
     public void onCreate() {
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         mCM = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        this.start();
         mIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         this.registerReceiver(new ConnectionReceiver(), mIntentFilter);
+        this.start();
         Log.i(TAG,  "In message service oncreate");
     }
 	
@@ -145,28 +142,29 @@ public class MessageService extends Service implements Runnable {
 	
 	private void shutdown(){
 		 if(in != null){
-				try {
-	        		 in.close();
-				} catch (IOException e) {
-					 e.printStackTrace();
-				}	 
-	    	 }
-		     if(bwriter != null){
-			    try {
-			    	bwriter.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-		     }
-			 if (socket != null && !socket.isClosed()){
-				try {
-					socket.close();
-					Log.i(TAG, "Success to shutdown the connection to server");
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			 }
-			 socket = null;
+			try {
+        		 in.close();
+			} catch (IOException e) {
+				 e.printStackTrace();
+			}
+    	 }
+	     if(bwriter != null){
+		    try {
+		    	 bwriter.close();
+			} catch (IOException e) {
+				 e.printStackTrace();
+			}
+	     }
+		 if (socket != null && !socket.isClosed()){
+			try {
+				 socket.close();
+			} catch (IOException e) {
+				 e.printStackTrace();
+			}
+		 }
+		 socket = null;
+		 this.userid = null;
+		 Log.i(TAG, "Success to shutdown the connection to server");
 	}
 	
 	public boolean sendMessage(Message message){
@@ -287,20 +285,18 @@ public class MessageService extends Service implements Runnable {
         	String message = null;
 			this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.SUCCESS, "连接服务器成功"));
         	while((message = in.readLine()) != null){
-    			this.onMessage(message);
         		if(message.equals("bye")){
         			shutdown();
         			break;
         		}
+        		this.onMessage(message);
         	}
         } catch (UnknownHostException e) {
-        	UserManager.setLoginUser(this, null);
 			this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "无法识别的服务器"));
         	error = true;
         	Log.e(TAG, "Fail to connect to web server");
             e.printStackTrace();
         } catch (IOException e) {
-        	UserManager.setLoginUser(this, null);
 			this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "无法连接到服务器或连接中断"));
         	error = true;
         	Log.e(TAG, "Fail to connect to web server");
@@ -327,12 +323,13 @@ public class MessageService extends Service implements Runnable {
 					e.printStackTrace();
 				}
        		}
-       		socket = null;
-	    	isConnecting = false;
         	if(error == false){
-        		UserManager.setLoginUser(this, null);
 				this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "与服务器连接中断"));
 			}
+        	UserManager.setLoginUser(this, null);
+       		socket = null;
+       		this.userid = null;
+	    	isConnecting = false;
         }
 	}
 
