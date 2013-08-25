@@ -13,6 +13,8 @@ public interface IUserService{
 	
 	MyResult modify(User user);
 	
+	MyResult modifyRoleWithUser(User user);
+	
 	List<User> searchUsers(User user);
 	
 	List<User> searchUsersWithRole(User user);

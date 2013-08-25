@@ -11,7 +11,8 @@ function emptyRegisterUserWindow(){
 	$("#registerUserSexRadioButton1").jqxRadioButton({checked: true});
     $("#registerUserSexRadioButton2").jqxRadioButton({checked: false});
     $('#acceptInput').jqxCheckBox({checked: false});
-
+    $("#registerUserRolesCombobox").jqxComboBox('uncheckAll');
+    
     //init registerUserWindow store data
 	$("registerUserSexInput").val(i18n.t("sex.male"));
 	$("#registerUserIdInput").val(null);
@@ -22,6 +23,7 @@ function emptyRegisterUserWindow(){
 	$("#registerUserAddressInput").val(null);
 	
 	$("#registerUserDepartmentInput").val(null);
+	$("#registerUserRolesInput").val(null);
 	
 	$("#registerUserEmailInput").val(null);
 	$("#registerUserResult").text("");
@@ -36,7 +38,8 @@ function emptyUpdateUserWindow(){
 	$("#updateUserSexRadioButton1").jqxRadioButton({checked: true});
     $("#updateUserSexRadioButton2").jqxRadioButton({checked: false});
     $('#acceptInput').jqxCheckBox({checked: false});
-
+    $("#updateUserRolesCombobox").jqxComboBox('uncheckAll');
+    
 	$("updateUserSexInput").val(i18n.t("sex.male"));
 	$("#updateUserIdInput").val(null);
 	$("#updateUserAccountInput").val(null);
@@ -46,6 +49,7 @@ function emptyUpdateUserWindow(){
 	$("#updateUserAddressInput").val(null);
 	
 	$("#updateUserDepartmentInput").val(null);
+	$("#updateUserRolesInput").val(null);
 	$("#updateUserRolesInput").val(null);
 	$("#updateUserEmailInput").val(null);
 	$("#updateUserResult").text("");
@@ -280,6 +284,7 @@ function updateUser() {
 		"user.address" : $("#updateUserAddressInput").val(),
 		"user.birthday" : $('#updateUserBirthdayInput').jqxDateTimeInput('value'),
 		"user.department" : $("#updateUserDepartmentInput").val(),
+		"user.roles" : $("#updateUserRolesInput").val(),
 		"user.email" : $("#updateUserEmailInput").val(),
 		"user.phone" : $("#updateUserPhoneInput").val(),
 		"user.sex" : $("#updateUserSexInput").val()
@@ -287,7 +292,7 @@ function updateUser() {
 	
 	var updateUserData = parseUIDataToUserData(updateUserUIData);
 
-	$.post("updateUser.action", updateUserData, function(result) {
+	$.post("updateRoleWithUser.action", updateUserData, function(result) {
     	
 		if (result != null && result["id"] != null) {
 			
@@ -353,7 +358,29 @@ function initRegisterUserElements() {
 		height: 25, 
 		theme: theme 
 	});
-    
+	
+	var userRoleData = [
+	    				{ value: 2, label: i18n.t("role.ANONYMOUS") },
+	    				{ value: 3, label: i18n.t("role.CUSTOMER") },
+	    				{ value: 4, label: i18n.t("role.CUSTOMER_VIP1") },
+	    				{ value: 5, label: i18n.t("role.CUSTOMER_VIP2") },
+	    				{ value: 6, label: i18n.t("role.WELCOMER") },
+	    				{ value: 7, label: i18n.t("role.CHEF") },
+	    				{ value: 8, label: i18n.t("role.WAITER") },
+	    				{ value: 9, label: i18n.t("role.CASHIER") },
+	    				{ value: 10, label: i18n.t("role.MANAGER") },
+	    				{ value: 11, label: i18n.t("role.ADMIN") }
+	            ];
+	// Create a jqxComboBox
+	$("#registerUserRolesCombobox").jqxComboBox({ 
+		checkboxes: true, 
+		source: userRoleData, 
+		displayMember: "label", 
+		valueMember: "value", 
+		width: 150, 
+		height: 25, 
+		theme: theme 
+	});
     // initialize validator.
     $('#registerUserInfoForm').jqxValidator({
      rules: [
@@ -428,6 +455,23 @@ function addRegisterUserEventListeners() {
                 }
             }
         });
+    
+    $("#registerUserRolesCombobox").on('checkChange', function (event) {
+        if (event.args) {
+            var item = event.args.item;
+            if (item) {
+                var items = $("#registerUserRolesCombobox").jqxComboBox('getCheckedItems');
+                var checkedItems = "";
+                $.each(items, function (index) {
+                    checkedItems += this.label + ", ";                          
+                });
+                if(checkedItems.length > 0) {
+                	checkedItems = checkedItems.substring(0, checkedItems.length - 1);
+                }
+                $("#registerUserRolesInput").val(checkedItems);
+            }
+        }
+    });
     
     $('#registerUserInfoForm').on('validationSuccess', function (event) { 
     	// Some code here. 
@@ -1010,6 +1054,17 @@ function parseUIDataToUserData(record) {
 				record[attr] = findSexValue(record[attr]);
 			}else if(attr == "user.birthday") {
 				record[attr] = record[attr].getTime();
+			}else if(attr == "user.roles") {
+				var roles = findRoleValue(record[attr]);
+				if(roles.length > 0) {
+					
+					for(var i = 0;i< roles.length;i++) {
+						record["user.role_Details.role.type"] = roles[i];
+					}
+				}
+				
+				
+				record[""] = record[attr];
 			}
 		}
 		return record;

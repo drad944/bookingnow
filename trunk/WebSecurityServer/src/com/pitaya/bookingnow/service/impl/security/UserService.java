@@ -5,8 +5,12 @@ import java.util.List;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.pitaya.bookingnow.dao.security.RoleMapper;
 import com.pitaya.bookingnow.dao.security.UserMapper;
+import com.pitaya.bookingnow.dao.security.User_Role_DetailMapper;
+import com.pitaya.bookingnow.entity.security.Role;
 import com.pitaya.bookingnow.entity.security.User;
+import com.pitaya.bookingnow.entity.security.User_Role_Detail;
 import com.pitaya.bookingnow.service.security.IUserService;
 import com.pitaya.bookingnow.util.ImageUtil;
 import com.pitaya.bookingnow.util.MyResult;
@@ -16,7 +20,27 @@ import com.pitaya.bookingnow.util.SystemUtils;
 public class UserService implements IUserService {
 
 	private UserMapper userDao;
+	private User_Role_DetailMapper role_detailDao;
 	
+	public User_Role_DetailMapper getRole_detailDao() {
+		return role_detailDao;
+	}
+
+	public void setRole_detailDao(User_Role_DetailMapper role_detailDao) {
+		this.role_detailDao = role_detailDao;
+	}
+
+	private RoleMapper roleDao;
+	
+	public RoleMapper getRoleDao() {
+		return roleDao;
+	}
+
+	public void setRoleDao(RoleMapper roleDao) {
+		this.roleDao = roleDao;
+	}
+
+
 	public UserMapper getUserDao() {
 		return userDao;
 	}
@@ -224,6 +248,112 @@ public class UserService implements IUserService {
 		}
 		
 		return false;
+	}
+
+	@Override
+	public MyResult modifyRoleWithUser(User user) {
+		MyResult result = new MyResult();
+		if (user != null && user.getId() != null) {
+			User realUser = userDao.getUserRole(user.getId());
+			if (realUser != null && realUser.getId() != null) {
+				if (user.getRole_Details() != null && user.getRole_Details().size() > 0) {
+					if (realUser.getRole_Details() != null && realUser.getRole_Details().size() > 0) {
+						for (int i = realUser.getRole_Details().size() - 1; i >= 0; i--) {
+							User_Role_Detail realRoleDetail = realUser.getRole_Details().get(i);
+							for (int j = user.getRole_Details().size() - 1; j >= 0; j--) {
+								Role tempRole = user.getRole_Details().get(j).getRole();
+								if (tempRole.getName() != null || tempRole.getType() != null) {
+									List<Role> tempDBRoles = roleDao.searchRoles(tempRole);
+									if (tempDBRoles != null && tempDBRoles.size() > 0) {
+										tempRole.setId(tempDBRoles.get(0).getId());
+										if (tempDBRoles.get(0).getType().equals(realRoleDetail.getRole().getType()) || 
+												tempDBRoles.get(0).getName().equals(realRoleDetail.getRole().getName())) {
+											//do nothing for role_detail which exist in client and DB side.
+											realUser.getRole_Details().remove(i);
+											user.getRole_Details().remove(j);
+										}
+									}
+								}
+							}
+						}
+						//the remain in user.getRole_Details() should be of new role detail 
+						for (int i = user.getRole_Details().size() - 1; i >= 0; i--) {
+							User_Role_Detail tempRoleDetail = new User_Role_Detail();
+							tempRoleDetail.setEnabled(true);
+							tempRoleDetail.setRole_id(user.getRole_Details().get(i).getId());
+							tempRoleDetail.setUser_id(user.getId());
+							if (role_detailDao.insertSelective(tempRoleDetail) == 1) {
+								
+							}else {
+								throw new RuntimeException("fail to insert user detail info in DB.");
+							}
+						}
+						
+						//the remain in realUser.getRole_Details() should be of delete role detail
+						
+						for (int i = realUser.getRole_Details().size() - 1; i >= 0; i--) {
+							if (role_detailDao.deleteByPrimaryKey(realUser.getRole_Details().get(i).getId()) == 1) {
+								
+							}else {
+								throw new RuntimeException("fail to delete user detail info in DB.");
+							}
+						}
+					}else {
+						//insert all user role detail
+						for (int i = 0; i < user.getRole_Details().size(); i++) {
+							Role tempRole = user.getRole_Details().get(i).getRole();
+							if (tempRole.getName() != null || tempRole.getType() != null) {
+								List<Role> realRoles = roleDao.searchRoles(tempRole);
+								if (realRoles != null && realRoles.size() > 0) {
+									User_Role_Detail tempRoleDetail = new User_Role_Detail();
+									tempRoleDetail.setEnabled(true);
+									tempRoleDetail.setRole_id(realRoles.get(0).getId());
+									tempRoleDetail.setUser_id(user.getId());
+									if (role_detailDao.insertSelective(tempRoleDetail) == 1) {
+										
+									}else {
+										throw new RuntimeException("fail to insert user detail info in DB.");
+									}
+								}
+							}
+						}
+					}
+				}else {
+					//remove all role_details for user.
+					if (realUser.getRole_Details() != null && realUser.getRole_Details().size() > 0) {
+						for (int i = 0; i < realUser.getRole_Details().size(); i++) {
+							if (realUser.getRole_Details().get(i).getRole() != null) {
+								if (role_detailDao.deleteByPrimaryKey(realUser.getRole_Details().get(i).getId()) == 1) {
+									
+								}else {
+									throw new RuntimeException("fail to delete user detail info in DB.");
+								}
+							}
+						}
+					}else {
+						//do nothing for user role.
+					}
+				}
+			}else {
+				result.getErrorDetails().put("user_exist", "can not find user id in DB data.");
+			}
+			
+			
+			if (user.getModifyTime() == null) {
+				user.setModifyTime(new Date().getTime());
+			}
+			if (userDao.updateByPrimaryKeySelective(user) == 1) {
+				
+				result.setExecuteResult(true);
+				result.setUser(userDao.getUserRole(user.getId()));
+				return result;
+			}else {
+				throw new RuntimeException("fail to update user info in DB.");
+			}
+		}else {
+			result.getErrorDetails().put("user_exist", "can not find user id in client data.");
+		}
+		return result;
 	}
 	
 	

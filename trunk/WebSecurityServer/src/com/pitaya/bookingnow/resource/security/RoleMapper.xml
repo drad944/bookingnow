@@ -13,8 +13,39 @@
 	<sql id="Base_Column_List">
 		id, name,type, description, issys, module,enabled
 	</sql>
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
-		parameterType="java.lang.Long">
+	
+	
+	<select id="searchRoles" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.Role">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_role
+		<where>
+		    <if test="name != null">
+				and name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="description != null">
+				and description = #{description,jdbcType=VARCHAR},
+			</if>
+			<if test="issys != null">
+				and issys = #{issys,jdbcType=BIT},
+			</if>
+			<if test="module != null">
+				and module = #{module,jdbcType=INTEGER},
+			</if>
+			<if test="type != null">
+				and type = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="enabled != null">
+				and enabled = #{enabled,jdbcType=BIT},
+			</if>
+		    <if test="enabled == null">
+				and enabled = true
+			</if>
+		</where>
+	    
+	</select>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
 		<include refid="Base_Column_List" />
 		from pitaya_role
