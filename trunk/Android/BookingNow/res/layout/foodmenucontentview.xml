@@ -19,7 +19,7 @@
 	          	android:layout_gravity="top" />
       </android.support.v4.view.ViewPager>
 
-      <TextView
+      <Button
           android:id="@+id/showOrder"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
           android:layout_alignParentLeft="true"
           android:paddingLeft="5dp"
           android:textSize="25sp" />
-      <TextView
+      <Button
           android:id="@+id/backHome"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 import com.pitaya.bookingnow.app.R;
+import com.pitaya.bookingnow.app.util.ContentUtil;
 
 public class ContentView extends ViewGroup {
 
@@ -131,8 +132,13 @@ public class ContentView extends ViewGroup {
 		 		case MotionEvent.ACTION_DOWN:
 						mLastMotionX = x;
 						mLastMotionY = y;
-						if(this.mCurrentContentView.canIntercept() && !this.isMenuOFF()){
-							//Log.d(TAG, "Catch the down action:" + this.mCurrentContentView.canIntercept() + " " +!this.isMenuOFF());
+						if(this.mCurrentContentView.canIntercept() && !this.isMenuOFF()){//
+							Log.d(TAG, "Catch the down action:" + this.mCurrentContentView.canIntercept() + " " +!this.isMenuOFF());
+							if(this.isMenuON()){
+								smoothScrollTo(this.menuWidth);
+								mTouchState = TOUCH_STATE_REST;
+								return false;
+							}
 							return true;
 						}
 						break;
@@ -141,8 +147,9 @@ public class ContentView extends ViewGroup {
 						boolean isRight = x > mLastMotionX;
 						mLastMotionX = x;
 						mLastMotionY = y;
+						//boolean flag = isRight && !this.isMenuON() || !isRight && this.isMenuOFF();
 						if(xMoved && this.mCurrentContentView.canIntercept() && isRight){
-							//Log.d(TAG, "Catch the move action:" + this.mCurrentContentView.canIntercept() + " " +isRight);
+							Log.d(TAG, "Catch the move action:" + this.mCurrentContentView.canIntercept() + " " +isRight);
 							return true;
 						}
 						break;
@@ -207,7 +214,7 @@ public class ContentView extends ViewGroup {
 				//int velocityX = (int) velocityTracker.getXVelocity();
 				int oldScrollX = getScrollX();
 				int dx = 0;
-				if (oldScrollX < -100) {
+				if (oldScrollX < -ContentUtil.getPixelsByDP(100)) {
 					dx = -menuWidth - oldScrollX;
 				} else {
 					dx = -oldScrollX;

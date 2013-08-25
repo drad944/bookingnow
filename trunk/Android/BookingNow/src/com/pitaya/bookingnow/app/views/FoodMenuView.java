@@ -19,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 
 import com.aphidmobile.utils.IO;
 import com.pitaya.bookingnow.app.FoodBookActivity;
+import com.pitaya.bookingnow.app.FoodGalleryActivity;
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.data.AsyncDrawable;
 import com.pitaya.bookingnow.app.data.AsyncImageTask;
@@ -78,8 +80,7 @@ public class FoodMenuView extends FrameLayout{
     
     public void setupViews(ArrayList<Food> foods){
     	this.foodList = foods;
-        LayoutInflater inflater = LayoutInflater.from(getContext());  
-        View view = inflater.inflate(R.layout.foodmenuview, null);
+        View view = View.inflate(getContext(), R.layout.foodmenuview, null);
         mGridView = (GridView)view.findViewById(R.id.gridview);
 		try {
 			mFoodMenuAdapter = new ImageAdapter(getContext(), mGridView);
@@ -100,20 +101,40 @@ public class FoodMenuView extends FrameLayout{
     	mFoodMenuAdapter.notifyDataSetChanged();
     }
     
-    public void recycle(){}
+	private void unbindDrawables(View view) {
+        if (view instanceof ImageView) {
+        	ImageView v = (ImageView)view;
+        	if(v.getBackground() != null){
+        		v.getBackground().setCallback(null);
+        	}
+        	if (v.getDrawable() != null) {
+        		v.getDrawable().setCallback(null);
+        	}
+        }
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+            	unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            if(!(view instanceof AdapterView)){
+            	((ViewGroup) view).removeAllViews();
+            }
+        }
+    }
+    
+    public void recycle(){
+    	unbindDrawables(this.mGridView);
+    }
       
 	private class ImageAdapter extends BaseAdapter{  
         
 		private Context mContext;
 		private View mView;
 		private EditText mEditText;
-		private Map<Integer, TextWatcher> watchers;
 		private Bitmap placeholderBitmap;
        
         public ImageAdapter(Context c, View view) throws IllegalArgumentException, IllegalAccessException{  
             mContext = c;
             this.mView = view;
-            this.watchers = new HashMap<Integer, TextWatcher>();
             //Use a system resource as the placeholder
             placeholderBitmap = BitmapFactory.decodeResource(mContext.getResources(), android.R.drawable.dark_header);
             
@@ -271,7 +292,7 @@ public class FoodMenuView extends FrameLayout{
 			final Food food = foodList.get(position);
 	        final int index = position;
 	        
-	        ViewHolder viewHolder = (ViewHolder)view.getTag();
+	        final ViewHolder viewHolder = (ViewHolder)view.getTag();
 	        viewHolder.food = food;
 	        
 	        String name = food.getName();
@@ -302,10 +323,10 @@ public class FoodMenuView extends FrameLayout{
 						@Override
 						public void onClick(View v) {
 							Bundle bundle = new Bundle();
-							bundle.putString("category", food.getCategory());
-							bundle.putString("id", food.getKey());
+							bundle.putString("category", viewHolder.food.getCategory());
+							bundle.putString("id", viewHolder.food.getKey());
 							bundle.putSerializable("order", mContentContainer.getOrder());
-							Intent intent = new Intent(FoodMenuView.this.getContext(), FoodBookActivity.class);
+							Intent intent = new Intent(FoodMenuView.this.getContext(), FoodGalleryActivity.class);
 							intent.putExtras(bundle);
 							FoodMenuView.this.getContext().startActivity(intent);
 						}

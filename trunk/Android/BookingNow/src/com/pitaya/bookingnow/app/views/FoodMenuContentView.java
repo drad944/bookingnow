@@ -52,7 +52,7 @@ public class FoodMenuContentView extends BaseContentView{
 		}
 		fragmentTransaction.add(container.getId(), mFragment);
 		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-		fragmentTransaction.commit();
+		fragmentTransaction.commitAllowingStateLoss();
 	}
 	
 	@Override
@@ -61,7 +61,7 @@ public class FoodMenuContentView extends BaseContentView{
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		fragmentTransaction.remove(mFragment);
 		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-		fragmentTransaction.commit();
+		fragmentTransaction.commitAllowingStateLoss();
 		return true;
 	}
 	

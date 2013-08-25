@@ -297,13 +297,15 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		@Override
 		public void onPause(){
 			super.onPause();
-			Log.i(TAG, "onPause in FoodMenuContentFragment" +this.hashCode());
 		}
 		
 		@Override
 		public void onDestroyView(){
-			super.onDestroyView();
 			this.doUnbindService();
+			super.onDestroyView();
+			this.mFoodMenuAdapter.recycle();
+			System.gc();
+			Log.i(TAG, "onDestroyView in FoodMenuContentFragment");
 		}
 
 		@Override
@@ -353,6 +355,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 					}
 				}
 				if(mFoodMenuAdapter != null){
+					mFoodMenuAdapter.recycle();
 					mFoodMenuAdapter = null;
 					System.gc();
 				}
@@ -407,10 +410,21 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			    	}
 			    }
 			    
+			    public void recycle(){
+			    	for(Entry<Integer, FoodMenuView> entry : mFoodMenus.entrySet()){
+				    	entry.getValue().recycle();
+			    	}
+			    	this.mFoodMenus = new HashMap<Integer, FoodMenuView>();
+			    }
+			    
 			    @Override
 			    public void destroyItem(View container, int position, Object object) {  
-			    	FoodMenuView itemView = (FoodMenuView)object;
-			    	itemView.recycle();
+//			    	Log.i(TAG, "In food menu fragment destroy item");
+//			    	FoodMenuView itemView = (FoodMenuView)object;
+//			    	itemView.recycle();
+//			    	if(mFoodMenus.get(position) != null){
+//			    		mFoodMenus.remove(position);
+//			    	}
 			    }
 			    
 			    @Override
