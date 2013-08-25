@@ -19,6 +19,7 @@
 		},
 		"map":{
 			"home":"map"
-		}
+		},
+		"admin" : "adminManagement"
 	}
 }

@@ -45,6 +45,13 @@
 				/Page/Common/error.jsp
 	        </result>
 	    </action>
+	    
+	    <action name="getConnectionInfo" class="com.pitaya.bookingnow.action.AdminAction" method="getConnectionInfo">
+ 		    <result name="Success" type="json">
+			    <param name="excludeNullProperties">true</param>
+				<param name="root">clientInfos</param>
+	        </result>
+	    </action>
 
 		<action name="*File" class="com.pitaya.bookingnow.action.FileAction" method="{1}File">
 	        

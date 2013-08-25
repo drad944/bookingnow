@@ -47,7 +47,7 @@ var Uploader = {
 		if(imgsrc && imgsrc != ""){
 			img.src = imgsrc + "?r=" + new Date().getTime();
 		} else {
-			img.src = "../../css/no_image.jpg?r=" + new Date().getTime();
+			img.src = "css/no_image.jpg?r=" + new Date().getTime();
 		}
 		AppUtil.setStyle(img,{width:"640px", height:"360px"});
 		previewDiv.appendChild(img);
@@ -71,7 +71,7 @@ var Uploader = {
 	            'fileId': '',
         	},
 	        //flash
-	        'swf': "../../js/uploadify.swf",
+	        'swf': "js/uploadify.swf",
 	        //不执行默认的onSelect事件
 	        'overrideEvents' : ['onDialogClose'],
 	        //文件选择后的容器ID
@@ -89,9 +89,9 @@ var Uploader = {
 	        'width':'100',
 	        //浏览按钮的高度
 	        'height':'20',
-	        'cancelImg': '../../css/uploadify-cancel.png',//取消图片路径
+	        'cancelImg': 'css/uploadify-cancel.png',//取消图片路径
 	        //expressInstall.swf文件的路径。
-	        'expressInstall':'../../js/expressInstall.swf',
+	        'expressInstall':'js/expressInstall.swf',
 	        //在浏览窗口底部的文件类型下拉菜单中显示的文本
 	        'fileTypeDesc':'支持的格式：',
 	        //允许上传的文件后缀
@@ -138,7 +138,7 @@ var Uploader = {
 	        	//data is string here,need to parse to json object.
 	        	 var jsonData = eval('(' + data + ')');
 	             if(jsonData != null && jsonData.fileId && jsonData.fileId != "null") {
-	            	$("#image").attr("src", "../../images/temp/" + jsonData.fileId + "?r=" + new Date().getTime());
+	            	$("#image").attr("src", "images/temp/" + jsonData.fileId + "?r=" + new Date().getTime());
 	            	me.fileId = jsonData.fileId;
 	            	if(callback){
 	            	   callback(me.fileId);

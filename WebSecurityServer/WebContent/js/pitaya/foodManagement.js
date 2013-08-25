@@ -247,8 +247,7 @@ function setupView() {
 								$("#status").jqxCheckBox({
 									checked : dataRecord.available
 								});
-								Uploader.init("picture", "../../"
-										+ dataRecord.imgpath, function(picid) {
+								Uploader.init("picture", dataRecord.imgpath, function(picid) {
 									dataRecord.fileId = picid;
 								});
 								$("#popupWindow").jqxWindow('open');

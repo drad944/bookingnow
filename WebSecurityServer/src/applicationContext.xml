@@ -160,4 +160,8 @@
 		<property name="userService" ref="userService"/>
 	</bean>
 	
+	<bean id="adminAction" class="com.pitaya.bookingnow.action.AdminAction" scope="prototype">
+		<property name="messageService" ref="messageService"/>
+	</bean>
+	
 </beans>
