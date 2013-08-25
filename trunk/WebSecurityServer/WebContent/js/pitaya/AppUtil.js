@@ -93,15 +93,24 @@ String.prototype.startWith=function(str){
 
 function openContentPage(sourceDiv,url,targetDiv) {
 	var contentPage = $('#' + sourceDiv);
-	$.post(url,function(data) {
-        var tmp = $('<div></div>').html(data);
- 
-        data = tmp.find('#' + targetDiv).html();
-        tmp.remove();
-         
-        contentPage.html(data);
-        data = null;
-    });
+//	$.post(url,function(data) {
+//        var tmp = $('<div></div>').html(data);
+// 
+//        data = tmp.find('#' + targetDiv).html();
+//        tmp.remove();
+//         
+//        contentPage.html(data);
+//        data = null;
+//    });
+	contentPage.load(url, null, function(data) {
+			var tmp = $('<div></div>').html(data);
+		 
+	        data = tmp.find('#' + targetDiv).html();
+	        tmp.remove();
+		         
+		    contentPage.html(data);
+		    data = null;
+	    });
 }
 
 function removeElementFromPage(targetDiv) {
