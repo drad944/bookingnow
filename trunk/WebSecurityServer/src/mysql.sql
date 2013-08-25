@@ -291,11 +291,11 @@ create table pitaya_role(
 	module integer
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_role values (1,true,6,'ROLE_WELCOME','welcome',false,1101);	
+insert into pitaya_role values (1,true,6,'ROLE_WELCOMER','welcome',false,1101);	
 insert into pitaya_role values (2,true,8,'ROLE_WAITER','waiter',false,1101);
 insert into pitaya_role values (3,true,7,'ROLE_CHEF','chef',false,1101);
 insert into pitaya_role values (4,true,4,'ROLE_CUSTOMER_VIP2','customer',false,1101);
-insert into pitaya_role values (5,true,5,'ROLE_WELCOME','welcome',false,1101);
+insert into pitaya_role values (5,true,5,'ROLE_WELCOMER','welcome',false,1101);
 insert into pitaya_role values (6,true,6,'ROLE_CHEF','chef',false,1101);
 insert into pitaya_role values (7,true,7,'ROLE_WAITER','waiter',false,1101);
 insert into pitaya_role values (8,true,8,'ROLE_CASHIER','cashier',false,1101);
