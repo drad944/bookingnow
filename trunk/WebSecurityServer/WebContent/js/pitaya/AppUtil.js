@@ -42,6 +42,15 @@ var AppUtil = {
 			default:
 				return "未知";
 		};
+	},
+	
+	getRoleName : function(role){
+		for(var i=0; i < Constants.ROLES.length; i++){
+			if(Constants.ROLES[i].value == role){
+				return Constants.ROLES[i].name;
+			}
+		}
+		return "未知";
 	}
 };
 
@@ -241,6 +250,10 @@ function parseMenuHtml() {
         "id": "9",
         "parentid": "3",
         "text": i18n.t("menu.userManagement.changeUserImage")
+    }, {
+        "id": "10",
+        "parentid": "-1",
+        "text": i18n.t("menu.admin")
     }];
     // prepare the data
     var source =
@@ -302,6 +315,9 @@ function parseMenuHtml() {
         }else if(event.args.id == 9) {
         	openContentPage('framework_main','page/security/updateUserPicture.html','content');
         	uploadUserImage();
+        }else if(event.args.id == 10) {
+        	openContentPage('framework_main','page/common/admin.html','content');
+        	init();
         }
     });
     var centerItems = function () {

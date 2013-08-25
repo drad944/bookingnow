@@ -1,4 +1,6 @@
 var Constants = {
+	
+	theme : "energyblue",
 		
 	ORDER_NEW : 1,
 	ORDER_WELCOMER_NEW : 2,
