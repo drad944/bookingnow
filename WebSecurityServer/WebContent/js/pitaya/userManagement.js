@@ -962,7 +962,7 @@ function parseUserGridHtml() {
         $("#eventLog").text(i18n.t("grid.selectRow",{index:event.args.rowindex}));
     });
 	
-    initLocaleElements();
+    initUserManagementLocaleElements();
 	initOperateUserGridElements();
 	addOperateUserGridEventListeners();
 	
@@ -984,7 +984,7 @@ function parseUserGridHtml() {
 		
 }
 
-function initLocaleElements() {
+function initUserManagementLocaleElements() {
 	$("#addUserRowButton").val(i18n.t("button.operationUserGrid.addUserRow"));
 	$("#updateUserRowButton").val(i18n.t("button.operationUserGrid.updateUserRow"));
 	$("#deleteUserRowButton").val(i18n.t("button.operationUserGrid.deleteUserRow"));
