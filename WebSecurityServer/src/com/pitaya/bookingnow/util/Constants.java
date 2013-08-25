@@ -89,8 +89,8 @@ public class Constants {
 	public static final int ROLE_CUSTOMER = ROLE_ANONYMOUS + 1;
 	public static final int ROLE_CUSTOMER_VIP1 = ROLE_CUSTOMER + 1;
 	public static final int ROLE_CUSTOMER_VIP2 = ROLE_CUSTOMER_VIP1 + 1;
-	public static final int ROLE_WELCOME = ROLE_CUSTOMER_VIP2 + 1;
-	public static final int ROLE_CHEF = ROLE_WELCOME + 1;
+	public static final int ROLE_WELCOMER = ROLE_CUSTOMER_VIP2 + 1;
+	public static final int ROLE_CHEF = ROLE_WELCOMER + 1;
 	public static final int ROLE_WAITER = ROLE_CHEF + 1;
 	public static final int ROLE_CASHIER = ROLE_WAITER + 1;
 	public static final int ROLE_MANAGER = ROLE_CASHIER + 1;

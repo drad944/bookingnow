@@ -183,6 +183,25 @@ public class UserAction extends BaseAction{
 		}
 	}
 	
+	public String findRoleWithUser() {
+		if(user != null) {
+        	List<User> users = userService.searchUsersWithRole(user);
+        	if (matchedUsers == null) {
+				matchedUsers = new HashMap<String,List<User>>();
+			}
+        	matchedUsers.put("result", users);
+        	return "findUserSuccess";
+        }else {
+			if (result == null) {
+				result = new MyResult();
+			}
+			result.setErrorType(Constants.FAIL);
+			result.setExecuteResult(false);
+			result.getErrorDetails().put("user_exist", "can not find user in client data.");
+			return "Fail";
+		}
+	}
+	
 	public String findUser() {
 		if(user != null) {
         	List<User> users = userService.searchUsers(user);

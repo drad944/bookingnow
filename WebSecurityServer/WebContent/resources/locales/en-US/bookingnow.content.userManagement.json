@@ -7,6 +7,18 @@
 			"DEVERLOPE":"USER_DEPARTMENT_DEVERLOPE",
 			"MANAGEMENT":"USER_DEPARTMENT_MANAGEMENT"
 	},
+	"role":{
+			"ANONYMOUS":"ROLE_ANONYMOUS",
+			"CUSTOMER":"ROLE_CUSTOMER",
+			"CUSTOMER_VIP1":"ROLE_CUSTOMER_VIP1",
+			"CUSTOMER_VIP2":"ROLE_CUSTOMER_VIP2",
+			"WELCOMER":"ROLE_WELCOMER",
+			"CHEF":"ROLE_CHEF",
+			"WAITER":"ROLE_WAITER",
+			"CASHIER":"ROLE_CASHIER",
+			"MANAGER":"ROLE_MANAGER",
+			"ADMIN":"ROLE_ADMIN"
+	},
 	"sex":{
 			"male":"man",
 			"female":"female",
@@ -58,7 +70,21 @@
 			"description":"Description",
 			"department":"Department",
 			"sub_system":"Sub_system",
-			"role_Details":"Role_Details",
+			"role_Details":{
+				"id":"Role_Details_Id",
+				"enabled":"Role_Details_Enabled",
+				"role_id":"Role_Details_Role_id",
+				"user_id":"Role_Details_User_id",
+				"role":{
+					"id":"Role_Id",
+					"enabled":"Role_Enabled",
+					"type":"Role_Type",
+					"name":"Role_Name",
+					"description":"Role_Description",
+					"module":"Role_Module"
+				}
+			},
+			"roles":"Roles",
 			"image":"Image",
 			"image_absolute_path":"Image_absolute_path",
 			"enabled":"Enabled",
@@ -82,6 +108,7 @@
 			"department":"Department:",
 			"sub_system":"Sub_system:",
 			"role_Details":"Role_Details:",
+			"roles":"Roles:",
 			"image":"Image:",
 			"image_absolute_path":"Image_absolute_path:",
 			"enabled":"Enabled:",
@@ -98,8 +125,8 @@
 			"operationUserGrid":{
 				"addUserRow":"Add New Row",
 				"updateUserRow":"Update Selected Row",
-				"deleteUserRow":"Delete Selected Row"
-				
+				"deleteUserRow":"Delete Selected Row",
+				"addRoleForUserRow":"Set Role For User"
 			}
 	},
 	"window":{
