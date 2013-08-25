@@ -1,5 +1,5 @@
 
-function setupView(result){
+function setupAdminView(result){
 	var data = [];
 	for(var i=0; i < result.length; i++){
 		var rowdata = {};
@@ -21,7 +21,7 @@ function setupView(result){
 	var dataAdapter = new $.jqx.dataAdapter(source);
 	$("#jqxAdminGrid").jqxGrid(
 		{
-			theme : Constants.theme,
+			theme : theme,
 			autoheight: true,
 			width: 300,
 			showgroupmenuitems: false,
@@ -48,7 +48,7 @@ function setupView(result){
 function init(){
 	AppUtil.request("getConnectionInfo.action", null, function(result){
 		if(result){
-	    	setupView(result);
+	    	setupAdminView(result);
 		}
 	}, function(){
 		alert("网络错误!");

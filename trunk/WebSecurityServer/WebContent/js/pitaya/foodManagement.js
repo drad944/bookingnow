@@ -1,3 +1,5 @@
+var data = [];
+var categories = [];
 
 function parseFoodGridHtml() {
 	AppUtil.request("searchFood.action", null, function(result){
@@ -27,10 +29,6 @@ function parseFoodGridHtml() {
 	});
 	
 }
-
-var theme = 'energyblue';
-var data = [];
-var categories = [];
 
 function groupByCategory(flag){
 	if(flag){
