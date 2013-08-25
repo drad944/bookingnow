@@ -69,7 +69,7 @@
 		$(document).ready(function(){
 		    var top = $('#framework_top');
 		     
-		    $.post('page/common/top.html',function(data) {
+		    top.load('page/common/top.html',function(data) {
 		        var tmp = $('<div></div>').html(data);
 		 
 		        data = tmp.find('#content').html();
