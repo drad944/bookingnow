@@ -60,14 +60,25 @@
 		<aop:advisor pointcut-ref="productServiceMethods" advice-ref="myTxAdvice" />
 	</aop:config>
 	
-	
+	<bean id="roleDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.security.RoleMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+    
 	<bean id="userDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.security.UserMapper" />   
         <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
     </bean>
     
+    <bean id="role_detailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.security.User_Role_DetailMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+    
 	<bean id="userService" class="com.pitaya.bookingnow.service.impl.security.UserService">
 		<property name="userDao" ref="userDao" />
+		<property name="roleDao" ref="roleDao" />
+		<property name="role_detailDao" ref="role_detailDao" />
 	</bean>
 
 	<bean id="userAction" class="com.pitaya.bookingnow.action.UserAction" scope="prototype">

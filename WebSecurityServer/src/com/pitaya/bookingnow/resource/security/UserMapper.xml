@@ -165,15 +165,6 @@
 		where U.account = #{account,jdbcType=VARCHAR} and U.password = #{password,jdbcType=VARCHAR} and U.enabled = true
 	</select>
 	 
-	 <!-- 
-	<select id="login" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">
-		select
-		<include refid="Base_Column_List" />
-		from pitaya_user
-		where account = #{account,jdbcType=VARCHAR} and password = #{password,jdbcType=VARCHAR}
-	</select>
-	-->
-	
 	<select id="searchUsersWithRole" resultMap="User_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.security.User">
 		select
 			<include refid="User_Base_Column_List" />
@@ -322,16 +313,25 @@
 	
 	<select id="getUserRole" resultMap="User_BaseResultMap" parameterType="java.lang.Long">
 		select
-		<include refid="User_Base_Column_List" />
-		,
-		<include refid="Role_Detail_Base_Column_List" />
-		,
-		<include refid="Role_Base_Column_List" />
-		
+			<include refid="User_Base_Column_List" />
+			,
+			INTERAL_URD.*
 		from pitaya_user U
-			left outer join pitaya_user_role_detail UR on UR.user_id = U.id
-			left outer join pitaya_role R on R.id = UR.role_id
-		where U.id = #{id,jdbcType=BIGINT}
+			left outer join 
+				(
+					select
+						<include refid="Role_Detail_Base_Column_List" />
+						,
+						<include refid="Role_TEMP_Base_Column_List" />
+					from pitaya_user_role_detail UR
+						left outer join (
+											select <include refid="Role_Base_Column_List" />
+											from pitaya_role R
+											where R.enabled = true
+										) as R on R.R_id = UR.role_id
+					where UR.enabled = true
+				) 		as		INTERAL_URD on INTERAL_URD.UR_user_id = U.id
+		where U.id = #{id,jdbcType=BIGINT} and U.enabled = true
 	</select>
 	
 	

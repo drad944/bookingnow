@@ -257,7 +257,23 @@ public class UserAction extends BaseAction{
         return "Fail";
 	}
 	
-	
+	public String updateRoleWithUser() {
+		if(user != null) {
+			result = userService.modifyRoleWithUser(user);
+			
+			if(result.isExecuteResult()){ 
+				user = result.getUser();
+	            return "updateUserSuccess";  
+	        }else{  
+	            return "Fail";  
+	        }  
+        }
+		if (result == null) {
+			result = new MyResult();
+			result.setErrorType(Constants.FAIL);
+		}
+        return "Fail";
+	}
 	
 	public String removeUser() {
 		if(user != null) {
