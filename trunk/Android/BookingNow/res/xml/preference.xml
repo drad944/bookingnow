@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/settings_category_data">
+        <com.pitaya.bookingnow.app.preference.ButtonPreference
+            android:key="clean_data"
+            android:persistent="false">
+        </com.pitaya.bookingnow.app.preference.ButtonPreference>
+        <com.pitaya.bookingnow.app.preference.ButtonPreference
+            android:key="check_update"
+            android:persistent="false">
+        </com.pitaya.bookingnow.app.preference.ButtonPreference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_category_net">"
+        <EditTextPreference android:key="server_address"
+            android:title="@string/server_address"/>
+        <com.pitaya.bookingnow.app.preference.ButtonPreference
+            android:key="connect_server"
+            android:persistent="false">
+        </com.pitaya.bookingnow.app.preference.ButtonPreference>
+    </PreferenceCategory>
+
+</PreferenceScreen>

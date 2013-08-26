@@ -76,6 +76,13 @@
     <string name="updatemenutitle">菜单更新</string>
     
     <string name="service_name">BookingMessageService</string>
+    <string name="server_address">服务器地址</string>
+    <string name="connect_title">连接至服务器</string>
+    <string name="connect_summary">尝试同服务器建立连接</string>
+    <string name="connect_btn">连接</string>
+    <string name="settings_category_data">数据</string>
+    <string name="settings_category_net">网络</string>
+    
     
     <drawable name="common_background">#4e72b8</drawable>
     <drawable name="menu_background">#494e8f</drawable>

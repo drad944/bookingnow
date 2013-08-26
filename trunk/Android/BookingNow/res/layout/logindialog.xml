@@ -7,20 +7,19 @@
 	<TextView
 	    android:layout_width="match_parent"   
 	    android:layout_height="wrap_content"   
-	    android:layout_marginLeft="20dip"  
-	    android:layout_marginRight="20dip"  
+	    android:layout_marginLeft="20dp"  
+	    android:layout_marginRight="20dp"  
 	    android:text="@string/account"  
 	    android:gravity="left"
-	    android:textColor="@android:color/white"
 	    android:textAppearance="?android:attr/textAppearanceMedium">  
     </TextView>  
       
     <EditText
-        android:id="@+id/username"  
+        android:id="@+id/username" 
         android:layout_height="wrap_content"   
         android:layout_width="match_parent"   
-        android:layout_marginLeft="20dip"  
-        android:layout_marginRight="20dip"
+        android:layout_marginLeft="20dp"  
+        android:layout_marginRight="20dp"
         android:gravity="fill_horizontal"
         android:inputType="text"
         android:textAppearance="?android:attr/textAppearanceMedium">  
@@ -29,11 +28,10 @@
     <TextView
 	    android:layout_width="match_parent"   
 	    android:layout_height="wrap_content"   
-	    android:layout_marginLeft="20dip"  
-	    android:layout_marginRight="20dip"  
+	    android:layout_marginLeft="20dp"  
+	    android:layout_marginRight="20dp"  
 	    android:text="@string/password"
-	    android:gravity="left"  
-	    android:textColor="@android:color/white"
+	    android:gravity="left"
 	    android:textAppearance="?android:attr/textAppearanceMedium">  
     </TextView>
           
@@ -41,8 +39,8 @@
         android:id="@+id/password"
         android:layout_height="wrap_content"   
         android:layout_width="match_parent"   
-        android:layout_marginLeft="20dip"  
-        android:layout_marginRight="20dip"
+        android:layout_marginLeft="20dp"  
+        android:layout_marginRight="20dp"
         android:gravity="fill_horizontal"  
         android:inputType="textPassword"
         android:textAppearance="?android:attr/textAppearanceMedium">  
@@ -52,10 +50,9 @@
 	    android:id="@+id/autologin" 
 	    android:layout_width="match_parent" 
 	    android:layout_height="wrap_content"
-	    android:layout_marginLeft="20dip"  
-        android:layout_marginRight="20dip"
+	    android:layout_marginLeft="20dp"  
+        android:layout_marginRight="20dp"
 	    android:text="@string/rememberme"
-	    android:textColor="@android:color/white"
 	    android:textAppearance="?android:attr/textAppearanceMedium"
     />
      
