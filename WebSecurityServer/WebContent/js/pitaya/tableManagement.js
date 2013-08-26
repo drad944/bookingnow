@@ -463,8 +463,23 @@ function parseTableGridHtml() {
 								
 							}else {
 								column["datafield"] = item;
-								if(item == "id") {
-									column["width"] = "50";
+								
+								if(item == "id"){
+									column["width"] = "130";
+								}else if(item == "status") {
+									column["width"] = "140";
+								}else if(item == "minCustomerCount") {
+									column["width"] = "140";
+								}else if(item == "maxCustomerCount") {
+									column["width"] = "130";
+								}else if(item == "address") {
+									column["width"] = "130";
+								}else if(item == "indoorPrice") {
+									column["width"] = "130";
+								}else if(item == "enabled"){
+									//do nothing
+								}else {
+									column["width"] = "130";
 								}
 								
 								columns[j] = column;
@@ -518,7 +533,7 @@ function parseTableGridHtml() {
 	// initialize jqxGrid
 	$("#tableDataGrid").jqxGrid(
 	{
-	    width: 1000,
+	    width: 800,
 	    height: 350,
 	    source: dataAdapter,
 	    theme: theme,
