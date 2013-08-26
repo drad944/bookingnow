@@ -9,6 +9,8 @@ import com.pitaya.bookingnow.util.SearchParams;
 public interface IUserService{
 	MyResult add(User user);
 	
+	MyResult addUserWithRole(User user);
+	
 	MyResult removeUserById(Long id);
 	
 	MyResult modify(User user);

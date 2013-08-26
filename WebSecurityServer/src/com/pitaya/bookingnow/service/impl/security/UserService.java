@@ -355,6 +355,52 @@ public class UserService implements IUserService {
 		}
 		return result;
 	}
+
+	@Override
+	public MyResult addUserWithRole(User user) {
+		MyResult result = new MyResult();
+		if (user != null && user.getAccount() != null) {
+			if (existUser(user)) {
+				result.getErrorDetails().put("user_exist", "user have been registered.");
+			}else {
+				if (user.getRole_Details() != null && user.getRole_Details().size() > 0) {
+					for (int j = user.getRole_Details().size() - 1; j >= 0; j--) {
+						Role tempRole = user.getRole_Details().get(j).getRole();
+						if (tempRole.getName() != null || tempRole.getType() != null) {
+							List<Role> tempDBRoles = roleDao.searchRoles(tempRole);
+							if (tempDBRoles != null && tempDBRoles.size() > 0) {
+								tempRole.setId(tempDBRoles.get(0).getId());
+								
+								User_Role_Detail tempRoleDetail = new User_Role_Detail();
+								tempRoleDetail.setEnabled(true);
+								tempRoleDetail.setRole_id(tempRole.getId());
+								tempRoleDetail.setUser_id(user.getId());
+								if (role_detailDao.insertSelective(tempRoleDetail) == 1) {
+									
+								}else {
+									throw new RuntimeException("fail to insert user detail info in DB.");
+								}
+							}
+						}
+					}
+				}
+				if (user.getModifyTime() == null) {
+					user.setModifyTime(new Date().getTime());
+				}
+				if (userDao.insert(user) == 1) {
+					result.setExecuteResult(true);
+					result.setUser(userDao.selectByPrimaryKey(user.getId()));
+					return result;
+				}else {
+					throw new RuntimeException("fail to insert user to DB.");
+				}
+			}
+			
+		}else {
+			result.getErrorDetails().put("user_exist", "can not find user info in client data.");
+		}
+		return result;
+	}
 	
 	
 
