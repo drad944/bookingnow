@@ -66,10 +66,10 @@ function initUpdateUserElements() {
     
   //  $("#updateUserAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
     $("#updateUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 25, theme: theme });
-    $('.updateUserTextInput').jqxInput({ theme: theme });
+    $('.updateUserTextInput').jqxInput({width: 150, height: 25, theme: theme });
     
     var d1 = new Date();
-    $('#updateUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 180, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
+    $('#updateUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 150, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
     
 	$("#updateUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25,checked: true, theme: theme });
 	$("#updateUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25,  theme: theme });
@@ -264,7 +264,7 @@ function initUpdateUserWindow(rowData,position) {
 	
 	// initialize the popup window and buttons.
     $("#updateUserPopupWindow").jqxWindow({
-    	position:position, isModal: true,width: 350, height: 440, resizable: false, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
+    	position:position, isModal: true,width: 350, height: 450, resizable: false, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
     	initContent: function () {
             $('#updateUserPopupWindow').jqxWindow('focus');
         }
@@ -330,11 +330,11 @@ function initRegisterUserElements() {
     $('#acceptInput').jqxCheckBox({ width: 130, theme: theme ,checked: false});
     
     
-    $("#registerUserAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
-    $("#registerUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 22, theme: theme });
-    $('.registerUserTextInput').jqxInput({ theme: theme });
+    $("#registerUserAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 25, theme: theme });
+    $("#registerUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 25, theme: theme });
+    $('.registerUserTextInput').jqxInput({width: 150, height: 25, theme: theme });
     var date = findDateTime("2000-01-01 00:00:00");
-    $('#registerUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 180, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
+    $('#registerUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 150, height: 25,formatString: "yyyy/MM/dd HH:mm:ss", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
     $("#registerUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
     $("#registerUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
     
@@ -483,7 +483,7 @@ function initRegisterUserWindow(position) {
 	$("#addUserPopupWindow").attr("style","overflow:hidden");
 	
 	$("#addUserPopupWindow").jqxWindow({
-		position:position,isModal: true,width: 350, height: 450, resizable: false, theme: theme, cancelButton: $("#registerUserCancelButton"), 
+		position:position,isModal: true,width: 350, height: 480, resizable: false, theme: theme, cancelButton: $("#registerUserCancelButton"), 
     	modalOpacity: 0.01,
     	
     	initContent: function () {
@@ -1039,7 +1039,7 @@ function parseUserGridHtml() {
 	// initialize jqxGrid
 	$("#userDataGrid").jqxGrid(
 	{
-	    width: 1000,
+	    width: 800,
 	    height: 350,
 	    source: dataAdapter,
 	    theme: theme,
