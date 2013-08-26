@@ -41,10 +41,10 @@ function initUpdateTableElements() {
     
     $('.updateTableTextInput').jqxInput({ theme: theme });
     
-	$('#updateTableAddressInput').jqxInput({ theme: theme });
-    $('#updateTableMinCustomerCountInput').jqxNumberInput({ width: 70, height: 25,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
-    $('#updateTableMaxCustomerCountInput').jqxNumberInput({ width: 70, height: 25,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
-    $('#updateTableIndoorPriceInput').jqxNumberInput({ width: 70, height: 25, digits: 3,symbolPosition: 'right', symbol: '￥', theme: theme, spinButtons: true});
+	$('#updateTableAddressInput').jqxInput({width: 120, height: 20, theme: theme });
+    $('#updateTableMinCustomerCountInput').jqxNumberInput({ width: 120, height: 20,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
+    $('#updateTableMaxCustomerCountInput').jqxNumberInput({ width: 120, height: 20,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
+    $('#updateTableIndoorPriceInput').jqxNumberInput({ width: 120, height: 20, digits: 3,symbolPosition: 'right', symbol: '￥', theme: theme, spinButtons: true});
     var tableStatusData = [
                                 { value: 2, label: i18n.t("status.EMPTY") },
                                 { value: 3, label: i18n.t("status.BOOKING") },
@@ -56,8 +56,8 @@ function initUpdateTableElements() {
  		source: tableStatusData, 
  		displayMember: "label", 
  		valueMember: "value", 
- 		width: 150, 
- 		height: 25, 
+ 		width: 120, 
+ 		height: 20, 
  		theme: theme 
  	});
     
@@ -212,12 +212,12 @@ function initRegisterTableElements() {
     $('#registerTableResetButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#registerTableCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
     
-    $('.registerTableTextInput').jqxInput({ theme: theme });
+    $('.registerTableTextInput').jqxInput({width: 120, height: 20, theme: theme });
     
-	$('#registerTableAddressInput').jqxInput({ theme: theme });
-    $('#registerTableMinCustomerCountInput').jqxNumberInput({ width: 70, height: 25,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
-    $('#registerTableMaxCustomerCountInput').jqxNumberInput({ width: 70, height: 25,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
-    $('#registerTableIndoorPriceInput').jqxNumberInput({ width: 70, height: 25, digits: 3,symbolPosition: 'right', symbol: '￥', theme: theme, spinButtons: true});
+	$('#registerTableAddressInput').jqxInput({width: 120, height: 20, theme: theme });
+    $('#registerTableMinCustomerCountInput').jqxNumberInput({ width: 120, height: 20,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
+    $('#registerTableMaxCustomerCountInput').jqxNumberInput({ width: 120, height: 20,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
+    $('#registerTableIndoorPriceInput').jqxNumberInput({ width: 120, height: 20, digits: 3,symbolPosition: 'right', symbol: '￥', theme: theme, spinButtons: true});
     var tableStatusData = [
                                 { value: 2, label: i18n.t("status.EMPTY") },
                                 { value: 3, label: i18n.t("status.BOOKING") },
@@ -231,8 +231,8 @@ function initRegisterTableElements() {
 		source: tableStatusData, 
 		displayMember: "label", 
 		valueMember: "value", 
-		width: 150, 
-		height: 25, 
+		width: 120, 
+		height: 20, 
 		theme: theme 
 	});
     
