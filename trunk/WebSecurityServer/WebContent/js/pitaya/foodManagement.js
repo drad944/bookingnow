@@ -1,7 +1,8 @@
-var data = [];
-var categories = [];
+var foodeditrow = -1;
 
 function parseFoodGridHtml() {
+	var data = [];
+	var categories = [];
 	AppUtil.request("searchFood.action", null, function(result){
 		if(result && result.length > 0){
 	    	for(var i=0; i < result.length; i++){
@@ -10,7 +11,7 @@ function parseFoodGridHtml() {
 	    		rowdata.id = item.id;
 	    		rowdata.name =  item.name;
 	    		rowdata.category = item.category;
-	    		addCategory(item.category);
+	    		addCategory(item.category, categories);
 	    		rowdata.desc = item.description;
 	    		rowdata.price = item.price;
 	    		rowdata.status = AppUtil.getFoodStatus(item.status);
@@ -22,7 +23,7 @@ function parseFoodGridHtml() {
 	    		}
 	    		data.push(rowdata);
 	    	}
-	    	setupView();
+	    	setupFoodView(data, categories);
 		}
 	}, function(){
 		alert("Fail to get data!");
@@ -38,7 +39,7 @@ function groupByCategory(flag){
 	}
 }
 	
-function addCategory(category){
+function addCategory(category, categories){
 	for(var i = 0; i < categories.length; i++){
 		if(categories[i] == category){
 			return;
@@ -47,20 +48,10 @@ function addCategory(category){
 	categories.push(category);
 }
 
-function hasCategory(category){
-	for(var i = 0; i < categories.length; i++){
-		if(categories[i] == category){
-			return true;
-		}
-	}
-	return false;
-}
-	
-
-function setupView() {
+function setupFoodView(fooddata, categories) {
 
 	var source = {
-		localdata : data,
+		localdata : fooddata,
 		datatype : "array",
 		addrow : function(rowid, newdata, position, commit) {
 			var status = newdata.available == true ? Constants.FOOD_STATUS_OK
@@ -166,6 +157,7 @@ function setupView() {
 		autoOpen : false,
 		isModal : true
 	});
+	
 	$("#category").jqxComboBox({
 		source : categories,
 		selectedIndex : 0,
@@ -173,6 +165,7 @@ function setupView() {
 		height : '25px',
 		theme : theme
 	});
+	
 	$("#price").jqxNumberInput({
 		symbol : 'rmb',
 		width : 200,
@@ -180,13 +173,13 @@ function setupView() {
 		theme : theme,
 		spinButtons : true
 	});
+	
 	$("#status").jqxCheckBox({
 		width : 120,
 		theme : theme
 	});
 
 	var dataAdapter = new $.jqx.dataAdapter(source);
-	var editrow = -1;
 	var newaddimgid = null;
 	$("#jqxgrid").jqxGrid(
 			{
@@ -233,9 +226,9 @@ function setupView() {
 								return "修改";
 							},
 							buttonclick : function(row) {
-								editrow = row;
+								foodeditrow = row;
 								var dataRecord = $("#jqxgrid").jqxGrid(
-										'getrowdata', editrow);
+										'getrowdata', foodeditrow);
 								$("#name").val(dataRecord.name);
 								$("#category").val(dataRecord.category);
 								$("#desc").val(dataRecord.desc);
@@ -262,7 +255,8 @@ function setupView() {
 	localizationobj.sortdescendingstring = "从高到低排序";
 	localizationobj.sortremovestring = "取消排序";
 	$("#jqxgrid").jqxGrid('localizestrings', localizationobj);
-
+	
+	
 	$("#savebtn").jqxButton({
 		theme : theme,
 		width : '50',
@@ -273,68 +267,7 @@ function setupView() {
 		width : '50',
 		height : '25'
 	});
-
-	$("#savebtn").bind('click', function(event) {
-		var name = $("#name").val();
-		var category = $("#category").val();
-		var desc = $("#desc").val();
-		var price = $('#price').jqxNumberInput('decimal');
-		var status = -1;
-		var available = true;
-		if ($("#status").jqxCheckBox('checked') == true) {
-			status = AppUtil.getFoodStatus(Constants.FOOD_STATUS_OK);
-			available = true;
-		} else {
-			status = AppUtil.getFoodStatus(Constants.FOOD_STATUS_NO);
-			available = false;
-		}
-		var newData = {
-			name : name,
-			category : category,
-			desc : desc,
-			price : price,
-			status : status,
-			available : available,
-		};
-		if (editrow >= 0) {
-			var rowID = $('#jqxgrid').jqxGrid('getrowid', editrow);
-			var rowData = $('#jqxgrid').jqxGrid('getrowdata', rowID);
-			newData.id = rowData.id;
-			newData.imgpath = rowData.imgpath;
-			if (rowData.fileId != null) {
-				newData.fileId = rowData.fileId;
-			}
-			$('#jqxgrid').jqxGrid('updaterow', rowID, newData);
-		} else {
-			newData.fileId = newaddimgid;
-			$('#jqxgrid').jqxGrid('addrow', null, newData);
-		}
-	});
-
-	$("#cancelbtn").click(function() {
-		if (editrow >= 0) {
-			var rowID = $('#jqxgrid').jqxGrid('getrowid', editrow);
-			var rowData = $('#jqxgrid').jqxGrid('getrowdata', rowID);
-			rowData.fileId = null;
-		}
-		$("#popupWindow").jqxWindow('hide');
-	});
-
-	$("#category").on(
-			'change',
-			function(event) {
-				if (event.args == null) {
-					var newcategory = $("#category").val();
-					if (newcategory != null
-							&& newcategory.trim() != ""
-							&& $("#category").jqxComboBox('getItemByValue',
-									newcategory) == null) {
-						$("#category").jqxComboBox('addItem', newcategory);
-						$("#category").val(newcategory);
-					}
-				}
-			});
-
+	
 	$("#groupbtn").jqxButton({
 		theme : theme,
 		width : '80',
@@ -355,46 +288,106 @@ function setupView() {
 		width : '80',
 		height : '25'
 	});
+	
+	if(this.hasFoodBind == null){
+		//this.hasFoodBind = true;
 
-	$("#groupbtn").bind('click', function() {
-		if ($("#groupbtn")[0].value == "按分类显示") {
-			groupByCategory(true);
-			$("#groupbtn")[0].value = "显示全部";
-		} else {
-			groupByCategory(false);
-			$("#groupbtn")[0].value = "按分类显示";
-		}
-	});
-
-	$("#addbtn").bind('click', function() {
-		editrow = -1;
-		newaddimgid = null;
-		$("#name").val("");
-		$("#desc").val("");
-		$("#category").jqxComboBox('selectIndex', 0);
-		$("#price").jqxNumberInput({
-			decimal : 0
-		});
-		$("#status").jqxCheckBox({
-			checked : true
-		});
-		Uploader.init("picture", null, function(picid) {
-			newaddimgid = picid;
-		});
-		$("#popupWindow").jqxWindow('open');
-	});
-
-	$("#delbtn").bind('click', function() {
-		var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
-		$('#jqxgrid').jqxGrid('deleterow', selectedrowindex);
-	});
-
-	$("#updatemenubtn").bind('click', function() {
-		AppUtil.request("updateClientsFood.action", null, function(result) {
-			if (result && result.isSuccess == true) {
-				alert("客户端将在收到通知后开始更新菜单!");
+		$("#savebtn").on('click', function(event) {
+			var name = $("#name").val();
+			var category = $("#category").val();
+			var desc = $("#desc").val();
+			var price = $('#price').jqxNumberInput('decimal');
+			var status = -1;
+			var available = true;
+			if ($("#status").jqxCheckBox('checked') == true) {
+				status = AppUtil.getFoodStatus(Constants.FOOD_STATUS_OK);
+				available = true;
+			} else {
+				status = AppUtil.getFoodStatus(Constants.FOOD_STATUS_NO);
+				available = false;
+			}
+			var newData = {
+				name : name,
+				category : category,
+				desc : desc,
+				price : price,
+				status : status,
+				available : available,
+			};
+			if (foodeditrow >= 0) {
+				var rowID = $('#jqxgrid').jqxGrid('getrowid', foodeditrow);
+				var rowData = $('#jqxgrid').jqxGrid('getrowdata', rowID);
+				newData.id = rowData.id;
+				newData.imgpath = rowData.imgpath;
+				if (rowData.fileId != null) {
+					newData.fileId = rowData.fileId;
+				}
+				$('#jqxgrid').jqxGrid('updaterow', rowID, newData);
+			} else {
+				newData.fileId = newaddimgid;
+				$('#jqxgrid').jqxGrid('addrow', null, newData);
 			}
 		});
-	});
-
+	
+		$("#cancelbtn").on('click', function() {
+			if (foodeditrow >= 0) {
+				var rowID = $('#jqxgrid').jqxGrid('getrowid', foodeditrow);
+				var rowData = $('#jqxgrid').jqxGrid('getrowdata', rowID);
+				rowData.fileId = null;
+			}
+			$("#popupWindow").jqxWindow('hide');
+		});
+	
+		$("#category").on('change',function(event) {
+			if (event.args == null) {
+				var newcategory = $("#category").val();
+				if (newcategory != null && newcategory.trim() != ""
+						&& $("#category").jqxComboBox('getItemByValue', newcategory) == null) {
+					$("#category").jqxComboBox('addItem', newcategory);
+					$("#category").val(newcategory);
+				}
+			}
+		});
+	
+		$("#groupbtn").on('click', function() {
+			if ($("#groupbtn")[0].value == "按分类显示") {
+				groupByCategory(true);
+				$("#groupbtn")[0].value = "显示全部";
+			} else {
+				groupByCategory(false);
+				$("#groupbtn")[0].value = "按分类显示";
+			}
+		});
+	
+		$("#addbtn").on('click', function() {
+			foodeditrow = -1;
+			newaddimgid = null;
+			$("#name").val("");
+			$("#desc").val("");
+			$("#category").jqxComboBox('selectIndex', 0);
+			$("#price").jqxNumberInput({
+				decimal : 0
+			});
+			$("#status").jqxCheckBox({
+				checked : true
+			});
+			Uploader.init("picture", null, function(picid) {
+				newaddimgid = picid;
+			});
+			$("#popupWindow").jqxWindow('open');
+		});
+	
+		$("#delbtn").on('click', function() {
+			var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
+			$('#jqxgrid').jqxGrid('deleterow', selectedrowindex);
+		});
+	
+		$("#updatemenubtn").on('click', function() {
+			AppUtil.request("updateClientsFood.action", null, function(result) {
+				if (result && result.isSuccess == true) {
+					alert("客户端将在收到通知后开始更新菜单!");
+				}
+			});
+		});
+	}
 }
