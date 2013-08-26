@@ -70,20 +70,6 @@
 			"description":"Description",
 			"department":"Department",
 			"sub_system":"Sub_system",
-			"role_Details":{
-				"id":"Role_Details_Id",
-				"enabled":"Role_Details_Enabled",
-				"role_id":"Role_Details_Role_id",
-				"user_id":"Role_Details_User_id",
-				"role":{
-					"id":"Role_Id",
-					"enabled":"Role_Enabled",
-					"type":"Role_Type",
-					"name":"Role_Name",
-					"description":"Role_Description",
-					"module":"Role_Module"
-				}
-			},
 			"roles":"Roles",
 			"image":"Image",
 			"image_absolute_path":"Image_absolute_path",

@@ -266,6 +266,7 @@ public class UserService implements IUserService {
 									List<Role> tempDBRoles = roleDao.searchRoles(tempRole);
 									if (tempDBRoles != null && tempDBRoles.size() > 0) {
 										tempRole.setId(tempDBRoles.get(0).getId());
+									//	user.getRole_Details().get(j).setRole(tempRole);
 										if (tempDBRoles.get(0).getType().equals(realRoleDetail.getRole().getType()) || 
 												tempDBRoles.get(0).getName().equals(realRoleDetail.getRole().getName())) {
 											//do nothing for role_detail which exist in client and DB side.
@@ -280,7 +281,8 @@ public class UserService implements IUserService {
 						for (int i = user.getRole_Details().size() - 1; i >= 0; i--) {
 							User_Role_Detail tempRoleDetail = new User_Role_Detail();
 							tempRoleDetail.setEnabled(true);
-							tempRoleDetail.setRole_id(user.getRole_Details().get(i).getId());
+							
+							tempRoleDetail.setRole_id(user.getRole_Details().get(i).getRole().getId().longValue());
 							tempRoleDetail.setUser_id(user.getId());
 							if (role_detailDao.insertSelective(tempRoleDetail) == 1) {
 								

@@ -305,6 +305,13 @@ function findDateTime(datetimeString) {
 	return d;
 }
 
+function trim(myString){
+	if(myString != null && myString != "") {
+		return myString.replace(/(^\s*)|(\s*$)/g, "");
+	}
+	return myString;
+}
+
 Date.prototype.Format = function (fmt) {
 	//how to call it:
 	//var time1 = new Date().Format("yyyy-MM-dd");
@@ -331,6 +338,20 @@ Date.prototype.Format = function (fmt) {
     return fmt;
 };
 
+function findRoleStringArray(value) {
+	var values = null;
+	if(value != null) {
+		values = value.split(",");
+	}
+	if(values != null){
+		for(var i = values.length - 1;i >= 0;i--) {
+			values[i] = trim(values[i]);
+		}
+	}
+	 
+	 return values;
+}
+
 function findRoleString(value) {
 	var option = {
 			fallbackLng: 'zh',
@@ -342,8 +363,15 @@ function findRoleString(value) {
 		};
 	 
 	i18n.init(option);
-	
-	var values = value.split(",");
+	var values = null;
+	if(value.toString.length > 0) {
+		values = value.split(",");
+	}
+	if(values != null&& values.length > 0){
+		for(var i = values.length;i >= 0;i--) {
+			values[i] = trim(values[i]);
+		}
+	}
 	
 	var userRoleData = [
 	    				{ value: 2, label: i18n.t("role.ANONYMOUS") },
@@ -358,19 +386,35 @@ function findRoleString(value) {
 	    				{ value: 11, label: i18n.t("role.ADMIN") }
 	            ];
 	var valueString = "";
-	 for(var j=0;j < values.length;j++) {
-		 var tempValue = values[j];
-		 for(var i = 0;i < userRoleData.length;i++) {
-			 if(userRoleData[i].value == tempValue) {
-				 valueString = valueString + userRoleData[i].label + ",";
+	if(values != null && values.length > 0){
+		for(var j=0;j < values.length;j++) {
+			 var tempValue = values[j];
+			 for(var i = 0;i < userRoleData.length;i++) {
+				 if(userRoleData[i].value == tempValue) {
+					 valueString = valueString + userRoleData[i].label + ",";
+				 }
 			 }
 		 }
-	 }
-	 if(valueString.length > 0) {
-		 valueString = valueString.substring(0, valueString.length - 1);
-	 }
+		 if(valueString.length > 0) {
+			 valueString = valueString.substring(0, valueString.length - 2);
+		 }
+	}
 	 
 	 return valueString;
+}
+
+function findRoleValueArray(label) {
+	var labels = null;
+	if(label != null) {
+		labels = label.split(",");
+	}
+	if(labels != null) {
+		for(var i = labels.length - 1;i >= 0;i--) {
+			labels[i] = trim(labels[i]);
+		}
+	}
+	 
+	 return labels;
 }
 
 function findRoleValue(label) {
@@ -384,8 +428,16 @@ function findRoleValue(label) {
 		};
 	 
 	i18n.init(option);
+	var labels = null;
+	if(label.length > 0) {
+		labels = label.split(",");
+	}
+	if(labels != null && labels.length > 0) {
+		for(var i = labels.length;i >= 0;i--) {
+			labels[i] = trim(labels[i]);
+		}
+	}
 	
-	var labels = label.split(",");
 	
 	var userRoleData = [
 	    				{ value: 2, label: i18n.t("role.ANONYMOUS") },
@@ -400,15 +452,17 @@ function findRoleValue(label) {
 	    				{ value: 11, label: i18n.t("role.ADMIN") }
 	            ];
 	var labelString = new Array();
-	 for(var j=0;j < labels.length;j++) {
-		 var tempLabel = labels[j];
-		 for(var i = 0;i < userRoleData.length;i++) {
-			 if(userRoleData[i].label == tempLabel) {
-				 labelString[j] = userRoleData[i].value;
-				 break;
+	if(labels != null && labels.length > 0) {
+		for(var j=0;j < labels.length;j++) {
+			 var tempLabel = labels[j];
+			 for(var i = 0;i < userRoleData.length;i++) {
+				 if(userRoleData[i].label == tempLabel) {
+					 labelString[j] = userRoleData[i].value;
+					 break;
+				 }
 			 }
 		 }
-	 }
+	}
 	 
 	 return labelString;
 }

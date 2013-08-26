@@ -209,7 +209,6 @@ function addUpdateUserEventListeners() {
     $("#updateUserSexRadioButton1").on('change', function (event) {
         var checked = event.args.checked;
         if (checked) {
-        	
         	 $("#updateUserSexInput").val(i18n.t("sex.male"));
         }
     });
@@ -245,7 +244,7 @@ function addUpdateUserEventListeners() {
                     checkedItems += this.label + ", ";                          
                 });
                 if(checkedItems.length > 0) {
-                	checkedItems = checkedItems.substring(0, checkedItems.length - 1);
+                	checkedItems = checkedItems.substring(0, checkedItems.length - 2);
                 }
                 $("#updateUserRolesInput").val(checkedItems);
             }
@@ -466,7 +465,7 @@ function addRegisterUserEventListeners() {
                     checkedItems += this.label + ", ";                          
                 });
                 if(checkedItems.length > 0) {
-                	checkedItems = checkedItems.substring(0, checkedItems.length - 1);
+                	checkedItems = checkedItems.substring(0, checkedItems.length - 2);
                 }
                 $("#registerUserRolesInput").val(checkedItems);
             }
@@ -484,7 +483,7 @@ function initRegisterUserWindow(position) {
 	$("#addUserPopupWindow").attr("style","overflow:hidden");
 	
 	$("#addUserPopupWindow").jqxWindow({
-		position:position,isModal: true,width: 350, height: 420, resizable: false, theme: theme, cancelButton: $("#registerUserCancelButton"), 
+		position:position,isModal: true,width: 350, height: 450, resizable: false, theme: theme, cancelButton: $("#registerUserCancelButton"), 
     	modalOpacity: 0.01,
     	
     	initContent: function () {
@@ -512,7 +511,7 @@ function registerUser() {
 
 	var registerUserData = parseUIDataToUserData(registerUserUIData);
 	
-	$.post("registerUser.action", registerUserData, function(result) {
+	$.post("registerRoleWithUser.action", registerUserData, function(result) {
     	
 		if (result != null && result["id"] != null) {
 			result = parseUserDataToUIData(result);
@@ -811,16 +810,32 @@ function parseUserGridHtml() {
 		$.post("findRoleWithUser.action", 
 			{"user.enabled": true}, 
 			function(matchedusers){
-				var option = {
-	        			fallbackLng: 'en-US',
-	        			lng: 'en-US',
-	        	//		lng: 'zh-CN',
-	        			resGetPath: 'resources/locales/__lng__/__ns__.json',
-	        			getAsync: false,
-	        			ns: 'bookingnow.content.userManagement'
-	        		};
-	        	 
-	        	i18n.init(option);
+	/*
+	var setLng = $.url().param('setLng');
+    if (setLng)
+    {
+      language_complete = setLng.split("-");
+    }
+    else
+    {
+      language_complete = navigator.language.split("-");
+    }
+    language = (language_complete[0]);
+    */
+				
+	var option = {
+			fallbackLng: 'en-US',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+	//		resPostPath:'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.userManagement',
+			fallbackToDefaultNS: true
+			
+		};
+	 
+	i18n.init(option);
 	        	
 	if(matchedusers != null && matchedusers.result != null){
 		users = matchedusers.result;
@@ -848,15 +863,16 @@ function parseUserGridHtml() {
 					column["text"] = i18n.t("field.id");
 					column["filtertype"] = 'number';
 				}else if(item == "modifyTime") {
+					/*
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.modifyTime");
-					
+					*/
 				}else if(item == "image_size") {
-					
+					/*
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.image_size");
 					column["filtertype"] = 'number';
-					
+					*/
 				}else if(item == "image_relative_path") {
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.image_relative_path");
@@ -902,9 +918,11 @@ function parseUserGridHtml() {
 					column["text"] = i18n.t("field.department");
 					column["filtertype"] = 'checkedlist';
 				}else if(item == "sub_system") {
+					/*
 					datafield["type"] = "number";
 					column["text"] = i18n.t("field.sub_system");
 					column["filtertype"] = 'textbox';
+					*/
 				}else if(item == "roles"){
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.role_Details.role.name");
@@ -917,6 +935,8 @@ function parseUserGridHtml() {
 				}
 				
 				if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
+					
+				}else if(item == "modifyTime" || item == "image_size" || item == "sub_system") {
 					
 				}else {
 					column["datafield"] = item;
@@ -938,6 +958,8 @@ function parseUserGridHtml() {
 		for(var item in user) {
 			if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
 					
+			}else if (item == "modifyTime" || item == "image_size" || item == "sub_system") {
+				
 			}else {
 				rowData[item] = user[item];
 			}
@@ -1021,6 +1043,17 @@ function parseUserGridHtml() {
 }
 
 function initUserManagementLocaleElements() {
+		var option = {
+			fallbackLng: 'en-US',
+			lng: 'en-US',
+	//		lng: 'zh-CN',
+			resGetPath: 'resources/locales/__lng__/__ns__.json',
+			getAsync: false,
+			ns: 'bookingnow.content.userManagement'
+		};
+	 
+	i18n.init(option);
+	
 	$("#addUserRowButton").val(i18n.t("button.operationUserGrid.addUserRow"));
 	$("#updateUserRowButton").val(i18n.t("button.operationUserGrid.updateUserRow"));
 	$("#deleteUserRowButton").val(i18n.t("button.operationUserGrid.deleteUserRow"));
@@ -1044,6 +1077,8 @@ function initUserManagementLocaleElements() {
 	$("#registerUserCancelButton").val(i18n.t("button.cancel"));
 	
 	$("#updateUserPopupWindow").i18n();
+	$(".updateUserTable").i18n();
+	
 	$("#addUserPopupWindow").i18n();
 }
 
@@ -1054,17 +1089,17 @@ function parseUIDataToUserData(record) {
 				record[attr] = findSexValue(record[attr]);
 			}else if(attr == "user.birthday") {
 				record[attr] = record[attr].getTime();
+			}else if(attr == "user.department") {
+				record[attr] = findDepartmentValue(record[attr]);
 			}else if(attr == "user.roles") {
-				var roles = findRoleValue(record[attr]);
+				var roles = findRoleStringArray(record[attr]);
 				if(roles.length > 0) {
 					
 					for(var i = 0;i< roles.length;i++) {
-						record["user.role_Details.role.type"] = roles[i];
+						record["user.role_Details[" + i + "].role.name"] = roles[i];
 					}
+					record[attr] = undefined;
 				}
-				
-				
-				record[""] = record[attr];
 			}
 		}
 		return record;
@@ -1081,7 +1116,10 @@ function parseUserDataToUIData(user) {
 				user[attr] = findSexString(user[attr]);
 			}else if(attr == "birthday") {
 				user[attr] = new Date(user[attr]).Format("yyyy-MM-dd HH:mm:ss");
+			}else if(attr == "user.department") {
+				record[attr] = findDepartmentString(record[attr]);
 			}else if(attr == "role_Details") {
+				
 				var roleDetails = user[attr];
 				var roles = "";
 				for(var i=0;i< roleDetails.length;i++) {
@@ -1098,7 +1136,9 @@ function parseUserDataToUIData(user) {
 				if(roles.length > 0) {
 					roles = roles.substring(0, roles.length - 1);
 				}
+				
 				user["roles"] = roles;
+				user[attr] = undefined;
 			}
 		}
 		return user;
