@@ -611,7 +611,30 @@ function parseOrderGridHtml() {
 					
 				}else {
 					column["datafield"] = item;
-					if(item == "id") {
+					
+					if(item == "id"){
+						column["width"] = "50";
+					}else if(item == "allowance") {
+						column["width"] = "50";
+					}else if(item == "customer_count") {
+						column["width"] = "80";
+					}else if(item == "customer_id") {
+						column["width"] = "80";
+					}else if(item == "modifyTime") {
+						column["width"] = "130";
+					}else if(item == "prePay") {
+						column["width"] = "50";
+					}else if(item == "status") {
+						column["width"] = "80";
+					}else if(item == "submit_time") {
+						column["width"] = "130";
+					}else if(item == "total_price") {
+						column["width"] = "100";
+					}else if(item == "user_id") {
+						column["width"] = "50";
+					}else if(item == "customer" || item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
+						//do nothing
+					}else {
 						column["width"] = "50";
 					}
 					
@@ -668,7 +691,7 @@ function parseOrderGridHtml() {
 	// initialize jqxGrid
 	$("#orderDataGrid").jqxGrid(
 	{
-	    width: 1000,
+	    width: 800,
 	    height: 350,
 	    source: dataAdapter,
 	    theme: theme,
