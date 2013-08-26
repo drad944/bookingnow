@@ -755,20 +755,22 @@ function addOperateUserGridEventListeners() {
 	// update row.
 	$("#updateUserRowButton").on('click', function () {
 		selectedupdaterowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
-		//id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
-	    rowData = $('#userDataGrid').jqxGrid('getrowdata', selectedupdaterowindex);
-	    
-		
-		if(rowData != null) {
-			var offset = $("#userDataGrid").offset();
-			var position = {};
-			position.x = parseInt(offset.left) + 200;
-			position.y = parseInt(offset.top) - 200;
+		if(selectedupdaterowindex != -1) {
+			 rowData = $('#userDataGrid').jqxGrid('getrowdata', selectedupdaterowindex);
+			    
+				
+				if(rowData != null) {
+					var offset = $("#userDataGrid").offset();
+					var position = {};
+					position.x = parseInt(offset.left) + 200;
+					position.y = parseInt(offset.top) - 200;
+					
+					initUpdateUserWindow(rowData,position);
+				}
+		}else {
 			
-			initUpdateUserWindow(rowData,position);
+			$("#eventLog").text(i18n.t("validation.message.requireSelectOneRow"));
 		}
-	    
-	    
 	});
     
 	// show the popup window

@@ -41,7 +41,8 @@
 			"birthdayRange":"Your birth date must be between 1/1/1900 and __year__",
 			"requireEmail":"E-mail is required!",
 			"invalidEmail":"Invalid e-mail!",
-			"acceptService":"You have to accept the terms"
+			"acceptService":"You have to accept the terms",
+			"requireSelectOneRow":"please select one row to update."
 		}
 	},
 	"result":{
