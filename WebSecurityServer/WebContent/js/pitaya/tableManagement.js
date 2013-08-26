@@ -194,7 +194,7 @@ function updateTable() {
                 $("#tableDataGrid").jqxGrid('ensurerowvisible', selectedrowindex);
             }
 			
-			$("#eventLog").text("update table successfully!");
+			$("#eventLog").text(i18n.t("result.updateSuccess"));
 
 		} else if (result != null && result["executeResult"] != null
 				&& result["executeResult"] == false) {
@@ -339,19 +339,31 @@ function addOperateTableGridEventListeners() {
 	// update row.
 	$("#updateTableRowButton").on('click', function () {
 		selectedupdaterowindex = $("#tableDataGrid").jqxGrid('getselectedrowindex');
-		//id = $("#tableDataGrid").jqxGrid('getrowid', selectedrowindex);
-	    rowData = $('#tableDataGrid').jqxGrid('getrowdata', selectedupdaterowindex);
-	    
-		
-		if(rowData != null) {
-			var offset = $("#tableDataGrid").offset();
-			var position = {};
-			position.x = parseInt(offset.left) + 200;
-			position.y = parseInt(offset.top) - 150;
+		if(selectedupdaterowindex != -1) {
+			rowData = $('#tableDataGrid').jqxGrid('getrowdata', selectedupdaterowindex);
+		    
 			
-			initUpdateTableWindow(rowData,position);
+			if(rowData != null) {
+				var offset = $("#tableDataGrid").offset();
+				var position = {};
+				position.x = parseInt(offset.left) + 200;
+				position.y = parseInt(offset.top) - 150;
+				
+				initUpdateTableWindow(rowData,position);
+			}
+		}else {
+			var option = {
+					fallbackLng: 'en-US',
+					lng: 'en-US',
+			//		lng: 'zh-CN',
+					resGetPath: 'resources/locales/__lng__/__ns__.json',
+					getAsync: false,
+					ns: 'bookingnow.content.tableManagement'
+				};
+			 
+			i18n.init(option);
+			$("#eventLog").text(i18n.t("message.requireSelectOneRow"));
 		}
-	    
 	    
 	});
     

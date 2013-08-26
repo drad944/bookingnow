@@ -52,6 +52,9 @@
 	"window":{
 			"updateWindow":"Update Table",
 			"registerWindow":"Register Table"
+	},
+	"message":{
+			"requireSelectOneRow":"please select a row to update!"
 	}
 	
 }
