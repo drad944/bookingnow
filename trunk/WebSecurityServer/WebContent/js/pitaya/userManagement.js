@@ -747,7 +747,11 @@ function initOperateUserGridElements() {
 }	
 
 function addOperateUserGridEventListeners() {
-	
+	// display selected row index.
+    $("#userDataGrid").on('rowselect', function (event) {
+        $("#eventLog").text(i18n.t("grid.selectRow",{index:event.args.rowindex}));
+    });
+    
 	// update row.
 	$("#updateUserRowButton").on('click', function () {
 		selectedupdaterowindex = $("#userDataGrid").jqxGrid('getselectedrowindex');
@@ -911,9 +915,11 @@ function parseUserGridHtml() {
 					column["text"] = i18n.t("field.birthday");
 					
 				}else if(item == "description") {
+					/*
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.description");
 					column["filtertype"] = 'textbox';
+					*/
 				}else if(item == "department") {
 					datafield["type"] = "string";
 					column["text"] = i18n.t("field.department");
@@ -937,14 +943,47 @@ function parseUserGridHtml() {
 				
 				if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
 					
-				}else if(item == "modifyTime" || item == "image_size" || item == "sub_system") {
+				}else if(item == "modifyTime" || item == "image_size" || item == "sub_system" || item == "description") {
 					
 				}else {
 					column["datafield"] = item;
-					if(item == "id") {
+					
+					if(item == "id"){
 						column["width"] = "50";
-					}else if(item == "roles") {
+					}else if(item == "modifyTime") {
+						
+					}else if(item == "image_size") {
+						
+					}else if(item == "image_relative_path") {
+						column["width"] = "100";
+					}else if(item == "account") {
+						column["width"] = "100";
+					}else if(item == "name") {
+						column["width"] = "100";
+					}else if(item == "password") {
+						column["width"] = "100";
+					}else if(item == "phone") {
+						column["width"] = "100";
+					}else if(item == "sex") {
+						column["width"] = "80";
+					}else if(item == "email") {
+						column["width"] = "100";
+					}else if(item == "address") {
+						column["width"] = "100";
+					}else if(item == "birthday") {
+						column["width"] = "150";
+					}else if(item == "description") {
+						
+					}else if(item == "department") {
+						column["width"] = "150";
+					}else if(item == "sub_system") {
+						
+					}else if(item == "roles"){
 						column["width"] = "200";
+					}else if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
+						//do nothing
+					}else {
+						column["width"] = "50";
 					}
 					
 					columns[j] = column;
@@ -959,7 +998,7 @@ function parseUserGridHtml() {
 		for(var item in user) {
 			if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
 					
-			}else if (item == "modifyTime" || item == "image_size" || item == "sub_system") {
+			}else if (item == "modifyTime" || item == "image_size" || item == "sub_system" || item == "description") {
 				
 			}else {
 				rowData[item] = user[item];
@@ -1015,11 +1054,6 @@ function parseUserGridHtml() {
 	  //  columnsreorder: true,
 	    columns: columns
 	});
-	
-	// display selected row index.
-    $("#userDataGrid").on('rowselect', function (event) {
-        $("#eventLog").text(i18n.t("grid.selectRow",{index:event.args.rowindex}));
-    });
 	
     initUserManagementLocaleElements();
 	initOperateUserGridElements();
