@@ -504,6 +504,7 @@ function registerUser() {
 		"user.address" : $("#registerUserAddressInput").val(),
 		"user.birthday" : $("#registerUserBirthdayInput").jqxDateTimeInput('value'),
 		"user.department" : $("#registerUserDepartmentInput").val(),
+		"user.roles" : $("#registerUserRolesInput").val(),
 		"user.email" : $("#registerUserEmailInput").val(),
 		"user.phone" : $("#registerUserPhoneInput").val(),
 		"user.sex" : $("#registerUserSexInput").val()

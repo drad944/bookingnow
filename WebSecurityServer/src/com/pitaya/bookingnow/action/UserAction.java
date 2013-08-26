@@ -241,7 +241,7 @@ public class UserAction extends BaseAction{
 	
 	public String registerRoleWithUser() {
 		if(user != null) {
-			result = userService.add(user);
+			result = userService.addUserWithRole(user);
 			
 			if(result.isExecuteResult()){ 
 				user = result.getUser();
