@@ -21,22 +21,22 @@
 		from pitaya_role
 		<where>
 		    <if test="name != null">
-				and name = #{name,jdbcType=VARCHAR},
+				and name = #{name,jdbcType=VARCHAR}
 			</if>
 			<if test="description != null">
-				and description = #{description,jdbcType=VARCHAR},
+				and description = #{description,jdbcType=VARCHAR}
 			</if>
 			<if test="issys != null">
-				and issys = #{issys,jdbcType=BIT},
+				and issys = #{issys,jdbcType=BIT}
 			</if>
 			<if test="module != null">
-				and module = #{module,jdbcType=INTEGER},
+				and module = #{module,jdbcType=INTEGER}
 			</if>
 			<if test="type != null">
-				and type = #{type,jdbcType=INTEGER},
+				and type = #{type,jdbcType=INTEGER}
 			</if>
 			<if test="enabled != null">
-				and enabled = #{enabled,jdbcType=BIT},
+				and enabled = #{enabled,jdbcType=BIT}
 			</if>
 		    <if test="enabled == null">
 				and enabled = true
