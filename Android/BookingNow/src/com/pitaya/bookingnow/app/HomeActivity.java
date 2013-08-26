@@ -301,7 +301,7 @@ public class HomeActivity extends FragmentActivity {
 			menuitem.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view) {
-					//TODO:
+					HomeActivity.this.homecontent.selectItem("setting");
 				}
 				
 			});
@@ -310,6 +310,8 @@ public class HomeActivity extends FragmentActivity {
 			contentViews.add(orderview);
 			FoodMenuContentView menucontentview = new FoodMenuContentView("menu", this, homecontent);
 			contentViews.add(menucontentview);
+			SettingsContentView settingscontentview = new SettingsContentView("setting", this, homecontent);
+			contentViews.add(settingscontentview);
 			homecontent.setMenu(this.mLeftMenu);
 		}
 		try {
@@ -538,7 +540,7 @@ public class HomeActivity extends FragmentActivity {
 		}
 	}
 	
-	private void checkMenuUpdate(){
+	public void checkMenuUpdate(){
 		synchronized(this) {
 			if(this.isUpdating){
 				Log.i(TAG, "Menu is in updating");
