@@ -417,7 +417,8 @@ function parseTableGridHtml() {
 				//		lng: 'zh-CN',
 						resGetPath: 'resources/locales/__lng__/__ns__.json',
 						getAsync: false,
-						ns: 'bookingnow.content.tableManagement'
+						ns: 'bookingnow.content.tableManagement',
+						load:'current'
 					};
 				 
 				i18n.init(option);

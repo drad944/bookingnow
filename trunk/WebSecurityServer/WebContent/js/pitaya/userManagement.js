@@ -838,8 +838,9 @@ function parseUserGridHtml() {
 	//		resPostPath:'resources/locales/__lng__/__ns__.json',
 			getAsync: false,
 			ns: 'bookingnow.content.userManagement',
-			fallbackToDefaultNS: true
-			
+			preload:'en-US',
+			load:'current'
+	//		load:'unspecific'
 		};
 	 
 	i18n.init(option);
