@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>checkOrder management</title>
+
+<link rel="stylesheet" type="text/css" href="css/head.css">
+	<link rel="stylesheet" type="text/css" href="css/body.css">
+	<link rel="stylesheet" href="css/jqwidgets/styles/jqx.base.css" type="text/css" />
+	<link rel="stylesheet" href="css/jqwidgets/styles/jqx.energyblue.css" type="text/css" />
+	
+	<link rel="stylesheet" type="text/css" href="css/jquery.Jcrop.css">
+	<link rel="stylesheet" type="text/css" href="css/uploadify.css">
+	
+	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/i18next-1.6.3.js"></script>
+	<script type="text/javascript" src="js/pitaya/Constants.js"></script>
+	<script type="text/javascript" src="js/pitaya/AppUtil.js"></script>
+	<script type="text/javascript" src="js/pitaya/uploader.js"></script>
+	<script type="text/javascript" src="js/pitaya/admin.js"></script>
+	<script type="text/javascript" src="js/pitaya/userManagement.js"></script>
+	<script type="text/javascript" src="js/pitaya/tableManagement.js"></script>
+	<script type="text/javascript" src="js/pitaya/orderManagement.js"></script>
+	<script type="text/javascript" src="js/pitaya/foodManagement.js"></script>
+	<script type="text/javascript" src="js/pitaya/checkoutManagement.js"></script>
+	
+	<script type="text/javascript" src="js/jquery.color.js"></script>
+	<script type="text/javascript" src="js/jquery.Jcrop.js"></script>
+	
+	<script type="text/javascript" src="js/swfobject.js"></script>  
+	<script type="text/javascript" src="js/jquery.uploadify.min.js"></script>
+	
+    <script type="text/javascript" src="js/jqwidgets/gettheme.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxdata.js"></script>
+    
+    <script type="text/javascript" src="js/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxmenu.js"></script>
+     
+    <script type="text/javascript" src="js/jqwidgets/jqxdropdownlist.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxlistbox.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.filter.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.sort.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.pager.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.selection.js"></script> 
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.columnsresize.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.columnsreorder.js"></script> 
+    
+    <script type="text/javascript" src="js/jqwidgets/jqxnumberinput.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxwindow.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxinput.js"></script>
+    
+    <script type="text/javascript" src="js/jqwidgets/jqxvalidator.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxcheckbox.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxexpander.js"></script> 
+    <script type="text/javascript" src="js/jqwidgets/globalization/globalize.js"></script> 
+    <script type="text/javascript" src="js/jqwidgets/jqxcalendar.js"></script> 
+    <script type="text/javascript" src="js/jqwidgets/jqxdatetimeinput.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxtooltip.js"></script> 
+    <script type="text/javascript" src="js/jqwidgets/jqxmaskedinput.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxradiobutton.js"></script> 
+    <script type="text/javascript" src="js/jqwidgets/jqxcombobox.js"></script> 
+    
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.grouping.js"></script> 
+
+<script>
+		var theme = Constants.theme;
+		
+		$(document).ready(function(){
+			parseCheckOrderGridHtml();
+		});
+</script>
+</head>
+	
+<body>
+	<div id="content">
+	
+		<div id='jqxWidget' style="font-size: 13px; font-family: Verdana; float: left;">
+			<div id="J_Nav" class="main-nav">
+				<ul>
+					<li class="J_nav_1">
+						<div>
+		                	<input id="addCheckOrderRowButton" type="button" value="Add New Row" />
+		            	</div>
+					</li>
+					
+					<li class="J_nav_1">
+						<div>
+		                	<input id="updateCheckOrderRowButton" type="button" value="Update Selected Row" />
+		            	</div>
+					</li>
+					
+					<li class="J_nav_1">
+						<div>
+		                	<input id="deleteCheckOrderRowButton" type="button" value="Delete Selected Row" />
+		            	</div>
+					</li>
+					
+				</ul>
+			</div>
+        	
+	        
+        	<div id="checkOrderDataGrid" style="float: left;" ></div>
+
+
+				<div id="updateCheckOrderPopupWindow" style="overflow:hidden;visibility:hidden;">
+					<div><h3>Update CheckOrder</h3></div>
+					<div id="updateCheckOrderDiv">
+				        <div>
+				            <form id="updateCheckOrderInfoForm" action="./">
+				                <table class="updateCheckOrderTable">
+				                	<tr style="display:none">
+				                        <td>Id:</td>
+				                        <td><input type="text" id="updateCheckOrderIdInput" class="updateCheckOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Account:</td>
+				                        <td><input type="text" id="updateCheckOrderAccountInput" class="updateCheckOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Password:</td>
+				                        <td><input type="password" id="updateCheckOrderPasswordInput" class="updateCheckOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Confirm password:</td>
+				                        <td><input type="password" id="updateCheckOrderPasswordConfirmInput" class="updateCheckOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Real name:</td>
+				                        <td><input type="text" id="updateCheckOrderRealNameInput" class="updateCheckOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Department:</td>
+				                        <td>
+				                        	<div id='updateCheckOrderDepartmentCombobox'></div>
+				                        	<input id="updateCheckOrderDepartmentInput" type="hidden" value="2" />
+			        					</td>
+				                    </tr>
+				                    <tr>
+				                        <td>Birth date:</td>
+				                        <td><div id="updateCheckOrderBirthdayInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>E-mail:</td>
+				                        <td><input type="text" id="updateCheckOrderEmailInput" placeholder="someone@mail.com" class="updateCheckOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Address:</td>
+				                        <td><input type="text" id="updateCheckOrderAddressInput" placeholder="省-市-区-街道-小区-门牌号" class="updateCheckOrderTextInput" /></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Phone:</td>
+				                        <td><div id="updateCheckOrderPhoneInput"></div></td>
+				                    </tr>
+				                    <tr>
+				                        <td>Sex:</td>
+				                        <td>
+				                        	<div style='margin-top: 10px;'>
+								            	<span id='updateCheckOrderSexRadioButton1' style='float:left;'>男</span>
+								            	<span id='updateCheckOrderSexRadioButton2' style='float:right;'>女</span>
+								            	<input id="updateCheckOrderSexInput" type="hidden" value="男" />
+								            </div>
+				                        </td>
+				                    </tr>
+				                    <tr style="text-align: center;">
+				                        <td>
+				                        	<input id="updateCheckOrderUpdateButton" type="button" value="Update" />
+				                        </td>
+				                        <td>
+				                        	<input id="updateCheckOrderResetButton" type="reset" value="Reset" />
+				                        	<input id="updateCheckOrderCancelButton" type="button" value="Cancel" />
+				                        </td>
+				                    </tr>
+				                </table>
+				            </form>
+				        </div>
+				        <div id="updateCheckOrderResult"></div>
+		    		</div>
+				</div>
+			
+				
+		</div>
+	</div>
+	
+</body>
+</html>
