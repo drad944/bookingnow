@@ -264,7 +264,7 @@ function initUpdateUserWindow(rowData,position) {
 	
 	// initialize the popup window and buttons.
     $("#updateUserPopupWindow").jqxWindow({
-    	position:position, isModal: true,width: 350, height: 450, resizable: false, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
+    	position:position, isModal: true,width: 400, height: 520, resizable: false, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
     	initContent: function () {
             $('#updateUserPopupWindow').jqxWindow('focus');
         }
@@ -483,7 +483,7 @@ function initRegisterUserWindow(position) {
 	$("#addUserPopupWindow").attr("style","overflow:hidden");
 	
 	$("#addUserPopupWindow").jqxWindow({
-		position:position,isModal: true,width: 350, height: 480, resizable: false, theme: theme, cancelButton: $("#registerUserCancelButton"), 
+		position:position,isModal: true,width: 450, height: 520, resizable: false, theme: theme, cancelButton: $("#registerUserCancelButton"), 
     	modalOpacity: 0.01,
     	
     	initContent: function () {
