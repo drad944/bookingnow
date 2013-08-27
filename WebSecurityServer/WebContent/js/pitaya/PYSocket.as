@@ -58,7 +58,7 @@ package {
 					this.socket = null;
 				}
 				Security.allowDomain("*");
-				Security.loadPolicyFile("xmlsocket://"+addr+":"+843);
+				Security.loadPolicyFile("xmlsocket://"+addr+":"+19191);
 				this.socket = new Socket();
 				this.socket.addEventListener(Event.CONNECT, onConnect);
 				this.socket.addEventListener(IOErrorEvent.NETWORK_ERROR, onFail);
