@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServlet;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.pitaya.bookingnow.service.impl.MessageService;
+import com.pitaya.bookingnow.service.impl.*;
 
 @SuppressWarnings("serial")
 public class InitMessageServiceServlet extends HttpServlet {
@@ -15,11 +15,11 @@ public class InitMessageServiceServlet extends HttpServlet {
     	ApplicationContext ac = WebApplicationContextUtils.getWebApplicationContext(this.getServletContext());
     	MessageService ms = (MessageService) ac.getBean("messageService");
     	if(ms != null){
-    		ms.start(Integer.parseInt(getInitParameter("port")));
+    		ms.start(Integer.parseInt(getInitParameter("port")), ClientAgent.class);
     	}
     	MessageService secms = (MessageService) ac.getBean("securitySocketService");
     	if(secms != null){
-    		secms.start(843);
+    		secms.start(843, FlashClientAgent.class);
     	}
     }
 

@@ -26,7 +26,7 @@ public class ClientAgent extends Thread{
 	List<String> messages;
 	boolean isSending;
 	
-	ClientAgent(MessageService service, Socket socket){
+	public ClientAgent(MessageService service, Socket socket){
 		this.client_socket = socket;
 		this.service = service;
 		this.isSending = false;
@@ -49,11 +49,7 @@ public class ClientAgent extends Thread{
 			String message = null;
 			while((message = in.readLine()) != null){
 				logger.debug(this.service.getPort() + ": Receive message from client: ["+this.userId+"], content:" + message);
-				if(message.equals("<policy-file-request/>\0")){
-					this.sendSecurityResponse();
-				} else {
-					this.service.onMessage(message, this);
-				}
+				this.service.onMessage(message, this);
 			}
 		 } catch (Exception e) {
 	        e.printStackTrace();
@@ -100,18 +96,6 @@ public class ClientAgent extends Thread{
 		}
 	}
 	
-	void sendSecurityResponse(){
-		try {
-			client_socket.getOutputStream().write(this.service.securityResponse.getBytes());
-			client_socket.getOutputStream().flush();
-			this.shutdown();
-			logger.debug("Send cross domain policy to client");
-		} catch (IOException e) {
-			e.printStackTrace();
-			logger.error("Fail to send cross domain policy to client");
-		}
-	}
-	
 	void sendMessage(String message){
 		this.messages.add(message);
 		synchronized(this){
@@ -144,30 +128,10 @@ public class ClientAgent extends Thread{
 		}
 	}
 	
-	void shutdown(){
-		try {
-			 in.close();
-		} catch (IOException e) {
-			 e.printStackTrace();
-		}
-		try {
-			 bwriter.close();
-		} catch (IOException e) {
-			 e.printStackTrace();
-		}
-		try{
-			 if(client_socket != null && !client_socket.isClosed()){
-				 client_socket.close();
-			 }
-		} catch (IOException e) {
-			 e.printStackTrace();
-		}
-		logger.debug("Success to shutdown connection to client [" + this.userId + "]");
-		this.service.removeClient(this, true);
-	}
-	
 	void shutdown(String message){
-		this.sendMessage(message);
+		if(message != null){
+			this.sendMessage(message);
+		}
 		try {
 			 in.close();
 		} catch (IOException e) {

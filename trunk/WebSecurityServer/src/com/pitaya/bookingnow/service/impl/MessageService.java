@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -45,17 +46,21 @@ class MessageServerThread extends Thread{
     boolean flag = true;
     MessageService service;
     private final ExecutorService pool =  Executors.newFixedThreadPool(50);
+    private Class<? extends ClientAgent> clientAgentClz;
       
-    MessageServerThread(MessageService service){
+    MessageServerThread(MessageService service, Class<? extends ClientAgent> agentClz){
     	this.service = service;
-    }  
-      
+    	this.clientAgentClz = agentClz;
+    }
+    
+    @Override
     public void run(){
     	Socket client_socket = null;
         try {
         	while(flag){
-                client_socket = service.serverSocket.accept( );  
-                ClientAgent client = new ClientAgent(this.service, client_socket);
+                client_socket = service.serverSocket.accept( );
+                Constructor<? extends ClientAgent> con = this.clientAgentClz.getConstructor(MessageService.class, Socket.class);
+                ClientAgent client = con.newInstance(this.service, client_socket);
                 pool.execute(client);
                 this.service.addClient(client);
         	}
@@ -106,6 +111,7 @@ public class MessageService {
 	private Map<Integer, Map<Long, ClientAgent>> groups;
 	private List<ClientAgent> clients;
 	private Timer mChecker;
+	private Class<? extends ClientAgent> clientClz;
 	
 	private IUserService userService;
 	
@@ -123,8 +129,9 @@ public class MessageService {
 		this.start();
 	}
 
-	public void start(int port){
+	public void start(int port, Class<? extends ClientAgent> clientClz){
 		this.port = port;
+		this.clientClz = clientClz;
 		this.securityResponse = this.securityResponse.replace("{port}", String.valueOf(this.port));
 		this.start();
 	}
@@ -169,7 +176,7 @@ public class MessageService {
 		if(!hasStarted){
 			try {
 	            serverSocket = new ServerSocket(this.port);
-	            serverThread = new MessageServerThread(this);  
+	            serverThread = new MessageServerThread(this, this.clientClz);  
 	            serverThread.start();
 	            logger.info("Success to start message server thread on " + this.port);
 	            this.hasStarted = true;
@@ -326,7 +333,7 @@ public class MessageService {
 					return true;
 				} else {
 					logger.debug("Client with same user id already registered [user id: " + clientAgent.userId + "], shutdown it first");
-					group.get(clientAgent.userId).shutdown();
+					group.get(clientAgent.userId).shutdown("relogin");
 				}
 			}
 			group.put(clientAgent.userId, clientAgent);
@@ -383,7 +390,7 @@ public class MessageService {
         			_instance.hasStarted = false;
 					for(Entry<Integer, Map<Long, ClientAgent>> entry : _instance.groups.entrySet()){
 						for(Entry<Long, ClientAgent> subentry : ((Map<Long, ClientAgent>)entry.getValue()).entrySet()){
-							subentry.getValue().shutdown();
+							subentry.getValue().shutdown("bye");
 						}
 					}
 					_instance = null;

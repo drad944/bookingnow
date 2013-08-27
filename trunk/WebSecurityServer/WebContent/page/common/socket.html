@@ -30,25 +30,22 @@ function init(){
 	if(socketobj == null){
 		alert("Fail to initialize socket");
 	} else {
-		socketobj.connect("10.111.3.116", 19191);
+		socketobj.connect("localhost", 19191);
 	}
 };
 
 </script> 
 </head>
 <body>
-		<div>	
+		<div>
 			<object id="myId" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="0" height="0">
 				<param name="movie" value="PYSocket.swf" />
+				<param name="allowscriptaccess" value="always">
+				<param name="allownetworking" value="all">
         		<!--[if !IE]>-->
 				<object id="socket" type="application/x-shockwave-flash" data="../../js/pitaya/PYSocket.swf" width="0" height="0">
-				<!--<![endif]-->
-				<div>
-					<h1>Alternative content</h1>
-					<p><a href="http://www.adobe.com/go/getflashplayer">
-					<img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>
-				</div>
-				<!--[if !IE]>-->
+					<param name="allowscriptaccess" value="always">
+					<param name="allownetworking" value="all">
 				</object>
 				<!--<![endif]-->
 			</object>
