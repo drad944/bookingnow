@@ -48,8 +48,12 @@ public class ClientAgent extends Thread{
 			bwriter = new BufferedWriter(out);  
 			String message = null;
 			while((message = in.readLine()) != null){
-				logger.debug("Receive message from client: ["+this.userId+"], content:" + message);
-				this.service.onMessage(message, this);
+				logger.debug(this.service.getPort() + ": Receive message from client: ["+this.userId+"], content:" + message);
+				if(message.equals("<policy-file-request/>\0")){
+					this.sendSecurityResponse();
+				} else {
+					this.service.onMessage(message, this);
+				}
 			}
 		 } catch (Exception e) {
 	        e.printStackTrace();
@@ -96,6 +100,18 @@ public class ClientAgent extends Thread{
 		}
 	}
 	
+	void sendSecurityResponse(){
+		try {
+			client_socket.getOutputStream().write(this.service.securityResponse.getBytes());
+			client_socket.getOutputStream().flush();
+			this.shutdown();
+			logger.debug("Send cross domain policy to client");
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error("Fail to send cross domain policy to client");
+		}
+	}
+	
 	void sendMessage(String message){
 		this.messages.add(message);
 		synchronized(this){
@@ -111,6 +127,7 @@ public class ClientAgent extends Thread{
 			try {
 				bwriter.write(msg + "\r\n");
 				bwriter.flush();
+				logger.debug("Send message to client [" + this.userId + "]: " + msg);
 			} catch (IOException e) {
 				e.printStackTrace();
 				logger.error("Fail to send message to client [" + this.userId + "]");
@@ -128,7 +145,29 @@ public class ClientAgent extends Thread{
 	}
 	
 	void shutdown(){
-		this.sendMessage("bye");
+		try {
+			 in.close();
+		} catch (IOException e) {
+			 e.printStackTrace();
+		}
+		try {
+			 bwriter.close();
+		} catch (IOException e) {
+			 e.printStackTrace();
+		}
+		try{
+			 if(client_socket != null && !client_socket.isClosed()){
+				 client_socket.close();
+			 }
+		} catch (IOException e) {
+			 e.printStackTrace();
+		}
+		logger.debug("Success to shutdown connection to client [" + this.userId + "]");
+		this.service.removeClient(this, true);
+	}
+	
+	void shutdown(String message){
+		this.sendMessage(message);
 		try {
 			 in.close();
 		} catch (IOException e) {

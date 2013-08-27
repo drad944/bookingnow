@@ -175,4 +175,8 @@
 		<property name="messageService" ref="messageService"/>
 	</bean>
 	
+   <bean id="securitySocketService" class="com.pitaya.bookingnow.service.impl.MessageService" scope="singleton">
+        <property name="userService" ref="userService"/>
+   </bean>
+	
 </beans>
