@@ -90,12 +90,16 @@ class MessageServerThread extends Thread{
 }
 
 public class MessageService {
-	
+		
 	private static MessageService _instance;
 	private static Log logger =  LogFactory.getLog(MessageService.class);
 	
-	ServerSocket serverSocket;
+	public String securityResponse = "<cross-domain-policy>"
+		+ "<site-control permitted-cross-domain-policies=\"master-only\"/>"
+	    + "<allow-access-from domain=\"*\" to-ports=\"19191\"/>"
+		+ "</cross-domain-policy>\0";
 	
+	ServerSocket serverSocket;
 	private MessageServerThread serverThread;
 	private int port;
 	private boolean hasStarted;
@@ -121,6 +125,7 @@ public class MessageService {
 
 	public void start(int port){
 		this.port = port;
+		this.securityResponse = this.securityResponse.replace("{port}", String.valueOf(this.port));
 		this.start();
 	}
 	
@@ -131,7 +136,7 @@ public class MessageService {
     				this.serverSocket.close();
     			}
     			for(ClientAgent client : this.clients){
-    				client.shutdown();
+    				client.shutdown("bye");
     			}
 				this.serverThread.shutdown();
 				this.mChecker.cancel();
@@ -148,6 +153,10 @@ public class MessageService {
 		return true;
 	}
 	
+	public int getPort(){
+		return this.port;
+	}
+	
 	public void setUserService(IUserService us){
 		this.userService = us;
 	}
@@ -162,7 +171,7 @@ public class MessageService {
 	            serverSocket = new ServerSocket(this.port);
 	            serverThread = new MessageServerThread(this);  
 	            serverThread.start();
-	            logger.info("Success to start message server thread");
+	            logger.info("Success to start message server thread on " + this.port);
 	            this.hasStarted = true;
 	            mChecker = new Timer();
 	            mChecker.schedule(new ConnectionCheckTask(this), 60000, 60000);
@@ -248,6 +257,9 @@ public class MessageService {
 	
 	synchronized void onMessage(String msgstring, ClientAgent clientAgent){
 		Message message = unparseMessage(msgstring);
+		if(message == null){
+			return;
+		}
 		if(message instanceof RegisterMessage){
 			RegisterMessage msg = (RegisterMessage)message;
 			if(msg.getAction().equals("register")){
@@ -405,10 +417,8 @@ public class MessageService {
 			}
 		} catch (JSONException e) {
 			logger.error("Can't indentify message: " + message);
-			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			logger.error("Unsupported message type: " + type);
-			e.printStackTrace();
 		}
 		return msg;
 	}

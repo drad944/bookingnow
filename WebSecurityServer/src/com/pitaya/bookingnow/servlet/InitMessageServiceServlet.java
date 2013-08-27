@@ -17,6 +17,10 @@ public class InitMessageServiceServlet extends HttpServlet {
     	if(ms != null){
     		ms.start(Integer.parseInt(getInitParameter("port")));
     	}
+    	MessageService secms = (MessageService) ac.getBean("securitySocketService");
+    	if(secms != null){
+    		secms.start(843);
+    	}
     }
 
 }
