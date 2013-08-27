@@ -3,9 +3,9 @@ package {
 	import flash.events.*;
 	import flash.external.*;
 	import flash.net.Socket;
-	import flash.utils.Timer;
 	import flash.system.Security;
-	
+	import flash.utils.Timer;
+
 	public class PYSocket extends Sprite
 	{
 		private var socket:Socket;
@@ -57,8 +57,7 @@ package {
 					this.socket.close();
 					this.socket = null;
 				}
-				Security.allowDomain("*");
-				Security.loadPolicyFile("xmlsocket://"+addr+":"+19191);
+				Security.loadPolicyFile("xmlsocket://"+addr+":"+843);
 				this.socket = new Socket();
 				this.socket.addEventListener(Event.CONNECT, onConnect);
 				this.socket.addEventListener(IOErrorEvent.NETWORK_ERROR, onFail);
@@ -81,6 +80,10 @@ package {
 			ExternalInterface.call("onFail", "Security error" + e.text);
 		}
 		
+		private function onSendFail(msg:String):void {
+			ExternalInterface.call("onFail", msg);
+		}
+		
 		private function onData(e:ProgressEvent):void {
 			var data:String = socket.readUTFBytes(socket.bytesAvailable);
 			ExternalInterface.call("onData", data);
@@ -88,7 +91,7 @@ package {
 		
 		private function sendData(msg:String):void {
 			if(this.socket == null || this.socket.connected == false){
-				return;
+				this.onSendFail("Fail to send message");
 			} else {
 				this.socket.writeUTFBytes(msg+"\r\n");
 				this.socket.flush()
