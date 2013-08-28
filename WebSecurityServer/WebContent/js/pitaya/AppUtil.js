@@ -636,3 +636,28 @@ function findOrderStatusLable(value) {
 	 
 	 return value;
 }
+
+function findImgOriginalSize(src) {
+	var imageSize = {};
+	if(src != null) {
+		var img = new Image();
+		img.src = src;
+		 
+		if(img.complete){
+		    getImgOriginalSize.call(img);
+		    img = null;
+		}else{
+		    img.onload=function(){
+		        getImgOriginalSize.call(img);
+		        img = null;
+		    };
+		}
+		
+		function getImgOriginalSize(){
+		    imageSize["width"] = this.width;
+		    imageSize["height"] = this.height;
+		}
+	}
+	return imageSize;
+}
+
