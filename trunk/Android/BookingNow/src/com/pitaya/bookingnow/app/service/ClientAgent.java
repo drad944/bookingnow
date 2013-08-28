@@ -50,11 +50,11 @@ public class ClientAgent extends Thread{
             	}
 	        } catch (UnknownHostException e) {
 	        	Log.e(TAG, "Fail to find server");
-	        	this.onFail();
+	        	this._service.onDisconnect();
 	            e.printStackTrace();
 	        } catch (IOException e) {
 	        	Log.e(TAG, "Fail to connect to server");
-	        	this.onFail();
+	        	this._service.onDisconnect();
 				e.printStackTrace();
 			} finally {
 				this.shutdown();
@@ -98,9 +98,9 @@ public class ClientAgent extends Thread{
 	        	this.bwriter.write(msg + "\r\n");
 	        	this.bwriter.flush();
 	        	return true;
-	        } catch (Exception e) {
+	        } catch (IOException e) {
 	            Log.e(TAG, "Fail to send message to server");
-	            this.onFail();
+	            this._service.onSendMsgFail();
 	            return false;
 	        }
 	    }
@@ -108,9 +108,5 @@ public class ClientAgent extends Thread{
 	    private void setupConnection() throws UnknownHostException, IOException {
 	        socket = new Socket(this.addr, this.port);
 			bwriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));  
-	    }
-	    
-	    private void onFail(){
-	    	this._service.onSendMsgFail();
 	    }
 }
