@@ -559,7 +559,8 @@ function uploadUserImage() {
 			$("#image_relative_path").val(user.image_relative_path);
 
 			initUploadUserImage();
-			initJCrop();
+			initImageAreaSelect();
+			//initJCrop();
 		}
 
 	});
@@ -658,31 +659,52 @@ function initUploadUserImage(){
 	            if(jsonData != null && jsonData.fileRelativePath != null && response == true) {
 	            	var user = jsonData;
 	            	
+	            	
+	            	
 	            	//reload jcrop
 	            	//jcrop_api.disable();
-	            	if(jcrop_api == null || jcrop_api == undefined) {
-	            		initJCrop();
-	            	}
 	            	
-	            	jcrop_api.destroy();
+	            	var imgOriginalSize = {};
+        			
 	            	
-	            	
-	            	$("#crop_now").attr("src",user.fileRelativePath);
-	            	$("#crop_preview").attr("src",user.fileRelativePath);
-	            	$("#image_relative_path").val(user.fileRelativePath);
-	 //           	$("#user_id").val(user.id);
-	            	
-	            	//init again
-	            	jQuery('#crop_now').Jcrop({
-	        			aspectRatio:4/4,
-	        			onChange:showPreview,
-	        			onSelect:showPreview,
-	        			onRelease:releaseCrop,
-	        			maxSize:[200,200]
-	        		},function(){
-	        		    jcrop_api = this;
-	        		  });	
-	            	jcrop_api.enable();
+	            	var start_time = new Date().getTime();
+	            	var img_url = user.fileRelativePath + '?'+start_time;
+	            	var img = new Image();
+	            	img.src = img_url;
+	            	var check = function(){
+	            	    // 只要任何一方大于0
+	            	    // 表示已经服务器已经返回宽高
+	            	    if(img.width>0 || img.height>0){
+	            	        var diff = new Date().getTime() - start_time;
+	            	        imgOriginalSize['width'] = img.width;
+	            			imgOriginalSize['height'] = img.height;
+	            			imgOriginalSize['time'] = diff;
+	            	        clearInterval(set);
+	            	        
+	            	        var panelWidth = 200;
+	                		var panelHeight = 200;
+	                		
+	    	            	if(imgOriginalSize != null && imgOriginalSize["width"] != null) {
+	    	            		var rectRatio = (imgOriginalSize["width"] * 10000) / (imgOriginalSize["height"] * 10000);
+	    	            		if(rectRatio > 1) {
+	    	            			panelWidth = 200;
+	    	            			panelHeight = Math.round((panelWidth * 10000) / (rectRatio * 10000));
+	    	            		}else {
+	    	            			panelHeight = 200;
+	    	            			panelWidth = Math.round(panelHeight * rectRatio);
+	    	            		}
+	    	            	}
+	    	            	$("#crop_now").attr("width",panelWidth);
+	    	            	$("#crop_now").attr("height",panelHeight);
+	    	            	
+	    	            	$("#crop_now").attr("src",user.fileRelativePath);
+	    	            	$("#crop_preview").attr("src",user.fileRelativePath);
+	    	            	$("#image_relative_path").val(user.fileRelativePath);
+	            	    }
+	            	};
+	            	 
+	            	var set = setInterval(check,40);
+	            
 	            }else {
 	            	//failed to upload image.
 	            	
@@ -691,6 +713,40 @@ function initUploadUserImage(){
 	    });
 	});
 };
+
+function initImageAreaSelect() {
+	$('#crop_now').imgAreaSelect({
+		aspectRatio: '1:1',
+		handles: true,
+		fadeSpeed: 200, 
+		onSelectChange: preview
+    });
+}
+
+function preview(img, selection) {
+    if (!selection.width || !selection.height)
+        return;
+    
+    var scaleX = 100 / selection.width;
+    var scaleY = 100 / selection.height;
+
+    /*
+    $('#preview img').css({
+        width: Math.round(scaleX * 300),
+        height: Math.round(scaleY * 300),
+        marginLeft: -Math.round(scaleX * selection.x1),
+        marginTop: -Math.round(scaleY * selection.y1)
+    });
+	*/
+    
+    $('#x').val(selection.x1);
+    $('#y').val(selection.y1);
+    $('#w').val(selection.width);
+    $('#h').val(selection.height);  
+    
+    
+}
+
 
 function initJCrop() {
 		jcrop_api = {};
