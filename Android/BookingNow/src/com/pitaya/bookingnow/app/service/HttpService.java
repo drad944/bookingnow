@@ -41,6 +41,7 @@ public class HttpService {
 	private static final String TAG = "HttpService";
 	public static String IP = "10.111.3.116";
 	public static int PORT = 19191;
+	public static int UDPPORT = 25252;
 	private static String URL = "http://10.111.3.116:9999/Booking/";
 	private static ExecutorService pool;
 	
