@@ -27,7 +27,7 @@ public class ConnectionReceiver extends BroadcastReceiver{
 		 } else {
 			 bundle.putBoolean("connected", false);
 			 context.startService(newintent);
-			 Log.d(TAG, "Connection established");
+			 Log.d(TAG, "Connection down");
 		 }
 	 }
 }

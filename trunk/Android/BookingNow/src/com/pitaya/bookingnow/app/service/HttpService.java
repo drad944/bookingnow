@@ -40,15 +40,18 @@ public class HttpService {
 	
 	private static final String TAG = "HttpService";
 	public static String IP = "10.111.3.116";
-	public static int PORT = 19191;
-	public static int UDPPORT = 25252;
+	public static int PORT = 25252;
+	public static int REMOTE_PORT = 19191;
+	public static int UDPPORT = 19192;
 	private static String URL = "http://10.111.3.116:9999/Booking/";
 	private static ExecutorService pool;
 	
 	static {
 		pool = Executors.newFixedThreadPool(10);
 		IP = "192.168.0.102";
-		PORT = 19191;
+		PORT = 25252;
+		REMOTE_PORT = 19191;
+		UDPPORT = 19192;
 		URL = "http://" + IP + ":18080/Booking/";
 	}
 	

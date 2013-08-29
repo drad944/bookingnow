@@ -35,26 +35,28 @@ public class ClientAgent extends Thread{
 	    public void run(){
 	        try {
 	        	this.setupConnection();
-	        	if(this.msg != null && this.msg.equals("")){
-	        		this.sendMessage(this.msg);
-	        	}
             	String message = null;
             	while((message = in.readLine()) != null){
             		if(message.equals("connected")){
             			Log.d(TAG, "Connected to server");
             			this._service.onConnectServer();
             			break;
+            		} else if(message.equals("ready")){
+        	        	if(this.msg != null && !this.msg.equals("")){
+        	        		this.sendMessage(this.msg);
+        	        	} else {
+        	        		/*
+        	        		 * If the disconnection is not long enough, server maybe return ready because
+        	        		 * the client has not been removed, but we know here it is to connect to server
+        	        		 * due to message is blank string, so just assume the connection is available
+        	        		 */
+        	        		this._service.onConnectServer();
+        	        	}
             		} else {
             			this._service.onMessage(message, this);
             		}
             	}
-	        } catch (UnknownHostException e) {
-	        	Log.e(TAG, "Fail to find server");
-	        	this._service.onDisconnect();
-	            e.printStackTrace();
 	        } catch (IOException e) {
-	        	Log.e(TAG, "Fail to connect to server");
-	        	this._service.onDisconnect();
 				e.printStackTrace();
 			} finally {
 				this.shutdown();
@@ -68,7 +70,6 @@ public class ClientAgent extends Thread{
 				} catch (IOException e) {
 					 e.printStackTrace();
 				}
-				in = null;
 	    	 }
    		     if(bwriter != null){
 			    try {
@@ -76,7 +77,6 @@ public class ClientAgent extends Thread{
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			    bwriter = null;
    		     }
 			 if (socket != null && !socket.isClosed()){
 				try {
@@ -105,8 +105,22 @@ public class ClientAgent extends Thread{
 	        }
 	    }
 	    
-	    private void setupConnection() throws UnknownHostException, IOException {
-	        socket = new Socket(this.addr, this.port);
-			bwriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));  
+	    private void setupConnection(){
+	        try {
+				socket = new Socket(this.addr, this.port);
+		        in =  new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+				bwriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8")); 
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+	        	Log.e(TAG, "Fail to find server");
+	        	this.shutdown();
+	        	this._service.onDisconnect();
+			} catch (IOException e) {
+				e.printStackTrace();
+	        	Log.e(TAG, "Fail to connect to server");
+	        	this.shutdown();
+	        	this._service.onDisconnect();
+			}
+ 
 	    }
 }
