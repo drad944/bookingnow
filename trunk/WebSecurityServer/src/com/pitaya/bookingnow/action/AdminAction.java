@@ -6,20 +6,20 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.pitaya.bookingnow.entity.ClientInfo;
-import com.pitaya.bookingnow.service.impl.ClientAgent;
-import com.pitaya.bookingnow.service.impl.MessageService;
+import com.pitaya.bookingnow.service.socket.EnhancedMessageService;
+import com.pitaya.bookingnow.service.socket.ClientInstance;
 
 public class AdminAction extends BaseAction {
 	
-	private MessageService messageService;
+	private EnhancedMessageService messageService;
 	
 	private List<ClientInfo> clientInfos;
 	
-	public void setMessageService(MessageService ms){
+	public void setMessageService(EnhancedMessageService ms){
 		this.messageService = ms;
 	}
 	
-	public MessageService getMessageService(){
+	public EnhancedMessageService getMessageService(){
 		return this.messageService;
 	}
 	
@@ -36,16 +36,16 @@ public class AdminAction extends BaseAction {
 		int unauthcount = 0;
 		int authcount = 0;
 		this.clientInfos = new ArrayList<ClientInfo>();
-		for(ClientAgent agent : this.messageService.getClients()){
-			if(agent.getUserId() == null && agent.getRoleType() == null){
+		for(ClientInstance instance : this.messageService.getClients()){
+			if(instance.getUserId() == null && instance.getRoleType() == null){
 				ClientInfo client = new ClientInfo();
 				client.setIsAuth(false);
 				clientInfos.add(client);
 				unauthcount ++;
 			}
 		}
-		for(Entry<Integer, Map<Long, ClientAgent>> entry : this.messageService.getClientGroups().entrySet()){
-			for(Entry<Long, ClientAgent> subentry : entry.getValue().entrySet()){
+		for(Entry<Integer, Map<Long, ClientInstance>> entry : this.messageService.getClientGroups().entrySet()){
+			for(Entry<Long, ClientInstance> subentry : entry.getValue().entrySet()){
 				ClientInfo client = new ClientInfo();
 				client.setIsAuth(true);
 				client.setRoleType(subentry.getValue().getRoleType());

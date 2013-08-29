@@ -1,6 +1,7 @@
-package com.pitaya.bookingnow.service.impl;
+package com.pitaya.bookingnow.service.socket;
 
 import java.util.TimerTask;
+
 
 public class ConnectionCheckTask extends TimerTask {
 

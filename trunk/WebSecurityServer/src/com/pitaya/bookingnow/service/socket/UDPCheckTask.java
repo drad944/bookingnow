@@ -1,4 +1,4 @@
-package com.pitaya.bookingnow.service.impl;
+package com.pitaya.bookingnow.service.socket;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -15,9 +15,9 @@ public class UDPCheckTask extends TimerTask{
 	
 	@Override
 	public void run(){
-		if((System.currentTimeMillis() - this.mClient.lastRecvTime) > ClientInstance.TIMEOUT){
+		if((System.currentTimeMillis() - this.mClient.lastRecvTime) > ClientInstance.KEEPALIVE_TIMEOUT){
 			this.mClient.timeout_times ++;
-			if(this.mClient.timeout_times > ClientInstance.TIMEOUT_TIMES){
+			if(this.mClient.timeout_times > ClientInstance.kEEPALIVE_THRESHOLD){
 				this.mClient.disconnect();
 				return;
 			}

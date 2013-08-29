@@ -1,4 +1,4 @@
-package com.pitaya.bookingnow.service.impl;
+package com.pitaya.bookingnow.service.socket;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -23,6 +23,8 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.pitaya.bookingnow.entity.security.Role;
 import com.pitaya.bookingnow.entity.security.User;
@@ -36,7 +38,7 @@ import com.pitaya.bookingnow.util.MyResult;
 public class EnhancedMessageService implements Runnable{
 	
 	private static Log logger =  LogFactory.getLog(EnhancedMessageService.class);
-	private static final int TIMEOUT = 30;
+	private static final int TIMEOUT = 30000;
 	private Map<Integer, Map<Long, ClientInstance>> groups;
 	private List<ClientInstance> clients;
 	
@@ -47,6 +49,7 @@ public class EnhancedMessageService implements Runnable{
 	private MessageServerThread serverThread;
 	private boolean hasStarted;
 	private int port;
+	private int clientport;
 	private boolean udpCheck;
 	
 	private IUserService userService;
@@ -79,6 +82,8 @@ public class EnhancedMessageService implements Runnable{
 	public EnhancedMessageService(){
 		this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientInstance>>();
 		this.clients = Collections.synchronizedList(new ArrayList<ClientInstance>());
+		this.hasStarted = false;
+		this.udpCheck = true;
 	}
 	
 	public void setUserService(IUserService us){
@@ -89,9 +94,10 @@ public class EnhancedMessageService implements Runnable{
 		return this.userService;
 	}
 	
-	public void start(int port, int udpport){
+	public void start(int port, int clientport, int udpport){
 		this.port = port;
 		this.udpport = udpport;
+		this.clientport = clientport;
 		this.start();
 	}
 	
@@ -122,6 +128,14 @@ public class EnhancedMessageService implements Runnable{
 		return true;
 	}
 	
+	public List<ClientInstance> getClients(){
+		return this.clients;
+	}
+	
+	public Map<Integer, Map<Long, ClientInstance>> getClientGroups(){
+		return this.groups;
+	}
+	
 	protected boolean start(){
 		if(!hasStarted){
 			try {
@@ -150,8 +164,7 @@ public class EnhancedMessageService implements Runnable{
 	private boolean hasClient(Socket client_socket){
 		for(int i = 0; i < this.clients.size(); i++){
 			ClientInstance instance = this.clients.get(i);
-			if(instance.address.equals(client_socket.getInetAddress())
-					&& instance.port == client_socket.getPort()){
+			if(instance.address.equals(client_socket.getInetAddress())){
 				return true;
 			}
 		}
@@ -161,15 +174,6 @@ public class EnhancedMessageService implements Runnable{
 	private ClientInstance getClient(InetAddress addr){
 		for(ClientInstance instance : this.clients){
 			if(instance.address.equals(addr)){
-				return instance;
-			}
-		}
-		return null;
-	}
-	
-	private ClientInstance getClient(InetAddress addr, int port){
-		for(ClientInstance instance : this.clients){
-			if(instance.address.equals(addr) && instance.port == port){
 				return instance;
 			}
 		}
@@ -186,8 +190,8 @@ public class EnhancedMessageService implements Runnable{
 				this.groups.put(role, instances);
 			}
 			ClientInstance instance = instances.get(userid);
-			if(instance != null){
-				instances.remove(userid);
+			if(instance != null && instance != client){
+				this.removeClient(instance, false);
 				instance.sendMessage("relogin");
 				client.addMessages(instance.getMessages());
 				logger.info("Client already registered: " + client.getUserId() + ", force it logout first.");
@@ -207,32 +211,22 @@ public class EnhancedMessageService implements Runnable{
 			if(isRegistered){
 				if(this.groups.get(client.getRoleType()) != null){
 					this.groups.get(client.getRoleType()).remove(client.getUserId());
+					client.setUserId(null);
+					client.setRoleType(null);
+					client.setUsername(null);
 					logger.info("Unregistered client");
 				}
 			}
 			if(isClosed){
-				for(int i = this.clients.size() - 1; i >= 0; i--){
-					ClientInstance instance = this.clients.get(i);
-					if(isRegistered){
-						if(instance.getUserId().equals(client.getUserId())){
-							this.clients.remove(i);
-							client.shutdown(null);
-							logger.info("Remove and close a registered client");
-						}
-					} else {
-						if(instance.address.equals(client.address) && instance.port == client.port){
-							this.clients.remove(i);
-							client.shutdown(null);
-							logger.info("Remove and close a unregistered client");
-						}
+				for(int i=0; i < this.clients.size(); i++){
+					if(this.clients.get(i) == client){
+						this.clients.remove(i);
+						client.shutdown(null);
+						logger.info("Remove client: " + client.getUserId());
+						client = null;
+						break;
 					}
 				}
-				client.shutdown(null);
-				client = null;
-			} else {
-				client.setUserId(null);
-				client.setRoleType(null);
-				client.setUsername(null);
 			}
 		}
 	}
@@ -311,8 +305,11 @@ public class EnhancedMessageService implements Runnable{
 					MyResult loginresult = userService.login(loginuser);
 					if(loginresult.isExecuteResult()){
 						User logonuser = loginresult.getUser();
-						ClientInstance instance = this.getClient(clientThread.getInetAddress(), clientThread.getPort());
+						ClientInstance instance = this.getClient(clientThread.getInetAddress());
 						if(instance != null){
+							if(instance.getUserId() != null){
+								this.removeClient(instance, false);
+							}
 							Role role = logonuser.getRole_Details().get(0).getRole();
 							instance.setRoleType(role.getType());
 							instance.setUserId(logonuser.getId());
@@ -325,7 +322,7 @@ public class EnhancedMessageService implements Runnable{
 									Constants.SUCCESS, detail);
 						} else {
 							resultmsg = new ResultMessage(Constants.REGISTER_REQUEST, 
-									Constants.SUCCESS, "无效用户");
+									Constants.FAIL, "无效用户");
 						}
 					} else {
 						resultmsg = new ResultMessage(Constants.REGISTER_REQUEST, 
@@ -338,7 +335,7 @@ public class EnhancedMessageService implements Runnable{
 				clientThread.sendMessage(parseMessage(resultmsg));
 			} else {
 				//unregister
-				this.removeClient(this.getClient(clientThread.getInetAddress(), clientThread.getPort()), false);
+				this.removeClient(this.getClient(clientThread.getInetAddress()), false);
 			}
 		}
 	}
@@ -348,7 +345,6 @@ public class EnhancedMessageService implements Runnable{
     	if(this.udpSocket == null){
     		try {
 				this.udpSocket = new DatagramSocket(this.udpport);
-	    		this.udpSocket.setSoTimeout(TIMEOUT);
 			} catch (SocketException e) {
 				e.printStackTrace();
 			}
@@ -357,6 +353,7 @@ public class EnhancedMessageService implements Runnable{
     		while(udpCheck){
     		    try {
     		    	DatagramPacket packet = new DatagramPacket(new byte[1], 1);
+    		    	this.udpSocket.setSoTimeout(TIMEOUT);
     				this.udpSocket.receive(packet);
     				ClientInstance instance = this.getClient(packet.getAddress());
     				if(instance != null){
@@ -393,9 +390,9 @@ public class EnhancedMessageService implements Runnable{
 	                } else {
 	                	//A new client connected
 	                	ClientInstance client = new ClientInstance(EnhancedMessageService.this, 
-    	                		client_socket.getInetAddress(), client_socket.getPort(), udpport);
+    	                		client_socket.getInetAddress(), clientport, udpport);
 	                	addClient(client);
-	                	client_socket.close();
+	                	client_socket.getOutputStream().write("connected\r\n".getBytes());
 	                }
 	        	}
 	        } catch(Exception e) {
@@ -427,5 +424,11 @@ public class EnhancedMessageService implements Runnable{
 	    	 this.interrupt();
 	    }
 	}
+	
+    public static void main(String [] args){
+		ApplicationContext aCtx = new FileSystemXmlApplicationContext("src/applicationContext.xml");
+		EnhancedMessageService ms = (EnhancedMessageService)aCtx.getBean("messageService");
+		ms.start(19191, 25252, 19192);
+    }
 	
 }

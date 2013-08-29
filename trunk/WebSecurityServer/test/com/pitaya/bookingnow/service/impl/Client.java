@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import com.pitaya.bookingnow.message.RegisterMessage;
+import com.pitaya.bookingnow.service.socket.MessageService;
 
 public class Client extends Thread{
 	  	

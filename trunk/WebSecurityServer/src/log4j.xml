@@ -34,14 +34,17 @@
         </layout>      
     </appender>
       
-    <logger name="com.pitaya.bookingnow" additivity="false">    
+    <!--logger name="com.pitaya.bookingnow" additivity="false">    
         <level value ="debug"/>
         <appender-ref ref="consoleAppender" />
         <appender-ref ref="activeAppender"/>
         <appender-ref ref="fileAppender"/>
-    </logger>
+    </logger-->
     
-    
+    <category name="com.pitaya.bookingnow" additivity="false">
+        <priority value="debug"/>
+        <appender-ref ref="consoleAppender"/>
+    </category>
     
     <category name="org.springframework" additivity="false">
         <priority value="ERROR"/>
