@@ -47,7 +47,7 @@ import com.pitaya.bookingnow.message.TableMessage;
 
 public class EnhancedMessageService extends Service implements Runnable {
 	
-	private static String TAG = "MessageService";
+	private static String TAG = "EnhancedMessageService";
 	private final IBinder mBinder = new MessageBinder();
 	private NotificationManager mNM;
 	private ConnectivityManager mCM;
@@ -108,7 +108,7 @@ public class EnhancedMessageService extends Service implements Runnable {
 	public EnhancedMessageService(){
 		this.handlers = new ConcurrentHashMap<String, List<Handler>>();
 		this.remote_addr = HttpService.IP;
-		this.remote_port = HttpService.PORT;
+		this.remote_port = HttpService.REMOTE_PORT;
 		this.port = HttpService.PORT;
 	}
 
@@ -125,12 +125,13 @@ public class EnhancedMessageService extends Service implements Runnable {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Received start id " + startId + ": " + intent);
-        if(intent.getExtras() != null){
+        if(intent != null && intent.getExtras() != null){
         	Bundle bundle = intent.getExtras();
-        	if(bundle.getBoolean("connected") == false){
-        		this.onDisconnect();
-        		return START_STICKY;
-        	}
+//        	if(bundle.getBoolean("connected") == false){
+//        		Log.i(TAG, "Connection status changed to false");
+//        		this.onDisconnect();
+//        		return START_STICKY;
+//        	}
         }
         this.start();
         return START_STICKY;
@@ -146,12 +147,13 @@ public class EnhancedMessageService extends Service implements Runnable {
     private synchronized void start(){
     	NetworkInfo activeNetwork = mCM.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
-        if((this.mUPDServerThread == null ||
+        if((this.mServerThread == null ||
         		(!this.isReady() && !this.isConnecting())) && isConnected){
         	//Start a server socket to receive message
+        	this.isConnecting = true;
+        	this.shutdown();
         	this.mServerThread = new Thread(this);
         	this.mServerThread.start();
-        	//Start a udp service to keep alive
         }
     }
 
@@ -189,6 +191,14 @@ public class EnhancedMessageService extends Service implements Runnable {
 	
 	private void shutdown(){
 		this.flag = false;
+		if(this.mServerSocket != null){
+			try {
+				this.mServerSocket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		this.mServerSocket = null;
 	}
 	
 	public void sendMessage(Message message){
@@ -196,7 +206,8 @@ public class EnhancedMessageService extends Service implements Runnable {
 	}
 	
 	public boolean isReady(){
-		return this.mServerSocket != null && !this.mServerSocket.isClosed() && this.mServerSocket.isBound();
+		return this.mServerSocket != null && this.mServerSocket.isBound()
+				&& this.mUDPService != null && this.mUDPService.isRunnning();
 	}
 	
 	void onMessage(Message message){
@@ -248,16 +259,26 @@ public class EnhancedMessageService extends Service implements Runnable {
     		mUPDServerThread.start();
     	}
 	}
+	
+	void onUDPServiceStart(){
+		this.isConnecting = false;
+		this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.SUCCESS, "连接服务器成功"));
+	}
 
 	void onDisconnect(){
 		UserManager.setLoginUser(this, null);
+		this.isConnecting = false;
 		if(this.mServerThread != null){
 			this.shutdown();
 			this.mServerThread.interrupt();
 		}
+		if(this.mUDPService != null){
+			this.mUDPService.shutdown();
+		}
 		if(this.mUPDServerThread != null){
 			this.mUPDServerThread.interrupt();
 		}
+		Log.i(TAG, "Message service is disconnected");
 		this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "与服务器的连接断开"));
 	}
 	
@@ -280,9 +301,10 @@ public class EnhancedMessageService extends Service implements Runnable {
 
 	@Override
 	public void run() {
+		this.flag = true;
 		try {
-			this.isConnecting = true;
 			this.mServerSocket = new ServerSocket(this.port);
+			this.connectServer();
 			Log.i(TAG, "Start message server on port:" + this.port);
         	while(flag){
         		Socket client_socket = this.mServerSocket.accept();
@@ -300,9 +322,7 @@ public class EnhancedMessageService extends Service implements Runnable {
         	 } catch (InterruptedException ie) {
         		 mServerAgentPool.shutdownNow();
         	 }
-        	this.isConnecting = false;
         	this.onDisconnect();
-        	Log.i(TAG, "Message service is shutdown");
         }
 	}
 	

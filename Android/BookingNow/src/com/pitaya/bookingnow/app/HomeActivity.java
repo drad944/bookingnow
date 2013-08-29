@@ -25,7 +25,7 @@ import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuContentProvider;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
 import com.pitaya.bookingnow.app.service.FoodService;
-import com.pitaya.bookingnow.app.service.MessageService;
+import com.pitaya.bookingnow.app.service.EnhancedMessageService;
 import com.pitaya.bookingnow.app.service.UserManager;
 import com.pitaya.bookingnow.app.util.Constants;
 import com.pitaya.bookingnow.app.util.ToastUtil;
@@ -84,7 +84,7 @@ public class HomeActivity extends FragmentActivity {
 	private ProgressDialog mProgressingDialog;
 	
 	private MessageHandler mMessageHandler;
-	private MessageService mMessageService;
+	private EnhancedMessageService mMessageService;
 	private boolean mIsBound = false;
 	private boolean isUpdating = false;
 	private boolean isRemeberMeAfterLogin = false;
@@ -97,15 +97,10 @@ public class HomeActivity extends FragmentActivity {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			Log.i(TAG, "Service connected");
-			mMessageService = ((MessageService.MessageBinder)service).getService();
+			mMessageService = ((EnhancedMessageService.MessageBinder)service).getService();
 		    mIsBound = true;
 			mMessageService.registerHandler(Constants.RESULT_MESSAGE, mMessageHandler);
 			mMessageService.registerHandler(Constants.FOOD_MESSAGE, mMessageHandler);
-			Long userid = mMessageService.getUserId();
-			if(userid == null || userid == -1L){
-				//This should be a new message service due to crash or forced closed
-				UserManager.setLoginUser(HomeActivity.this, null);
-			}
 			if(mMessageService.isReady()){
 				/* 
 				 * Maybe we register the result message too late, so
@@ -113,8 +108,8 @@ public class HomeActivity extends FragmentActivity {
 				 */
 				refreshMenuByRole();
 				doAutoLogin();
+				checkMenuUpdate();
 			}
-			checkMenuUpdate();
 		}
 
 		@Override
@@ -169,12 +164,8 @@ public class HomeActivity extends FragmentActivity {
 		} else {
 			boolean isServiceReady = true;
 			if(!this.mMessageService.isReady() && !this.mMessageService.isConnecting()){
-				this.doStartService();
 				isServiceReady = false;
-			}
-			Long userid = this.mMessageService.getUserId();
-			if(userid == null || userid == -1L){
-				UserManager.setLoginUser(this, null);
+				this.doStartService();
 			}
 			this.refreshMenuByRole();
 			//If service is not ready, these will be done until handleconnectresult
@@ -193,11 +184,11 @@ public class HomeActivity extends FragmentActivity {
     }
 	
 	private void doStartService(){
-		this.startService(new Intent(this, MessageService.class));
+		this.startService(new Intent(this, EnhancedMessageService.class));
 	}
 	
 	private void doBindService() {
-		bindService(new Intent(this, MessageService.class), mConnection, Context.BIND_AUTO_CREATE);
+		bindService(new Intent(this, EnhancedMessageService.class), mConnection, Context.BIND_AUTO_CREATE);
 	}
 	
 	private void doUnbindService() {
@@ -228,7 +219,7 @@ public class HomeActivity extends FragmentActivity {
 			this.mOrderBtn.setVisibility(View.GONE);
 			this.mLogoutBtn.setVisibility(View.GONE);
 			this.mInfoView.setVisibility(View.GONE);
-			if(this.mIsBound && this.mMessageService.isReady() 
+			if(this.mIsBound && this.mMessageService.isReady()
 					&& UserManager.getUsernameAndPassword(this) == null){
 				this.mLoginBtn.setVisibility(View.VISIBLE);
 			} else {
@@ -370,8 +361,8 @@ public class HomeActivity extends FragmentActivity {
 	                 	 HomeActivity.this.password = ((EditText)dialogView.findViewById(R.id.password)).getText().toString();
 	                 	 HomeActivity.this.isRemeberMeAfterLogin = ((CheckBox)dialogView.findViewById(R.id.autologin)).isChecked();
 	                 	 RegisterMessage message = new RegisterMessage(username, password, "register");
-	                 	 if(HomeActivity.this.mIsBound && HomeActivity.this.mMessageService.isReady()
-	                 			 && HomeActivity.this.mMessageService.sendMessage(message)){
+	                 	 if(HomeActivity.this.mIsBound && HomeActivity.this.mMessageService.isReady()){
+	                 		HomeActivity.this.mMessageService.sendMessage(message);
 	                 		 mProgressingDialog  = ProgressDialog.show(HomeActivity.this, 
 	                 				getResources().getString(R.string.waiting), getResources().getString(R.string.logining), true);
 	                 	 } else {
@@ -417,9 +408,6 @@ public class HomeActivity extends FragmentActivity {
 				try{
 					User user = new User(Long.parseLong(infos[0]), infos[1], Integer.parseInt(infos[2]));
 					UserManager.setLoginUser(this, user);
-					if(this.mIsBound){
-						this.mMessageService.setUserId(user.getUserId());
-					}
 					if(this.isRemeberMeAfterLogin){
 						UserManager.rememberMe(this, this.username, this.password);
 					}
@@ -451,47 +439,6 @@ public class HomeActivity extends FragmentActivity {
 		}
 	}
 	
-//	private void afterLoginSuccess(JSONObject jresp, boolean isAuto){
-//		String error = null;
-//		try {
-//			if(jresp.has("result") && jresp.getInt("result") == Constants.FAIL){
-//				error = jresp.getString("detail");
-//			} else {
-//				Long id = jresp.getLong("id");
-//				JSONArray roles = jresp.getJSONArray("role_Details");
-//				JSONObject firstrole = roles.getJSONObject(0);
-//				JSONObject jrole = firstrole.getJSONObject("role");
-//				int role = jrole.getInt("type");
-//				Log.i(TAG, "Login sucessfully: id is " + id + " role is " + role);
-//				
-//				if(this.isRemeberMeAfterLogin){
-//					SharedPreferences settings = getSharedPreferences(UserManager.SETTING_INFOS, 0);
-//					settings.edit()
-//							  .putString(UserManager.AUTO_LOGIN_NAME, this.username)
-//							  .putString(UserManager.AUTO_LOGIN_PASSWORD, this.password)
-//							  .commit();
-//				}
-//				ToastUtil.showToast(this, "登录成功", Toast.LENGTH_SHORT);
-//				this.refreshMenuByRole();
-//				this.homecontent.selectItem("menu");
-//				if(this.mIsBound){
-//					this.mMessageService.sendMessage(new RegisterMessage(id, "register"));
-//				}
-//			}
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//			error = "服务器返回异常:" + jresp.toString();
-//		}
-//		if(error != null){
-//			Log.e(TAG, "Auto login fail: " + error);
-//			if(!isAuto){
-//				this.handleLoginError(error);
-//			} else {
-//				ToastUtil.showToast(this, error, Toast.LENGTH_SHORT);
-//			}
-//		}
-//	}
-	
 	private void doAutoLogin(){
 		if(isLogining == true){
 			return;
@@ -506,32 +453,13 @@ public class HomeActivity extends FragmentActivity {
 				String username = userinfo[0];
 				String password = userinfo[1];
 				RegisterMessage message = new RegisterMessage(username, password, "register");
-				if(this.mIsBound && this.mMessageService.isReady() && this.mMessageService.sendMessage(message)){
+				if(this.mIsBound && this.mMessageService.isReady()){
+					this.mMessageService.sendMessage(message);
 					ToastUtil.showToast(this, "自动登录中...", Toast.LENGTH_SHORT);
 				} else {
 					isLogining = false;
 					ToastUtil.showToast(this, "自动登录失败, 请检查网络", Toast.LENGTH_LONG);
 				}
-//				UserManager.login(userinfo[0], userinfo[1], new HttpHandler(){
-//				
-//					@Override
-//					public void onSuccess(String action, String response){
-//						if(response != null && !response.equals("")){
-//							try {
-//								JSONObject jresp =  new JSONObject(response);
-//								afterLoginSuccess(jresp, true);
-//							} catch (JSONException e) {
-//								e.printStackTrace();
-//								ToastUtil.showToast(HomeActivity.this, "登录失败，服务器错误", Toast.LENGTH_SHORT);
-//							}
-//						}
-//					}
-//					
-//					@Override
-//					public void onFail(String action, int statuscode){
-//						Log.e(TAG, "Login fail with error code:" + statuscode);
-//					}
-//				});
 			} else {
 				isLogining = false;
 			}
