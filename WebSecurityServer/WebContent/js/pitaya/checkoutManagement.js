@@ -109,21 +109,27 @@ function addUpdateCheckOrderEventListeners() {
 }
 
 function initUpdateCheckOrderWindow(rowData,position) {
-	$("#updateCheckOrderPopupWindow").removeAttr("style");
+	$("#checkOrderPopupWindow").removeAttr("style");
 	
 //	var theme = getDemoTheme();
-	
-	formatUpdateCheckOrderElements(rowData);
-	
-	// initialize the popup window and buttons.
-    $("#updateCheckOrderPopupWindow").jqxWindow({
-    	position:position, isModal: true,width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#updateCheckOrderCancelButton"), modalOpacity: 0.01,
-    	initContent: function () {
-            $('#updateCheckOrderPopupWindow').jqxWindow('focus');
+	$.post("calculateOrder.action", {"order.id": rowData["id"]},function(result){
+		if(result != null && result["executeResult"] != null && result["executeResult"] == true){
+			order = result["order"];
+			var invoiceOrderHtml = invoiceOrderTable(order);
+			$("checkOrderDiv").html(invoiceOrderHtml);
+			
+			// initialize the popup window and buttons.
+		    $("#checkOrderPopupWindow").jqxWindow({
+		    	position:position, isModal: true,width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#updateCheckOrderCancelButton"), modalOpacity: 0.01,
+		    	initContent: function () {
+		            $('#checkOrderPopupWindow').jqxWindow('focus');
+		        }
+		    });
+		    
+		    $("#checkOrderPopupWindow").jqxWindow('open');
         }
-    });
-    
-    $("#updateCheckOrderPopupWindow").jqxWindow('open');
+	});
+	
 }
 
 function updateCheckOrder() {
