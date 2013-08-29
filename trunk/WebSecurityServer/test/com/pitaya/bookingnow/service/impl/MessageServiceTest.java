@@ -16,7 +16,7 @@ public class MessageServiceTest extends TestCase {
 		public void setUp(){
 			ApplicationContext aCtx = new FileSystemXmlApplicationContext("src/applicationContext.xml");
 			messageServer = (MessageService)aCtx.getBean("messageService");
-			messageServer.start(19191);
+			messageServer.start(19191, ClientAgent.class);
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
