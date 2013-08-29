@@ -232,7 +232,6 @@ public class EnhancedMessageService extends Service implements Runnable {
 		Message msg = unparseMessage(message);
 		onMessage(msg);
 		Log.d(TAG, "Receive message: " + msg);
-		serverAgent.shutdown();
 	}
 	
 	void onMessage(String message, ClientAgent clientAgent){
