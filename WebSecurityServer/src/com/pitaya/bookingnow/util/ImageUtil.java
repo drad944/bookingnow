@@ -145,6 +145,56 @@ public class ImageUtil {
 		}
 	}
 	
+	public static boolean cut(String srcPath,String imageType,String targetPath,int x,int y,int width,int height,Double scaleRatio) {
+		ImageInputStream iis = null;
+		FileInputStream fis = null;
+		File srcFile = null;
+		File targetFile = null;
+		try {
+			
+			srcFile = new File(srcPath);
+			targetFile = new File(targetPath);
+			if (srcFile.exists()) {
+				fis = new FileInputStream(srcFile);
+				Iterator<ImageReader> it = ImageIO.getImageReadersByFormatName(imageType);
+				ImageReader reader = it.next();
+				iis = ImageIO.createImageInputStream(fis);
+				reader.setInput(iis, true);
+				ImageReadParam param = reader.getDefaultReadParam();
+				if(scaleRatio != null && scaleRatio > 0) {
+					x = new Double(x * scaleRatio).intValue();
+					y = new Double(y * scaleRatio).intValue();
+					width = new Double(width * scaleRatio).intValue();
+					height = new Double(height * scaleRatio).intValue();
+				}
+				
+				Rectangle rect = new Rectangle(x, y, width, height);
+				param.setSourceRegion(rect);
+				BufferedImage bi = reader.read(0, param);
+				ImageIO.write(bi, imageType, targetFile);
+			}else {
+				return false;
+			}
+			
+			
+		} catch (Exception e) {
+			return false;
+		} finally {
+			try {
+				if (fis != null){
+					fis.close();
+				}
+				if (iis != null){
+					iis.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		srcFile.delete();
+		return true;
+	}
+	
 	public static boolean cut(String srcPath,String imageType,String targetPath,int x,int y,int width,int height) {
 		ImageInputStream iis = null;
 		FileInputStream fis = null;

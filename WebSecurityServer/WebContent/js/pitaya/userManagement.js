@@ -552,11 +552,53 @@ function showUserDetailInfo() {
 function uploadUserImage() {
 	$.post("findLoginUser.action", function(user) {
 		if (user != null && user.id != null) {
-			$("#crop_now").attr("src", user.image_relative_path);
-			$("#crop_preview").attr("src", user.image_relative_path);
-
-			$("#user_id").val(user.id);
-			$("#image_relative_path").val(user.image_relative_path);
+			
+			var imgOriginalSize = {};
+        			
+        	var start_time = new Date().getTime();
+        	var img_url = user.image_relative_path + '?'+start_time;
+        	var img = new Image();
+        	img.src = img_url;
+        	var check = function(){
+        	    // 只要任何一方大于0
+        	    // 表示已经服务器已经返回宽高
+        	    if(img.width>0 || img.height>0){
+        	        var diff = new Date().getTime() - start_time;
+        	        imgOriginalSize['width'] = img.width;
+        			imgOriginalSize['height'] = img.height;
+        			imgOriginalSize['time'] = diff;
+        	        clearInterval(set);
+        	        
+        	        var panelWidth = 200;
+            		var panelHeight = 200;
+            		var rectRatio = 0;
+            		var scaleRatio = 0;
+            		
+	            	if(imgOriginalSize != null && imgOriginalSize["width"] != null) {
+	            		rectRatio = (imgOriginalSize["width"] * 10000) / (imgOriginalSize["height"] * 10000);
+	            		if(rectRatio > 1) {
+	            			scaleRatio = (imgOriginalSize["width"] * 10000) / (200 * 10000);
+	            			panelWidth = 200;
+	            			panelHeight = Math.round((panelWidth * 10000) / (rectRatio * 10000));
+	            		}else {
+	            			scaleRatio = (imgOriginalSize["height"] * 10000) / (200 * 10000);
+	            			panelHeight = 200;
+	            			panelWidth = Math.round(panelHeight * rectRatio);
+	            		}
+	            	}
+	            	$("#scaleRatio").val(scaleRatio);
+	            	$("#crop_now").attr("width",panelWidth);
+	            	$("#crop_now").attr("height",panelHeight);
+	            	
+	            	$("#crop_now").attr("src",user.image_relative_path);
+	            	$("#crop_preview").attr("src",user.image_relative_path);
+	            	$("#image_relative_path").val(user.image_relative_path);
+	            	$("#user_id").val(user.id);
+        	    }
+        	};
+        	 
+        	var set = setInterval(check,40);
+			
 
 			initUploadUserImage();
 			initImageAreaSelect();
@@ -661,12 +703,8 @@ function initUploadUserImage(){
 	            	
 	            	
 	            	
-	            	//reload jcrop
-	            	//jcrop_api.disable();
-	            	
 	            	var imgOriginalSize = {};
         			
-	            	
 	            	var start_time = new Date().getTime();
 	            	var img_url = user.fileRelativePath + '?'+start_time;
 	            	var img = new Image();
@@ -683,17 +721,22 @@ function initUploadUserImage(){
 	            	        
 	            	        var panelWidth = 200;
 	                		var panelHeight = 200;
+	                		var rectRatio = 0;
+	                		var scaleRatio = 0;
 	                		
 	    	            	if(imgOriginalSize != null && imgOriginalSize["width"] != null) {
-	    	            		var rectRatio = (imgOriginalSize["width"] * 10000) / (imgOriginalSize["height"] * 10000);
+	    	            		rectRatio = (imgOriginalSize["width"] * 10000) / (imgOriginalSize["height"] * 10000);
 	    	            		if(rectRatio > 1) {
+	    	            			scaleRatio = (imgOriginalSize["width"] * 10000) / (200 * 10000);
 	    	            			panelWidth = 200;
 	    	            			panelHeight = Math.round((panelWidth * 10000) / (rectRatio * 10000));
 	    	            		}else {
+	    	            			scaleRatio = (imgOriginalSize["height"] * 10000) / (200 * 10000);
 	    	            			panelHeight = 200;
 	    	            			panelWidth = Math.round(panelHeight * rectRatio);
 	    	            		}
 	    	            	}
+	    	            	$("#scaleRatio").val(scaleRatio);
 	    	            	$("#crop_now").attr("width",panelWidth);
 	    	            	$("#crop_now").attr("height",panelHeight);
 	    	            	
@@ -721,6 +764,79 @@ function initImageAreaSelect() {
 		fadeSpeed: 200, 
 		onSelectChange: preview
     });
+	
+	$("#crop_submit").click(function(){
+		if(parseInt($("#x").val())){
+			var ias = $('#crop_now').imgAreaSelect({ instance: true });
+			ias.cancelSelection();
+			var params = {};
+			params["params.x"] = $("#x").val();
+			params["params.y"] = $("#y").val();
+			params["params.w"] = $("#w").val();
+			params["params.h"] = $("#h").val();
+			params["params.user_id"] = $("#user_id").val();
+			params["params.scaleRatio"] = $("#scaleRatio").val();
+			params["params.imagePath"] = $("#image_relative_path").val();
+			$.post("cropPictureForUser.action",params, function(user) {
+				if (user != null && user.id != null) {
+					$("#crop_now").attr("src", user.image_relative_path);
+					$("#crop_preview").attr("src", user.image_relative_path);
+		
+					$("#user_id").val(user.id);
+					$("#image_relative_path").val(user.image_relative_path);
+					
+					
+					
+	            	var imgOriginalSize = {};
+        			
+	            	var start_time = new Date().getTime();
+	            	var img_url = user.image_relative_path + '?'+start_time;
+	            	var img = new Image();
+	            	img.src = img_url;
+	            	var check = function(){
+	            	    // 只要任何一方大于0
+	            	    // 表示已经服务器已经返回宽高
+	            	    if(img.width>0 || img.height>0){
+	            	        var diff = new Date().getTime() - start_time;
+	            	        imgOriginalSize['width'] = img.width;
+	            			imgOriginalSize['height'] = img.height;
+	            			imgOriginalSize['time'] = diff;
+	            	        clearInterval(set);
+	            	        
+	            	        var panelWidth = 200;
+	                		var panelHeight = 200;
+	                		var rectRatio = 0;
+	                		var scaleRatio = 0;
+	                		
+	    	            	if(imgOriginalSize != null && imgOriginalSize["width"] != null) {
+	    	            		rectRatio = (imgOriginalSize["width"] * 10000) / (imgOriginalSize["height"] * 10000);
+	    	            		if(rectRatio > 1) {
+	    	            			scaleRatio = (imgOriginalSize["width"] * 10000) / (200 * 10000);
+	    	            			panelWidth = 200;
+	    	            			panelHeight = Math.round((panelWidth * 10000) / (rectRatio * 10000));
+	    	            		}else {
+	    	            			scaleRatio = (imgOriginalSize["height"] * 10000) / (200 * 10000);
+	    	            			panelHeight = 200;
+	    	            			panelWidth = Math.round(panelHeight * rectRatio);
+	    	            		}
+	    	            	}
+	    	            	$("#scaleRatio").val(scaleRatio);
+	    	            	$("#crop_now").attr("width",panelWidth);
+	    	            	$("#crop_now").attr("height",panelHeight);
+	    	            	
+	            	    }
+	            	};
+	            	 
+	            	var set = setInterval(check,40);
+	            
+				}else {
+				alert("failed to cut picture!");
+				}
+			});
+		}else{
+			alert("要先在图片上划一个选区再单击确认剪裁的按钮哦！");	
+		}
+	});
 }
 
 function preview(img, selection) {
@@ -744,56 +860,27 @@ function preview(img, selection) {
     $('#w').val(selection.width);
     $('#h').val(selection.height);  
     
-    
 }
-
-
-function initJCrop() {
-		jcrop_api = {};
-		//记得放在jQuery(window).load(...)内调用，否则Jcrop无法正确初始化
-		$("#crop_now").Jcrop({
-			aspectRatio:4/4,
-			onChange:showPreview,
-			onSelect:showPreview,
-			onRelease:releaseCrop,
-			maxSize:[200,200]
-		},function(){
-		    jcrop_api = this;
-		  });
-		
-	$("#crop_submit").click(function(){
-		if(parseInt($("#x").val())){
-			jcrop_api.release();
-			$("#crop_form").submit();	
-		}else{
-			alert("要先在图片上划一个选区再单击确认剪裁的按钮哦！");	
-		}
-	});
-
-};
 
 function showPreview(coords){
 	$("#x").val(coords.x);
 	$("#y").val(coords.y);
 	$("#w").val(coords.w);
 	$("#h").val(coords.h);
-        if(parseInt(coords.w) > 0){
-            //计算预览区域图片缩放的比例，通过计算显示区域的宽度(与高度)与剪裁的宽度(与高度)之比得到
-            var rx = $("#preview_box").width() / coords.w; 
-            var ry = $("#preview_box").height() / coords.h;
-            //通过比例值控制图片的样式与显示
-            $("#crop_preview").css({
-                width:Math.round(rx * $("#crop_now").width()) + "px",	//预览图片宽度为计算比例值与原图片宽度的乘积
-                height:Math.round(rx * $("#crop_now").height()) + "px",  //预览图片高度为计算比例值与原图片高度的乘积
-                marginLeft:"-" + Math.round(rx * coords.x) + "px",
-                marginTop:"-" + Math.round(ry * coords.y) + "px"
-            });
-        }
+    if(parseInt(coords.w) > 0){
+        //计算预览区域图片缩放的比例，通过计算显示区域的宽度(与高度)与剪裁的宽度(与高度)之比得到
+        var rx = $("#preview_box").width() / coords.w; 
+        var ry = $("#preview_box").height() / coords.h;
+        //通过比例值控制图片的样式与显示
+        $("#crop_preview").css({
+            width:Math.round(rx * $("#crop_now").width()) + "px",	//预览图片宽度为计算比例值与原图片宽度的乘积
+            height:Math.round(rx * $("#crop_now").height()) + "px",  //预览图片高度为计算比例值与原图片高度的乘积
+            marginLeft:"-" + Math.round(rx * coords.x) + "px",
+            marginTop:"-" + Math.round(ry * coords.y) + "px"
+        });
     }
-
-function releaseCrop(obj){
-	
 }
+
 
 function initOperateUserGridElements() {
 	

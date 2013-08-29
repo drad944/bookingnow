@@ -27,9 +27,17 @@ public class SearchParams {
 	private Integer y;
 	private Integer w;
 	private Integer h;
+	private Double scaleRatio;
 	
 	private String imagePath;
 	
+	
+	public Double getScaleRatio() {
+		return scaleRatio;
+	}
+	public void setScaleRatio(Double scaleRatio) {
+		this.scaleRatio = scaleRatio;
+	}
 	public String getImagePath() {
 		return imagePath;
 	}

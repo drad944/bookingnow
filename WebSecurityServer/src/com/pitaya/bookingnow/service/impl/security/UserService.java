@@ -1,5 +1,4 @@
 package com.pitaya.bookingnow.service.impl.security;
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -190,38 +189,28 @@ public class UserService implements IUserService {
 				if (realUser != null 
 						&& realUser.getImage_relative_path() != null) {
 					
-					File dBFile = new File(realUser.getImage_relative_path());
-					File clientFile = new File(params.getImagePath());
-					if (dBFile.getPath().equals(clientFile.getPath())) {
-						System.out.println(dBFile.getPath());
-						String imageType = ImageUtil.parseImageType(params.getImagePath());
-						String targetImagePath = ImageUtil.generateImagePath("images" + SystemUtils.getSystemDelimiter() + "user" + SystemUtils.getSystemDelimiter(), imageType);
-						String pathprefix = ServletActionContext.getServletContext().getRealPath("/");
-						if (ImageUtil.cut(pathprefix + params.getImagePath(), imageType, pathprefix + targetImagePath, params.getX(), params.getY(), params.getW(), params.getH())) {
+					String imageType = ImageUtil.parseImageType(params.getImagePath());
+					String targetImagePath = ImageUtil.generateImagePath("images" + SystemUtils.getSystemDelimiter() + "user" + SystemUtils.getSystemDelimiter(), imageType);
+					String pathprefix = ServletActionContext.getServletContext().getRealPath("/");
+					if (ImageUtil.cut(pathprefix + params.getImagePath(), imageType, pathprefix + targetImagePath, params.getX(), params.getY(), params.getW(), params.getH(),params.getScaleRatio())) {
+						User newUser = new User();
+						newUser.setId(realUser.getId());
+						newUser.setImage_relative_path(targetImagePath);
+						newUser.setImage_absolute_path(pathprefix + targetImagePath);
+						newUser.parseImageSize();
+						
+						if (userDao.updateByPrimaryKeySelective(newUser) == 1) {
+							result.setExecuteResult(true);
+							result.setUser(userDao.selectByPrimaryKey(newUser.getId()));
 							
-							
-							User newUser = new User();
-							newUser.setId(realUser.getId());
-							newUser.setImage_relative_path(targetImagePath);
-							newUser.setImage_absolute_path(pathprefix + targetImagePath);
-							newUser.parseImageSize();
-							
-							if (userDao.updateByPrimaryKeySelective(newUser) == 1) {
-								result.setExecuteResult(true);
-								result.setUser(userDao.selectByPrimaryKey(newUser.getId()));
-								
-								return result;
-							}else {
-								throw new RuntimeException("can not update user info in DB");
-							}
-							
+							return result;
 						}else {
-							
-							result.getErrorDetails().put("crop_error", "can not crop image in server side");
+							throw new RuntimeException("can not update user info in DB");
 						}
+						
 					}else {
-						System.out.println(dBFile.getPath());
-						result.getErrorDetails().put("image_exist", "image path in DB data is not the same with client data.");
+						
+						result.getErrorDetails().put("crop_error", "can not crop image in server side");
 					}
 					
 				}else {

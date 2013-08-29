@@ -5,20 +5,20 @@
 <title>caculate order</title>
 
 	<link rel="stylesheet" type="text/css" href="../../css/head.css">
-	<link rel="stylesheet" href="../../css/jqx.base.css" type="text/css" />
+	<link rel="stylesheet" href="../../css/jqwidgets/styles/jqx.base.css" type="text/css" />
 	
 	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
-	<script type="text/javascript" src="../../js/AppUtil.js"></script>
+	<script type="text/javascript" src="../../js/pitaya/AppUtil.js"></script>
 	
-    <script type="text/javascript" src="../../js/widget/jqxcore.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxbuttons.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxscrollbar.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxmenu.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxgrid.js"></script>
-    <script type="text/javascript" src="../../js/widget/jqxgrid.selection.js"></script> 
-    <script type="text/javascript" src="../../js/widget/jqxgrid.columnsresize.js"></script> 
-    <script type="text/javascript" src="../../js/widget/jqxdata.js"></script> 
-    <script type="text/javascript" src="../../js/widget/gettheme.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxmenu.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.js"></script>
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.selection.js"></script> 
+    <script type="text/javascript" src="../../js/jqwidgets/jqxgrid.columnsresize.js"></script> 
+    <script type="text/javascript" src="../../js/jqwidgets/jqxdata.js"></script> 
+    <script type="text/javascript" src="../../js/jqwidgets/gettheme.js"></script>
     <script type="text/javascript">
          $(document).ready(function () {
          		$.post("calculateOrder.action", 
@@ -112,182 +112,7 @@
 		}
 	}
 	
-	function invoiceOrderTable(invoiceData) {
-		var orderTableBegin="<table>";
-		var orderTableEnd="</table>";
-		var orderTableRowBegin="<tr>";
-		var orderTableRowEnd="</tr>";
-		var orderTableColumnBegin="<td>";
-		var orderTableColumnEnd="</td>";
-		var orderTableFirstRow = "<tr><td>商品名称</td><td>数量</td><td>价格</td></tr>";
-		
-		var orderTable = orderTableBegin;
-		orderTable = orderTable + orderTableFirstRow;
-		if(invoiceData != null) {
-			for(var rowAttr in invoiceData) {
-				if(rowAttr.startWith("food")) {
-					var rowObject = invoiceData[rowAttr];
-					if(rowObject != null) {
-						var rowTable = orderTableRowBegin;
-						for(var columnAttr in rowObject) {
-							if(columnAttr == "name") {
-								var columnTable = orderTableColumnBegin;
-								columnTable = columnTable + rowObject[columnAttr];
-								columnTable = columnTable + orderTableColumnEnd;
-								rowTable = rowTable + columnTable;
-								break;
-							}
-						}
-						for(var columnAttr in rowObject) {
-							if(columnAttr == "count") {
-								var columnTable = orderTableColumnBegin;
-								columnTable = columnTable + rowObject[columnAttr];
-								columnTable = columnTable + orderTableColumnEnd;
-								rowTable = rowTable + columnTable;
-								break;
-							}
-						}
-						for(var columnAttr in rowObject) {
-							if(columnAttr == "price") {
-								var columnTable = orderTableColumnBegin;
-								columnTable = columnTable + rowObject[columnAttr];
-								columnTable = columnTable + orderTableColumnEnd;
-								rowTable = rowTable + columnTable;
-								break;
-							}
-						}
-						rowTable = rowTable + orderTableRowEnd;
-						orderTable = orderTable + rowTable;
-					}
-					delete invoiceData[rowAttr];
-				}
-				
-			}
-			
-			for(var rowAttr in invoiceData) {
-				if(rowAttr.startWith("table")) {
-					var rowObject = invoiceData[rowAttr];
-					if(rowObject != null) {
-						var rowTable = orderTableRowBegin;
-						
-						for(var columnAttr in rowObject) {
-							if(columnAttr == "name") {
-								var columnTable = orderTableColumnBegin;
-								columnTable = columnTable + rowObject[columnAttr];
-								columnTable = columnTable + orderTableColumnEnd;
-								rowTable = rowTable + columnTable;
-								break;
-							}
-						}
-						for(var columnAttr in rowObject) {
-							if(columnAttr == "count") {
-								var columnTable = orderTableColumnBegin;
-								columnTable = columnTable + rowObject[columnAttr];
-								columnTable = columnTable + orderTableColumnEnd;
-								rowTable = rowTable + columnTable;
-								break;
-							}
-						}
-						for(var columnAttr in rowObject) {
-							if(columnAttr == "price") {
-								var columnTable = orderTableColumnBegin;
-								columnTable = columnTable + rowObject[columnAttr];
-								columnTable = columnTable + orderTableColumnEnd;
-								rowTable = rowTable + columnTable;
-								break;
-							}
-						}
-						rowTable = rowTable + orderTableRowEnd;
-						orderTable = orderTable + rowTable;
-					}
-					delete invoiceData[rowAttr];
-				}
-			}
-			
-			for(var rowAttr in invoiceData) {
-				if(rowAttr.startWith("allowance")) {
-					var rowObject = invoiceData[rowAttr];
-					if(rowObject != null) {
-						var rowTable = orderTableRowBegin;
-						
-						for(var columnAttr in rowObject) {
-							if(columnAttr == "name") {
-								var columnTable = orderTableColumnBegin;
-								columnTable = columnTable + rowObject[columnAttr];
-								columnTable = columnTable + orderTableColumnEnd;
-								rowTable = rowTable + columnTable;
-								break;
-							}
-						}
-						for(var columnAttr in rowObject) {
-							if(columnAttr == "count") {
-								var columnTable = orderTableColumnBegin;
-								columnTable = columnTable + rowObject[columnAttr];
-								columnTable = columnTable + orderTableColumnEnd;
-								rowTable = rowTable + columnTable;
-								break;
-							}
-						}
-						for(var columnAttr in rowObject) {
-							if(columnAttr == "price") {
-								var columnTable = orderTableColumnBegin;
-								columnTable = columnTable + rowObject[columnAttr];
-								columnTable = columnTable + orderTableColumnEnd;
-								rowTable = rowTable + columnTable;
-								break;
-							}
-						}
-						
-						rowTable = rowTable + orderTableRowEnd;
-						orderTable = orderTable + rowTable;
-					}
-					delete invoiceData[rowAttr];
-					break;
-				}
-			}
-			for(var rowAttr in invoiceData) {
-				if(rowAttr.startWith("total_price")) {
-					var rowObject = invoiceData[rowAttr];
-					if(rowObject != null) {
-						var rowTable = orderTableRowBegin;
-						for(var columnAttr in rowObject) {
-							if(columnAttr == "name") {
-								var columnTable = orderTableColumnBegin;
-								columnTable = columnTable + rowObject[columnAttr];
-								columnTable = columnTable + orderTableColumnEnd;
-								rowTable = rowTable + columnTable;
-								break;
-							}
-						}
-						for(var columnAttr in rowObject) {
-							if(columnAttr == "count") {
-								var columnTable = orderTableColumnBegin;
-								columnTable = columnTable + rowObject[columnAttr];
-								columnTable = columnTable + orderTableColumnEnd;
-								rowTable = rowTable + columnTable;
-								break;
-							}
-						}
-						for(var columnAttr in rowObject) {
-							if(columnAttr == "price") {
-								var columnTable = orderTableColumnBegin;
-								columnTable = columnTable + rowObject[columnAttr];
-								columnTable = columnTable + orderTableColumnEnd;
-								rowTable = rowTable + columnTable;
-								break;
-							}
-						}
-						rowTable = rowTable + orderTableRowEnd;
-						orderTable = orderTable + rowTable;
-					}
-					delete invoiceData[rowAttr];
-					break;
-				}
-			}
-			orderTable = orderTable + orderTableEnd;
-		}
-		return orderTable;
-	}
+	
 	
             $("#caculateOrderTable").html(invoiceOrderTable(invoiceData));
             
