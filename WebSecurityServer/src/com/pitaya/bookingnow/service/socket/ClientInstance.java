@@ -1,4 +1,4 @@
-package com.pitaya.bookingnow.service.impl;
+package com.pitaya.bookingnow.service.socket;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,12 +19,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class ClientInstance {
+
+	static final long KEEPALIVE_TIMEOUT = 20000L;
+	static final long kEEPALIVE_THRESHOLD = 3;
+	private static final long KEEP_ALIVE_INTEVAL = 10000L;
+	private static final long SOCKET_CLOSE_DELAY = 10000L;
+	private static final Log logger =  LogFactory.getLog(ClientInstance.class);
 	
-	private static Log logger =  LogFactory.getLog(Client.class);
-	private static final long INTEVAL = 10000L;
-	private static final long DELAY = 10000L;
-	static final long TIMEOUT = 10000L;
-	static final long TIMEOUT_TIMES = 3;
 	InetAddress address;
 	int port;
 	int udpport;
@@ -50,6 +51,7 @@ public class ClientInstance {
 		this.udpport = udpport;
 		this.timeout_times = 0;
 		this.messageQueue = new ArrayList<String>();
+		this.lastRecvTime = 0L;
 		this.init();
 	}
 	
@@ -57,7 +59,35 @@ public class ClientInstance {
 		try {
 			this.udpSocket = new DatagramSocket();
 			mChecker = new Timer();
-			mChecker.schedule(new UDPCheckTask(this), 1000, INTEVAL);
+			mChecker.schedule(new TimerTask(){
+
+				@Override
+				public void run() {
+					if((System.currentTimeMillis() - lastRecvTime) > ClientInstance.KEEPALIVE_TIMEOUT){
+						logger.debug("Timeout on keep alive packet");
+						timeout_times ++;
+						if(timeout_times > ClientInstance.kEEPALIVE_THRESHOLD){
+							disconnect();
+							return;
+						}
+					} else {
+						timeout_times = 0;
+					}
+					DatagramPacket sendPacket = null;
+					try {
+						byte[] data = new byte[1];
+						data[0] = 0x00;
+						sendPacket = new DatagramPacket(data, data.length, address, udpport);
+						udpSocket.send(sendPacket);
+						logger.debug("Send keep alive packet to client");
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				
+			}, 1000, KEEP_ALIVE_INTEVAL);
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -141,7 +171,7 @@ public class ClientInstance {
 					shutdown(null);
 				}
     			
-    		}, DELAY);
+    		}, SOCKET_CLOSE_DELAY);
         }
     }
     
@@ -150,7 +180,7 @@ public class ClientInstance {
     }
     
     void disconnect(){
-    	logger.error("Disconnect to client: " + this.userId);
+    	logger.debug("Disconnect to client: " + this.userId);
     	this._service.removeClient(this, true);
     }
     

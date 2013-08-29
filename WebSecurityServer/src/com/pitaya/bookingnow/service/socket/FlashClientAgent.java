@@ -1,4 +1,4 @@
-package com.pitaya.bookingnow.service.impl;
+package com.pitaya.bookingnow.service.socket;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

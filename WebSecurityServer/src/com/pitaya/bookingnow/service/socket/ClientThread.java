@@ -1,10 +1,11 @@
-package com.pitaya.bookingnow.service.impl;
+package com.pitaya.bookingnow.service.socket;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,43 +14,36 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class ClientAgent extends Thread{
+public class ClientThread extends Thread{
 	
 	private static Log logger =  LogFactory.getLog(ClientAgent.class);
 	Socket client_socket;
-	MessageService service;
+	EnhancedMessageService _service;
 	OutputStreamWriter out;
 	BufferedWriter bwriter;
 	BufferedReader in;
-	Long userId;
-	Integer role;
 	List<String> messages;
-	boolean isSending;
+	private boolean isSending = false;
 	
-	public ClientAgent(MessageService service, Socket socket){
+	public ClientThread(EnhancedMessageService service, Socket socket){
 		this.client_socket = socket;
-		this.service = service;
-		this.isSending = false;
+		this._service = service;
 		this.messages = Collections.synchronizedList(new ArrayList<String>());
 	}
-	
-	public Long getUserId(){
-		return this.userId;
-	}
-	
-	public Integer getRoleType(){
-		return this.role;
-	}
-	
-	public String getIneternetAddress(){
+
+	InetAddress getInetAddress(){
 		if(this.client_socket != null){
-			if(this.client_socket.getInetAddress() != null){
-				return this.client_socket.getInetAddress().getHostAddress();
-			} else {
-				return "";
-			}
+			return this.client_socket.getInetAddress();
 		} else {
-			return "";
+			return null;
+		}
+	}
+	
+	int getPort(){
+		if(this.client_socket != null){
+			return this.client_socket.getPort();
+		} else {
+			return -1;
 		}
 	}
 	
@@ -57,11 +51,12 @@ public class ClientAgent extends Thread{
 		try{
 			in = new BufferedReader(new InputStreamReader(client_socket.getInputStream(), "UTF-8"));
 			out = new OutputStreamWriter(client_socket.getOutputStream(), "UTF-8");  
-			bwriter = new BufferedWriter(out);  
+			bwriter = new BufferedWriter(out);
+			this.sendMessage("ready");
 			String message = null;
 			while((message = in.readLine()) != null){
-				logger.debug(this.service.getPort() + ": Receive message from client: ["+this.userId+"], content:" + message);
-				this.service.onMessage(message, this);
+				logger.debug("Receive message:" + message);
+				this._service.onMessage(message, this);
 			}
 		 } catch (Exception e) {
 	        e.printStackTrace();
@@ -76,43 +71,14 @@ public class ClientAgent extends Thread{
 				 ex.printStackTrace();
 			 }
 	         client_socket = null;
-	         logger.debug("Connection to client [" + this.userId +"] is broken");
-	         this.service.removeClient(this, true);
+	         logger.debug("Finished");
 		 }
 	}
-	
-	void sendHeartBeat(){
-		try {
-			this.client_socket.sendUrgentData(0xff);
-		} catch (IOException e) {
-			try {
-				in.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				bwriter.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			if(client_socket != null && !client_socket.isClosed()){
-				 try {
-					client_socket.close();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			 }
-			client_socket = null;
-			logger.debug("HeartBeat: Connection to client [" + this.userId +"] is broken");
-			this.service.removeClient(this, true);
-		}
-	}
-	
+
 	void sendMessage(String message){
 		this.messages.add(message);
 		synchronized(this){
 			if(this.isSending == true){
-				logger.debug("client is in sending, add message to queue");
 				return;
 			} else {
 				this.isSending = true;
@@ -123,12 +89,12 @@ public class ClientAgent extends Thread{
 			try {
 				bwriter.write(msg + "\r\n");
 				bwriter.flush();
-				logger.debug("Send message to client [" + this.userId + "]: " + msg);
+				this.messages.remove(0);
 			} catch (IOException e) {
 				e.printStackTrace();
-				logger.error("Fail to send message to client [" + this.userId + "]");
+				logger.error("Fail to send message.");
+				break;
 			}
-			this.messages.remove(0);
 		}
 
 		/*		Notice!!! It's unsafe to add any codes without sync here. Because during the 
@@ -145,23 +111,22 @@ public class ClientAgent extends Thread{
 			this.sendMessage(message);
 		}
 		try {
-			 in.close();
+			in.close();
 		} catch (IOException e) {
-			 e.printStackTrace();
+			e.printStackTrace();
 		}
 		try {
-			 bwriter.close();
+			bwriter.close();
 		} catch (IOException e) {
-			 e.printStackTrace();
+			e.printStackTrace();
 		}
 		try{
-			 if(client_socket != null && !client_socket.isClosed()){
-				 client_socket.close();
-			 }
+			if(client_socket != null && !client_socket.isClosed()){
+				client_socket.close();
+			}
 		} catch (IOException e) {
-			 e.printStackTrace();
+			e.printStackTrace();
 		}
-		logger.debug("Success to shutdown connection to client [" + this.userId + "]");
-		this.service.removeClient(this, true);
 	}
 }
+

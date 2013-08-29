@@ -4,6 +4,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.pitaya.bookingnow.message.OrderDetailMessage;
+import com.pitaya.bookingnow.service.socket.ClientAgent;
+import com.pitaya.bookingnow.service.socket.MessageService;
 import com.pitaya.bookingnow.util.Constants;
 
 import junit.framework.TestCase;

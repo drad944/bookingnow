@@ -166,16 +166,16 @@
 	<bean id="customerAction" class="com.pitaya.bookingnow.action.CustomerAction" scope="prototype">
 		<property name="customerService" ref="customerService" />
 	</bean>
-
-	<bean id="messageService" class="com.pitaya.bookingnow.service.impl.MessageService" scope="singleton">
-		<property name="userService" ref="userService"/>
-	</bean>
 	
 	<bean id="adminAction" class="com.pitaya.bookingnow.action.AdminAction" scope="prototype">
 		<property name="messageService" ref="messageService"/>
 	</bean>
 	
-   <bean id="securitySocketService" class="com.pitaya.bookingnow.service.impl.MessageService" scope="singleton">
+	<bean id="messageService" class="com.pitaya.bookingnow.service.socket.EnhancedMessageService" scope="singleton">
+		<property name="userService" ref="userService"/>
+	</bean>
+	
+   <bean id="securitySocketService" class="com.pitaya.bookingnow.service.socket.MessageService" scope="singleton">
         <property name="userService" ref="userService"/>
    </bean>
 	

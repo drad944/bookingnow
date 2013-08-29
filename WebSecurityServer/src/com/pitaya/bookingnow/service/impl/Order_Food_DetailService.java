@@ -15,6 +15,7 @@ import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.entity.Order_Food_Detail;
 import com.pitaya.bookingnow.message.OrderDetailMessage;
+import com.pitaya.bookingnow.service.socket.EnhancedMessageService;
 import com.pitaya.bookingnow.service.IOrder_Food_DetailService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
@@ -27,7 +28,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 	
 	private FoodMapper foodDao;
 	private OrderMapper orderDao;
-	private MessageService messageService;
+	private EnhancedMessageService messageService;
 
 	public FoodMapper getFoodDao() {
 		return foodDao;
@@ -53,11 +54,11 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 		return this.orderDao;
 	}
 
-	public void setMessageService(MessageService ms){
+	public void setMessageService(EnhancedMessageService ms){
 		this.messageService = ms;
 	}
 	
-	public MessageService getMessageService(){
+	public EnhancedMessageService getMessageService(){
 		return this.messageService;
 	}
 	
