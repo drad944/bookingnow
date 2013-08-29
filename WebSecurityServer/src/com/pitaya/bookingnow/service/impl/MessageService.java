@@ -40,63 +40,8 @@ import com.pitaya.bookingnow.service.security.IUserService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
 
-class MessageServerThread extends Thread{
-	private static Log logger =  LogFactory.getLog(MessageServerThread.class);
-	
-    boolean flag = true;
-    MessageService service;
-    private final ExecutorService pool =  Executors.newFixedThreadPool(50);
-    private Class<? extends ClientAgent> clientAgentClz;
-      
-    MessageServerThread(MessageService service, Class<? extends ClientAgent> agentClz){
-    	this.service = service;
-    	this.clientAgentClz = agentClz;
-    }
-    
-    @Override
-    public void run(){
-    	Socket client_socket = null;
-        try {
-        	while(flag){
-                client_socket = service.serverSocket.accept( );
-                Constructor<? extends ClientAgent> con = this.clientAgentClz.getConstructor(MessageService.class, Socket.class);
-                ClientAgent client = con.newInstance(this.service, client_socket);
-                pool.execute(client);
-                this.service.addClient(client);
-        	}
-        } catch(Exception e) {
-        	logger.error("Message server thread is crashed");
-            e.printStackTrace( );
-            if(client_socket != null && !client_socket.isClosed()){
-        		try {
-					client_socket.close();
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-        	}
-        }
-    }
-    
-    void shutdown(){
-    	this.flag = false;
-    	pool.shutdown();
-    	try { 
-    	    if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
-    	    	 pool.shutdownNow();
-    	    	 if (!pool.awaitTermination(60, TimeUnit.SECONDS)){
-    	    		 logger.error("Pool did not terminate");  
-    	    	 }
-    	    }
-    	 } catch (InterruptedException ie) {
-    	    pool.shutdownNow();
-    	 }
-    	 this.interrupt();
-    }
-}
-
 public class MessageService {
-		
-	private static MessageService _instance;
+	
 	private static Log logger =  LogFactory.getLog(MessageService.class);
 	
 	public String securityResponse = "<cross-domain-policy>"
@@ -104,29 +49,21 @@ public class MessageService {
 	    + "<allow-access-from domain=\"*\" to-ports=\"19191\"/>"
 		+ "</cross-domain-policy>\0";
 	
-	ServerSocket serverSocket;
-	private MessageServerThread serverThread;
-	private int port;
-	private boolean hasStarted;
+	protected ServerSocket serverSocket;
+	protected MessageServerThread serverThread;
+	protected int port;
+	protected boolean hasStarted;
+	protected IUserService userService;
+	
 	private Map<Integer, Map<Long, ClientAgent>> groups;
 	private List<ClientAgent> clients;
 	private Timer mChecker;
 	private Class<? extends ClientAgent> clientClz;
 	
-	private IUserService userService;
-	
 	public MessageService(){
 		this.hasStarted = false;
 		this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientAgent>>();
 		this.clients = Collections.synchronizedList(new ArrayList<ClientAgent>());
-	}
-	
-	private MessageService(int port){
-		this.hasStarted = false;
-		this.port = port;
-		this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientAgent>>();
-		this.clients = Collections.synchronizedList(new ArrayList<ClientAgent>());
-		this.start();
 	}
 
 	public void start(int port, Class<? extends ClientAgent> clientClz){
@@ -172,7 +109,7 @@ public class MessageService {
 		return this.userService;
 	}
 	
-	private boolean start(){
+	protected boolean start(){
 		if(!hasStarted){
 			try {
 	            serverSocket = new ServerSocket(this.port);
@@ -262,7 +199,7 @@ public class MessageService {
 		return this.groups;
 	}
 	
-	synchronized void onMessage(String msgstring, ClientAgent clientAgent){
+	protected synchronized void onMessage(String msgstring, ClientAgent clientAgent){
 		Message message = unparseMessage(msgstring);
 		if(message == null){
 			return;
@@ -308,7 +245,7 @@ public class MessageService {
 		}
 	}
 	
-	boolean addClient(ClientAgent clientAgent){
+	protected boolean addClient(ClientAgent clientAgent){
 		boolean hasAdded = false;
 		for(int i=0; i < this.clients.size(); i++){
 			if(this.clients.get(i) == clientAgent){
@@ -319,7 +256,8 @@ public class MessageService {
 		}
 		if(!hasAdded){
 			this.clients.add(clientAgent);
-			logger.info("Add new client");
+			logger.debug("Add new client:" + clientAgent.getIneternetAddress());
+			//logger.info("Add new client");
 		}
 		if(clientAgent.userId != null && clientAgent.role != null) {
 			Map<Long, ClientAgent> group = this.groups.get(clientAgent.role);
@@ -344,7 +282,7 @@ public class MessageService {
 		}
 	}
 	
-	void removeClient(ClientAgent clientAgent, boolean isRemoved){
+	protected void removeClient(ClientAgent clientAgent, boolean isRemoved){
 		//Remove it from registered clients queue first
 		if(clientAgent.userId != null && clientAgent.role != null){
 			if(this.groups.get(clientAgent.role) != null && this.groups.get(clientAgent.role).get(clientAgent.userId) != null
@@ -368,41 +306,62 @@ public class MessageService {
 		}
 	}
 	
-	
-	public static MessageService initService(int port){
-		if(_instance == null){
-			_instance = new MessageService(port);
-		}
-		return _instance;
-	}
-	
-	public static MessageService getService(){
-		return _instance;
-	}
-	
-	public static boolean shutdownService(){
-		if(_instance.hasStarted) {
-			_instance.serverThread.shutdown();
-			try {
-        			if(_instance.serverSocket != null && _instance.serverSocket.isClosed()){
-        				_instance.serverSocket.close();
-        			}
-        			_instance.hasStarted = false;
-					for(Entry<Integer, Map<Long, ClientAgent>> entry : _instance.groups.entrySet()){
-						for(Entry<Long, ClientAgent> subentry : ((Map<Long, ClientAgent>)entry.getValue()).entrySet()){
-							subentry.getValue().shutdown("bye");
-						}
+	protected class MessageServerThread extends Thread{
+		
+	    boolean flag = true;
+	    MessageService service;
+	    protected final ExecutorService pool =  Executors.newFixedThreadPool(50);
+	    private Class<? extends ClientAgent> clientAgentClz;
+	      
+	    MessageServerThread(MessageService service, Class<? extends ClientAgent> agentClz){
+	    	this.service = service;
+	    	this.clientAgentClz = agentClz;
+	    }
+	    
+	      
+	    MessageServerThread(MessageService service){
+	    	this.service = service;
+	    }
+	    
+	    @Override
+	    public void run(){
+	    	Socket client_socket = null;
+	        try {
+	        	while(flag){
+	                client_socket = service.serverSocket.accept();
+	                Constructor<? extends ClientAgent> con = this.clientAgentClz.getConstructor(MessageService.class, Socket.class);
+	                ClientAgent client = con.newInstance(this.service, client_socket);
+	                pool.execute(client);
+	                this.service.addClient(client);
+	        	}
+	        } catch(Exception e) {
+	        	logger.error("Message server thread is crashed");
+	            e.printStackTrace( );
+	            if(client_socket != null && !client_socket.isClosed()){
+	        		try {
+						client_socket.close();
+					} catch (IOException ex) {
+						ex.printStackTrace();
 					}
-					_instance = null;
-					logger.info("Success to shutdown message service.");
-					return true;
-			} catch (IOException e) {
-					e.printStackTrace();
-					_instance = null;
-					return false;
-			}
-		}
-		return true;
+	        	}
+	        }
+	    }
+	    
+	    void shutdown(){
+	    	this.flag = false;
+	    	pool.shutdown();
+	    	try { 
+	    	    if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+	    	    	 pool.shutdownNow();
+	    	    	 if (!pool.awaitTermination(60, TimeUnit.SECONDS)){
+	    	    		 logger.error("Pool did not terminate");  
+	    	    	 }
+	    	    }
+	    	 } catch (InterruptedException ie) {
+	    	    pool.shutdownNow();
+	    	 }
+	    	 this.interrupt();
+	    }
 	}
 	
 	public static String parseMessage(Message message){
@@ -431,10 +390,8 @@ public class MessageService {
 	}
 	
     public static void main(String [] args){
-    	MessageService messageService = MessageService.initService(19191);
-		ApplicationContext aCtx = new FileSystemXmlApplicationContext("src/applicationContext.xml");
-		IUserService us = aCtx.getBean(IUserService.class);
-		messageService.setUserService(us);
+//		ApplicationContext aCtx = new FileSystemXmlApplicationContext("src/applicationContext.xml");
+//		IUserService us = aCtx.getBean(IUserService.class);
 //    	for(int i=0 ;i<500; i++){
 //			try {
 //				Thread.sleep(5000);
