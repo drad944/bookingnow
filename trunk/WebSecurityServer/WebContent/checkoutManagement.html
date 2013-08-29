@@ -18,10 +18,6 @@
 	<script type="text/javascript" src="js/pitaya/AppUtil.js"></script>
 	<script type="text/javascript" src="js/pitaya/uploader.js"></script>
 	<script type="text/javascript" src="js/pitaya/admin.js"></script>
-	<script type="text/javascript" src="js/pitaya/userManagement.js"></script>
-	<script type="text/javascript" src="js/pitaya/tableManagement.js"></script>
-	<script type="text/javascript" src="js/pitaya/orderManagement.js"></script>
-	<script type="text/javascript" src="js/pitaya/foodManagement.js"></script>
 	<script type="text/javascript" src="js/pitaya/checkoutManagement.js"></script>
 	
 	<script type="text/javascript" src="js/jquery.color.js"></script>
@@ -104,8 +100,13 @@
         	
 	        
         	<div id="checkOrderDataGrid" style="float: left;" ></div>
-
-
+			
+			<div id="checkOrderPopupWindow" style="overflow:hidden;visibility:hidden;">
+					<div><h3>Checkout Order</h3></div>
+					<div id="checkOrderDiv"></div>
+			</div>
+					
+<!-- 
 				<div id="updateCheckOrderPopupWindow" style="overflow:hidden;visibility:hidden;">
 					<div><h3>Update CheckOrder</h3></div>
 					<div id="updateCheckOrderDiv">
@@ -180,7 +181,7 @@
 				        <div id="updateCheckOrderResult"></div>
 		    		</div>
 				</div>
-			
+			 -->
 				
 		</div>
 	</div>

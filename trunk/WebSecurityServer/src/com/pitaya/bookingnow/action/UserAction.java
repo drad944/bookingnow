@@ -326,8 +326,8 @@ public class UserAction extends BaseAction{
 			result = userService.cropPicture(params);
 			
 			if(result.isExecuteResult()){ 
-				
-	            return "removeUserSuccess";  
+				loginUser = result.getUser(); 
+	            return "cropPictureForUserSuccess";  
 	        }else{  
 	            return "Fail";  
 	        }  

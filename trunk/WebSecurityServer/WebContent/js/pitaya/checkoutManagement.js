@@ -24,81 +24,9 @@ function emptyUpdateCheckOrderWindow(){
 
 function initUpdateCheckOrderElements() {
 //	var theme = getDemoTheme();
-    $("#updateCheckOrderDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
-    $('#updateCheckOrderUpdateButton').jqxButton({ width: 60, height: 25, theme: theme });
-    $('#updateCheckOrderResetButton').jqxButton({ width: 60, height: 25, theme: theme });
-    $('#updateCheckOrderCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
-    
-
-    
-  //  $("#updateCheckOrderAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
-    $("#updateCheckOrderPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 25, theme: theme });
-    $('.updateCheckOrderTextInput').jqxInput({ theme: theme });
-    
-    var d1 = new Date();
-    $('#updateCheckOrderBirthdayInput').jqxDateTimeInput({ theme: theme,width: 180, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
-    
-	$("#updateCheckOrderSexRadioButton1").jqxRadioButton({ width: 70, height: 25,checked: true, theme: theme });
-	$("#updateCheckOrderSexRadioButton2").jqxRadioButton({ width: 70, height: 25,  theme: theme });
-	$("updateCheckOrderSexInput").val("男");
-    
-    
-  
-    
-    var checkOrderDepartmentData = [
-          //  { value: 1, label: "USER_DEPARTMENT" },
-            { value: 2, label: "USER_DEPARTMENT_BUSSINESS" },
-            { value: 3, label: "USER_DEPARTMENT_PRODUCTION" },
-            { value: 4, label: "USER_DEPARTMENT_FINANCE" },
-            { value: 5, label: "USER_DEPARTMENT_PERSONNEL" },
-            { value: 6, label: "USER_DEPARTMENT_DEVERLOPE" },
-            { value: 7, label: "USER_DEPARTMENT_MANAGEMENT" }
-        ];
-    
-	// Create a jqxComboBox
-	$("#updateCheckOrderDepartmentCombobox").jqxComboBox({ 
-		selectedIndex: 0, 
-		source: checkOrderDepartmentData, 
-		displayMember: "label", 
-		valueMember: "value", 
-		width: 150, 
-		height: 25, 
-		theme: theme 
-	});
-    
-    // initialize validator.
-    $('#updateCheckOrderInfoForm').jqxValidator({
-     rules: [
-            { input: '#updateCheckOrderAccountInput', message: 'CheckOrdername is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateCheckOrderAccountInput', message: 'Your checkOrdername must be between 3 and 12 characters!', action: 'keyup, blur', rule: 'length=3,12' },
-            { input: '#updateCheckOrderRealNameInput', message: 'Real Name is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateCheckOrderRealNameInput', message: 'Your real name must contain only letters!', action: 'keyup', rule: 'notNumber' },
-            { input: '#updateCheckOrderRealNameInput', message: 'Your real name must be between 3 and 12 characters!', action: 'keyup', rule: 'length=3,12' },
-            
-            { input: '#updateCheckOrderPasswordInput', message: 'Password is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateCheckOrderPasswordInput', message: 'Your password must be between 6 and 20 characters!', action: 'keyup, blur', rule: 'length=6,20' },
-            { input: '#updateCheckOrderPasswordConfirmInput', message: 'Confirm Password is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateCheckOrderPasswordConfirmInput', message: 'Confirm Passwords doesn\'t match!', action: 'keyup, focus', rule: function (input, commit) {
-                // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
-                    if (input.val() === $('#updateCheckOrderPasswordInput').val()) {
-                        return true;
-                    }
-                    return false;
-            	}
-            },
-            { input: '#updateCheckOrderBirthdayInput', message: 'Your birth date must be between 1/1/1900 and ' + ((new Date()).getFullYear() + 1), action: 'valuechanged', rule: function (input, commit) {
-                var date = $('#updateCheckOrderBirthdayInput').jqxDateTimeInput('value');
-                var result = date.getFullYear() >= 1900 && date.getFullYear() <= (new Date()).getFullYear();
-                // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
-                return result;
-            	}
-            },
-            { input: '#updateCheckOrderEmailInput', message: 'E-mail is required!', action: 'keyup, blur', rule: 'required' },
-            { input: '#updateCheckOrderEmailInput', message: 'Invalid e-mail!', action: 'keyup', rule: 'email' }
-            ], 
-            theme: theme
-    });
-	
+    $("#checkOrderDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
+    $('#checkOrderUpdateButton').jqxButton({ width: 60, height: 25, theme: theme });
+    $('#checkOrderCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
 };
 
 function formatUpdateCheckOrderElements(rowData) {
@@ -604,4 +532,182 @@ function parseCheckOrderDataToUIData(checkOrder) {
 		return checkOrder;
 	}
 	return null;
+}
+
+function invoiceOrderTable(invoiceData) {
+	var orderTableBegin="<table>";
+	var orderTableEnd="</table>";
+	var orderTableRowBegin="<tr>";
+	var orderTableRowEnd="</tr>";
+	var orderTableColumnBegin="<td>";
+	var orderTableColumnEnd="</td>";
+	var orderTableFirstRow = "<tr><td>商品名称</td><td>数量</td><td>价格</td></tr>";
+	var orderTableButton ='<tr style="text-align: center;"><td><input id="checkOrderUpdateButton" type="button" value="Update" /></td><td><input id="checkOrderCancelButton" type="button" value="Cancel" /></td></tr>';
+	var orderTable = orderTableBegin;
+	orderTable = orderTable + orderTableFirstRow;
+	if(invoiceData != null) {
+		for(var rowAttr in invoiceData) {
+			if(rowAttr.startWith("food")) {
+				var rowObject = invoiceData[rowAttr];
+				if(rowObject != null) {
+					var rowTable = orderTableRowBegin;
+					for(var columnAttr in rowObject) {
+						if(columnAttr == "name") {
+							var columnTable = orderTableColumnBegin;
+							columnTable = columnTable + rowObject[columnAttr];
+							columnTable = columnTable + orderTableColumnEnd;
+							rowTable = rowTable + columnTable;
+							break;
+						}
+					}
+					for(var columnAttr in rowObject) {
+						if(columnAttr == "count") {
+							var columnTable = orderTableColumnBegin;
+							columnTable = columnTable + rowObject[columnAttr];
+							columnTable = columnTable + orderTableColumnEnd;
+							rowTable = rowTable + columnTable;
+							break;
+						}
+					}
+					for(var columnAttr in rowObject) {
+						if(columnAttr == "price") {
+							var columnTable = orderTableColumnBegin;
+							columnTable = columnTable + rowObject[columnAttr];
+							columnTable = columnTable + orderTableColumnEnd;
+							rowTable = rowTable + columnTable;
+							break;
+						}
+					}
+					rowTable = rowTable + orderTableRowEnd;
+					orderTable = orderTable + rowTable;
+				}
+				delete invoiceData[rowAttr];
+			}
+			
+		}
+		
+		for(var rowAttr in invoiceData) {
+			if(rowAttr.startWith("table")) {
+				var rowObject = invoiceData[rowAttr];
+				if(rowObject != null) {
+					var rowTable = orderTableRowBegin;
+					
+					for(var columnAttr in rowObject) {
+						if(columnAttr == "name") {
+							var columnTable = orderTableColumnBegin;
+							columnTable = columnTable + rowObject[columnAttr];
+							columnTable = columnTable + orderTableColumnEnd;
+							rowTable = rowTable + columnTable;
+							break;
+						}
+					}
+					for(var columnAttr in rowObject) {
+						if(columnAttr == "count") {
+							var columnTable = orderTableColumnBegin;
+							columnTable = columnTable + rowObject[columnAttr];
+							columnTable = columnTable + orderTableColumnEnd;
+							rowTable = rowTable + columnTable;
+							break;
+						}
+					}
+					for(var columnAttr in rowObject) {
+						if(columnAttr == "price") {
+							var columnTable = orderTableColumnBegin;
+							columnTable = columnTable + rowObject[columnAttr];
+							columnTable = columnTable + orderTableColumnEnd;
+							rowTable = rowTable + columnTable;
+							break;
+						}
+					}
+					rowTable = rowTable + orderTableRowEnd;
+					orderTable = orderTable + rowTable;
+				}
+				delete invoiceData[rowAttr];
+			}
+		}
+		
+		for(var rowAttr in invoiceData) {
+			if(rowAttr.startWith("allowance")) {
+				var rowObject = invoiceData[rowAttr];
+				if(rowObject != null) {
+					var rowTable = orderTableRowBegin;
+					
+					for(var columnAttr in rowObject) {
+						if(columnAttr == "name") {
+							var columnTable = orderTableColumnBegin;
+							columnTable = columnTable + rowObject[columnAttr];
+							columnTable = columnTable + orderTableColumnEnd;
+							rowTable = rowTable + columnTable;
+							break;
+						}
+					}
+					for(var columnAttr in rowObject) {
+						if(columnAttr == "count") {
+							var columnTable = orderTableColumnBegin;
+							columnTable = columnTable + rowObject[columnAttr];
+							columnTable = columnTable + orderTableColumnEnd;
+							rowTable = rowTable + columnTable;
+							break;
+						}
+					}
+					for(var columnAttr in rowObject) {
+						if(columnAttr == "price") {
+							var columnTable = orderTableColumnBegin;
+							columnTable = columnTable + rowObject[columnAttr];
+							columnTable = columnTable + orderTableColumnEnd;
+							rowTable = rowTable + columnTable;
+							break;
+						}
+					}
+					
+					rowTable = rowTable + orderTableRowEnd;
+					orderTable = orderTable + rowTable;
+				}
+				delete invoiceData[rowAttr];
+				break;
+			}
+		}
+		for(var rowAttr in invoiceData) {
+			if(rowAttr.startWith("total_price")) {
+				var rowObject = invoiceData[rowAttr];
+				if(rowObject != null) {
+					var rowTable = orderTableRowBegin;
+					for(var columnAttr in rowObject) {
+						if(columnAttr == "name") {
+							var columnTable = orderTableColumnBegin;
+							columnTable = columnTable + rowObject[columnAttr];
+							columnTable = columnTable + orderTableColumnEnd;
+							rowTable = rowTable + columnTable;
+							break;
+						}
+					}
+					for(var columnAttr in rowObject) {
+						if(columnAttr == "count") {
+							var columnTable = orderTableColumnBegin;
+							columnTable = columnTable + rowObject[columnAttr];
+							columnTable = columnTable + orderTableColumnEnd;
+							rowTable = rowTable + columnTable;
+							break;
+						}
+					}
+					for(var columnAttr in rowObject) {
+						if(columnAttr == "price") {
+							var columnTable = orderTableColumnBegin;
+							columnTable = columnTable + rowObject[columnAttr];
+							columnTable = columnTable + orderTableColumnEnd;
+							rowTable = rowTable + columnTable;
+							break;
+						}
+					}
+					rowTable = rowTable + orderTableRowEnd;
+					orderTable = orderTable + rowTable;
+				}
+				delete invoiceData[rowAttr];
+				break;
+			}
+		}
+		orderTable = orderTable + orderTableButton;
+		orderTable = orderTable + orderTableEnd;
+	}
+	return orderTable;
 }
