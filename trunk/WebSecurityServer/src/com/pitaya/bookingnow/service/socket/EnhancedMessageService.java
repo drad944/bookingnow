@@ -39,9 +39,11 @@ import com.pitaya.bookingnow.util.MyResult;
 public class EnhancedMessageService implements Runnable{
 	
 	private static Log logger =  LogFactory.getLog(EnhancedMessageService.class);
-	private static final int TIMEOUT = 30000;
+	//UDP check packet timeout value
+	private static final int TIMEOUT = 60000;
 	private Map<Integer, Map<Long, ClientInstance>> groups;
 	private List<ClientInstance> clients;
+	final ExecutorService senderPool =  Executors.newFixedThreadPool(50);
 	
 	DatagramSocket udpSocket;
 	int udpport;
@@ -81,10 +83,6 @@ public class EnhancedMessageService implements Runnable{
 	}
 	
 	public EnhancedMessageService(){
-		this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientInstance>>();
-		this.clients = Collections.synchronizedList(new ArrayList<ClientInstance>());
-		this.hasStarted = false;
-		this.udpCheck = true;
 	}
 	
 	public void setUserService(IUserService us){
@@ -99,6 +97,10 @@ public class EnhancedMessageService implements Runnable{
 		this.port = port;
 		this.udpport = udpport;
 		this.clientport = clientport;
+		this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientInstance>>();
+		this.clients = Collections.synchronizedList(new ArrayList<ClientInstance>());
+		this.hasStarted = false;
+		this.udpCheck = true;
 		this.start();
 	}
 	

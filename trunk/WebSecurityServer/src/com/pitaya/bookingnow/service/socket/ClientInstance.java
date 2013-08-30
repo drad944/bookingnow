@@ -20,11 +20,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class ClientInstance {
-
-	static final long KEEPALIVE_TIMEOUT = 20000L;
+	
+	//Log a fail if not received UDP check packet in this time
+	static final long KEEPALIVE_TIMEOUT = 60000L;
+	//Max afford fail times
 	static final long kEEPALIVE_THRESHOLD = 3;
-	private static final long KEEP_ALIVE_INTEVAL = 10000L;
-	private static final long SOCKET_CLOSE_DELAY = 10000L;
+	//UDP check packet sending rate, it must be shorter than KEEPALIVE_TIMEOUT
+	private static final long KEEP_ALIVE_INTEVAL = 15000L;
+	
+	private static final long SOCKET_CLOSE_DELAY = 15000L;
 	private static final Log logger =  LogFactory.getLog(ClientInstance.class);
 	
 	InetAddress address;
@@ -40,7 +44,6 @@ public class ClientInstance {
 	private Timer mConnectionCloser;
     private BufferedReader in;
     private BufferedWriter bwriter;
-    private String addr;
     private Socket socket;
 	private ArrayList<String> messageQueue;
 	private EnhancedMessageService _service;
@@ -65,7 +68,7 @@ public class ClientInstance {
 				@Override
 				public void run() {
 					if((System.currentTimeMillis() - lastRecvTime) > ClientInstance.KEEPALIVE_TIMEOUT){
-						logger.debug("Timeout on keep alive packet");
+						logger.debug("Timeout on keep alive packet from: " + userId);
 						timeout_times ++;
 						if(timeout_times > ClientInstance.kEEPALIVE_THRESHOLD){
 							disconnect();
@@ -130,11 +133,23 @@ public class ClientInstance {
     	return this.socket != null && !this.socket.isClosed() && this.socket.isConnected();
     }
 	
-    public synchronized boolean sendMessage(String msg) {
+    public void sendMessage(final String msg){
+    	this._service.senderPool.execute(new Runnable(){
+
+			@Override
+			public void run() {
+				doSendMessage(msg);
+			}
+    		
+    	});
+    }
+    
+    public synchronized boolean doSendMessage(String msg) {
     	if(this.mConnectionCloser != null){
     		this.mConnectionCloser.cancel();
     		this.mConnectionCloser = null;
     	}
+    	boolean isReused = false;
     	if(!this.isReady()){
         	try {
     			this.setupConnection();
@@ -143,6 +158,10 @@ public class ClientInstance {
     		} catch (IOException e) {
     			e.printStackTrace();
     		}
+    	} else {
+    		//socket still available, reuse it
+    		isReused = true;
+    		logger.debug("Try to reuse current socket");
     	}
 		if(!this.isReady()){
 			//Can't connect to client, assume it's disconnected
@@ -152,11 +171,13 @@ public class ClientInstance {
 		this.messageQueue.add(msg);
     	try {
     		String recvMessage = null;
-			while((recvMessage = in.readLine()) != null){
-				if(recvMessage.equals("ready")){
-					break;
+    		if(isReused == false){
+				while((recvMessage = in.readLine()) != null){
+					if(recvMessage.equals("ready")){
+						break;
+					}
 				}
-			}
+    		}
     		while(this.messageQueue.size() > 0){
     			String message = this.messageQueue.get(0);
     			this.bwriter.write(message + "\r\n");
@@ -189,12 +210,17 @@ public class ClientInstance {
     
     void disconnect(){
     	logger.debug("Disconnect to client: " + this.userId);
+    	if(this.mChecker != null){
+        	this.mChecker.cancel();
+        	this.mChecker = null;
+    	}
+    	this.udpSocket.close();
     	//This will result in shutdown invoking later
     	this._service.removeClient(this, true);
     }
     
     private void setupConnection() throws UnknownHostException, IOException {
-        socket = new Socket(this.addr, this.port);
+        socket = new Socket(this.address, this.port);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
 		bwriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));  
     }
@@ -206,10 +232,6 @@ public class ClientInstance {
     	if(this.mConnectionCloser != null){
     		this.mConnectionCloser.cancel();
     		this.mConnectionCloser = null;
-    	}
-    	if(this.mChecker != null){
-        	this.mChecker.cancel();
-        	this.mChecker = null;
     	}
 		if(in != null){
 			try {
