@@ -3,6 +3,7 @@ package com.pitaya.bookingnow.service.socket;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
@@ -130,6 +131,10 @@ public class ClientInstance {
     }
 	
     public synchronized boolean sendMessage(String msg) {
+    	if(this.mConnectionCloser != null){
+    		this.mConnectionCloser.cancel();
+    		this.mConnectionCloser = null;
+    	}
     	if(!this.isReady()){
         	try {
     			this.setupConnection();
@@ -139,10 +144,6 @@ public class ClientInstance {
     			e.printStackTrace();
     		}
     	}
-    	if(this.mConnectionCloser != null){
-    		this.mConnectionCloser.cancel();
-    		this.mConnectionCloser = null;
-    	}
 		if(!this.isReady()){
 			//Can't connect to client, assume it's disconnected
 			this.disconnect();
@@ -150,19 +151,26 @@ public class ClientInstance {
 		}
 		this.messageQueue.add(msg);
     	try {
+    		String recvMessage = null;
+			while((recvMessage = in.readLine()) != null){
+				if(recvMessage.equals("ready")){
+					break;
+				}
+			}
     		while(this.messageQueue.size() > 0){
     			String message = this.messageQueue.get(0);
     			this.bwriter.write(message + "\r\n");
         		this.bwriter.flush();
         		this.messageQueue.remove(0);
-        		logger.error("Send message to client: " + this.userId);
+        		logger.debug("Send message to client: " + this.userId);
     		}
         	return true;
         } catch (IOException e) {
             logger.error("Fail to send message to client: " + this.userId);
+            e.printStackTrace();
             return false;
         } finally {
-        	//If this socket is not reused in DELAY time, it will be closed
+        	//If this socket is not reused in DELAY time, then it will be closed
     		this.mConnectionCloser = new Timer();
     		this.mConnectionCloser.schedule(new TimerTask(){
 
@@ -181,11 +189,13 @@ public class ClientInstance {
     
     void disconnect(){
     	logger.debug("Disconnect to client: " + this.userId);
+    	//This will result in shutdown invoking later
     	this._service.removeClient(this, true);
     }
     
     private void setupConnection() throws UnknownHostException, IOException {
         socket = new Socket(this.addr, this.port);
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
 		bwriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));  
     }
     
@@ -207,7 +217,6 @@ public class ClientInstance {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			in = null;
 		}
 		if(bwriter != null){
 			try {
@@ -215,7 +224,6 @@ public class ClientInstance {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			bwriter = null;
 		}
 		try{
 			if(this.socket != null && !this.socket.isClosed()){
