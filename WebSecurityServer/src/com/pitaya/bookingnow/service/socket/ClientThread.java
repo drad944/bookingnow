@@ -52,8 +52,8 @@ public class ClientThread extends Thread{
 			in = new BufferedReader(new InputStreamReader(client_socket.getInputStream(), "UTF-8"));
 			out = new OutputStreamWriter(client_socket.getOutputStream(), "UTF-8");  
 			bwriter = new BufferedWriter(out);
-			this.sendMessage("ready");
 			String message = null;
+			this.sendMessage("ready");
 			while((message = in.readLine()) != null){
 				logger.debug("Receive message:" + message);
 				this._service.onMessage(message, this);
