@@ -27,7 +27,8 @@ public class ServerAgent extends Thread {
     public void run(){
         try {
         	in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-			bwriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));  
+			bwriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
+			this.sendMessage("ready");
         	String message = null;
         	while((message = in.readLine()) != null){
         		if(message.equals("bye")){
@@ -44,23 +45,31 @@ public class ServerAgent extends Thread {
         }
     }
 
+	void sendMessage(String message){
+		try {
+			bwriter.write(message + "\r\n");
+			bwriter.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.e(TAG, "Fail to send message.");
+		}
+	}
+    
     public void shutdown(){
     	 if(in != null){
 			try {
-        		 in.close();
+        		in.close();
 			} catch (IOException e) {
-				 e.printStackTrace();
+				e.printStackTrace();
 			}
-			in = null;
     	 }
-		     if(bwriter != null){
+	     if(bwriter != null){
 		    try {
 		    	bwriter.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		    bwriter = null;
-		     }
+	     }
 		 if (socket != null && !socket.isClosed()){
 			try {
 				socket.close();
