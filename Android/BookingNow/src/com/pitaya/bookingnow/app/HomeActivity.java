@@ -98,6 +98,9 @@ public class HomeActivity extends FragmentActivity {
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			Log.i(TAG, "Service connected");
 			mMessageService = ((EnhancedMessageService.MessageBinder)service).getService();
+			if(homecontent.getCurrentContentView() != null){
+				homecontent.getCurrentContentView().onServiceConnected(mMessageService);
+			}
 		    mIsBound = true;
 			mMessageService.registerHandler(Constants.RESULT_MESSAGE, mMessageHandler);
 			mMessageService.registerHandler(Constants.FOOD_MESSAGE, mMessageHandler);
@@ -115,6 +118,9 @@ public class HomeActivity extends FragmentActivity {
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			Log.d(TAG, "Service disconnected");
+			if(homecontent.getCurrentContentView() != null){
+				homecontent.getCurrentContentView().onServiceDisconnected();
+			}
 		    mIsBound = false;
 			mMessageService = null;
 			UserManager.setLoginUser(HomeActivity.this, null);
@@ -182,6 +188,14 @@ public class HomeActivity extends FragmentActivity {
 		Log.d(TAG, "onDestroy");
 		this.doUnbindService();
     }
+	
+	public boolean isBound(){
+		return this.mIsBound;
+	}
+	
+	public EnhancedMessageService getMessageService(){
+		return this.mMessageService;
+	}
 	
 	private void doStartService(){
 		this.startService(new Intent(this, EnhancedMessageService.class));

@@ -98,7 +98,7 @@ public class WelcomerOrderLeftView extends OrderLeftView{
 			}
 			
 		});
-		this.doBindService();
+		//this.doBindService();
 		return mOrderListView;
 	}
 	

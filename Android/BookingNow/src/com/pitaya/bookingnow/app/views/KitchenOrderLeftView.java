@@ -46,7 +46,7 @@ public class KitchenOrderLeftView extends OrderLeftView{
 			}
 			
 		});
-		this.doBindService();
+		//this.doBindService();
 		return view;
 	}
 	

@@ -10,16 +10,18 @@ import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 public class UDPService implements Runnable{
 
 	private static final String TAG = "UDPService";
+	//Max afford fail times
 	private static final long kEEPALIVE_THRESHOLD = 3;
-	private static final int KEEPALIVE_TIMEOUT = 20000;
-	private static final long KEEPALIVE_INTEVAL = 10000L;
+	//Log a fail if not received UDP check packet in this time
+	private static final int KEEPALIVE_TIMEOUT = 60000;
+	//UDP check packet sending rate, it must be shorter than KEEPALIVE_TIMEOUT
+	private static final long KEEPALIVE_INTEVAL = 15000L;
+	
 	private static final int TIMEOUT = 30000;
 	private DatagramSocket dSocket;
 	private Long lastRecvTime;

@@ -4,7 +4,7 @@ import com.pitaya.bookingnow.app.HomeActivity;
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.data.MessageHandler;
 import com.pitaya.bookingnow.app.preference.*;
-import com.pitaya.bookingnow.app.service.MessageService;
+import com.pitaya.bookingnow.app.service.EnhancedMessageService;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -18,11 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class SettingsFragment extends PreferenceFragment {
-
-	private MessageHandler mMessageHandler;
-	private MessageService mMessageService;
-	private boolean mIsBound = false;
-	private ServiceConnection mConnection;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,7 +43,7 @@ public class SettingsFragment extends PreferenceFragment {
 			
 			@Override
 			public void onClick(View v) {
-				getActivity().startService(new Intent(getActivity(), MessageService.class));
+				getActivity().startService(new Intent(getActivity(), EnhancedMessageService.class));
 			}
 			
 		});

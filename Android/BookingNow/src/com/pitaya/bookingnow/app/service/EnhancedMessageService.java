@@ -62,7 +62,7 @@ public class EnhancedMessageService extends Service implements Runnable {
     private int remote_port;
     private int port;
     private boolean flag;
-    private final ExecutorService mServerAgentPool =  Executors.newFixedThreadPool(5);
+    private final ExecutorService mMessageReceiverPool =  Executors.newFixedThreadPool(5);
     private volatile boolean isConnecting = false;
     
 	private Map<String, List<Handler>> handlers;
@@ -189,20 +189,8 @@ public class EnhancedMessageService extends Service implements Runnable {
 		return this.isConnecting;
 	}
 	
-	private void shutdown(){
-		this.flag = false;
-		if(this.mServerSocket != null){
-			try {
-				this.mServerSocket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		this.mServerSocket = null;
-	}
-	
 	public void sendMessage(Message message){
-		new ClientAgent(this.remote_addr, this.remote_port, parseMessage(message), this).start();
+		new MessageSender(this.remote_addr, this.remote_port, parseMessage(message), this).start();
 	}
 	
 	public boolean isReady(){
@@ -239,17 +227,21 @@ public class EnhancedMessageService extends Service implements Runnable {
 		}
 	}
 
-	void onMessage(String message, ServerAgent serverAgent){
-		Message msg = unparseMessage(message);
-		onMessage(msg);
-		Log.d(TAG, "Receive message: " + msg);
+	void onMessage(String message, MessageReceiver receiver){
+		if(message.equals("bye")){
+			this.onDisconnect();
+		} else {
+			Message msg = unparseMessage(message);
+			onMessage(msg);
+			Log.d(TAG, "Receive message: " + msg);
+		}
 	}
 	
-	void onMessage(String message, ClientAgent clientAgent){
+	void onMessage(String message, MessageSender sender){
 		Message msg = unparseMessage(message);
 		onMessage(msg);
 		Log.d(TAG, "Server reply message: " + msg);
-		clientAgent.shutdown();
+		sender.shutdown();
 	}
 	
 	void onConnectServer(){
@@ -279,11 +271,23 @@ public class EnhancedMessageService extends Service implements Runnable {
 			this.mUPDServerThread.interrupt();
 		}
 		Log.i(TAG, "Message service is disconnected");
-		this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "与服务器的连接断开"));
+		this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "与服务器的连接中断，请检查网络"));
 	}
 	
 	void onSendMsgFail(){
 		this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "发送请求失败"));
+	}
+	
+	private void shutdown(){
+		this.flag = false;
+		if(this.mServerSocket != null){
+			try {
+				this.mServerSocket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		this.mServerSocket = null;
 	}
 	
 	@Override
@@ -308,19 +312,19 @@ public class EnhancedMessageService extends Service implements Runnable {
 			Log.i(TAG, "Start message server on port:" + this.port);
         	while(flag){
         		Socket client_socket = this.mServerSocket.accept();
-				this.mServerAgentPool.execute(new ServerAgent(client_socket, this));
+				this.mMessageReceiverPool.execute(new MessageReceiver(client_socket, this));
         	}
         } catch(IOException e) {
             e.printStackTrace();
         } finally {
-        	mServerAgentPool.shutdown();
+        	mMessageReceiverPool.shutdown();
         	try {
-        		mServerAgentPool.shutdownNow();
-    	    	 if (!mServerAgentPool.awaitTermination(60, TimeUnit.SECONDS)){
-    	    		 Log.e(TAG, "mClientThreadPool did not terminate");  
+        		mMessageReceiverPool.shutdownNow();
+    	    	 if (!mMessageReceiverPool.awaitTermination(60, TimeUnit.SECONDS)){
+    	    		 Log.e(TAG, "mMessageReceiverPool did not terminate");  
     	    	 }
         	 } catch (InterruptedException ie) {
-        		 mServerAgentPool.shutdownNow();
+        		 mMessageReceiverPool.shutdownNow();
         	 }
         	this.onDisconnect();
         }
@@ -345,7 +349,7 @@ public class EnhancedMessageService extends Service implements Runnable {
     
 	private void connectServer(){
 		//Connect to server so it can remember me
-    	new ClientAgent(this.remote_addr, this.remote_port, "", this).start();
+    	new MessageSender(this.remote_addr, this.remote_port, "", this).start();
 	}
 
 }

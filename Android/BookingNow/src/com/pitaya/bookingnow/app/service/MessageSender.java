@@ -14,7 +14,7 @@ import com.pitaya.bookingnow.message.ResultMessage;
 
 import android.util.Log;
 
-public class ClientAgent extends Thread{
+public class MessageSender extends Thread{
 	  	
 		private static String TAG = "ClientAgentThread";
 	    private BufferedReader in;
@@ -24,8 +24,11 @@ public class ClientAgent extends Thread{
 	    private int port;
 	    private Socket socket;
 	    private EnhancedMessageService _service;
-
-	    public ClientAgent(String addr, int port, String message, EnhancedMessageService ms) {
+	    
+	    /*
+	     * addr: server address, port: server tcp port
+	     */
+	    public MessageSender(String addr, int port, String message, EnhancedMessageService ms) {
 	    	this._service = ms;
 	    	this.addr = addr;
 	    	this.port = port;
@@ -33,8 +36,13 @@ public class ClientAgent extends Thread{
 	    }
 	    
 	    public void run(){
-	        try {
-	        	this.setupConnection();
+	    	this.setupConnection();
+	    	if(!this.isReady()){
+	        	this.shutdown();
+	        	this._service.onDisconnect();
+	    		return;
+	    	}
+	    	try {
             	String message = null;
             	while((message = in.readLine()) != null){
             		if(message.equals("connected")){
@@ -46,13 +54,15 @@ public class ClientAgent extends Thread{
         	        		this.sendMessage(this.msg);
         	        	} else {
         	        		/*
-        	        		 * If the disconnection is not long enough, server maybe return ready because
-        	        		 * the client has not been removed, but we know here it is to connect to server
-        	        		 * due to message is blank string, so just assume the connection is available
+        	        		 * In a short time after disconnect, server maybe return ready because the client has not 
+        	        		 * been removed, but the message is blank string means here is to re-connect to server
+        	        		 * , so it's safe to assume that the connection is established
         	        		 */
+        	        		Log.d(TAG, "Connected to server");
         	        		this._service.onConnectServer();
         	        	}
             		} else {
+            			//Handler server reply message
             			this._service.onMessage(message, this);
             		}
             	}
@@ -113,14 +123,9 @@ public class ClientAgent extends Thread{
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 	        	Log.e(TAG, "Fail to find server");
-	        	this.shutdown();
-	        	this._service.onDisconnect();
 			} catch (IOException e) {
 				e.printStackTrace();
 	        	Log.e(TAG, "Fail to connect to server");
-	        	this.shutdown();
-	        	this._service.onDisconnect();
 			}
- 
 	    }
 }

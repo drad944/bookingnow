@@ -87,6 +87,10 @@ public class ContentView extends ViewGroup {
 		}
 	}
 
+	public BaseContentView getCurrentView(){
+		return this.mCurrentContentView;
+	}
+	
 	public void setupView(BaseContentView v) {
 		if(mCurrentContentView != null){
 			mCurrentContentView.destroyView(mContainer);

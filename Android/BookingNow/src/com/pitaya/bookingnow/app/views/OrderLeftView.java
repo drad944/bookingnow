@@ -7,6 +7,7 @@ import com.pitaya.bookingnow.app.data.MessageHandler;
 import com.pitaya.bookingnow.app.data.OrderDetailAdapter;
 import com.pitaya.bookingnow.app.data.WorkerOrderDetailAdapter;
 import com.pitaya.bookingnow.app.model.Order;
+import com.pitaya.bookingnow.app.service.EnhancedMessageService;
 import com.pitaya.bookingnow.app.service.MessageService;
 import com.pitaya.bookingnow.app.util.Constants;
 
@@ -30,7 +31,7 @@ public class OrderLeftView extends Fragment{
 	protected boolean mIsTouched = false;
 	protected String lastSelectItem = null;
 	protected MessageHandler mMessageHandler;
-	protected MessageService mMessageService;
+	protected EnhancedMessageService mMessageService;
 	protected boolean mIsBound = false;
 	protected ServiceConnection mConnection;
 	
@@ -51,11 +52,18 @@ public class OrderLeftView extends Fragment{
 		return true;
 	}
 	
-	public void displayRightPanel(Order order){
+	public void onServiceConnected(EnhancedMessageService service){
+		mMessageService = service;
+		mIsBound = true;
+		for(String category : getMessageCategories()){
+			mMessageService.registerHandler(category, mMessageHandler);
+		}
 	}
 	
-	public void displayRightPanel(){
-		
+	public void onServiceDisconnected(){
+		mMessageService.unregisterHandler(mMessageHandler);
+		mMessageService = null;
+		mIsBound = false;
 	}
 	
 	@Override
@@ -64,11 +72,11 @@ public class OrderLeftView extends Fragment{
         mDualPane = true;
     }
 
-	@Override
-	public void onDestroyView(){
-		super.onDestroyView();
-		this.doUnbindService();
-	}
+//	@Override
+//	public void onDestroyView(){
+//		super.onDestroyView();
+//		this.doUnbindService();
+//	}
 	
 	public void setLastItem(String key){
 		this.mContentContainer.saveStatus(key);
@@ -121,7 +129,7 @@ public class OrderLeftView extends Fragment{
 	}
 	
 	protected void doBindService() {
-		this.getActivity().bindService(new Intent(this.getActivity(), MessageService.class), 
+		this.getActivity().bindService(new Intent(this.getActivity(), EnhancedMessageService.class), 
 				getServiceConnection(), Context.BIND_AUTO_CREATE);
 	}
 	
@@ -145,7 +153,7 @@ public class OrderLeftView extends Fragment{
 	
 			@Override
 			public void onServiceConnected(ComponentName name, IBinder service) {
-				mMessageService = ((MessageService.MessageBinder)service).getService();
+				mMessageService = ((EnhancedMessageService.MessageBinder)service).getService();
 				mIsBound = true;
 				for(String category : getMessageCategories()){
 					mMessageService.registerHandler(category, mMessageHandler);
