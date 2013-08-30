@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -351,18 +352,31 @@ public class EnhancedMessageService implements Runnable{
     	}
     	if(this.udpSocket != null && this.udpSocket.isBound()){
     		while(udpCheck){
-    		    try {
-    		    	DatagramPacket packet = new DatagramPacket(new byte[1], 1);
-    		    	this.udpSocket.setSoTimeout(TIMEOUT);
-    				this.udpSocket.receive(packet);
-    				ClientInstance instance = this.getClient(packet.getAddress());
-    				if(instance != null){
-    					instance.lastRecvTime = System.currentTimeMillis();
-    					logger.debug("Received udp check package: " + packet.getData());
-    				}
-    			} catch (IOException e) {
-    				e.printStackTrace();
-    			}
+    		    if(this.clients.size() > 0){
+	    			try {
+	    		    	DatagramPacket packet = new DatagramPacket(new byte[1], 1);
+	    		    	this.udpSocket.setSoTimeout(TIMEOUT);
+	    				this.udpSocket.receive(packet);
+	    				ClientInstance instance = this.getClient(packet.getAddress());
+	    				if(instance != null){
+	    					instance.lastRecvTime = System.currentTimeMillis();
+	    					logger.debug("Received udp check package: " + packet.getData());
+	    				}
+	    			} catch (IOException e) {
+	    				if(e instanceof SocketTimeoutException){
+	    					logger.warn("Timeout on receiving keep-alive packet");
+	    				} else {
+	    					e.printStackTrace();
+	    				}
+	    			}
+    		    } else {
+    		    	logger.debug("No clients connected");
+    		    	try {
+						Thread.sleep(TIMEOUT);
+					} catch (InterruptedException e){
+						e.printStackTrace();
+					}
+    		    }
     		}
     	} else {
     		logger.error("Fail to start udp check service");
