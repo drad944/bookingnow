@@ -75,52 +75,27 @@ function addUpdateCheckOrderEventListeners() {
         $('#updateCheckOrderInfoForm').jqxValidator('validate');
     });
     
-    $("#updateCheckOrderSexRadioButton1").on('change', function (event) {
-        var checked = event.args.checked;
-        if (checked) {
-        	 $("#updateCheckOrderSexInput").val("男");
-        }
-    });
-    $("#updateCheckOrderSexRadioButton2").on('change', function (event) {
-        var checked = event.args.checked;
-        if (checked) {
-        	$("#updateCheckOrderSexInput").val("女");
-        }
-    });
     
     $("#updateCheckOrderCancelButton").on('click', function (event) {
     	$('#updateCheckOrderInfoForm').jqxValidator('hide');
         $('#updateCheckOrderPopupWindow').jqxWindow('close');
     });
         
-    $("#updateCheckOrderDepartmentCombobox").on('select', function (event) {
-            if (event.args) {
-                var item = event.args.item;
-                if (item) {
-                	$("#updateCheckOrderDepartmentInput").val(item.value);
-                }
-            }
-        });
-    
-    $('#updateCheckOrderInfoForm').on('validationSuccess', function (event) { 
-    	// Some code here. 
-    	updateCheckOrder();
-    });
 }
 
 function initUpdateCheckOrderWindow(rowData,position) {
 	$("#checkOrderPopupWindow").removeAttr("style");
 	
 //	var theme = getDemoTheme();
-	$.post("calculateOrder.action", {"order.id": rowData["id"]},function(result){
-		if(result != null && result["executeResult"] != null && result["executeResult"] == true){
-			order = result["order"];
+	$.post("searchFullOrder.action", {"order.id": rowData["id"]},function(order){
+		if(order != null && order["id"] != null){
+			order = formatCheckOrderData(order);
 			var invoiceOrderHtml = invoiceOrderTable(order);
-			$("checkOrderDiv").html(invoiceOrderHtml);
-			
+			$("#checkOrderDiv").html(invoiceOrderHtml);
+			initUpdateCheckOrderElements();
 			// initialize the popup window and buttons.
 		    $("#checkOrderPopupWindow").jqxWindow({
-		    	position:position, isModal: true,width: 350, height: 450, resizable: true, theme: theme, cancelButton: $("#updateCheckOrderCancelButton"), modalOpacity: 0.01,
+		    	position:position, isModal: true,width: 350, height: 300, resizable: true, theme: theme, cancelButton: $("#updateCheckOrderCancelButton"), modalOpacity: 0.01,
 		    	initContent: function () {
 		            $('#checkOrderPopupWindow').jqxWindow('focus');
 		        }
@@ -178,7 +153,6 @@ function updateCheckOrder() {
 
 function initOperateCheckOrderGridElements() {
 //	var theme = getDemoTheme();
-	$("#addCheckOrderRowButton").jqxButton({ theme: theme });
 	$("#deleteCheckOrderRowButton").jqxButton({ theme: theme });
 	$("#updateCheckOrderRowButton").jqxButton({ theme: theme });
 }	
@@ -195,7 +169,7 @@ function addOperateCheckOrderGridEventListeners() {
 			var offset = $("#checkOrderDataGrid").offset();
 			var position = {};
 			position.x = parseInt(offset.left) + 200;
-			position.y = parseInt(offset.top) - 200;
+			position.y = parseInt(offset.top) - 100;
 			
 			initUpdateCheckOrderWindow(rowData,position);
 		}
@@ -449,7 +423,7 @@ function parseCheckOrderGridHtml() {
 	initOperateCheckOrderGridElements();
 	addOperateCheckOrderGridEventListeners();
 	
-	initUpdateCheckOrderElements();
+	
 	addUpdateCheckOrderEventListeners();
 	
 	});
@@ -540,7 +514,103 @@ function parseCheckOrderDataToUIData(checkOrder) {
 	return null;
 }
 
+function formatCheckOrderData(matchedOrder) {
+	var invoiceData = {};
+
+	if (matchedOrder != null && matchedOrder.id != null) {
+		for ( var orderAttr in matchedOrder) {
+			if (orderAttr == "food_details" || orderAttr == "table_details"
+					|| orderAttr == "allowance" || orderAttr == "total_price") {
+				if (orderAttr == "food_details") {
+					var food_details = matchedOrder[orderAttr];
+					if (food_details != null && food_details.length > 0) {
+						for ( var i = 0; i < food_details.length; i++) {
+							var food_detail = food_details[i];
+							if (food_detail != null
+									&& food_detail["id"] != null) {
+								var invoiceFood = {};
+
+								invoiceFood["count"] = food_detail["count"];
+								if (food_detail["isFree"] != null
+										&& food_detail["isFree"] == false) {
+									if (food_detail["food"] != null) {
+										var food = food_detail["food"];
+										if (food["price"] != null) {
+											invoiceFood["name"] = food["name"];
+											invoiceFood["price"] = food["price"]
+													* food_detail["count"];
+
+										}
+									}
+
+								} else {
+									if (food_detail["food"] != null) {
+										var food = food_detail["food"];
+										if (food["price"] != null) {
+											invoiceFood["name"] = food["name"];
+											invoiceFood["price"] = food["price"] * 0;
+										}
+									}
+								}
+
+								invoiceData["food_" + i] = invoiceFood;
+							}
+
+						}
+					}
+
+				}
+
+				if (orderAttr == "table_details") {
+					var table_details = matchedOrder[orderAttr];
+					if (table_details != null && table_details.length > 0) {
+						for ( var i = 0; i < table_details.length; i++) {
+							var table_detail = table_details[i];
+							if (table_detail["table"] != null
+									&& table_detail["id"] != null) {
+								var invoiceTable = {};
+								var table = table_detail["table"];
+								if (table["indoorPrice"] != null
+										&& table["indoorPrice"] > 0) {
+									invoiceTable["name"] = table["address"];
+									invoiceTable["count"] = 1;
+									invoiceTable["price"] = table["indoorPrice"];
+
+									invoiceData["table_" + i] = invoiceTable;
+								}
+							}
+
+						}
+					}
+
+				}
+
+				if (orderAttr == "allowance" && matchedOrder["allowance"] > 0) {
+					var invoiceAllowance = {};
+					invoiceAllowance["name"] = "折扣";
+					invoiceAllowance["count"] = matchedOrder["allowance"];
+					invoiceAllowance["price"] = "";
+					invoiceData["allowance"] = invoiceAllowance;
+				}
+
+				if (orderAttr == "total_price") {
+					var invoiceTotal_price = {};
+					invoiceTotal_price["name"] = "总计";
+					invoiceTotal_price["count"] = "";
+					invoiceTotal_price["price"] = matchedOrder["total_price"];
+
+					invoiceData["total_price"] = invoiceTotal_price;
+				}
+			}
+		}
+	}
+
+	return invoiceData;
+}
+
 function invoiceOrderTable(invoiceData) {
+	var orderDivBegin = "<div>";
+	var orderDivEnd = "</div><div id='checkOrderResult'></div>";
 	var orderTableBegin="<table>";
 	var orderTableEnd="</table>";
 	var orderTableRowBegin="<tr>";
@@ -549,7 +619,7 @@ function invoiceOrderTable(invoiceData) {
 	var orderTableColumnEnd="</td>";
 	var orderTableFirstRow = "<tr><td>商品名称</td><td>数量</td><td>价格</td></tr>";
 	var orderTableButton ='<tr style="text-align: center;"><td><input id="checkOrderUpdateButton" type="button" value="Update" /></td><td><input id="checkOrderCancelButton" type="button" value="Cancel" /></td></tr>';
-	var orderTable = orderTableBegin;
+	var orderTable = orderDivBegin + orderTableBegin;
 	orderTable = orderTable + orderTableFirstRow;
 	if(invoiceData != null) {
 		for(var rowAttr in invoiceData) {
@@ -714,6 +784,8 @@ function invoiceOrderTable(invoiceData) {
 		}
 		orderTable = orderTable + orderTableButton;
 		orderTable = orderTable + orderTableEnd;
+		orderTable = orderTable + orderDivEnd;
+		
 	}
 	return orderTable;
 }

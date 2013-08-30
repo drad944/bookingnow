@@ -1464,6 +1464,14 @@ public class OrderService implements IOrderService{
 		}
 		return null;
 	}
+	
+	@Override
+	public Order searchMaxFullOrderByPrimaryKey(Long id) {
+		if (id != null) {
+			return orderDao.selectFullOrderByPrimaryKey(id);
+		}
+		return null;
+	}
 
 	@Override
 	public MyResult switchStatusForOrder(Order order) {

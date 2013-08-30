@@ -70,6 +70,16 @@ public class OrderAction extends BaseAction{
 		return "searchOrderFail";
 	}
 	
+	public String searchFullOrder(){
+		if (order != null && order.getId() != null) {
+			order = orderService.searchMaxFullOrderByPrimaryKey(order.getId());
+			return "searchFullOrderSuccess";
+		}
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
+		return "Fail";
+	}
+	
 	public String searchFoodsInOrder(){
 		if (params != null && params.getOrder_id() != null) {
 			order = orderService.searchOrderById(params.getOrder_id());
