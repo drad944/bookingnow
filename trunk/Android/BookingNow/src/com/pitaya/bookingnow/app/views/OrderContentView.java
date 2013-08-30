@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.model.*;
+import com.pitaya.bookingnow.app.service.EnhancedMessageService;
 import com.pitaya.bookingnow.app.service.UserManager;
 import com.pitaya.bookingnow.app.util.Constants;
 
@@ -28,6 +29,20 @@ public class OrderContentView extends BaseContentView{
 	
 	public OrderContentView(String key, Context context, SlideContent home) {
 		super(key, context, home);
+	}
+	
+	@Override
+	public void onServiceConnected(EnhancedMessageService service){
+		if(mLeftView != null){
+			mLeftView.onServiceConnected(service);
+		}
+	}
+	
+	@Override
+	public void onServiceDisconnected(){
+		if(mLeftView != null){
+			mLeftView.onServiceDisconnected();
+		}
 	}
 	
 	@Override
@@ -72,13 +87,14 @@ public class OrderContentView extends BaseContentView{
 					break;
 			}
 		}
+		
 		if(mLeftView == null){
 			Log.e(TAG, "Unsupported user role:" + UserManager.getUserRole(this.mContext));
 			return;
 		}
 		fragmentTransaction.replace(R.id.orderlist, mLeftView);
 		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-		fragmentTransaction.commit();
+		fragmentTransaction.commitAllowingStateLoss();
 	}
 	
 	@Override
@@ -90,7 +106,7 @@ public class OrderContentView extends BaseContentView{
 			fragmentTransaction.remove(((FragmentActivity)this.mContext).getSupportFragmentManager().findFragmentById(R.id.orderdetail));
 		}
 		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-		fragmentTransaction.commit();
+		fragmentTransaction.commitAllowingStateLoss();
 		if(this.mView != null){
 			container.removeView(this.mView);
 		}

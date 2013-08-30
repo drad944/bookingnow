@@ -40,6 +40,7 @@ import com.pitaya.bookingnow.app.model.CookingItem;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.DataService;
+import com.pitaya.bookingnow.app.service.EnhancedMessageService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
 import com.pitaya.bookingnow.app.service.MessageService;
 import com.pitaya.bookingnow.app.service.OrderService;
@@ -67,7 +68,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		private CustomerOrderDetailAdapter mOrderPreviewAdapter;
 		
 		private MessageHandler mMessageHandler;
-		private MessageService mMessageService;
+		private EnhancedMessageService mMessageService;
 		private PopupWindow mPopupWindow;
 		private ListView mOrderPreviewView;
 		protected boolean mIsBound = false;
@@ -110,8 +111,22 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			}
 		}
 		
+		public void onServiceConnected(EnhancedMessageService service){
+			mMessageService = service;
+			mIsBound = true;
+			for(String category : getMessageCategories()){
+				mMessageService.registerHandler(category, mMessageHandler);
+			}
+		}
+		
+		public void onServiceDisconnected(){
+			mMessageService.unregisterHandler(mMessageHandler);
+			mMessageService = null;
+			mIsBound = false;
+		}
+		
 		protected void doBindService() {
-			this.getActivity().bindService(new Intent(this.getActivity(), MessageService.class), 
+			this.getActivity().bindService(new Intent(this.getActivity(), EnhancedMessageService.class), 
 					getServiceConnection(), Context.BIND_AUTO_CREATE);
 		}
 		
@@ -122,7 +137,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		        mIsBound = false;
 		    }
 		}
-		
+
 		protected ArrayList<String> getMessageCategories(){
 			ArrayList<String> categories = new ArrayList<String>();
 			categories.add(Constants.ORDER_MESSAGE);
@@ -135,7 +150,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		
 				@Override
 				public void onServiceConnected(ComponentName name, IBinder service) {
-					mMessageService = ((MessageService.MessageBinder)service).getService();
+					mMessageService = ((EnhancedMessageService.MessageBinder)service).getService();
 					mIsBound = true;
 					for(String category : getMessageCategories()){
 						mMessageService.registerHandler(category, mMessageHandler);
@@ -268,7 +283,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 					}
 					
 				});
-				this.doBindService();
+				//this.doBindService();
 			} else {
 				showOrderBtn.setVisibility(View.GONE);
 			}
@@ -301,7 +316,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		
 		@Override
 		public void onDestroyView(){
-			this.doUnbindService();
+			//this.doUnbindService();
 			super.onDestroyView();
 			this.mFoodMenuAdapter.recycle();
 			System.gc();

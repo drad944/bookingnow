@@ -7,18 +7,20 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.util.Log;
 
-public class ServerAgent extends Thread {
+public class MessageReceiver extends Thread {
 
-	private static String TAG = "ServerAgentThread";
+	private static String TAG = "MessageReceiver";
 	private Socket socket;
     private BufferedReader in;
     private BufferedWriter bwriter;
     private EnhancedMessageService service;
 
-    public ServerAgent(Socket s, EnhancedMessageService ms) {
+    public MessageReceiver(Socket s, EnhancedMessageService ms) {
     	this.service = ms;
     	this.socket = s;
     }
@@ -31,14 +33,9 @@ public class ServerAgent extends Thread {
 			this.sendMessage("ready");
         	String message = null;
         	while((message = in.readLine()) != null){
-        		if(message.equals("bye")){
-        			break;
-        		} else {
-        			this.service.onMessage(message, this);
-        		}
+        		this.service.onMessage(message, this);
         	}
         } catch (IOException e) {
-        	Log.e(TAG, "Fail to receive message from server");
 			e.printStackTrace();
 		} finally {
 			this.shutdown();
@@ -73,7 +70,7 @@ public class ServerAgent extends Thread {
 		 if (socket != null && !socket.isClosed()){
 			try {
 				socket.close();
-				Log.d(TAG, "Success to shutdown the connection to server");
+				Log.d(TAG, "Connection is closed by server.");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

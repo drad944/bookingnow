@@ -40,9 +40,13 @@ public class HttpService {
 	
 	private static final String TAG = "HttpService";
 	public static String IP = "10.111.3.116";
+	//Local socket
 	public static int PORT = 25252;
+	//Server socket 
 	public static int REMOTE_PORT = 19191;
+	//Server and local UDP checking socket
 	public static int UDPPORT = 19192;
+	
 	private static String URL = "http://10.111.3.116:9999/Booking/";
 	private static ExecutorService pool;
 	

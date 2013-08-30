@@ -116,7 +116,7 @@ public class WaiterOrderLeftView extends OrderLeftView{
 			}
 			
 		});
-		this.doBindService();
+		//this.doBindService();
 		return view;
 	}
 	

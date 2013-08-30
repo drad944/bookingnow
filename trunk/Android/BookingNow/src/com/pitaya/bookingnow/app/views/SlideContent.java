@@ -2,6 +2,7 @@ package com.pitaya.bookingnow.app.views;
 
 import java.util.ArrayList;
 
+import com.pitaya.bookingnow.app.HomeActivity;
 import com.pitaya.bookingnow.app.util.ContentUtil;
 
 import android.content.Context;
@@ -13,9 +14,11 @@ public class SlideContent extends RelativeLayout {
 	private LeftMenuView mMenuView;
 	private ContentView mContentView;
 	private ArrayList<BaseContentView> contentViews;
+	private HomeActivity mHome;
 	
 	public SlideContent(Context context, int menuwidth, ArrayList<BaseContentView> views) {
 		super(context);
+		mHome = (HomeActivity)context;
 		init(context, menuwidth);
 		this.contentViews = views;
 	}
@@ -38,6 +41,10 @@ public class SlideContent extends RelativeLayout {
 		return this.mContentView.getCurrent();
 	}
 	
+	public BaseContentView getCurrentContentView(){
+		return this.mContentView.getCurrentView();
+	}
+	
 	public void selectItem(String key){
 		String currentKey = this.mContentView.getCurrent();
 		if(currentKey != null && currentKey.equals(key)){
@@ -45,9 +52,15 @@ public class SlideContent extends RelativeLayout {
 		} else {
 			for(int i=0; i < this.contentViews.size(); i++){
 				if(key.equals(this.contentViews.get(i).getKey())){
+					if(this.mHome.isBound() && this.getCurrentContentView() != null){
+						this.getCurrentContentView().onServiceDisconnected();
+					}
 					this.setContent(this.contentViews.get(i));
 					if(!mContentView.isMenuOFF()){
 						mContentView.closeMenu();
+					}
+					if(this.mHome.isBound() && this.getCurrentContentView() != null){
+						this.getCurrentContentView().onServiceConnected(this.mHome.getMessageService());
 					}
 					break;
 				}
@@ -58,9 +71,15 @@ public class SlideContent extends RelativeLayout {
 	public void refreshItem(String key){
 		for(int i=0; i < this.contentViews.size(); i++){
 			if(key.equals(this.contentViews.get(i).getKey())){
+				if(this.mHome.isBound() && this.getCurrentContentView() != null){
+					this.getCurrentContentView().onServiceDisconnected();
+				}
 				this.setContent(this.contentViews.get(i));
 				if(!mContentView.isMenuOFF()){
 					mContentView.closeMenu();
+				}
+				if(this.mHome.isBound() && this.getCurrentContentView() != null){
+					this.getCurrentContentView().onServiceConnected(this.mHome.getMessageService());
 				}
 				break;
 			}

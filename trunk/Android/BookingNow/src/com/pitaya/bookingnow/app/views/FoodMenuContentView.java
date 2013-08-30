@@ -6,6 +6,7 @@ import org.json.JSONArray;
 
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.model.Order;
+import com.pitaya.bookingnow.app.service.EnhancedMessageService;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +31,20 @@ public class FoodMenuContentView extends BaseContentView{
 	
 	public FoodMenuContentView(String key, Context context, SlideContent home) {
 		super(key, context, home);
+	}
+	
+	@Override
+	public void onServiceConnected(EnhancedMessageService service){
+		if(mFragment != null){
+			mFragment.onServiceConnected(service);
+		}
+	}
+	
+	@Override
+	public void onServiceDisconnected(){
+		if(mFragment != null){
+			mFragment.onServiceDisconnected();
+		}
 	}
 
 	@Override
