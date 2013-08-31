@@ -4,6 +4,7 @@ public class ClientInfo {
 	
 	private Long userid;
 	private Integer roleType;
+	private String name;
 	private Boolean isAuth;
 	
 	public void setUserid(Long id){
@@ -22,6 +23,13 @@ public class ClientInfo {
 		return this.roleType;
 	}
 	
+	public void setName(String name){
+		this.name = name;
+	}
+	
+	public String getName(){
+		return this.name;
+	}
 	public void setIsAuth(boolean flag){
 		this.isAuth = flag;
 	}
