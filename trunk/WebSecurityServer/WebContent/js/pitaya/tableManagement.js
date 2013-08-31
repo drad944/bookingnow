@@ -412,14 +412,18 @@ function parseTableGridHtml() {
 			{"table.enabled": true}, 
 			function(matchedtables){
 				var option = {
-						lng: 'zh-CN',
-						fallbackLng: 'zh-CN',
+						lng: 'zh',
+						fallbackLng: 'zh',
 				//		fallbackLng: 'en-US',
 				//		lng: 'en-US',
 						resGetPath: 'resources/locales/__lng__/__ns__.json',
+						resPostPath: 'resources/locales/__lng__/__ns__.json',
 						getAsync: false,
+						postAsync: false,
 						ns: 'bookingnow.content.tableManagement',
-						load:'current'
+						fallbackToDefaultNS: true,
+						load:'current',
+						useCookie: false
 					};
 				 
 				i18n.init(option);
