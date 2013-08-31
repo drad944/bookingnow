@@ -145,6 +145,7 @@ public class ClientInstance {
     }
     
     public synchronized boolean doSendMessage(String msg) {
+    	this.messageQueue.add(msg);
     	if(this.mConnectionCloser != null){
     		this.mConnectionCloser.cancel();
     		this.mConnectionCloser = null;
@@ -168,7 +169,6 @@ public class ClientInstance {
 			this.disconnect();
 			return false;
 		}
-		this.messageQueue.add(msg);
     	try {
     		String recvMessage = null;
     		if(isReused == false){
@@ -255,7 +255,7 @@ public class ClientInstance {
 			 e.printStackTrace();
 		}
 		socket = null;
-		logger.debug("Success to shutdown connection to client [" + this.userId + "]");
+		logger.debug("Close connection to client [" + this.userId + "]");
 	}
     
 }

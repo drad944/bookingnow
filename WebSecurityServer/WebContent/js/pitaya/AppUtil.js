@@ -1,3 +1,5 @@
+var currentPage = {};
+
 var AppUtil = {
 		
 	setStyle : function(domObj, parameters){
@@ -204,13 +206,16 @@ function parseMenuHtml() {
     var records = dataAdapter.getRecordsHierarchy('id', 'parentid', 'items', [{ name: 'text', map: 'label'}]);
     $('#myMenu').jqxMenu({ source: records, height: 30, autoOpen: true,showTopLevelArrows: true, theme: theme, width: '800px' });
     $("#myMenu").on('itemclick', function (event) {
+    	if(currentPage.leave){
+    		currentPage.leave();
+    	}
         $("#eventLog").text("Id: " + event.args.id + ", Text: " + $(event.args).text());
         if(event.args.id == 1) {
         	openContentPage('framework_main','page/common/orderManagement.html','content');
         	parseOrderGridHtml();
         }else if(event.args.id == 2) {
         	openContentPage('framework_main','page/common/foodManagement.html','content');
-        	parseFoodGridHtml();
+        	currentPage = foodManagement;
         }else if(event.args.id == 3) {
         	openContentPage('framework_main','page/common/userManagement.html','content');
         	parseUserGridHtml();
@@ -248,6 +253,9 @@ function parseMenuHtml() {
         	openContentPage('framework_main','page/common/checkoutManagement.html','content');
         	parseCheckOrderGridHtml();
         }
+    	if(currentPage.visit){
+    		currentPage.visit();
+    	}
     });
     var centerItems = function () {
         var firstItem = $($("#myMenu ul:first").children()[0]);

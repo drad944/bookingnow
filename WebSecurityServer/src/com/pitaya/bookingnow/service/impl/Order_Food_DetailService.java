@@ -148,6 +148,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 							OrderDetailMessage message = new OrderDetailMessage();
 							message.setUpdateItems(detailist);
 							this.messageService.sendMessageToOne(order.getUser_id(), message);
+							this.messageService.sendMessageToGroup(Constants.ROLE_CHEF, message);
 						}
 					} else {
 						throw new RuntimeException("failed to update food detail status in DB");
