@@ -1,0 +1,124 @@
+{
+	"department":{
+			"BUSSINESS":"USER_DEPARTMENT_BUSSINESS",
+			"PRODUCTION":"USER_DEPARTMENT_PRODUCTION",
+			"FINANCE":"USER_DEPARTMENT_FINANCE",
+			"PERSONNEL":"USER_DEPARTMENT_PERSONNEL",
+			"DEVERLOPE":"USER_DEPARTMENT_DEVERLOPE",
+			"MANAGEMENT":"USER_DEPARTMENT_MANAGEMENT"
+	},
+	"role":{
+			"ANONYMOUS":"ROLE_ANONYMOUS",
+			"CUSTOMER":"ROLE_CUSTOMER",
+			"CUSTOMER_VIP1":"ROLE_CUSTOMER_VIP1",
+			"CUSTOMER_VIP2":"ROLE_CUSTOMER_VIP2",
+			"WELCOMER":"ROLE_WELCOMER",
+			"CHEF":"ROLE_CHEF",
+			"WAITER":"ROLE_WAITER",
+			"CASHIER":"ROLE_CASHIER",
+			"MANAGER":"ROLE_MANAGER",
+			"ADMIN":"ROLE_ADMIN"
+	},
+	"sex":{
+			"male":"man",
+			"female":"female",
+			"other":"G"
+	},
+	"service":{
+		"accept":"I accept terms"
+	},
+	"validation":{
+		"message":{
+			"requireAccount":"Account is required!",
+			"accountLength":"Your account must be between 3 and 12 characters!",
+			"requireUsername":"Real Name is required!",
+			"usernameLength":"Your name must be between 3 and 12 characters!",
+			"requireUsernameLetter":"Your real name must contain only letters!",
+			"requirePassword":"Password is required!",
+			"passwordLength":"Your password must be between 6 and 20 characters!",
+			"requireConfirmPassword":"Confirm Password is required!",
+			"NomatchPassword":"Confirm Passwords does not match!",
+			"birthdayRange":"Your birth date must be between 1/1/1900 and __year__",
+			"requireEmail":"E-mail is required!",
+			"invalidEmail":"Invalid e-mail!",
+			"acceptService":"You have to accept the terms",
+			"requireSelectOneRow":"please select one row to update."
+		}
+	},
+	"result":{
+		"insertSuccess":"congratulations,insert user successfully!",
+		"insertFail":"sorry,insert user failed,please check user info!",
+		"updateSuccess":"congratulations,update user successfully!",
+		"updateFail":"sorry,update user failed,please check user info!",
+		"deleteSuccess":"congratulations,delete user successfully!",
+		"deleteFail":"sorry,delete user failed,please check user info!",
+		"searchSuccess":"congratulations,search user successfully!",
+		"searchFail":"sorry,search user failed,please check user info!"
+	},
+	"field":{
+			"id":"Id",
+			"modifyTime":"ModifyTime",
+			"image_size":"Image_size",
+			"image_relative_path":"Image_relative_path",
+			"account":"Account",
+			"name":"Name",
+			"password":"Password",
+			"phone":"Phone",
+			"sex":"Sex",
+			"email":"Email",
+			"address":"Address",
+			"birthday":"Birthday",
+			"description":"Description",
+			"department":"Department",
+			"sub_system":"Sub_system",
+			"roles":"Roles",
+			"image":"Image",
+			"image_absolute_path":"Image_absolute_path",
+			"enabled":"Enabled",
+			"xx":"XX"
+	},
+	"fieldLabel":{
+			"id":"Id:",
+			"modifyTime":"ModifyTime:",
+			"image_size":"Image_size:",
+			"image_relative_path":"Image_relative_path:",
+			"account":"Account:",
+			"name":"Name:",
+			"password":"Password:",
+			"confirmPassword":"Confirm password:",
+			"phone":"Phone:",
+			"sex":"Sex:",
+			"email":"Email:",
+			"address":"Address:",
+			"birthday":"Birthday:",
+			"description":"Description:",
+			"department":"Department:",
+			"sub_system":"Sub_system:",
+			"role_Details":"Role_Details:",
+			"roles":"Roles:",
+			"image":"Image:",
+			"image_absolute_path":"Image_absolute_path:",
+			"enabled":"Enabled:",
+			"xx":"XX:"
+	},
+	"grid":{
+			"selectRow":"select row index : __index__"
+	},
+	"button":{
+			"reset":"Reset",
+			"cancel":"Cancel",
+			"update":"Update",
+			"register":"Register",
+			"operationUserGrid":{
+				"addUserRow":"Add New Row",
+				"updateUserRow":"Update Selected Row",
+				"deleteUserRow":"Delete Selected Row",
+				"addRoleForUserRow":"Set Role For User"
+			}
+	},
+	"window":{
+			"updateWindow":"Update User",
+			"registerWindow":"Register User"
+	}
+	
+}

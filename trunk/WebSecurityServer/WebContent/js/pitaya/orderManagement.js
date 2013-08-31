@@ -314,9 +314,10 @@ function parseOrderGridHtml() {
 			{"order.enabled": true}, 
 			function(matchedorders){
 	var option = {
-			fallbackLng: 'en-US',
-			lng: 'en-US',
-	//		lng: 'zh-CN',
+			lng: 'zh-CN',
+			fallbackLng: 'zh-CN',
+	//		fallbackLng: 'en-US',
+	//		lng: 'en-US',
 			resGetPath: 'resources/locales/__lng__/__ns__.json',
 			getAsync: false,
 			ns: 'bookingnow.content.orderManagement',

@@ -1,25 +1,8 @@
 
 function emptyUpdateCheckOrderWindow(){
-	//init registerCheckOrderWindow widget data
-	$("#updateCheckOrderPhoneInput").jqxMaskedInput({value: null });
-	$('#updateCheckOrderBirthdayInput').jqxDateTimeInput({value:findDateTime("2000-01-01 00:00:00")});
-	
-	$("#updateCheckOrderSexRadioButton1").jqxRadioButton({checked: true});
-    $("#updateCheckOrderSexRadioButton2").jqxRadioButton({checked: false});
-    $('#acceptInput').jqxCheckBox({checked: false});
-
-	$("updateCheckOrderSexInput").val("男");
-	$("#updateCheckOrderIdInput").val(null);
-	$("#updateCheckOrderAccountInput").val(null);
-	$("#updateCheckOrderRealNameInput").val(null);
-	$("#updateCheckOrderPasswordInput").val(null);
-	$("#updateCheckOrderPasswordConfirmInput").val(null);
-	$("#updateCheckOrderAddressInput").val(null);
-	
-	$("#updateCheckOrderDepartmentInput").val(null);
-	
-	$("#updateCheckOrderEmailInput").val(null);
-	$("#updateCheckOrderResult").text("");
+	$("#checkOrderDiv").val(null);
+	$("#checkOrderDiv").html(null);
+	$("#checkOrderResult").text("");
 }
 
 function initUpdateCheckOrderElements() {
@@ -66,19 +49,19 @@ function formatUpdateCheckOrderElements(rowData) {
 }
 
 function addUpdateCheckOrderEventListeners() {
-	$('#updateCheckOrderPopupWindow').on('close', function (event) { 
+	$('#checkOrderPopupWindow').on('close', function (event) { 
 		emptyUpdateCheckOrderWindow();
-		$('#updateCheckOrderInfoForm').jqxValidator('hide');
+		//$('#updateCheckOrderInfoForm').jqxValidator('hide');
       //  $('#updateCheckOrderPopupWindow').jqxWindow('close');
 	});
-	$('#updateCheckOrderUpdateButton').on('click', function () {
-        $('#updateCheckOrderInfoForm').jqxValidator('validate');
+	$('#checkOrderUpdateButton').on('click', function () {
+       // $('#updateCheckOrderInfoForm').jqxValidator('validate');
     });
     
     
-    $("#updateCheckOrderCancelButton").on('click', function (event) {
-    	$('#updateCheckOrderInfoForm').jqxValidator('hide');
-        $('#updateCheckOrderPopupWindow').jqxWindow('close');
+    $("#checkOrderCancelButton").on('click', function (event) {
+    	//$('#updateCheckOrderInfoForm').jqxValidator('hide');
+        $('#checkOrderPopupWindow').jqxWindow('close');
     });
         
 }
@@ -177,21 +160,6 @@ function addOperateCheckOrderGridEventListeners() {
 	    
 	});
     
-	// show the popup window
-	$("#addCheckOrderRowButton").on('click', function () {
-	//	openContentPage('addCheckOrderPopupWindowDiv','page/common/addCheckOrderPopupWindow.html','content');
-		
-		var offset = $("#checkOrderDataGrid").offset();
-		var position = {};
-		position.x = parseInt(offset.left) + 200;
-		position.y = parseInt(offset.top) - 200;
-		
-		
-		// show the popup window.
-		initRegisterCheckOrderWindow(position);
-		
-			
-	});
 	
 	// delete row.
 	$("#deleteCheckOrderRowButton").on('click', function () {
@@ -222,9 +190,10 @@ function parseCheckOrderGridHtml() {
 			{"order.enabled": true,"order.status":5}, 
 			function(matchedcheckOrders){
 	var option = {
-			fallbackLng: 'en-US',
-			lng: 'en-US',
-	//		lng: 'zh-CN',
+			lng: 'zh-CN',
+			fallbackLng: 'zh-CN',
+	//		fallbackLng: 'en-US',
+	//		lng: 'en-US',
 			resGetPath: 'resources/locales/__lng__/__ns__.json',
 			getAsync: false,
 			ns: 'bookingnow.content.checkOrderManagement',
@@ -618,7 +587,7 @@ function invoiceOrderTable(invoiceData) {
 	var orderTableColumnBegin="<td>";
 	var orderTableColumnEnd="</td>";
 	var orderTableFirstRow = "<tr><td>商品名称</td><td>数量</td><td>价格</td></tr>";
-	var orderTableButton ='<tr style="text-align: center;"><td><input id="checkOrderUpdateButton" type="button" value="Update" /></td><td><input id="checkOrderCancelButton" type="button" value="Cancel" /></td></tr>';
+	var orderTableButton ='<tr style="text-align: center;"><td><input id="checkOrderUpdateButton" type="button" value="checkout" /></td><td><input id="checkOrderCancelButton" type="button" value="Cancel" /></td></tr>';
 	var orderTable = orderDivBegin + orderTableBegin;
 	orderTable = orderTable + orderTableFirstRow;
 	if(invoiceData != null) {

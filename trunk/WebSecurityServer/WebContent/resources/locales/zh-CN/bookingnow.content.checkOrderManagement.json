@@ -1,0 +1,81 @@
+{
+	"status":{
+			"NEW":"NEW",
+			"WELCOMER_NEW":"WELCOMER_NEW",
+			"WAITING":"WAITING",
+			"COMMITED":"COMMITED",
+			"PAYING":"PAYING",
+			"FINISHED":"FINISHED",
+			"UNAVAILABLE":"UNAVAILABLE",
+			"AVAILABLE":"AVAILABLE"
+	},
+	"result":{
+		"insertSuccess":"congratulations,insert table successfully!",
+		"insertFail":"sorry,insert table failed,please check table info!",
+		"updateSuccess":"congratulations,update table successfully!",
+		"updateFail":"sorry,update table failed,please check table info!",
+		"deleteSuccess":"congratulations,delete table successfully!",
+		"deleteFail":"sorry,delete table failed,please check table info!",
+		"searchSuccess":"congratulations,search table successfully!",
+		"searchFail":"sorry,search table failed,please check table info!"
+	},
+	"field":{
+			"id":"Id",
+			"status":"Status",
+			"user_id":"User_id",
+			"customer_id":"Customer_id",
+			"customer_count":"Customer_count",
+			"modifyTime":"ModifyTime",
+			"allowance":"Allowance",
+			"total_price":"Total_price",
+			"prePay":"PrePay",
+			"submit_time":"Submit_time",
+			"enabled":"Enabled",
+			"user":"User",
+			"foods":"Foods",
+			"tables":"Tables",
+			"customer":"Customer",
+			"table_details":"Table_details",
+			"food_details":"Food_details",
+			"xx":"XX"
+	},
+	"fieldLabel":{
+			"id":"Id:",
+			"status":"Status:",
+			"user_id":"User_id:",
+			"customer_id":"Customer_id:",
+			"customer_count":"Customer_count:",
+			"modifyTime":"ModifyTime:",
+			"allowance":"Allowance:",
+			"total_price":"Total_price:",
+			"prePay":"PrePay:",
+			"submit_time":"Submit_time:",
+			"enabled":"Enabled:",
+			"user":"User:",
+			"foods":"Foods:",
+			"tables":"Tables:",
+			"customer":"Customer:",
+			"table_details":"Table_details:",
+			"food_details":"Food_details:",
+			"xx":"XX:"
+	},
+	"grid":{
+			"selectRow":"select row index : __index__"
+	},
+	"button":{
+			"reset":"Reset",
+			"cancel":"Cancel",
+			"update":"Update",
+			"register":"Register",
+			"operationTableGrid":{
+				"addTableRow":"Add New Row",
+				"updateTableRow":"Update Selected Row",
+				"deleteTableRow":"Delete Selected Row"
+				
+			}
+	},
+	"window":{
+			"updateWindow":"Update Table",
+			"registerWindow":"Register Table"
+	}
+}
