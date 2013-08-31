@@ -14,9 +14,13 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/*
+ * Receive message from connected client and the socket connection is controlled by 
+ * such client.
+ */
 public class ClientThread extends Thread{
 	
-	private static Log logger =  LogFactory.getLog(ClientAgent.class);
+	private static Log logger =  LogFactory.getLog(ClientThread.class);
 	Socket client_socket;
 	EnhancedMessageService _service;
 	OutputStreamWriter out;
@@ -71,7 +75,7 @@ public class ClientThread extends Thread{
 				 ex.printStackTrace();
 			 }
 	         client_socket = null;
-	         logger.debug("Finished");
+	         logger.debug("Closed by client");
 		 }
 	}
 

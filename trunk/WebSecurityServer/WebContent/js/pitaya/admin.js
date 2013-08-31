@@ -49,10 +49,14 @@ var adminManagement = {
 	},
 
 	visit : function(){
+		var me = this;
 		AppUtil.request("getConnectionInfo.action", null, function(result){
 			if(result){
-		    	this.setupAdminView(result);
+				me.setupAdminView(result);
 			}
+			notification.subscribeTopic("order", function(event){
+				alert(event);
+			});
 		}, function(){
 			alert("网络错误!");
 		});
