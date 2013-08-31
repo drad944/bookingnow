@@ -1000,11 +1000,18 @@ public class OrderService implements IOrderService{
 					order.setStatus(Constants.ORDER_UNAVAILABLE);
 					if (orderDao.updateByPrimaryKeySelective(order) == 1) {
 						result.setExecuteResult(true);
+						if(realOrder.getStatus() == Constants.ORDER_WELCOMER_NEW
+								|| realOrder.getStatus() == Constants.ORDER_WAITING){
+								OrderMessage message = new OrderMessage();
+								message.setAction(Constants.ACTION_REMOVE);
+								message.setOrderId(order.getId());
+								this.messageService.sendMessageToGroup(Constants.ROLE_WAITER, message);
+						}
 					}else {
 						throw new RuntimeException("can not cancel order in DB.");
 					}
 				} else {
-					result.getErrorDetails().put("Error", "订单状态错误");
+					result.getErrorDetails().put("Error", "当前订单状态不允许取消");
 				}
 			} else {
 				result.getErrorDetails().put("Error", "无效的订单");
