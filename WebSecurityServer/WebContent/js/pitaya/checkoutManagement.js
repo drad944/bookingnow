@@ -1,60 +1,25 @@
 
-function emptyUpdateCheckOrderWindow(){
+function emptyCheckOrderWindow(){
 	$("#checkOrderDiv").val(null);
 	$("#checkOrderDiv").html(null);
 	$("#checkOrderResult").text("");
 }
 
-function initUpdateCheckOrderElements() {
+function initCheckOrderElements() {
 //	var theme = getDemoTheme();
     $("#checkOrderDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
-    $('#checkOrderUpdateButton').jqxButton({ width: 60, height: 25, theme: theme });
+    $('#checkoutOrderButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#checkOrderCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
 };
 
-function formatUpdateCheckOrderElements(rowData) {
-    
-    var d1 = {};
-	if (rowData["birthday"] != null) {
-		d1 = findDateTime(rowData["birthday"]);
-	}else {
-		d1= new Date();
-	}
-    $('#updateCheckOrderBirthdayInput').jqxDateTimeInput({formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
-    
-    if(rowData["sex"] != null && rowData["sex"] == '女') {
-    	$("#updateCheckOrderSexRadioButton1").jqxRadioButton({checked: false});
-    	$("#updateCheckOrderSexRadioButton2").jqxRadioButton({checked: true});
-    }else {
-    	$("#updateCheckOrderSexRadioButton1").jqxRadioButton({checked: true});
-    	$("#updateCheckOrderSexRadioButton2").jqxRadioButton({checked: false});
-    }
-    
-    
-    $("#updateCheckOrderIdInput").val(rowData["id"]);
-	$("#updateCheckOrderAccountInput").val(rowData["account"]);
-	$("#updateCheckOrderRealNameInput").val(rowData["name"]);
-	$("#updateCheckOrderPasswordInput").val(rowData["password"]);
-	$("#updateCheckOrderPasswordConfirmInput").val(rowData["password"]);
-	$("#updateCheckOrderAddressInput").val(rowData["address"]);
-	
-	$("#updateCheckOrderDepartmentInput").val(rowData["department"]);
-	
-	$("#updateCheckOrderEmailInput").val(rowData["email"]);
-	$("#updateCheckOrderPhoneInput").val(rowData["phone"]);
-	$("#updateCheckOrderSexInput").val(rowData["sex"]);
-    
-	// Create a jqxComboBox
-	$("#updateCheckOrderDepartmentCombobox").jqxComboBox({ selectedIndex: findDepartmentValue($("#updateCheckOrderDepartmentInput").val()) - 2});
-}
 
-function addUpdateCheckOrderEventListeners() {
+function addCheckOrderEventListeners() {
 	$('#checkOrderPopupWindow').on('close', function (event) { 
-		emptyUpdateCheckOrderWindow();
+		emptyCheckOrderWindow();
 		//$('#updateCheckOrderInfoForm').jqxValidator('hide');
       //  $('#updateCheckOrderPopupWindow').jqxWindow('close');
 	});
-	$('#checkOrderUpdateButton').on('click', function () {
+	$('#checkoutOrderButton').on('click', function () {
        // $('#updateCheckOrderInfoForm').jqxValidator('validate');
     });
     
@@ -66,7 +31,7 @@ function addUpdateCheckOrderEventListeners() {
         
 }
 
-function initUpdateCheckOrderWindow(rowData,position) {
+function initCheckOrderWindow(rowData,position) {
 	$("#checkOrderPopupWindow").removeAttr("style");
 	
 //	var theme = getDemoTheme();
@@ -75,10 +40,10 @@ function initUpdateCheckOrderWindow(rowData,position) {
 			order = formatCheckOrderData(order);
 			var invoiceOrderHtml = invoiceOrderTable(order);
 			$("#checkOrderDiv").html(invoiceOrderHtml);
-			initUpdateCheckOrderElements();
+			initCheckOrderElements();
 			// initialize the popup window and buttons.
 		    $("#checkOrderPopupWindow").jqxWindow({
-		    	position:position, isModal: true,width: 350, height: 300, resizable: true, theme: theme, cancelButton: $("#updateCheckOrderCancelButton"), modalOpacity: 0.01,
+		    	position:position, isModal: true,width: 350, height: 300, resizable: true, theme: theme, cancelButton: $("#checkOrderCancelButton"), modalOpacity: 0.01,
 		    	initContent: function () {
 		            $('#checkOrderPopupWindow').jqxWindow('focus');
 		        }
@@ -137,12 +102,12 @@ function updateCheckOrder() {
 function initOperateCheckOrderGridElements() {
 //	var theme = getDemoTheme();
 	$("#deleteCheckOrderRowButton").jqxButton({ theme: theme });
-	$("#updateCheckOrderRowButton").jqxButton({ theme: theme });
+	$("#checkOrderRowButton").jqxButton({ theme: theme });
 }	
 
 function addOperateCheckOrderGridEventListeners() {
 	// update row.
-	$("#updateCheckOrderRowButton").on('click', function () {
+	$("#checkOrderRowButton").on('click', function () {
 		selectedupdaterowindex = $("#checkOrderDataGrid").jqxGrid('getselectedrowindex');
 		//id = $("#checkOrderDataGrid").jqxGrid('getrowid', selectedrowindex);
 	    rowData = $('#checkOrderDataGrid').jqxGrid('getrowdata', selectedupdaterowindex);
@@ -154,34 +119,10 @@ function addOperateCheckOrderGridEventListeners() {
 			position.x = parseInt(offset.left) + 200;
 			position.y = parseInt(offset.top) - 100;
 			
-			initUpdateCheckOrderWindow(rowData,position);
+			initCheckOrderWindow(rowData,position);
 		}
-	    
-	    
 	});
     
-	
-	// delete row.
-	$("#deleteCheckOrderRowButton").on('click', function () {
-	    var selectedrowindex = $("#checkOrderDataGrid").jqxGrid('getselectedrowindex');
-	    var rowscount = $("#checkOrderDataGrid").jqxGrid('getdatainformation').rowscount;
-	    if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
-	        //var id = $("#checkOrderDataGrid").jqxGrid('getrowid', selectedrowindex);
-	        
-	        var rowData = $('#checkOrderDataGrid').jqxGrid('getrowdata', selectedrowindex);
-	        $.post("removeCheckOrder.action", {"checkOrder.id": rowData["id"]},function(result){
-				if(result != null && result["executeResult"] != null && result["executeResult"] == true){
-					var id = $("#checkOrderDataGrid").jqxGrid('getrowid', selectedrowindex);
-                    var commit = $("#checkOrderDataGrid").jqxGrid('deleterow', id);
-	            	
-	            	if(commit != null) {
-	            		
-	            	}
-	            }
-			});
-	        
-	    }
-	});
 }
 
 
@@ -393,7 +334,7 @@ function parseCheckOrderGridHtml() {
 	addOperateCheckOrderGridEventListeners();
 	
 	
-	addUpdateCheckOrderEventListeners();
+	addCheckOrderEventListeners();
 	
 	});
 		
@@ -587,7 +528,7 @@ function invoiceOrderTable(invoiceData) {
 	var orderTableColumnBegin="<td>";
 	var orderTableColumnEnd="</td>";
 	var orderTableFirstRow = "<tr><td>商品名称</td><td>数量</td><td>价格</td></tr>";
-	var orderTableButton ='<tr style="text-align: center;"><td><input id="checkOrderUpdateButton" type="button" value="checkout" /></td><td><input id="checkOrderCancelButton" type="button" value="Cancel" /></td></tr>';
+	var orderTableButton ='<tr style="text-align: center;"><td><input id="checkoutOrderButton" type="button" value="checkout" /></td><td><input id="checkOrderCancelButton" type="button" value="Cancel" /></td></tr>';
 	var orderTable = orderDivBegin + orderTableBegin;
 	orderTable = orderTable + orderTableFirstRow;
 	if(invoiceData != null) {
