@@ -1,6 +1,3 @@
-/**
- * 
- */
 var AppUtil = {
 		
 	setStyle : function(domObj, parameters){
@@ -120,13 +117,15 @@ function removeElementFromPage(targetDiv) {
 
 function parseMenuHtml() {
 	var option = {
-			fallbackLng: 'en-US',
-			lng: 'en-US',
-	//		lng: 'zh-CN',
+	//		fallbackLng: 'en-US',
+	//		lng: 'en-US',
+			lng: 'zh-CN',
+			fallbackLng: 'zh-CN',
 			resGetPath: 'resources/locales/__lng__/__ns__.json',
 			getAsync: false,
 			ns: 'bookingnow.top.menu',
-			fallbackToDefaultNS: true
+			fallbackToDefaultNS: true,
+			load:'current'
 		};
 	i18n.init(option);
 	
@@ -137,13 +136,15 @@ function parseMenuHtml() {
         "text": i18n.t("menu.orderManagement.home"),
         "parentid": "-1",
         "subMenuWidth": '250px'
-    },
+    }
+    ,
     {
         "text": i18n.t("menu.foodManagement.home"),
         "id": "2",
         "parentid": "-1",
         "subMenuWidth": '250px'
-    }, {
+    }
+    , {
         "id": "3",
         "parentid": "-1",
         "text": i18n.t("menu.userManagement.home")
@@ -175,6 +176,10 @@ function parseMenuHtml() {
         "id": "10",
         "parentid": "-1",
         "text": i18n.t("menu.admin")
+    }, {
+        "id": "11",
+        "parentid": "1",
+        "text": i18n.t("menu.orderManagement.checkoutOrder")
     }];
     // prepare the data
     var source =
@@ -239,6 +244,9 @@ function parseMenuHtml() {
         }else if(event.args.id == 10) {
         	openContentPage('framework_main','page/common/admin.html','content');
         	init();
+        }else if(event.args.id == 11) {
+        	openContentPage('framework_main','page/common/checkoutManagement.html','content');
+        	parseCheckOrderGridHtml();
         }
     });
     var centerItems = function () {
@@ -255,6 +263,7 @@ function parseMenuHtml() {
     
     
     centerItems();
+    
     $(window).resize(function () {
         centerItems();
     });

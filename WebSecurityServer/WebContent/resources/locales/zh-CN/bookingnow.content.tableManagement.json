@@ -1,0 +1,60 @@
+{
+	"status":{
+			"EMPTY":"TABLE_EMPTY",
+			"BOOKING":"TABLE_BOOKING",
+			"USING":"TABLE_USING"
+	},
+	"result":{
+		"insertSuccess":"congratulations,insert table successfully!",
+		"insertFail":"sorry,insert table failed,please check table info!",
+		"updateSuccess":"congratulations,update table successfully!",
+		"updateFail":"sorry,update table failed,please check table info!",
+		"deleteSuccess":"congratulations,delete table successfully!",
+		"deleteFail":"sorry,delete table failed,please check table info!",
+		"searchSuccess":"congratulations,search table successfully!",
+		"searchFail":"sorry,search table failed,please check table info!"
+	},
+	"field":{
+			"id":"Id",
+			"status":"Status",
+			"minCustomerCount":"MinCustomerCount",
+			"maxCustomerCount":"MaxCustomerCount",
+			"address":"Address",
+			"indoorPrice":"IndoorPrice",
+			"enabled":"Enabled",
+			"xx":"XX"
+	},
+	"fieldLable":{
+			"id":"Id:",
+			"status":"Status:",
+			"minCustomerCount":"MinCustomerCount:",
+			"maxCustomerCount":"MaxCustomerCount:",
+			"address":"Address:",
+			"indoorPrice":"IndoorPrice:",
+			"enabled":"Enabled:",
+			"xx":"XX:"
+	},
+	"grid":{
+			"selectRow":"select row index : __index__"
+	},
+	"button":{
+			"reset":"Reset",
+			"cancel":"Cancel",
+			"update":"Update",
+			"register":"Register",
+			"operationTableGrid":{
+				"addTableRow":"Add New Row",
+				"updateTableRow":"Update Selected Row",
+				"deleteTableRow":"Delete Selected Row"
+				
+			}
+	},
+	"window":{
+			"updateWindow":"Update Table",
+			"registerWindow":"Register Table"
+	},
+	"message":{
+			"requireSelectOneRow":"please select a row to update!"
+	}
+	
+}

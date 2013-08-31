@@ -1,8 +1,8 @@
 {
 	"menu":{
 		"orderManagement":{
-			"home":"orderManagement"
-	          
+			"home":"orderManagement",
+			"checkoutOrder":"checkoutOrder"
 		},
 		"foodManagement":{
 			"home":"foodManagement"
