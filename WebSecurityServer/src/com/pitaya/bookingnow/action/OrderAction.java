@@ -4,8 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts2.ServletActionContext;
+
+import com.opensymphony.xwork2.ActionContext;
 import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.service.IOrderService;
+import com.pitaya.bookingnow.source.EventManager;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
 import com.pitaya.bookingnow.util.SearchParams;
@@ -21,6 +27,8 @@ public class OrderAction extends BaseAction{
 	private Order resultOrder;
 	
 	private Map<String, List<Order>> matchedOrders;
+	
+	private EventManager eventManager;
 	
 	public SearchParams getParams() {
 		return params;
@@ -53,6 +61,14 @@ public class OrderAction extends BaseAction{
 	}
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+	
+	public void setEventManager(EventManager em){
+		this.eventManager = em;
+	}
+	
+	public EventManager getEventManager(){
+		return this.eventManager;
 	}
 	
 	public String searchByStatusOfOrder() {
@@ -308,5 +324,10 @@ public class OrderAction extends BaseAction{
 		return "Fail";
 	}
 	
-	
+	public String subscribeEventOfOrder(){
+		ActionContext ac = ActionContext.getContext();
+		this.eventManager.subscribe("order", ServletActionContext.getRequest().getSession().getId(),
+				(HttpServletResponse)ac.get(ServletActionContext.HTTP_RESPONSE));
+		return null;
+	}
 }

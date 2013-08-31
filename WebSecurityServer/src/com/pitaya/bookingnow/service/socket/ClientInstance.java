@@ -19,6 +19,10 @@ import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/*
+ * An instance represented a connected client, use this to send message to client
+ * and the socket connection is controlled by server
+ */
 public class ClientInstance {
 	
 	//Log a fail if not received UDP check packet in this time
@@ -68,7 +72,7 @@ public class ClientInstance {
 				@Override
 				public void run() {
 					if((System.currentTimeMillis() - lastRecvTime) > ClientInstance.KEEPALIVE_TIMEOUT){
-						logger.debug("Timeout on keep alive packet from: " + userId);
+						logger.warn("Timeout on keep alive packet from: " + userId);
 						timeout_times ++;
 						if(timeout_times > ClientInstance.kEEPALIVE_THRESHOLD){
 							disconnect();
@@ -77,17 +81,18 @@ public class ClientInstance {
 					} else {
 						timeout_times = 0;
 					}
-					DatagramPacket sendPacket = null;
 					try {
 						byte[] data = new byte[1];
 						data[0] = 0x00;
-						sendPacket = new DatagramPacket(data, data.length, address, udpport);
+						DatagramPacket sendPacket = new DatagramPacket(data, data.length, address, udpport);
 						udpSocket.send(sendPacket);
 						logger.debug("Send keep alive packet to client");
 					} catch (UnsupportedEncodingException e) {
 						e.printStackTrace();
+						logger.warn("Fail to send keep alive packet to client: " + userId);
 					} catch (IOException e) {
 						e.printStackTrace();
+						logger.warn("Fail to send keep alive packet to client: " + userId);
 					}
 				}
 				

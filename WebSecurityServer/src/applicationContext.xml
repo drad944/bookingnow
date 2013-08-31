@@ -127,10 +127,12 @@
 		<property name="food_detailDao" ref="food_detailDao" />
 		<property name="customerDao" ref="customerDao" />
 		<property name="messageService" ref="messageService"/>
+		<property name="eventManager" ref="eventManager"/>
 	</bean>
 
 	<bean id="orderAction" class="com.pitaya.bookingnow.action.OrderAction" scope="prototype">
 		<property name="orderService" ref="orderService" />
+		<property name="eventManager" ref="eventManager"/>
 	</bean>
 	
 	
@@ -170,13 +172,16 @@
 	<bean id="adminAction" class="com.pitaya.bookingnow.action.AdminAction" scope="prototype">
 		<property name="messageService" ref="messageService"/>
 	</bean>
-	
+
 	<bean id="messageService" class="com.pitaya.bookingnow.service.socket.EnhancedMessageService" scope="singleton">
 		<property name="userService" ref="userService"/>
 	</bean>
 	
-   <bean id="securitySocketService" class="com.pitaya.bookingnow.service.socket.MessageService" scope="singleton">
+   	<bean id="securitySocketService" class="com.pitaya.bookingnow.service.socket.MessageService" scope="singleton">
         <property name="userService" ref="userService"/>
-   </bean>
+   	</bean>
+	
+	<bean id="eventManager" class="com.pitaya.bookingnow.source.EventManager" scope="singleton">
+	</bean>
 	
 </beans>

@@ -24,6 +24,7 @@ import com.pitaya.bookingnow.message.OrderMessage;
 import com.pitaya.bookingnow.message.TableMessage;
 import com.pitaya.bookingnow.service.socket.EnhancedMessageService;
 import com.pitaya.bookingnow.service.IOrderService;
+import com.pitaya.bookingnow.source.EventManager;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
 import com.pitaya.bookingnow.util.SearchParams;
@@ -38,6 +39,7 @@ public class OrderService implements IOrderService{
 	private Order_Food_DetailMapper food_detailDao;
 	private CustomerMapper customerDao;
 	private EnhancedMessageService messageService;
+	private EventManager eventManager;
 
 	public CustomerMapper getCustomerDao() {
 		return customerDao;
@@ -102,6 +104,14 @@ public class OrderService implements IOrderService{
 	
 	public EnhancedMessageService getMessageService(){
 		return this.messageService;
+	}
+	
+	public void setEventManager(EventManager em){
+		this.eventManager = em;
+	}
+	
+	public EventManager getEventManager(){
+		return this.eventManager;
 	}
 	
 	@Override
@@ -1401,6 +1411,7 @@ public class OrderService implements IOrderService{
 			order.setStatus(Constants.ORDER_PAYING);
 			if(orderDao.updateByPrimaryKeySelective(order) == 1){
 				result.setExecuteResult(true);
+				this.eventManager.publish(EventManager.ORDER_EVENT, order);
 				Order finishOrder = this.getTablesOfOrder(order.getId());
 				if(finishOrder != null && finishOrder.getTable_details() != null && finishOrder.getTable_details().size() > 0){
 					SearchParams params = new SearchParams();

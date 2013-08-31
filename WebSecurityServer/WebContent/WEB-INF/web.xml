@@ -63,7 +63,10 @@
 	    <filter-name>struts2</filter-name>
 	    <url-pattern>/*</url-pattern>
 	</filter-mapping>
-    
+        	
+    <listener>    
+        <listener-class>com.pitaya.bookingnow.listener.SessionListener</listener-class>    
+    </listener>
     
     <listener>    
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>    
@@ -90,6 +93,7 @@
 		如果session-timeout元素的值为零或负数，则表示会话将永远不会超时。
 		下面是一个部署描述符，在用户最近访问HttpSession对象20分钟后，HttpSession对象默认为无效。
 	-->
+    
 	<session-config>
 		<session-timeout>20</session-timeout>
 	</session-config>
