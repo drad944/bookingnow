@@ -23,6 +23,10 @@ function addCheckOrderEventListeners() {
        // $('#updateCheckOrderInfoForm').jqxValidator('validate');
     });
     
+	$('#checkOrderAllowance').on('onchange', function () {
+	       // $('#updateCheckOrderInfoForm').jqxValidator('validate');
+	    });
+	
     
     $("#checkOrderCancelButton").on('click', function (event) {
     	//$('#updateCheckOrderInfoForm').jqxValidator('hide');
@@ -630,7 +634,7 @@ function invoiceOrderTable(invoiceData) {
 					for(var columnAttr in rowObject) {
 						if(columnAttr == "count") {
 							var columnTable = orderTableColumnBegin;
-							columnTable = columnTable + rowObject[columnAttr];
+							columnTable = columnTable + '<input id="checkOrderAllowance" type="text" value="' + rowObject[columnAttr] +'" />';
 							columnTable = columnTable + orderTableColumnEnd;
 							rowTable = rowTable + columnTable;
 							break;
