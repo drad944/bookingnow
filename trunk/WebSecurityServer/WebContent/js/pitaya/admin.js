@@ -51,7 +51,7 @@ var adminManagement = {
 	visit : function(){
 		AppUtil.request("getConnectionInfo.action", null, function(result){
 			if(result){
-		    	setupAdminView(result);
+		    	this.setupAdminView(result);
 			}
 		}, function(){
 			alert("网络错误!");
