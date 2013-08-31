@@ -363,6 +363,8 @@ public class EnhancedMessageService implements Runnable{
 	    				if(instance != null){
 	    					instance.lastRecvTime = System.currentTimeMillis();
 	    					logger.debug("Received udp check package: " + packet.getData());
+	    				} else {
+	    					logger.debug("Ignore packet");
 	    				}
 	    			} catch (IOException e) {
 	    				if(e instanceof SocketTimeoutException){

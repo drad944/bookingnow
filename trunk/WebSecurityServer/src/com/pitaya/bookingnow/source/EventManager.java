@@ -3,18 +3,12 @@ package com.pitaya.bookingnow.source;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.pitaya.bookingnow.servlet.TopicServlet;
-
 import net.sf.json.JSONObject;
-import nl.justobjects.pushlet.core.Event;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletResponse;

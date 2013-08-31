@@ -59,4 +59,9 @@ public class AdminAction extends BaseAction {
 		return "Success";
 	}
 	
+	
+	public String keepAlive(){
+		return null;
+	}
+	
 }
