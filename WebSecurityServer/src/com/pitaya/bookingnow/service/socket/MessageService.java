@@ -22,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+import net.sf.json.util.PropertyFilter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -365,7 +367,14 @@ public class MessageService {
 	}
 	
 	public static String parseMessage(Message message){
-		JSONObject jsonMsg = JSONObject.fromObject(message);
+		JsonConfig jconfig = new JsonConfig();
+		PropertyFilter filter = new PropertyFilter() {
+            public boolean apply(Object object, String fieldName, Object fieldValue) {
+            	return null == fieldValue;
+            }
+		};
+		jconfig.setJsonPropertyFilter(filter);
+		JSONObject jsonMsg = JSONObject.fromObject(message, jconfig);
 		return jsonMsg.toString();
 	}
 	
