@@ -213,6 +213,7 @@ function parseMenuHtml() {
         if(event.args.id == 1) {
         	openContentPage('framework_main','page/common/orderManagement.html','content');
         	parseOrderGridHtml();
+        	currentPage = {};
         }else if(event.args.id == 2) {
         	openContentPage('framework_main','page/common/foodManagement.html','content');
         	currentPage = foodManagement;
@@ -227,31 +228,36 @@ function parseMenuHtml() {
         	var bodyhtml = $("body").html();
         	bodyhtml = null;
         	 */
-        	
+        	currentPage = {};
         	
         }else if(event.args.id == 4) {
         	openContentPage('framework_main','page/common/tableManagement.html','content');
         	parseTableGridHtml();
+        	currentPage = {};
         }else if(event.args.id == 5) {
         	//openContentPage('page/common/map.html')
         }else if(event.args.id == 6) {
         	openContentPage('framework_main','page/common/userManagement.html','content');
         	parseUserGridHtml();
+        	currentPage = {};
         }else if(event.args.id == 7) {
         	openContentPage('framework_main','page/common/registerUser.html','content');
-        	
+        	currentPage = {};
         }else if(event.args.id == 8) {
         	openContentPage('framework_main','page/security/showUserInfo.html','content');
         	showUserDetailInfo();
+        	currentPage = {};
         }else if(event.args.id == 9) {
         	openContentPage('framework_main','page/security/updateUserPicture.html','content');
         	uploadUserImage();
+        	currentPage = {};
         }else if(event.args.id == 10) {
         	openContentPage('framework_main','page/common/admin.html','content');
-        	init();
+        	currentPage = adminManagement;
         }else if(event.args.id == 11) {
         	openContentPage('framework_main','page/common/checkoutManagement.html','content');
         	parseCheckOrderGridHtml();
+        	currentPage = {};
         }
     	if(currentPage.visit){
     		currentPage.visit();

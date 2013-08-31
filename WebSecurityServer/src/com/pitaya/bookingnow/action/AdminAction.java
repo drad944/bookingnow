@@ -50,6 +50,7 @@ public class AdminAction extends BaseAction {
 				client.setIsAuth(true);
 				client.setRoleType(subentry.getValue().getRoleType());
 				client.setUserid(subentry.getValue().getUserId());
+				client.setName(subentry.getValue().getUsername());
 				clientInfos.add(client);
 				authcount ++;
 			}
