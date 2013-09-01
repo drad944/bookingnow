@@ -189,7 +189,7 @@ public class EnhancedMessageService implements Runnable{
 		if(userid != null && role != null){
 			Map<Long, ClientInstance> instances = this.groups.get(role);
 			if(instances == null){
-				instances = new HashMap<Long, ClientInstance>();
+				instances = new ConcurrentHashMap<Long, ClientInstance>();
 				this.groups.put(role, instances);
 			}
 			ClientInstance instance = instances.get(userid);
@@ -339,6 +339,8 @@ public class EnhancedMessageService implements Runnable{
 			} else {
 				//unregister
 				this.removeClient(this.getClient(clientThread.getInetAddress()), false);
+				clientThread.sendMessage(parseMessage(new ResultMessage(Constants.REGISTER_REQUEST, 
+							Constants.SUCCESS, "done")));
 			}
 		}
 	}
@@ -402,16 +404,14 @@ public class EnhancedMessageService implements Runnable{
 	        try {
 	        	while(flag){
 	        		client_socket = serverSocket.accept();
-	                if(hasClient(client_socket)){
-	                	//A known client ask to establish connection for further message
-	                	this.pool.execute(new ClientThread(EnhancedMessageService.this, client_socket));
-	                } else {
+	                if(!hasClient(client_socket)){
 	                	//A new client connected
 	                	ClientInstance client = new ClientInstance(EnhancedMessageService.this, 
     	                		client_socket.getInetAddress(), clientport, udpport);
 	                	addClient(client);
-	                	client_socket.getOutputStream().write("connected\r\n".getBytes());
 	                }
+	                //Prepare to receive client message
+	                this.pool.execute(new ClientThread(EnhancedMessageService.this, client_socket));
 	        	}
 	        } catch(Exception e) {
 	        	logger.error("Message server thread is crashed");

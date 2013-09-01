@@ -1,22 +1,27 @@
 var notification = {
 	
-	init: function(){
-	},
-	
+	topics : {},	
+		
 	subscribeTopic : function(topic, callback){
+		if(this.topics[topic] != null){
+			return;
+		}
+		this.topics[topic] = "";
 		var me = this;
-		$.get('subscribeEventOfOrder', null, function(data){
+		$.get('subscribeTopic', {
+			'topic' : topic
+		}, function(data){
 			callback(data);
+			me.topics[topic] = null;
 			me.subscribeTopic(topic, callback);
 		});
 	},
 	
-		
-    onData : function(event) {   
-        if(this.onDataCallback){
-        	this.onDataCallback(event);
-        }
-    },
+	unsubscribeTopic : function(topic){
+		$.get('unsubscribeTopic', {
+			'topic' : topic
+		});
+	},
     
     getXMLHttpRequest : function() {
          var xhr = false;
