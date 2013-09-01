@@ -339,7 +339,7 @@ public class EnhancedMessageService implements Runnable{
 			} else {
 				//unregister
 				this.removeClient(this.getClient(clientThread.getInetAddress()), false);
-				clientThread.sendMessage(parseMessage(new ResultMessage(Constants.REGISTER_REQUEST, 
+				clientThread.sendMessage(parseMessage(new ResultMessage(Constants.UNREGISTER_REQUEST, 
 							Constants.SUCCESS, "done")));
 			}
 		}

@@ -26,6 +26,8 @@ public class Order_Food_DetailAction extends BaseAction{
 	
 	private Long orderId;
 	
+	private Long userId;
+	
 	private Order_Food_Detail food_detail;
 
 	public Map<String, List<Order_Food_Detail>> getMatchedFoods() {
@@ -91,8 +93,8 @@ public class Order_Food_DetailAction extends BaseAction{
 	}
 	
 	public String updateStatusOfFood_Detail() {
-		if (food_detail != null) {
-			result = food_detailService.updateFoodStatus(food_detail);
+		if (food_detail != null && params != null) {
+			result = food_detailService.updateFoodStatus(params, food_detail);
 			
 			if (result.isExecuteResult()) {
 				food_detail = result.getFood_Detail();
