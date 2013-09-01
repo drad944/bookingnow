@@ -82,6 +82,9 @@ public class CookingItemsListView extends RelativeLayout{
         	for(CookingItem currentItem : this.mCookingItemsList){
         		if(currentItem.getId().equals(updateItem.getId())){
         			currentItem.setQuantity(updateItem.getQuantity());
+        			if(updateItem.getStatus() != -1){
+        				currentItem.setStatus(updateItem.getStatus());
+        			}
         		}
         	}	
     	}
@@ -89,9 +92,10 @@ public class CookingItemsListView extends RelativeLayout{
     
     public void removeItems(List<CookingItem> items){
     	for(CookingItem removeItem : items){
-    		for(int i =this.mCookingItemsList.size() - 1; i >=0; i--){
+    		for(int i = this.mCookingItemsList.size() - 1; i >=0; i--){
     			if(removeItem.getId().equals(this.mCookingItemsList.get(i).getId())){
     				this.mCookingItemsList.remove(i);
+    				break;
     			}
     		}
     	}

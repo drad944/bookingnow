@@ -6,13 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import android.util.Log;
 
-public class MessageReceiver extends Thread {
+public class MessageReceiver implements Runnable {
 
 	private static String TAG = "MessageReceiver";
 	private Socket socket;
@@ -30,10 +27,10 @@ public class MessageReceiver extends Thread {
         try {
         	in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
 			bwriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
+			String message = null;
 			this.sendMessage("ready");
-        	String message = null;
         	while((message = in.readLine()) != null){
-        		this.service.onMessage(message, this);
+        		this.service.onMessage(message);
         	}
         } catch (IOException e) {
 			e.printStackTrace();
@@ -76,6 +73,7 @@ public class MessageReceiver extends Thread {
 			}
 		 }
 		 socket = null;
+		 service = null;
     }
 
     public boolean isReady(){

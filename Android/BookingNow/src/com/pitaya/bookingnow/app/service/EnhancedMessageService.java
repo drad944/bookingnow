@@ -2,6 +2,7 @@ package com.pitaya.bookingnow.app.service;
 
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.util.Constants;
+import com.pitaya.bookingnow.app.util.ToastUtil;
 
 import android.app.NotificationManager;
 import android.app.Service;
@@ -18,23 +19,17 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
@@ -62,7 +57,7 @@ public class EnhancedMessageService extends Service implements Runnable {
     private int remote_port;
     private int port;
     private boolean flag;
-    private final ExecutorService mMessageReceiverPool =  Executors.newFixedThreadPool(5);
+    private ExecutorService mMessageReceiverPool;
     private volatile boolean isConnecting = false;
     
 	private Map<String, List<Handler>> handlers;
@@ -110,6 +105,9 @@ public class EnhancedMessageService extends Service implements Runnable {
 		this.remote_addr = HttpService.IP;
 		this.remote_port = HttpService.REMOTE_PORT;
 		this.port = HttpService.PORT;
+		this.mMessageReceiverPool =  new ThreadPoolExecutor(5,10,30L, TimeUnit.MINUTES, 
+				new ArrayBlockingQueue<Runnable>(5), 
+				new ThreadPoolExecutor.CallerRunsPolicy());
 	}
 
     @Override
@@ -125,8 +123,13 @@ public class EnhancedMessageService extends Service implements Runnable {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Received start id " + startId + ": " + intent);
+//        if(Build.VERSION.SDK_INT == 17){
+//        	Settings.Global.putInt(this.getContentResolver(), Settings.Global.WIFI_SLEEP_POLICY, Settings.Global.WIFI_SLEEP_POLICY_NEVER);
+//        } else if(Build.VERSION.SDK_INT < 17){
+//        	Settings.System.putInt(this.getContentResolver(), Settings.System.WIFI_SLEEP_POLICY, Settings.System.WIFI_SLEEP_POLICY_NEVER);
+//        }
         if(intent != null && intent.getExtras() != null){
-        	Bundle bundle = intent.getExtras();
+//        	Bundle bundle = intent.getExtras();
 //        	if(bundle.getBoolean("connected") == false){
 //        		Log.i(TAG, "Connection status changed to false");
 //        		this.onDisconnect();
@@ -141,7 +144,7 @@ public class EnhancedMessageService extends Service implements Runnable {
     public void onDestroy() {
     	Log.i(TAG, "In message service on destroy");
         mNM.cancelAll();
-        this.onDisconnect();
+        this.onDisconnect("与服务器的连接中断");
     }
     
     private synchronized void start(){
@@ -227,9 +230,12 @@ public class EnhancedMessageService extends Service implements Runnable {
 		}
 	}
 
-	void onMessage(String message, MessageReceiver receiver){
+	//Message sent by server
+	void onMessage(String message){
 		if(message.equals("bye")){
-			this.onDisconnect();
+			this.onDisconnect("服务器终止了连接");
+		} else if(message.equals("relogin")){
+			this.onDisconnect("您已在别处登录");
 		} else {
 			Message msg = unparseMessage(message);
 			onMessage(msg);
@@ -237,10 +243,10 @@ public class EnhancedMessageService extends Service implements Runnable {
 		}
 	}
 	
+	//Reply message from server
 	void onMessage(String message, MessageSender sender){
 		Message msg = unparseMessage(message);
 		onMessage(msg);
-		Log.d(TAG, "Server reply message: " + msg);
 		sender.shutdown();
 	}
 	
@@ -257,7 +263,7 @@ public class EnhancedMessageService extends Service implements Runnable {
 		this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.SUCCESS, "连接服务器成功"));
 	}
 
-	void onDisconnect(){
+	void onDisconnect(String msg){
 		UserManager.setLoginUser(this, null);
 		this.isConnecting = false;
 		if(this.mServerThread != null){
@@ -270,8 +276,8 @@ public class EnhancedMessageService extends Service implements Runnable {
 		if(this.mUPDServerThread != null){
 			this.mUPDServerThread.interrupt();
 		}
-		Log.i(TAG, "Message service is disconnected");
-		this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "与服务器的连接中断，请检查网络"));
+		Log.w(TAG, "Message service is disconnected");
+		this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, msg));
 	}
 	
 	void onSendMsgFail(){
@@ -316,17 +322,18 @@ public class EnhancedMessageService extends Service implements Runnable {
         	}
         } catch(IOException e) {
             e.printStackTrace();
+            Log.e(TAG, "Server socket error");
         } finally {
         	mMessageReceiverPool.shutdown();
         	try {
-        		mMessageReceiverPool.shutdownNow();
+        		 mMessageReceiverPool.shutdownNow();
     	    	 if (!mMessageReceiverPool.awaitTermination(60, TimeUnit.SECONDS)){
     	    		 Log.e(TAG, "mMessageReceiverPool did not terminate");  
     	    	 }
-        	 } catch (InterruptedException ie) {
+        	} catch (InterruptedException ie) {
         		 mMessageReceiverPool.shutdownNow();
-        	 }
-        	this.onDisconnect();
+        	}
+        	this.onDisconnect("与服务器的连接中断，请检查网络");
         }
 	}
 	

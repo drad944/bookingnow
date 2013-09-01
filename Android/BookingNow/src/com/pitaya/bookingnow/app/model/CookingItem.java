@@ -135,8 +135,11 @@ public class CookingItem implements IJSONTransition{
 			if(jsonObj.has("order_id")){
 				this.order_id = jsonObj.getLong("order_id");
 			}
-			if(jsonObj.has("status")){
+			if(jsonObj.has("status") && jsonObj.getInt("status") > 0){
+				//null status value will be represented as 0
 				this.status = jsonObj.getInt("status");
+			} else {
+				this.status = -1;
 			}
 			if(jsonObj.has("isFree")){
 				this.free = jsonObj.getBoolean("isFree");

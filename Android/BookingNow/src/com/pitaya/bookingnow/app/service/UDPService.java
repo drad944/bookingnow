@@ -23,7 +23,8 @@ public class UDPService implements Runnable{
 	private static final long KEEPALIVE_INTEVAL = 15000L;
 	
 	private static final int TIMEOUT = 30000;
-	private DatagramSocket dSocket;
+	private DatagramSocket mReceiverSocket;
+	private DatagramSocket mSenderSocket;
 	private Long lastRecvTime;
 	private Timer mChecker;
 	private int timeout_times;
@@ -42,8 +43,8 @@ public class UDPService implements Runnable{
 	public void run() {
 		isRunning = true;
 		try {
-			this.dSocket = new DatagramSocket(HttpService.UDPPORT);
-			this.dSocket.setSoTimeout(TIMEOUT);
+			this.mReceiverSocket = new DatagramSocket(HttpService.UDPPORT);
+			this.mSenderSocket = new DatagramSocket();
 			InetAddress remoteAddr = null;
 			try {
 				remoteAddr = InetAddress.getByName(HttpService.IP);
@@ -60,22 +61,22 @@ public class UDPService implements Runnable{
 				@Override
 				public void run() {
 						try {
-							DatagramPacket packet = new DatagramPacket(new byte[1], 1, remoteAddrRef, HttpService.UDPPORT);
-							dSocket.send(packet);
 							if(System.currentTimeMillis() - lastRecvTime > KEEPALIVE_TIMEOUT){
+								Log.w(TAG, "Timeout on receiving keep alive packet");
 								 timeout_times ++;
 								 if(timeout_times > kEEPALIVE_THRESHOLD){
 									 mChecker.cancel();
-									 _service.onDisconnect();
+									 _service.onDisconnect("与服务器的连接中断，请检查网络");
 									 return;
 								 }
 							} else {
 								timeout_times = 0;
 							}
+							DatagramPacket packet = new DatagramPacket(new byte[1], 1, remoteAddrRef, HttpService.UDPPORT);
+							mSenderSocket.send(packet);
 						} catch (IOException e) {
 							e.printStackTrace();
-							mChecker.cancel();
-							_service.onDisconnect();
+							Log.d(TAG, "Fail to send udp packet");
 						}
 				}
 				
@@ -86,8 +87,8 @@ public class UDPService implements Runnable{
 				byte[] result = new byte[1];
 				DatagramPacket recvPacket = new DatagramPacket(result, 1);
 				try {
-					dSocket.setSoTimeout(TIMEOUT);
-					dSocket.receive(recvPacket);
+					this.mReceiverSocket.setSoTimeout(TIMEOUT);
+					this.mReceiverSocket.receive(recvPacket);
 					if(recvPacket.getAddress().equals(remoteAddr)
 							&& recvPacket.getLength() == 1 && result[0] == 0x00){
 						this.lastRecvTime = System.currentTimeMillis();
@@ -95,9 +96,7 @@ public class UDPService implements Runnable{
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
-					if(! (e instanceof SocketTimeoutException)){
-						_service.onDisconnect();
-					}
+					Log.e(TAG, "Fail to receive udp packet");
 				}
 			}
 		} catch (SocketException e) {
@@ -113,11 +112,14 @@ public class UDPService implements Runnable{
 	}
 	
 	public void shutdown(){
-		this.isRunning = false;
 		this.flag = false;
-		if(this.dSocket != null){
-			this.dSocket.close();
+		if(this.mSenderSocket != null){
+			this.mSenderSocket.close();
 		}
+		if(this.mReceiverSocket != null){
+			this.mReceiverSocket.close();
+		}
+		this.isRunning = false;
 	}
 	
 }

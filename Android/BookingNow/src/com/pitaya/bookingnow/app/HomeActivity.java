@@ -140,7 +140,7 @@ public class HomeActivity extends FragmentActivity {
 			public void onMessage(Message message) {
 	            if(message instanceof ResultMessage){
 	            	ResultMessage resultmsg = (ResultMessage)message;
-	            	if(resultmsg.getRequestType() == Constants.REGISTER_REQUEST){
+	            	if(resultmsg.getRequestType() == Constants.REGISTER_REQUEST || resultmsg.getRequestType() == Constants.UNREGISTER_REQUEST){
 	            		handleRegisterResultMsg(resultmsg);
 	            	} else if(resultmsg.getRequestType() == Constants.SOCKET_CONNECTION){
 	            		handleConnectResultMsg(resultmsg);
@@ -291,12 +291,9 @@ public class HomeActivity extends FragmentActivity {
 				public void onClick(View view) {
 	           	 	if(HomeActivity.this.mIsBound){
 	           	 		mMessageService.sendMessage(new RegisterMessage(UserManager.getUserId(HomeActivity.this), "unregister"));
+	           	 	} else {
+	           	 		onLogout();
 	           	 	}
-	           	 	UserManager.cleanRemeberMe(HomeActivity.this);
-	           	 	UserManager.setLoginUser(HomeActivity.this, null);
-					HomeActivity.this.refreshMenuByRole();
-					((FoodMenuContentView)HomeActivity.this.homecontent.getContentView("menu")).setOrder(null);
-					HomeActivity.this.homecontent.refreshItem("menu");
 				}
 				
 			});
@@ -377,79 +374,93 @@ public class HomeActivity extends FragmentActivity {
 	                 	 RegisterMessage message = new RegisterMessage(username, password, "register");
 	                 	 if(HomeActivity.this.mIsBound && HomeActivity.this.mMessageService.isReady()){
 	                 		HomeActivity.this.mMessageService.sendMessage(message);
-	                 		 mProgressingDialog  = ProgressDialog.show(HomeActivity.this, 
-	                 				getResources().getString(R.string.waiting), getResources().getString(R.string.logining), true);
+	                 		if(mProgressingDialog == null){
+		                 		 mProgressingDialog  = ProgressDialog.show(HomeActivity.this, 
+			                 				getResources().getString(R.string.waiting), getResources().getString(R.string.logining), false);
+	                 		} else if(!mProgressingDialog.isShowing()){
+	                 			mProgressingDialog.show();
+	                 		}
 	                 	 } else {
 	                 		 isLogining = false;
 	                 		 ToastUtil.showToast(HomeActivity.this, "登录失败, 请检查网络", Toast.LENGTH_LONG);
 	                 	 }
             	  }
              }).create();
-//                 	 UserManager.login(username, password, new HttpHandler(){
-//	                    		@Override
-//	                 			public void onSuccess(String action, String response){
-//	                    			progressingDialog.dismiss();
-//	                 				if(response == null || response.trim().equals("")){
-//	                 					handleLoginError("服务器错误");
-//	                 				} else{
-//	                 					try {
-//											JSONObject juser = new JSONObject(response);
-//											afterLoginSuccess(juser, false);
-//										} catch (JSONException e) {
-//											e.printStackTrace();
-//											handleLoginError("服务器错误");
-//										}
-//	                 				}
-//	                 			}
-//	                 			
-//	                 			@Override
-//	                 			public void onFail(String action, int errorcode){
-//	                 				progressingDialog.dismiss();
-//	                 				Log.e(TAG, "Fail to login with error code: " + errorcode);
-//	                 				handleLoginError("请检查网络连接");
-//	                 			}
-//                 	 });
          }
          loginDialog.show();
     }
 	
 	private void handleRegisterResultMsg(ResultMessage message){
-		if(message.getResult() == Constants.SUCCESS){
-			Log.i(TAG, "Success to register client to server: " + message.getDetail());
-			String detail = message.getDetail();
-			if(detail != null && !detail.equals("")){
-				String [] infos = detail.split("###");
-				try{
-					User user = new User(Long.parseLong(infos[0]), infos[1], Integer.parseInt(infos[2]));
-					UserManager.setLoginUser(this, user);
-					if(this.isRemeberMeAfterLogin){
-						UserManager.rememberMe(this, this.username, this.password);
+		switch(message.getRequestType()){
+			case Constants.REGISTER_REQUEST:
+				if(message.getResult() == Constants.SUCCESS){
+					Log.i(TAG, "Success to register client to server: " + message.getDetail());
+					String detail = message.getDetail();
+					if(detail != null && !detail.equals("")){
+						String [] infos = detail.split("###");
+						try{
+							User user = new User(Long.parseLong(infos[0]), infos[1], Integer.parseInt(infos[2]));
+							UserManager.setLoginUser(this, user);
+							if(this.isRemeberMeAfterLogin){
+								UserManager.rememberMe(this, this.username, this.password);
+							}
+							ToastUtil.showToast(this, "登录成功", Toast.LENGTH_SHORT);
+							this.refreshMenuByRole();
+						} catch (Exception e){
+							Log.e(TAG, "Fail to parse register result message: " + detail);
+						}
 					}
-					ToastUtil.showToast(this, "登录成功", Toast.LENGTH_SHORT);
-					this.refreshMenuByRole();
-				} catch (Exception e){
-					Log.e(TAG, "Fail to parse register result message: " + detail);
+				} else if(message.getResult() == Constants.FAIL){
+					Log.e(TAG, "Fail to register to server: " + message.getDetail());
+					ToastUtil.showToast(this, message.getDetail(), Toast.LENGTH_SHORT);
 				}
-			}
-		} else if(message.getResult() == Constants.FAIL){
-			Log.e(TAG, "Fail to register to server: " + message.getDetail());
-			ToastUtil.showToast(this, message.getDetail(), Toast.LENGTH_SHORT);
+				if(mProgressingDialog != null){
+					mProgressingDialog.dismiss();
+				}
+				this.isLogining = false;
+				break;
+			case Constants.UNREGISTER_REQUEST:
+				if(message.getResult() == Constants.SUCCESS){
+					Log.d(TAG, "Success to unregister");
+					this.onLogout();
+				} else {
+					Log.e(TAG, "Fail to unregister");
+					ToastUtil.showToast(this, message.getDetail(), Toast.LENGTH_LONG);
+				}
+				break;
 		}
-		if(mProgressingDialog != null){
-			mProgressingDialog.dismiss();
-		}
-		this.isLogining = false;
+		
 	}
 	
 	private void handleConnectResultMsg(ResultMessage message){
 		ToastUtil.showToast(this, message.getDetail() , Toast.LENGTH_SHORT);
-		this.refreshMenuByRole();
 		if(message.getResult() == Constants.SUCCESS){
+			this.refreshMenuByRole();
 			this.doAutoLogin();
 			this.checkMenuUpdate();
 		} else {
+			this.onDisconnect();
+		}
+	}
+	
+	private void onLogout(){
+   	 	UserManager.cleanRemeberMe(HomeActivity.this);
+   	 	UserManager.setLoginUser(HomeActivity.this, null);
+		this.onDisconnect();
+	}
+	
+	private void onDisconnect(){
+		HomeActivity.this.refreshMenuByRole();
+		if(this.homecontent.getCurrentContentViewKey().equals("order")){
 			((FoodMenuContentView)this.homecontent.getContentView("menu")).setOrder(null);
-			this.homecontent.refreshItem("menu");
+			this.homecontent.selectItem("menu");
+		} else if(this.homecontent.getCurrentContentViewKey().equals("menu")){
+			if(((FoodMenuContentView)this.homecontent.getContentView("menu")).getOrder() != null){
+				((FoodMenuContentView)this.homecontent.getContentView("menu")).setOrder(null);
+				this.homecontent.refreshItem("menu");
+			} else {
+				this.homecontent.selectItem("menu");
+			}
 		}
 	}
 	

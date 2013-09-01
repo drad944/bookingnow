@@ -64,6 +64,8 @@ public class FoodMenuContentView extends BaseContentView{
 		if(mFragment == null){
 			mFragment = new FoodMenuContentFragment();
 			mFragment.setContainer(this);
+		} else {
+			mFragment.refreshAllPages();
 		}
 		fragmentTransaction.add(container.getId(), mFragment);
 		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
