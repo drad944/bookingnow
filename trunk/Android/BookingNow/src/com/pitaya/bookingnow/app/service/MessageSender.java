@@ -16,7 +16,7 @@ import android.util.Log;
 
 public class MessageSender extends Thread{
 	  	
-		private static String TAG = "ClientAgentThread";
+		private static String TAG = "MessageSender";
 	    private BufferedReader in;
 	    private BufferedWriter bwriter;
 	    private String msg;
@@ -35,32 +35,30 @@ public class MessageSender extends Thread{
 	    	this.msg = message;
 	    }
 	    
+	    @Override
 	    public void run(){
 	    	this.setupConnection();
 	    	if(!this.isReady()){
 	        	this.shutdown();
-	        	this._service.onDisconnect();
+	        	this._service.onDisconnect("无法连接至服务器，请检查网络");
 	    		return;
 	    	}
 	    	try {
             	String message = null;
             	while((message = in.readLine()) != null){
-            		if(message.equals("connected")){
-            			Log.d(TAG, "Connected to server");
-            			this._service.onConnectServer();
-            			break;
-            		} else if(message.equals("ready")){
-        	        	if(this.msg != null && !this.msg.equals("")){
-        	        		this.sendMessage(this.msg);
-        	        	} else {
-        	        		/*
-        	        		 * In a short time after disconnect, server maybe return ready because the client has not 
-        	        		 * been removed, but the message is blank string means here is to re-connect to server
-        	        		 * , so it's safe to assume that the connection is established
-        	        		 */
-        	        		Log.d(TAG, "Connected to server");
-        	        		this._service.onConnectServer();
-        	        	}
+            		if(message.equals("ready")){
+    	        		/*
+    	        		 * In a short time after disconnect, server maybe return ready because the client has not 
+    	        		 * been removed, but the message is blank string means here is to re-connect to server
+    	        		 * , so it's safe to assume that the connection is established
+    	        		 */
+            			if(this.msg != null && !this.msg.equals("")){
+            				this.sendMessage(this.msg);
+            			} else {
+            				this._service.onConnectServer();
+            				Log.d(TAG, "Connected to server");
+                			break;
+            			}
             		} else {
             			//Handler server reply message
             			this._service.onMessage(message, this);
@@ -91,12 +89,13 @@ public class MessageSender extends Thread{
 			 if (socket != null && !socket.isClosed()){
 				try {
 					socket.close();
-					Log.d(TAG, "Success to shutdown the connection to server");
+					Log.d(TAG, "Close connection to server");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			 }
 			 socket = null;
+			 this._service = null;
 	    }
 
 	    public boolean isReady(){

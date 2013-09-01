@@ -125,6 +125,7 @@ public class Constants {
 	public static final int SOCKET_CONNECTION = 1;
 	public static final int LOGIN_REQUEST = SOCKET_CONNECTION + 1;
 	public static final int REGISTER_REQUEST = LOGIN_REQUEST + 1;
+	public static final int UNREGISTER_REQUEST = REGISTER_REQUEST + 1;
 	
 	public static final String ORDER_MESSAGE = "order_message";
 	public static final String REGISTER_MESSAGE = "register_message";
