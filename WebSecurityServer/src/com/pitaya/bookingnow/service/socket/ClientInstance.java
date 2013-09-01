@@ -30,7 +30,7 @@ public class ClientInstance {
 	//Max afford fail times
 	static final long kEEPALIVE_THRESHOLD = 3;
 	//UDP check packet sending rate, it must be shorter than KEEPALIVE_TIMEOUT
-	private static final long KEEP_ALIVE_INTEVAL = 15000L;
+	private static final long KEEP_ALIVE_INTEVAL = 10000L;
 	
 	private static final long SOCKET_CLOSE_DELAY = 15000L;
 	private static final Log logger =  LogFactory.getLog(ClientInstance.class);
@@ -207,10 +207,6 @@ public class ClientInstance {
     			
     		}, SOCKET_CLOSE_DELAY);
         }
-    }
-    
-    void onCheckFail(){
-    	this.disconnect();
     }
     
     void disconnect(){

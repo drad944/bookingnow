@@ -115,14 +115,14 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 	}
 
 	@Override
-	public MyResult updateFoodStatus(Order_Food_Detail food_detail) {
+	public MyResult updateFoodStatus(SearchParams params, Order_Food_Detail food_detail) {
 		/*
 		 * chef update food status to cooking,ready which is confirmed.
 		 * in: food status,food_detail id 
 		 */
 		MyResult result = new MyResult();
 		
-		if (food_detail != null && food_detail.getId() != null) {
+		if (food_detail != null && food_detail.getId() != null && params.getUser_id() != null) {
 			if (food_detail.getStatus() != null) {
 				Order_Food_Detail realFood_Detail = food_detailDao.selectByPrimaryKey(food_detail.getId());
 				
@@ -148,7 +148,7 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 							OrderDetailMessage message = new OrderDetailMessage();
 							message.setUpdateItems(detailist);
 							this.messageService.sendMessageToOne(order.getUser_id(), message);
-							//this.messageService.sendMessageToGroup(Constants.ROLE_CHEF, message);
+							this.messageService.sendMessageToGroupExcept(Constants.ROLE_CHEF, params.getUser_id(), message);
 						}
 					} else {
 						throw new RuntimeException("failed to update food detail status in DB");
