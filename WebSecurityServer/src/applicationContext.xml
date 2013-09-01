@@ -132,9 +132,7 @@
 
 	<bean id="orderAction" class="com.pitaya.bookingnow.action.OrderAction" scope="prototype">
 		<property name="orderService" ref="orderService" />
-		<property name="eventManager" ref="eventManager"/>
 	</bean>
-	
 	
 	<bean id="table_detailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.Order_Table_DetailMapper" />   
@@ -171,6 +169,10 @@
 	
 	<bean id="adminAction" class="com.pitaya.bookingnow.action.AdminAction" scope="prototype">
 		<property name="messageService" ref="messageService"/>
+	</bean>
+		
+	<bean id="topicAction" class="com.pitaya.bookingnow.action.TopicAction" scope="prototype">
+		<property name="eventManager" ref="eventManager"/>
 	</bean>
 
 	<bean id="messageService" class="com.pitaya.bookingnow.service.socket.EnhancedMessageService" scope="singleton">

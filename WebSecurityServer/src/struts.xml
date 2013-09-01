@@ -53,6 +53,9 @@
 	        </result>
 	    </action>
 
+	    <action name="*Topic" class="com.pitaya.bookingnow.action.TopicAction" method="{1}Topic">
+	    </action>
+
 		<action name="*File" class="com.pitaya.bookingnow.action.FileAction" method="{1}File">
 	        
 	        <result name="uploadSuccess" type="json">
