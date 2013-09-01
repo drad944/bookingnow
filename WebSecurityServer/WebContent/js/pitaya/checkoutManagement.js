@@ -5,102 +5,120 @@ function emptyCheckOrderWindow(){
 	$("#checkOrderResult").text("");
 }
 
+function initcheckoutOrderAllowanceElements() {
+	$('#checkoutOrderAllowanceButton').jqxButton({ width: 60, height: 25, theme: theme });
+	$('#checkoutOrderAllowanceCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
+	$('#checkoutOrderAllowanceInput').jqxNumberInput({ width: 120, height: 20,min: 0.01, max: 1, decimalDigits:2, digits: 1, theme: theme, spinButtons: true});
+	
+	
+}
+
+function emptyCheckoutOrderAllowanceWindow() {
+	$("#checkoutOrderAllowanceInput").val(null);
+	$("#checkoutOrderId").val(null);
+	$("#checkoutOrderTableAddress").val(null);
+	$("#checkOrderResult").text("");
+}
+
 function initCheckOrderElements() {
-//	var theme = getDemoTheme();
-    $("#checkOrderDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
+	$('#backToCheckoutManagement').jqxButton({ width: 60, height: 25, theme: theme });
+	
     $('#checkoutOrderButton').jqxButton({ width: 60, height: 25, theme: theme });
     $('#checkOrderCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
 };
 
-
-function addCheckOrderEventListeners() {
-	$('#checkOrderPopupWindow').on('close', function (event) { 
-		emptyCheckOrderWindow();
+function addcheckoutOrderAllowanceEventListeners() {
+	$('#checkoutOrderAllowanceWindow').on('close', function (event) { 
+		emptyCheckoutOrderAllowanceWindow();
+	});
+	
+	$("#checkoutOrderAllowanceCancelButton").on('click', function (event) {
 		//$('#updateCheckOrderInfoForm').jqxValidator('hide');
-      //  $('#updateCheckOrderPopupWindow').jqxWindow('close');
+	    $('#checkoutOrderAllowanceWindow').jqxWindow('close');
+	});
+	
+	$('#checkoutOrderAllowanceButton').on('click', function () {
+		$('#checkoutOrderAllowanceWindow').jqxWindow('close');
+		
+		selectedupdaterowindex = $("#checkOrderDataGrid").jqxGrid('getselectedrowindex');
+		//id = $("#checkOrderDataGrid").jqxGrid('getrowid', selectedrowindex);
+	    rowData = $('#checkOrderDataGrid').jqxGrid('getrowdata', selectedupdaterowindex);
+	    rowData["allowance"] = $('#checkoutOrderAllowanceInput').jqxNumberInput('val');
+		
+		if(rowData != null) {
+			
+			findDetailOrderTable(rowData);
+		}
+    });
+}
+
+function addOrderDetailEventListeners() {
+	$('#backToCheckoutManagement').on('click', function (event) { 
+		openContentPage('framework_main','page/common/checkoutManagement.html','content');
+    	parseCheckOrderGridHtml();
 	});
 	$('#checkoutOrderButton').on('click', function () {
-       // $('#updateCheckOrderInfoForm').jqxValidator('validate');
+		var orderId = $("#checkoutOrderIdDetail").text();
+		if(orderId != null && orderId > 0) {
+			$.post("finishedOrder.action", {"order.id": orderId},function(order){
+				if(order != null && order["id"] != null && order["status"] == Constants.ORDER_FINISHED){
+					openContentPage('framework_main','page/common/checkoutManagement.html','content');
+			    	parseCheckOrderGridHtml();
+			    	$("#eventLog").text('结账成功,谢谢惠顾,欢迎下次光临!');
+		        }
+			});
+		}
     });
     
-	$('#checkOrderAllowance').on('onchange', function () {
-	       // $('#updateCheckOrderInfoForm').jqxValidator('validate');
-	    });
-	
     
     $("#checkOrderCancelButton").on('click', function (event) {
-    	//$('#updateCheckOrderInfoForm').jqxValidator('hide');
-        $('#checkOrderPopupWindow').jqxWindow('close');
+    	openContentPage('framework_main','page/common/checkoutManagement.html','content');
+    	parseCheckOrderGridHtml();
     });
         
 }
 
-function initCheckOrderWindow(rowData,position) {
-	$("#checkOrderPopupWindow").removeAttr("style");
+function formatCheckoutOrderAllowanceElements(rowData){
+	
+	$("#checkoutOrderId").text(rowData["id"]);
+	$("#checkoutOrderTableAddress").text(rowData["tables"]);
+	
+	$("#checkoutOrderAllowanceInput").jqxNumberInput('val',rowData["allowance"]);
+}
+
+function initCheckoutOrderAllowanceWindow(rowData,position) {
+	$("#checkoutOrderAllowanceWindow").removeAttr("style");
+	
+	formatCheckoutOrderAllowanceElements(rowData);
+	
+	
+	$("#checkoutOrderAllowanceWindow").jqxWindow({
+    	position:position, isModal: true,width: 350, height: 250, resizable: false, theme: theme, cancelButton: $("#checkoutOrderAllowanceCancelButton"), modalOpacity: 0.01,
+    	initContent: function () {
+            $('#checkoutOrderAllowanceWindow').jqxWindow('focus');
+        }
+    });
+    
+    $("#checkoutOrderAllowanceWindow").jqxWindow('open');
+	
+}
+
+function findDetailOrderTable(rowData) {
+	openContentPage('framework_main','page/common/orderDetail.html','content');
 	
 //	var theme = getDemoTheme();
-	$.post("searchFullOrder.action", {"order.id": rowData["id"]},function(order){
+	$.post("calculateOrder.action", {"order.id": rowData["id"],"order.allowance":rowData["allowance"]},function(order){
 		if(order != null && order["id"] != null){
 			order = formatCheckOrderData(order);
 			var invoiceOrderHtml = invoiceOrderTable(order);
-			$("#checkOrderDiv").html(invoiceOrderHtml);
+			$("#detailOrderTable").html(invoiceOrderHtml);
 			initCheckOrderElements();
-			// initialize the popup window and buttons.
-		    $("#checkOrderPopupWindow").jqxWindow({
-		    	position:position, isModal: true,width: 350, height: 300, resizable: true, theme: theme, cancelButton: $("#checkOrderCancelButton"), modalOpacity: 0.01,
-		    	initContent: function () {
-		            $('#checkOrderPopupWindow').jqxWindow('focus');
-		        }
-		    });
-		    
-		    $("#checkOrderPopupWindow").jqxWindow('open');
+			addOrderDetailEventListeners();
         }
 	});
 	
 }
 
-function updateCheckOrder() {
-
-	var updateCheckOrderUIData = {
-		"checkOrder.id" : $("#updateCheckOrderIdInput").val(),
-		"checkOrder.account" : $("#updateCheckOrderAccountInput").val(),
-		"checkOrder.name" : $("#updateCheckOrderRealNameInput").val(),
-		"checkOrder.password" : $("#updateCheckOrderPasswordConfirmInput").val(),
-		"checkOrder.address" : $("#updateCheckOrderAddressInput").val(),
-		"checkOrder.birthday" : $('#updateCheckOrderBirthdayInput').jqxDateTimeInput('value'),
-		"checkOrder.department" : $("#updateCheckOrderDepartmentInput").val(),
-		"checkOrder.email" : $("#updateCheckOrderEmailInput").val(),
-		"checkOrder.phone" : $("#updateCheckOrderPhoneInput").val(),
-		"checkOrder.sex" : $("#updateCheckOrderSexInput").val()
-	};
-	
-	var updateCheckOrderData = parseUIDataToCheckOrderData(updateCheckOrderUIData);
-
-	$.post("updateCheckOrder.action", updateCheckOrderData, function(result) {
-		if (result != null && result["id"] != null) {
-			
-			$("#updateCheckOrderResult").text("update checkOrder successfully!");
-			$("#updateCheckOrderPopupWindow").jqxWindow('close');
-			
-			var checkOrderUIResult = parseCheckOrderDataToUIData(result);
-			
-			//update row in grid
-			var selectedrowindex = $("#checkOrderDataGrid").jqxGrid('getselectedrowindex');
-            var rowscount = $("#checkOrderDataGrid").jqxGrid('getdatainformation').rowscount;
-            if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
-            	var id = $("#checkOrderDataGrid").jqxGrid('getrowid', selectedrowindex);
-                var commit = $("#checkOrderDataGrid").jqxGrid('updaterow', id, checkOrderUIResult);
-                $("#checkOrderDataGrid").jqxGrid('ensurerowvisible', selectedrowindex);
-            }
-			
-			$("#eventLog").text("update checkOrder successfully!");
-
-		} else if (result != null && result["executeResult"] != null
-				&& result["executeResult"] == false) {
-			$("#updateCheckOrderResult").text("update checkOrder failed,please check checkOrder info!");
-		}
-	});
-}
 
 
 function initOperateCheckOrderGridElements() {
@@ -113,18 +131,33 @@ function addOperateCheckOrderGridEventListeners() {
 	// update row.
 	$("#checkOrderRowButton").on('click', function () {
 		selectedupdaterowindex = $("#checkOrderDataGrid").jqxGrid('getselectedrowindex');
-		//id = $("#checkOrderDataGrid").jqxGrid('getrowid', selectedrowindex);
-	    rowData = $('#checkOrderDataGrid').jqxGrid('getrowdata', selectedupdaterowindex);
-	    
-		
-		if(rowData != null) {
-			var offset = $("#checkOrderDataGrid").offset();
-			var position = {};
-			position.x = parseInt(offset.left) + 200;
-			position.y = parseInt(offset.top) - 100;
+		if(selectedupdaterowindex != -1) {
+			rowData = $('#checkOrderDataGrid').jqxGrid('getrowdata', selectedupdaterowindex);
+		    
 			
-			initCheckOrderWindow(rowData,position);
+			if(rowData != null) {
+				var offset = $("#checkOrderDataGrid").offset();
+				var position = {};
+				position.x = parseInt(offset.left) + 200;
+				position.y = parseInt(offset.top) - 150;
+				
+				initCheckoutOrderAllowanceWindow(rowData,position);
+			}
+		}else {
+			var option = {
+					fallbackLng: 'en-US',
+					lng: 'en-US',
+			//		lng: 'zh-CN',
+					resGetPath: 'resources/locales/__lng__/__ns__.json',
+					getAsync: false,
+					ns: 'bookingnow.content.tableManagement'
+				};
+			 
+			i18n.init(option);
+			$("#eventLog").text(i18n.t("message.requireSelectOneRow"));
 		}
+		
+		
 	});
     
 }
@@ -337,8 +370,8 @@ function parseCheckOrderGridHtml() {
 	initOperateCheckOrderGridElements();
 	addOperateCheckOrderGridEventListeners();
 	
-	
-	addCheckOrderEventListeners();
+	initcheckoutOrderAllowanceElements();
+	addcheckoutOrderAllowanceEventListeners();
 	
 	});
 		
@@ -433,8 +466,17 @@ function formatCheckOrderData(matchedOrder) {
 
 	if (matchedOrder != null && matchedOrder.id != null) {
 		for ( var orderAttr in matchedOrder) {
-			if (orderAttr == "food_details" || orderAttr == "table_details"
-					|| orderAttr == "allowance" || orderAttr == "total_price") {
+			if (orderAttr == "food_details" 
+				|| orderAttr == "table_details"
+					|| orderAttr == "allowance" 
+						|| orderAttr == "total_price"
+							|| orderAttr == "id") {
+				if (orderAttr == "id") {
+					var invoiceId = {};
+					invoiceId["name"] = "订单号";
+					invoiceId["value"] = matchedOrder["id"];
+					invoiceData["id"] = invoiceId;
+				}
 				if (orderAttr == "food_details") {
 					var food_details = matchedOrder[orderAttr];
 					if (food_details != null && food_details.length > 0) {
@@ -525,13 +567,14 @@ function formatCheckOrderData(matchedOrder) {
 function invoiceOrderTable(invoiceData) {
 	var orderDivBegin = "<div>";
 	var orderDivEnd = "</div><div id='checkOrderResult'></div>";
-	var orderTableBegin="<table>";
+	var orderTableBegin="<table border='1px' cellspacing='0px' style='border-collapse:collapse'>";
 	var orderTableEnd="</table>";
 	var orderTableRowBegin="<tr>";
 	var orderTableRowEnd="</tr>";
 	var orderTableColumnBegin="<td>";
 	var orderTableColumnEnd="</td>";
 	var orderTableFirstRow = "<tr><td>商品名称</td><td>数量</td><td>价格</td></tr>";
+	var orderIdRow = "<tr><td>订单编号</td><td id='checkoutOrderIdDetail'>" + invoiceData["id"].value + "</td><td></td></tr>";
 	var orderTableButton ='<tr style="text-align: center;"><td><input id="checkoutOrderButton" type="button" value="checkout" /></td><td><input id="checkOrderCancelButton" type="button" value="Cancel" /></td></tr>';
 	var orderTable = orderDivBegin + orderTableBegin;
 	orderTable = orderTable + orderTableFirstRow;
@@ -634,7 +677,7 @@ function invoiceOrderTable(invoiceData) {
 					for(var columnAttr in rowObject) {
 						if(columnAttr == "count") {
 							var columnTable = orderTableColumnBegin;
-							columnTable = columnTable + '<input id="checkOrderAllowance" type="text" value="' + rowObject[columnAttr] +'" />';
+							columnTable = columnTable + rowObject[columnAttr];
 							columnTable = columnTable + orderTableColumnEnd;
 							rowTable = rowTable + columnTable;
 							break;
@@ -696,6 +739,8 @@ function invoiceOrderTable(invoiceData) {
 				break;
 			}
 		}
+		
+		orderTable = orderTable + orderIdRow;
 		orderTable = orderTable + orderTableButton;
 		orderTable = orderTable + orderTableEnd;
 		orderTable = orderTable + orderDivEnd;

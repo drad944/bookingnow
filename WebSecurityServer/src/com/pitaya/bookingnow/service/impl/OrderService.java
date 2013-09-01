@@ -359,7 +359,7 @@ public class OrderService implements IOrderService{
 			if (order != null && order.getId() != null) {
 				Order realOrder = orderDao.selectFullOrderByPrimaryKey(order.getId());
 				
-				if (order.getUser() != null && order.getUser().getId() != null) {
+			//	if (order.getUser() != null && order.getUser().getId() != null) {
 					
 					
 					List<Order_Food_Detail> realFood_Details = realOrder.getFood_details();
@@ -439,11 +439,11 @@ public class OrderService implements IOrderService{
 							result.setSubTrueCount(0);
 						}
 						
-						realOrder.setEnabled(false);
+					//	realOrder.setEnabled(false);
 						realOrder.setModifyTime(new Date().getTime());
 						realOrder.setStatus(Constants.ORDER_FINISHED);
 						if (orderDao.updateByPrimaryKeySelective(realOrder) == 1) {
-							result.setOrder(orderDao.selectMinFullOrderByPrimaryKey(realOrder.getId()));
+							result.setOrder(orderDao.selectOrderByPrimaryKey(realOrder.getId()));
 							result.setExecuteResult(true);
 						}else {
 							throw new RuntimeException("can not update order status.");
@@ -452,9 +452,9 @@ public class OrderService implements IOrderService{
 					}else {
 						result.getErrorDetails().put("table_detail_exist", "can not find table detail in client data");
 					}
-				}else {
-					result.getErrorDetails().put("user_exist", "can not find user or user's id in client data");
-				}
+			//	}else {
+			//		result.getErrorDetails().put("user_exist", "can not find user or user's id in client data");
+			//	}
 			}else {
 				result.getErrorDetails().put("order_exist", "can not find order or order's id in client data");
 			}
@@ -1175,6 +1175,11 @@ public class OrderService implements IOrderService{
 		if (order != null && order.getId() != null) {
 			realOrder = orderDao.selectFullOrderByPrimaryKey(order.getId());
 			if (realOrder != null && realOrder.getId() != null) {
+				if(order.getAllowance() != null) {
+					realOrder.setAllowance(order.getAllowance());
+				}else {
+					realOrder.setAllowance(1.0);
+				}
 					
 				List<Order_Table_Detail> realTable_Details = realOrder.getTable_details();
 				
@@ -1236,7 +1241,11 @@ public class OrderService implements IOrderService{
 					result.setExecuteResult(true);
 					
 					order.setTotal_price(result.getTotalPriceOfOrder());
-					orderDao.updateByPrimaryKeySelective(order);
+					if(orderDao.updateByPrimaryKeySelective(order) == 1){
+						
+					}else{
+						throw new RuntimeException("-------- failed to update order total price in DB.");
+					}
 					
 					return result;
 				}else {
