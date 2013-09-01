@@ -96,7 +96,7 @@ public class CookingItemsAdapter extends BaseAdapter {
 
 			@Override
 			public void onClick(View v) {
-				CookingItemService.updateStatus(item.getId(), Constants.FOOD_UNAVAILABLE, new HttpHandler(){
+				CookingItemService.updateStatus(mContext, item.getId(), Constants.FOOD_UNAVAILABLE, new HttpHandler(){
 					@Override
 			    	public void onSuccess(String action, String response) {
 			    		try {
@@ -280,7 +280,7 @@ public class CookingItemsAdapter extends BaseAdapter {
 				changeStatusBtn.setOnClickListener(new OnClickListener(){
 					@Override
 					public void onClick(View v) {
-						CookingItemService.updateStatus(item.getId(), Constants.FOOD_CONFIRMED, new HttpHandler(){
+						CookingItemService.updateStatus(mContext, item.getId(), Constants.FOOD_CONFIRMED, new HttpHandler(){
 					    	
 							@Override
 					    	public void onSuccess(String action, String response) {
@@ -310,7 +310,7 @@ public class CookingItemsAdapter extends BaseAdapter {
 
 					@Override
 					public void onClick(View v) {
-						CookingItemService.updateStatus(item.getId(), Constants.FOOD_COOKING, new HttpHandler(){
+						CookingItemService.updateStatus(mContext, item.getId(), Constants.FOOD_COOKING, new HttpHandler(){
 							@Override
 					    	public void onSuccess(String action, String response) {
 					    		try {
@@ -339,7 +339,7 @@ public class CookingItemsAdapter extends BaseAdapter {
 
 					@Override
 					public void onClick(View v) {
-						CookingItemService.updateStatus(item.getId(), Constants.FOOD_FINISHED, new HttpHandler(){
+						CookingItemService.updateStatus(mContext, item.getId(), Constants.FOOD_FINISHED, new HttpHandler(){
 							@Override
 					    	public void onSuccess(String action, String response) {
 					    		try {
