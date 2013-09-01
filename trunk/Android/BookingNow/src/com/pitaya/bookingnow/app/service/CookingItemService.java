@@ -8,6 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
+
 import com.pitaya.bookingnow.app.data.HttpHandler;
 import com.pitaya.bookingnow.app.model.CookingItem;
 
@@ -29,13 +31,16 @@ public class CookingItemService {
 		}
 	}
 	
-	public static void updateStatus(Long id, int status, HttpHandler callback){
+	public static void updateStatus(Context context, Long id, int status, HttpHandler callback){
 		JSONObject jreq = new JSONObject();
 		JSONObject jfood_detail = new JSONObject();
+		JSONObject jparams = new JSONObject();
 		try {
 			jfood_detail.put("id", id);
 			jfood_detail.put("status", status);
+			jparams.put("user_id", UserManager.getUserId(context));
 			jreq.put("food_detail", jfood_detail);
+			jreq.put("params", jparams);
 			HttpService.post("updateStatusOfFood_Detail.action", new StringEntity(jreq.toString()), callback);
 		} catch (JSONException e) {
 			e.printStackTrace();
