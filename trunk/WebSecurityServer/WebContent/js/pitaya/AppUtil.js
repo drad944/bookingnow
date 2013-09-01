@@ -220,14 +220,6 @@ function parseMenuHtml() {
         }else if(event.args.id == 3) {
         	openContentPage('framework_main','page/common/userManagement.html','content');
         	parseUserGridHtml();
-        	/*
-        	var bodyhtml = $("body").html();
-        	bodyhtml = null;
-        	$("table+div").remove();
-        	
-        	var bodyhtml = $("body").html();
-        	bodyhtml = null;
-        	 */
         	currentPage = {};
         	
         }else if(event.args.id == 4) {

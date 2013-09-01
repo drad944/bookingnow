@@ -300,6 +300,20 @@ public class OrderAction extends BaseAction{
 		return "Fail";
 	}
 	
+	public String finishedOrder(){
+		if (order != null && order.getId() != null) {
+			result = orderService.updateOrderToFinished(order);
+			
+			if (result.isExecuteResult()) {
+				order = result.getOrder();
+				return "finishedOrderSuccess";
+			}
+		}
+		this.getResult().setExecuteResult(false);
+		this.getResult().setErrorType(Constants.FAIL);
+		return "Fail";
+	}
+	
 	public String calculateOrder(){
 		if (order != null && order.getId() != null) {
 			result = orderService.calculateOrder(order);

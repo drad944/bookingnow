@@ -230,6 +230,10 @@
 	        	<param name="excludeNullProperties">true</param>  
 				<param name="root">order</param>
 	        </result>
+	        <result name="finishedOrderSuccess" type="json">
+	        	<param name="excludeNullProperties">true</param>  
+				<param name="root">order</param>
+	        </result>
 	        
 	        <result name="Success" type="json">
 	        	<param name="root">result</param>

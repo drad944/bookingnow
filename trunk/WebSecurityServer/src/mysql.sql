@@ -40,7 +40,7 @@ insert into pitaya_table values (2,1,2,1,2,'A2',50);
 insert into pitaya_table values (3,1,2,2,5,'B3',0);
 insert into pitaya_table values (4,1,3,2,5,'A4',50);
 insert into pitaya_table values (5,1,3,4,7,'B5',0);
-insert into pitaya_table values (6,1,3,4,7,'A6',60);
+insert into pitaya_table values (6,1,4,4,7,'A6',60);
 insert into pitaya_table values (7,1,4,6,9,'B7',0);
 insert into pitaya_table values (8,1,4,6,9,'A8',80);
 insert into pitaya_table values (9,1,4,8,11,'A9',0);
