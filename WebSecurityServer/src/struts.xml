@@ -75,9 +75,8 @@
 	    </action>
 	        
 		<action name="*User" class="com.pitaya.bookingnow.action.UserAction" method="{1}User">
-			<result name="loginUserSuccess" type="json">
-			    <param name="excludeNullProperties">true</param>
-				<param name="root">loginUser</param>
+			<result name="loginUserSuccess" type="redirect">
+			   	/main.html
 	        </result>
 	        
 			<result name="logoutUserSuccess" type="json">
