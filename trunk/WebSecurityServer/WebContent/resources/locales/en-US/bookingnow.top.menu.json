@@ -21,5 +21,19 @@
 			"home":"map"
 		},
 		"admin" : "adminManagement"
+	},
+	"userLogin":{
+		"accountLabel":"account",
+		"passwordLabel":"password",
+		"loginButtonLabel":"login",
+		"registerButtonLabel":"register",
+		"validation":{
+			"message":{
+				"requireAccount":"Account is required!",
+				"accountLength":"Your account must be between 3 and 15 characters!",
+				"requirePassword":"Password is required!",
+				"passwordLength":"Your password must be between 6 and 20 characters!"
+			}
+		}
 	}
 }
