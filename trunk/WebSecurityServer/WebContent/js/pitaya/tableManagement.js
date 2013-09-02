@@ -411,16 +411,16 @@ function parseTableGridHtml() {
 		$.post("searchTable.action", 
 			{"table.enabled": true}, 
 			function(matchedtables){
-				/*
+				
 				var option = {
 						lng: 'zh',
 						fallbackLng: 'zh',
 				//		fallbackLng: 'en-US',
 				//		lng: 'en-US',
 						resGetPath: 'resources/locales/__lng__/__ns__.json',
-						resPostPath: 'resources/locales/__lng__/__ns__.json',
+				//		resPostPath: 'resources/locales/__lng__/__ns__.json',
 						getAsync: false,
-						postAsync: false,
+				//		postAsync: false,
 						ns: 'bookingnow.content.tableManagement',
 						fallbackToDefaultNS: true,
 						load:'current',
@@ -428,7 +428,7 @@ function parseTableGridHtml() {
 					};
 				 
 				i18n.init(option);
-				*/
+				
 				
 				if(matchedtables != null && matchedtables.result != null){
 					tables = matchedtables.result;
@@ -450,33 +450,33 @@ function parseTableGridHtml() {
 							
 							if(item == "id"){
 								datafield["type"] = "number";
-								column["text"] = i18n.t("tableManagement.field.id");
+								column["text"] = i18n.t("field.id");
 								column["filtertype"] = 'number';
 							}else if(item == "status") {
 								datafield["type"] = "string";
-								column["text"] = i18n.t("tableManagement.field.status");
+								column["text"] = i18n.t("field.status");
 								column["filtertype"] = 'textbox';
 							}else if(item == "minCustomerCount") {
 								datafield["type"] = "number";
-								column["text"] = i18n.t("tableManagement.field.minCustomerCount");
+								column["text"] = i18n.t("field.minCustomerCount");
 								column["filtertype"] = 'number';
 							}else if(item == "maxCustomerCount") {
 								datafield["type"] = "number";
-								column["text"] = i18n.t("tableManagement.field.maxCustomerCount");
+								column["text"] = i18n.t("field.maxCustomerCount");
 								column["filtertype"] = 'number';
 							}else if(item == "address") {
 								datafield["type"] = "number";
-								column["text"] = i18n.t("tableManagement.field.address");
+								column["text"] = i18n.t("field.address");
 								column["filtertype"] = 'textbox';
 							}else if(item == "indoorPrice") {
 								datafield["type"] = "number";
-								column["text"] = i18n.t("tableManagement.field.indoorPrice");
+								column["text"] = i18n.t("field.indoorPrice");
 								column["filtertype"] = 'number';
 							}else if(item == "enabled"){
 								//do nothing
 							}else {
 								datafield["type"] = "string";
-								column["text"] = i18n.t("tableManagement.field.xx");
+								column["text"] = i18n.t("field.xx");
 							}
 							
 							if(item == "enabled"){
@@ -571,7 +571,7 @@ function parseTableGridHtml() {
 	
 	// display selected row index.
     $("#tableDataGrid").on('rowselect', function (event) {
-        $("#eventLog").text(i18n.t("tableManagement.grid.selectRow", {index: event.args.rowindex}));
+        $("#eventLog").text(i18n.t("grid.selectRow", {index: event.args.rowindex}));
     });
     initTableManagementLocaleElements();
 	initOperateTableGridElements();
@@ -596,15 +596,15 @@ function parseTableGridHtml() {
 }
 
 function initTableManagementLocaleElements() {
-	$("#addTableRowButton").val(i18n.t("tableManagement.button.operationTableGrid.addTableRow"));
-	$("#updateTableRowButton").val(i18n.t("tableManagement.button.operationTableGrid.updateTableRow"));
-	$("#deleteTableRowButton").val(i18n.t("tableManagement.button.operationTableGrid.deleteTableRow"));
-	$("#updateTableUpdateButton").val(i18n.t("tableManagement.button.update"));
-	$("#updateTableResetButton").val(i18n.t("tableManagement.button.reset"));
-	$("#updateTableCancelButton").val(i18n.t("tableManagement.button.cancel"));
-	$("#registerTableRegisterButton").val(i18n.t("tableManagement.button.register"));
-	$("#registerTableResetButton").val(i18n.t("tableManagement.button.reset"));
-	$("#registerTableCancelButton").val(i18n.t("tableManagement.button.cancel"));
+	$("#addTableRowButton").val(i18n.t("button.operationTableGrid.addTableRow"));
+	$("#updateTableRowButton").val(i18n.t("button.operationTableGrid.updateTableRow"));
+	$("#deleteTableRowButton").val(i18n.t("button.operationTableGrid.deleteTableRow"));
+	$("#updateTableUpdateButton").val(i18n.t("button.update"));
+	$("#updateTableResetButton").val(i18n.t("button.reset"));
+	$("#updateTableCancelButton").val(i18n.t("button.cancel"));
+	$("#registerTableRegisterButton").val(i18n.t("button.register"));
+	$("#registerTableResetButton").val(i18n.t("button.reset"));
+	$("#registerTableCancelButton").val(i18n.t("button.cancel"));
 	
 	$("#updateTablePopupWindow").i18n();
 	$("#addTablePopupWindow").i18n();

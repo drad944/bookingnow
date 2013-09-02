@@ -314,8 +314,8 @@ function parseOrderGridHtml() {
 			{"order.enabled": true}, 
 			function(matchedorders){
 	var option = {
-			lng: 'zh-CN',
-			fallbackLng: 'zh-CN',
+			lng: 'zh',
+			fallbackLng: 'zh',
 	//		fallbackLng: 'en-US',
 	//		lng: 'en-US',
 			resGetPath: 'resources/locales/__lng__/__ns__.json',
@@ -503,9 +503,6 @@ function parseOrderGridHtml() {
 	initUpdateOrderElements();
 	addUpdateOrderEventListeners();
 	
-	// initialize the popup window and buttons.
-	initRegisterOrderElements();
-	addRegisterOrderEventListeners();
 	
 	/*
 	 $("#orderDataGrid").on('columnreordered', function (event) {
