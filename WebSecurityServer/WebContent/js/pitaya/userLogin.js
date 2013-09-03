@@ -47,16 +47,17 @@ function addUserLoginEventListeners() {
 		var userAccount = $('#user_account').val();
 		var userPassword = $('#user_password').val();
 		if (userAccount != null && userPassword != null) {
-
-			$.post("loginUser.action", 
-				{"user.account" : userAccount,"user.password" : userPassword},
-					function(result) {
-						if(result != null && result["id"] != null) {
-							window.location.href="/main.html";
-						} else {
-							$('#user_password').val(null);
-							$("#eventLog").text("注册失败");
-						}
+			var loginUser = {};
+			loginUser["user.account"] = userAccount;
+			loginUser["user.password"] = userPassword;
+			$.post("loginUser.action", loginUser, function(result) {
+		    	
+				if(result != null && result["id"] != null) {
+					window.location.href="/main.html";
+				} else {
+					$('#user_password').val(null);
+					$("#eventLog").text("注册失败");
+				}
 			});
 			
 		}
