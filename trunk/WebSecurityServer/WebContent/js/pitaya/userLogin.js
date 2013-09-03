@@ -44,26 +44,22 @@ function addUserLoginEventListeners() {
 	});
 
 	$('#userLoginForm').on('validationSuccess', function(event) {
-		$('#user_login_button').submit();
-		
-		/*
 		var userAccount = $('#user_account').val();
 		var userPassword = $('#user_password').val();
 		if (userAccount != null && userPassword != null) {
 
-			$.post("loginUser.action", {
-				"user.account" : userAccount,
-				"user.password" : userPassword
-			},function(user) {
-				if (user != null && user["id"] != null) {
-
-				} else {
-					$("#eventLog").text("注册失败");
-				}
-			});
+			$.post("loginUser.action", 
+				{"user.account" : userAccount,"user.password" : userPassword},
+				function(user) {
+					if (user != null && user["id"] != null) {
+						window.location.href="/main.html";
+					} else {
+						$('#user_password').val(null);
+						$("#eventLog").text("注册失败");
+					}
+				});
 			
 		}
-		*/
 	});
 
 }
