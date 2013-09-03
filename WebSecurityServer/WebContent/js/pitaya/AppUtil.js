@@ -53,23 +53,6 @@ var AppUtil = {
 	}
 };
 
-function userlogin(){
-	var user = {
-			"user.account":$("#account").val(),
-			"user.password":$("#password").val()
-		};
-	
-	$.post("loginUser.action", 
-			user, 
-		    function(result){
-				if(result != null && result["id"] != null) {
-					
-				}
-				
-		    },
-	"json");
-}
-
 function callAction(actionName,parameter) {
 		var result = {};
 		$.post(actionName, parameter,function(data){
