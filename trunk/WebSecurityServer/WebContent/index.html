@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>index.html</title>
 	<link rel="stylesheet" type="text/css" href="css/head.css">
 	<link rel="stylesheet" type="text/css" href="css/body.css">
 	<link rel="stylesheet" href="css/jqwidgets/styles/jqx.base.css" type="text/css" />
@@ -10,6 +10,7 @@
 	
 	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
 	<script type="text/javascript" src="js/i18next-1.6.3.js"></script>
+	<script type="text/javascript" src="js/pitaya/AppUtil.js"></script>
 	<script type="text/javascript" src="js/pitaya/Constants.js"></script>
 	<script type="text/javascript" src="js/pitaya/userLogin.js"></script>
 	
@@ -29,9 +30,7 @@
 	var theme = Constants.theme;
 	
 	$(document).ready(function(){
-		initUserLoginLocaleElements();
-		initUserLoginElements();
-		addUserLoginEventListeners();
+		userLogin.visit();
     });
 	</script>
 	
@@ -40,6 +39,7 @@
 <body>
 	<div id="content">
 		<div id="userLoginDiv">
+			<div id="userLoginResult">用户登录</div>
 	        <div>
 	            <form id="userLoginForm" action="." method="post">
 			    	<table>
@@ -52,14 +52,13 @@
 			    			<td><input type="password" id="user_password" value="" /></td>
 			    		</tr>
 			    		<tr>
-			    			<td><input id="user_login_button" type="submit" data-i18n="userLogin.loginButtonLabel" /></td>
-			    			<td><input id="user_register_button" type="button" data-i18n="userLogin.registerButtonLabel" /></td>
+			    			<td><input id="user_login_button" type="button" /></td>
+			    			<td><input id="user_register_button" type="button" /></td>
 			    		</tr>
 			    	</table>
 		    	</form>
 		    	
 	    	</div>
-	    	<div id="userLoginResult"></div>
 	    </div>
 	</div>
 </body>
