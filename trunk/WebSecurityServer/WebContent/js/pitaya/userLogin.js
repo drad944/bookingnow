@@ -50,14 +50,14 @@ function addUserLoginEventListeners() {
 
 			$.post("loginUser.action", 
 				{"user.account" : userAccount,"user.password" : userPassword},
-				function(user) {
-					if (user != null && user["id"] != null) {
-						window.location.href="/main.html";
-					} else {
-						$('#user_password').val(null);
-						$("#eventLog").text("注册失败");
-					}
-				});
+					function(result) {
+						if(result != null && result["id"] != null) {
+							window.location.href="/main.html";
+						} else {
+							$('#user_password').val(null);
+							$("#eventLog").text("注册失败");
+						}
+			});
 			
 		}
 	});

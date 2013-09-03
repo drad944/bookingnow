@@ -144,6 +144,7 @@ public class UserAction extends BaseAction{
         if(result.isExecuteResult()){ 
         	Map<String,Object> session = ActionContext.getContext().getSession();
         	loginUser = result.getUser();
+        	user = result.getUser();
     		session.put("loginUser", loginUser);
     		
             return "loginUserSuccess";  
