@@ -73,7 +73,6 @@ var checkoutManagement = {
 
 		initOperateCheckOrderGridElements:function () {
 //			var theme = getDemoTheme();
-			$("#deleteCheckOrderRowButton").jqxButton({ theme: theme });
 			$("#checkOrderRowButton").jqxButton({ theme: theme });
 		},	
 
