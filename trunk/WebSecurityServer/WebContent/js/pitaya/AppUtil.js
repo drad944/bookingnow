@@ -195,8 +195,7 @@ function parseMenuHtml() {
         $("#eventLog").text("Id: " + event.args.id + ", Text: " + $(event.args).text());
         if(event.args.id == 1) {
         	openContentPage('framework_main','page/common/orderManagement.html','content');
-        	parseOrderGridHtml();
-        	currentPage = {};
+        	currentPage = orderManagement;
         }else if(event.args.id == 2) {
         	openContentPage('framework_main','page/common/foodManagement.html','content');
         	currentPage = foodManagement;
