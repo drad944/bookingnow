@@ -230,8 +230,7 @@ function parseMenuHtml() {
         	currentPage = adminManagement;
         }else if(event.args.id == 11) {
         	openContentPage('framework_main','page/common/checkoutManagement.html','content');
-        	parseCheckOrderGridHtml();
-        	currentPage = {};
+        	currentPage = checkoutManagement;
         }
     	if(currentPage.visit){
     		currentPage.visit();
