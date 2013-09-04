@@ -49,6 +49,7 @@ var orderManagement = {
 		},
 
 		parseOrderGridHtml:function () {
+			var me = this;
 			$.post("searchOrder.action", 
 				{"order.enabled": true}, 
 				function(matchedorders){
@@ -233,7 +234,7 @@ var orderManagement = {
 		
 		// display selected row index.
 	    
-		
+		me.addOrderGridEventListeners();
 		/*
 		 $("#orderDataGrid").on('columnreordered', function (event) {
 		    var column = event.args.columntext;
