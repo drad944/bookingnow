@@ -201,8 +201,7 @@ function parseMenuHtml() {
         	currentPage = foodManagement;
         }else if(event.args.id == 3) {
         	openContentPage('framework_main','page/common/userManagement.html','content');
-        	parseUserGridHtml();
-        	currentPage = {};
+        	currentPage = userManagement;
         	
         }else if(event.args.id == 4) {
         	openContentPage('framework_main','page/common/tableManagement.html','content');
