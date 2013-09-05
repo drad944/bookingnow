@@ -60,7 +60,7 @@ var orderManagement = {
 		//		lng: 'en-US',
 				resGetPath: 'resources/locales/__lng__/__ns__.json',
 				getAsync: false,
-				ns: 'bookingnow.content.orderManagement',
+				ns: 'bookingnow.view',
 				load:'current'
 			};
 		i18n.init(option);
@@ -88,54 +88,54 @@ var orderManagement = {
 					if(item == "id"){
 						/*
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.id");
+						column["text"] = i18n.t("orderManagement.field.id");
 						column["filtertype"] = 'number';
 						*/
 					}else if(item == "allowance") {
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.allowance");
+						column["text"] = i18n.t("orderManagement.field.allowance");
 						column["filtertype"] = 'number';
 					}else if(item == "customer_count") {
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.customer_count");
+						column["text"] = i18n.t("orderManagement.field.customer_count");
 						column["filtertype"] = 'number';
 					}else if(item == "customer_id") {
 						/*
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.customer_id");
+						column["text"] = i18n.t("orderManagement.field.customer_id");
 						column["filtertype"] = 'number';
 						*/
 					}else if(item == "modifyTime") {
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.modifyTime");
+						column["text"] = i18n.t("orderManagement.field.modifyTime");
 						
 					}else if(item == "prePay") {
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.prePay");
+						column["text"] = i18n.t("orderManagement.field.prePay");
 						column["filtertype"] = 'number';
 					}else if(item == "status") {
 						datafield["type"] = "string";
-						column["text"] = i18n.t("field.status");
+						column["text"] = i18n.t("orderManagement.field.status");
 						column["filtertype"] = 'textbox';
 					}else if(item == "submit_time") {
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.submit_time");
+						column["text"] = i18n.t("orderManagement.field.submit_time");
 						
 					}else if(item == "total_price") {
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.total_price");
+						column["text"] = i18n.t("orderManagement.field.total_price");
 						column["filtertype"] = 'number';
 					}else if(item == "user_id") {
 						/*
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.user_id");
+						column["text"] = i18n.t("orderManagement.field.user_id");
 						column["filtertype"] = 'number';
 						*/
 					}else if(item == "customer" || item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
 						//do nothing
 					}else {
 						datafield["type"] = "string";
-						column["text"] = i18n.t("field.xx");
+						column["text"] = i18n.t("orderManagement.field.xx");
 					}
 					
 					if(item == "customer" || item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){

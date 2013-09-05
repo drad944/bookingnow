@@ -35,7 +35,7 @@ var menuManagement = {
 					fallbackLng: 'zh',
 					resGetPath: 'resources/locales/__lng__/__ns__.json',
 					getAsync: false,
-					ns: 'bookingnow.top.menu',
+					ns: 'bookingnow.view',
 					fallbackToDefaultNS: true,
 					load:'current'
 				};

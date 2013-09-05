@@ -22,7 +22,7 @@ var userLogin = {
 			//		lng: 'zh-CN',
 					resGetPath: 'resources/locales/__lng__/__ns__.json',
 					getAsync: false,
-					ns: 'bookingnow.top.menu'
+					ns: 'bookingnow.view'
 				};
 			 
 			i18n.init(option);
