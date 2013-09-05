@@ -36,7 +36,7 @@ var userManagement = {
 			
 			//init registerUserWindow widget data
 			$("#registerUserPhoneInput").jqxMaskedInput({value: null });
-			$('#registerUserBirthdayInput').jqxDateTimeInput({value:findDateTime("2000-01-01 00:00:00")});
+			$('#registerUserBirthdayInput').jqxDateTimeInput({value:AppUtil.findDateTime("2000-01-01 00:00:00")});
 			
 			$("#registerUserSexRadioButton1").jqxRadioButton({checked: true});
 		    $("#registerUserSexRadioButton2").jqxRadioButton({checked: false});
@@ -63,7 +63,7 @@ var userManagement = {
 			
 			//init registerUserWindow widget data
 			$("#updateUserPhoneInput").jqxMaskedInput({value: null });
-			$('#updateUserBirthdayInput').jqxDateTimeInput({value:findDateTime("2000-01-01 00:00:00")});
+			$('#updateUserBirthdayInput').jqxDateTimeInput({value:AppUtil.findDateTime("2000-01-01 00:00:00")});
 			
 			$("#updateUserSexRadioButton1").jqxRadioButton({checked: true});
 		    $("#updateUserSexRadioButton2").jqxRadioButton({checked: false});
@@ -188,7 +188,7 @@ var userManagement = {
 			
 		    var d1 = {};
 			if (rowData["birthday"] != null) {
-				d1 = findDateTime(rowData["birthday"]);
+				d1 = AppUtil.findDateTime(rowData["birthday"]);
 			}else {
 				d1= new Date();
 			}
@@ -218,9 +218,9 @@ var userManagement = {
 			$("#updateUserSexInput").val(rowData["sex"]);
 		    
 			// Create a jqxComboBox
-			$("#updateUserDepartmentCombobox").jqxComboBox({ selectedIndex: findDepartmentValue($("#updateUserDepartmentInput").val()) - 2});
+			$("#updateUserDepartmentCombobox").jqxComboBox({ selectedIndex: AppUtil.findDepartmentValue($("#updateUserDepartmentInput").val()) - 2});
 			
-			var roleValues = findRoleValue($("#updateUserRolesInput").val());
+			var roleValues = AppUtil.findRoleValue($("#updateUserRolesInput").val());
 			for(var i = 0;i< roleValues.length;i++) {
 				$("#updateUserRolesCombobox").jqxComboBox('checkIndex', roleValues[i] - 2);
 			}
@@ -364,7 +364,7 @@ var userManagement = {
 		    $("#registerUserAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 25, theme: theme });
 		    $("#registerUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 25, theme: theme });
 		    $('.registerUserTextInput').jqxInput({width: 150, height: 25, theme: theme });
-		    var date = findDateTime("2000-01-01 00:00:00");
+		    var date = AppUtil.findDateTime("2000-01-01 00:00:00");
 		    $('#registerUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 150, height: 25,formatString: "yyyy/MM/dd HH:mm:ss", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
 		    $("#registerUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
 		    $("#registerUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
@@ -564,24 +564,7 @@ var userManagement = {
 			});
 		},
 
-		showUserDetailInfo:function () {
-			$.post("findLoginUser.action", function(user) {
-				
-				user = parseUserDataToUIData(user);
-				if (user != null && user.id != null) {
-					$("#showUsreTable #account").text(user["account"]);
-					$("#showUsreTable #name").text(user["name"]);
-					$("#showUsreTable #password").text(user["password"]);
-					$("#showUsreTable #address").text(user["address"]);
-					$("#showUsreTable #birthday").text(user["birthday"]);
-					$("#showUsreTable #department").text(user["department"]);
-					$("#showUsreTable #email").text(user["email"]);
-					$("#showUsreTable #image_relative_path").attr("src",user["image_relative_path"]);
-					$("#showUsreTable #phone").text(user["phone"]);
-					$("#showUsreTable #sex").text(user["sex"]);
-				}
-			});
-		},
+		
 
 		uploadUserImage:function () {
 			var me = this;
@@ -995,18 +978,6 @@ var userManagement = {
 				$.post("findRoleWithUser.action", 
 					{"user.enabled": true}, 
 					function(matchedusers){
-			/*
-			var setLng = $.url().param('setLng');
-		    if (setLng)
-		    {
-		      language_complete = setLng.split("-");
-		    }
-		    else
-		    {
-		      language_complete = navigator.language.split("-");
-		    }
-		    language = (language_complete[0]);
-		    */
 						
 			var option = {
 					lng: 'zh-CN',
@@ -1303,13 +1274,13 @@ var userManagement = {
 			if(record != null){
 				for(var attr in record) {
 					if(attr == "user.sex") {
-						record[attr] = findSexValue(record[attr]);
+						record[attr] = AppUtil.findSexValue(record[attr]);
 					}else if(attr == "user.birthday") {
 						record[attr] = record[attr].getTime();
 					}else if(attr == "user.department") {
-						record[attr] = findDepartmentValue(record[attr]);
+						record[attr] = AppUtil.findDepartmentValue(record[attr]);
 					}else if(attr == "user.roles") {
-						var roles = findRoleStringArray(record[attr]);
+						var roles = AppUtil.findRoleStringArray(record[attr]);
 						if(roles.length > 0) {
 							
 							for(var i = 0;i< roles.length;i++) {
@@ -1328,13 +1299,13 @@ var userManagement = {
 			if(user != null){
 				for(var attr in user) {
 					if(attr == "department") {
-						user[attr] = findDepartmentString(user[attr]);
+						user[attr] = AppUtil.findDepartmentString(user[attr]);
 					}else if(attr == "sex") {
-						user[attr] = findSexString(user[attr]);
+						user[attr] = AppUtil.findSexString(user[attr]);
 					}else if(attr == "birthday") {
 						user[attr] = new Date(user[attr]).Format("yyyy-MM-dd HH:mm:ss");
 					}else if(attr == "user.department") {
-						record[attr] = findDepartmentString(record[attr]);
+						record[attr] = AppUtil.findDepartmentString(record[attr]);
 					}else if(attr == "role_Details") {
 						
 						var roleDetails = user[attr];

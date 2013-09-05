@@ -84,19 +84,18 @@ var checkoutManagement = {
 		    });
 			// update row.
 			$("#checkOrderRowButton").bind('click', function () {
-				checkOrderAllowance.init();
 				
 				selectedupdaterowindex = $("#checkOrderDataGrid").jqxGrid('getselectedrowindex');
 				if(selectedupdaterowindex != -1) {
+					
 					rowData = $('#checkOrderDataGrid').jqxGrid('getrowdata', selectedupdaterowindex);
-				    
 					
 					if(rowData != null) {
 						var offset = $("#checkOrderDataGrid").offset();
 						var position = {};
 						position.x = parseInt(offset.left) + 200;
 						position.y = parseInt(offset.top) - 150;
-						
+						checkOrderAllowance.init();
 						checkOrderAllowance.initCheckoutOrderAllowanceWindow(rowData,position);
 					}
 				}else {
@@ -138,7 +137,7 @@ var checkoutManagement = {
 			if(checkOrder != null){
 				for(var attr in checkOrder) {
 					if(attr == "status") {
-						checkOrder[attr] = findOrderStatusLable(checkOrder[attr]);
+						checkOrder[attr] = AppUtil.findOrderStatusLable(checkOrder[attr]);
 					}else if(attr == "modifyTime") {
 						checkOrder[attr] = new Date(checkOrder[attr]).Format("yyyy-MM-dd HH:mm:ss");
 					}else if(attr == "submit_time") {

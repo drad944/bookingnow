@@ -36,7 +36,7 @@ var orderManagement = {
 			if(order != null){
 				for(var attr in order) {
 					if(attr == "status") {
-						order[attr] = findOrderStatusLable(order[attr]);
+						order[attr] = AppUtil.findOrderStatusLable(order[attr]);
 					}else if(attr == "modifyTime") {
 						order[attr] = new Date(order[attr]).Format("yyyy-MM-dd HH:mm:ss");
 					}else if(attr == "submit_time") {
