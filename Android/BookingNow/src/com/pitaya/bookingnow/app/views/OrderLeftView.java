@@ -35,6 +35,10 @@ public class OrderLeftView extends Fragment{
 	protected boolean mIsBound = false;
 	protected ServiceConnection mConnection;
 	
+	public OrderLeftView(){
+		super();
+	}
+	
 	public OrderLeftView(OrderContentView v){
 		mMessageHandler = new MessageHandler();
 		this.setContainer(v);

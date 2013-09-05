@@ -95,7 +95,6 @@ public class MessageSender extends Thread{
 				}
 			 }
 			 socket = null;
-			 this._service = null;
 	    }
 
 	    public boolean isReady(){

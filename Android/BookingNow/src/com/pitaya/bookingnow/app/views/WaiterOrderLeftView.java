@@ -61,6 +61,10 @@ public class WaiterOrderLeftView extends OrderLeftView{
 	private OrderListsViewPagerAdapter mAdapter;
 	private OrderListsViewPager mOrdersViewPager;
 	
+	public WaiterOrderLeftView(){
+		super();
+	}
+	
 	public WaiterOrderLeftView(OrderContentView v){
 		super(v);
 	}
