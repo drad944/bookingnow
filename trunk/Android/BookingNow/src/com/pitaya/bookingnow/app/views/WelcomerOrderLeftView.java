@@ -60,6 +60,10 @@ public class WelcomerOrderLeftView extends OrderLeftView{
 	
 	private WelcomerOrderListView mOrderListView;
 	
+	public WelcomerOrderLeftView(){
+		super();
+	}
+	
 	public WelcomerOrderLeftView(OrderContentView v){
 		super(v);
 	}
@@ -80,19 +84,12 @@ public class WelcomerOrderLeftView extends OrderLeftView{
 					if(msg.getAction().equals(Constants.ACTION_REMOVE)){
 						Order removedorder =  new Order(msg.getOrderId(), null, null, 
 								null, null, 0, null);
-						int i = 0;
-						boolean isRemoved = false;
 						for(Order order : mOrderListView.getOrderList()){
 							if(order.getOrderKey().equals(removedorder.getOrderKey())){
 								order.remove(getActivity());
-								isRemoved = true;
 								break;
 							}
-							i++;
 						}
-//						if(isRemoved){
-//							mOrderListView.refresh();
-//						}
 					}
 				}
 			}
