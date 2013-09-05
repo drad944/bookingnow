@@ -8,36 +8,42 @@
 <body>
 	<div id="content">
 	
-		<div id='jqxWidget' style="font-size: 13px; font-family: Verdana; float: left;">
-			<div id="J_Nav" class="main-nav">
-				<ul>
-					<li class="J_nav_1">
-						<div>
-		                	<input id="addTableRowButton" type="button" />
-		            	</div>
-					</li>
-					
-					<li class="J_nav_1">
-						<div>
-		                	<input id="updateTableRowButton" type="button" />
-		            	</div>
-					</li>
-					
-					<li class="J_nav_1">
-						<div>
-		                	<input id="deleteTableRowButton" type="button" />
-		            	</div>
-					</li>
-					
-				</ul>
-			</div>
+		<div>
+			<table style="width:100%">
+	    		<tr style="width:100%">
+					<td style="width:100%" align="center">
+				    	<div id="controlbar" style="width:800px">
+				    		<div style="float:left">
+				    			<input id="addTableRowButton" type="button" />
+			            	</div>
+	   						<div style="float:left; padding-left:10px">
+			                	<input id="updateTableRowButton" type="button" />
+			            	</div>
+			            	<div style="float:left; padding-left:10px">
+			                	<input id="deleteTableRowButton" type="button" />
+			            	</div>
+			            	<div style="float:right">
+		            		</div>
+				    	</div>
+		    		</td>
+	    		</tr>
+	   			<tr style="width:100%">
+	   				<td style="width:100%" align="center">
+					   	<div id='jqxWidget' style="font-size: 13px; font-family: Verdana;">
+	        				<div id="jqxgrid"></div>
+	    				</div>
+	   				</td>
+	   			</tr>
+	   		</table>
+		
         	
 	        
         	<div id="tableDataGrid" style="float: left;" ></div>
 
-				<div id="updateTablePopupWindow" style="overflow:hidden;visibility:hidden;">
+				<!-- <div id="updateTablePopupWindow" style="overflow:hidden;visibility:hidden;"> -->
+				<div id="updateTablePopupWindow">
 					<div><h3 data-i18n="window.updateWindow"></h3></div>
-					<div id="updateTableDiv">
+					<div id="updateTableDiv" style="overflow: hidden;">
 				        <div>
 				            <form id="updateTableInfoForm" action="./">
 				                <table class="updateTableTable">

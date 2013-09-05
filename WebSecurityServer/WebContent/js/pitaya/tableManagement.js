@@ -94,6 +94,13 @@ var tableManagement = {
 		            ], 
 		            theme: theme
 		    });
+		    
+		    $("#updateTablePopupWindow").jqxWindow({
+		    	position:position, isModal: true,width: 350, height: 250, resizable: false,autoOpen : false, theme: theme, cancelButton: $("#updateTableCancelButton"), modalOpacity: 0.01,
+		    	initContent: function () {
+		            $('#updateTablePopupWindow').jqxWindow('focus');
+		        }
+		    });
 			
 		},
 
@@ -150,13 +157,14 @@ var tableManagement = {
 			me.formatUpdateTableElements(rowData);
 			
 			// initialize the popup window and buttons.
+			/*
 		    $("#updateTablePopupWindow").jqxWindow({
 		    	position:position, isModal: true,width: 350, height: 250, resizable: false, theme: theme, cancelButton: $("#updateTableCancelButton"), modalOpacity: 0.01,
 		    	initContent: function () {
 		            $('#updateTablePopupWindow').jqxWindow('focus');
 		        }
 		    });
-		    
+		    */
 		    $("#updateTablePopupWindow").jqxWindow('open');
 		},
 

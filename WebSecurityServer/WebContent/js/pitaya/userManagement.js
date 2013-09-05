@@ -1016,10 +1016,8 @@ var userManagement = {
 						var datafield = {};
 						var column = {};
 						
-						if(item == "id"){
-							datafield["type"] = "number";
-							column["text"] = i18n.t("field.id");
-							column["filtertype"] = 'number';
+						if(item == "id" || item == "password"){
+							
 						}else if(item == "modifyTime") {
 							/*
 							datafield["type"] = "number";
@@ -1042,10 +1040,6 @@ var userManagement = {
 						}else if(item == "name") {
 							datafield["type"] = "string";
 							column["text"] = i18n.t("field.name");
-							column["filtertype"] = 'textbox';
-						}else if(item == "password") {
-							datafield["type"] = "string";
-							column["text"] = i18n.t("field.password");
 							column["filtertype"] = 'textbox';
 						}else if(item == "phone") {
 							datafield["type"] = "string";
@@ -1098,22 +1092,16 @@ var userManagement = {
 							
 						}else if(item == "modifyTime" || item == "image_size" || item == "sub_system" || item == "description") {
 							
+						}else if(item == "password" || item == "id") {
+							
 						}else {
 							column["datafield"] = item;
 							
-							if(item == "id"){
-								column["width"] = "50";
-							}else if(item == "modifyTime") {
-								
-							}else if(item == "image_size") {
-								
-							}else if(item == "image_relative_path") {
+							if(item == "image_relative_path") {
 								column["width"] = "100";
 							}else if(item == "account") {
 								column["width"] = "100";
 							}else if(item == "name") {
-								column["width"] = "100";
-							}else if(item == "password") {
 								column["width"] = "100";
 							}else if(item == "phone") {
 								column["width"] = "100";
@@ -1124,17 +1112,11 @@ var userManagement = {
 							}else if(item == "address") {
 								column["width"] = "100";
 							}else if(item == "birthday") {
-								column["width"] = "150";
-							}else if(item == "description") {
-								
+								column["width"] = "130";
 							}else if(item == "department") {
 								column["width"] = "150";
-							}else if(item == "sub_system") {
-								
 							}else if(item == "roles"){
 								column["width"] = "200";
-							}else if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
-								//do nothing
 							}else {
 								column["width"] = "50";
 							}
