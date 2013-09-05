@@ -108,7 +108,7 @@ var tableManagement = {
 			$("#updateTableMinCustomerCountInput").jqxNumberInput('val',rowData["minCustomerCount"]);
 			$("#updateTableMaxCustomerCountInput").jqxNumberInput('val',rowData["maxCustomerCount"]);
 			$("#updateTableIndoorPriceInput").jqxNumberInput('val',rowData["indoorPrice"]);
-			$("#updateTableStatusCombobox").jqxComboBox({ selectedIndex: findTableStatusValue($("#updateTableStatusInput").val()) - 2});
+			$("#updateTableStatusCombobox").jqxComboBox({ selectedIndex: AppUtil.findTableStatusValue($("#updateTableStatusInput").val()) - 2});
 		},
 
 		addUpdateTableEventListeners:function () {
@@ -616,7 +616,7 @@ var tableManagement = {
 			if(record != null){
 				for(var attr in record) {
 					if(attr == "table.status") {
-						record[attr] = findTableStatusValue(record[attr]);
+						record[attr] = AppUtil.findTableStatusValue(record[attr]);
 					}
 				}
 				return record;
@@ -628,7 +628,7 @@ var tableManagement = {
 			if(table != null){
 				for(var attr in table) {
 					if(attr == "status") {
-						table[attr] = findTableStatusLable(table[attr]);
+						table[attr] = AppUtil.findTableStatusLable(table[attr]);
 					}
 				}
 				return table;
