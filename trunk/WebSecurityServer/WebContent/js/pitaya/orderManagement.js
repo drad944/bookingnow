@@ -86,9 +86,11 @@ var orderManagement = {
 					var column = {};
 					
 					if(item == "id"){
+						/*
 						datafield["type"] = "number";
 						column["text"] = i18n.t("field.id");
 						column["filtertype"] = 'number';
+						*/
 					}else if(item == "allowance") {
 						datafield["type"] = "number";
 						column["text"] = i18n.t("field.allowance");
@@ -98,9 +100,11 @@ var orderManagement = {
 						column["text"] = i18n.t("field.customer_count");
 						column["filtertype"] = 'number';
 					}else if(item == "customer_id") {
+						/*
 						datafield["type"] = "number";
 						column["text"] = i18n.t("field.customer_id");
 						column["filtertype"] = 'number';
+						*/
 					}else if(item == "modifyTime") {
 						datafield["type"] = "number";
 						column["text"] = i18n.t("field.modifyTime");
@@ -122,9 +126,11 @@ var orderManagement = {
 						column["text"] = i18n.t("field.total_price");
 						column["filtertype"] = 'number';
 					}else if(item == "user_id") {
+						/*
 						datafield["type"] = "number";
 						column["text"] = i18n.t("field.user_id");
 						column["filtertype"] = 'number';
+						*/
 					}else if(item == "customer" || item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
 						//do nothing
 					}else {
@@ -134,29 +140,31 @@ var orderManagement = {
 					
 					if(item == "customer" || item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
 						
+					}else if(item == "id" || item == "customer_id" ||item == "user_id"){
+						
 					}else {
 						column["datafield"] = item;
 						
 						if(item == "id"){
-							column["width"] = "50";
+		//					column["width"] = "50";
 						}else if(item == "allowance") {
-							column["width"] = "50";
+							column["width"] = "120";
 						}else if(item == "customer_count") {
-							column["width"] = "80";
+							column["width"] = "100";
 						}else if(item == "customer_id") {
-							column["width"] = "80";
+		//					column["width"] = "80";
 						}else if(item == "modifyTime") {
 							column["width"] = "130";
 						}else if(item == "prePay") {
-							column["width"] = "50";
+							column["width"] = "100";
 						}else if(item == "status") {
-							column["width"] = "80";
+							column["width"] = "100";
 						}else if(item == "submit_time") {
 							column["width"] = "130";
 						}else if(item == "total_price") {
-							column["width"] = "100";
+							column["width"] = "120";
 						}else if(item == "user_id") {
-							column["width"] = "50";
+		//					column["width"] = "50";
 						}else if(item == "customer" || item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
 							//do nothing
 						}else {

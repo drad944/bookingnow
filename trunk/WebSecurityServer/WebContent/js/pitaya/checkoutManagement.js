@@ -79,6 +79,12 @@ var checkoutManagement = {
 		addOperateCheckOrderGridEventListeners:function () {
 			var me = this;
 			
+			notification.subscribeTopic("order", function(event){
+				alert(event);
+				//add new order in data grid here,then highlight it
+				
+			});
+			
 			$("#checkOrderDataGrid").bind('rowselect', function (event) {
 		        $("#eventLog").text("select row index : " + event.args.rowindex);
 		    });
@@ -524,9 +530,11 @@ var checkoutManagement = {
 					var column = {};
 					
 					if(item == "id"){
+						/*
 						datafield["type"] = "number";
 						column["text"] = i18n.t("field.id");
 						column["filtertype"] = 'number';
+						*/
 					}else if(item == "allowance") {
 						datafield["type"] = "number";
 						column["text"] = i18n.t("field.allowance");
@@ -542,25 +550,30 @@ var checkoutManagement = {
 						column["text"] = i18n.t("field.modifyTime");
 						
 					}else if(item == "prePay") {
+						/*
 						datafield["type"] = "number";
 						column["text"] = i18n.t("field.prePay");
 						column["filtertype"] = 'number';
+						*/
 					}else if(item == "status") {
 						datafield["type"] = "string";
 						column["text"] = i18n.t("field.status");
 						column["filtertype"] = 'textbox';
 					}else if(item == "submit_time") {
+						/*
 						datafield["type"] = "number";
 						column["text"] = i18n.t("field.submit_time");
-						
+						*/
 					}else if(item == "total_price") {
 						datafield["type"] = "number";
 						column["text"] = i18n.t("field.total_price");
 						column["filtertype"] = 'number';
 					}else if(item == "user_id") {
+						/*
 						datafield["type"] = "number";
 						column["text"] = i18n.t("field.user_id");
 						column["filtertype"] = 'number';
+						*/
 					}else if(item == "foods") {
 						datafield["type"] = "string";
 						column["text"] = i18n.t("field.foods");
@@ -582,37 +595,27 @@ var checkoutManagement = {
 					
 					if(item == "customer_id" || item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
 						
+					}else if(item == "id" || item == "submit_time" || item == "user_id" || item == "prePay"){
+						
 					}else {
 						column["datafield"] = item;
 						
-						if(item == "id"){
-							column["width"] = "50";
-						}else if(item == "allowance") {
-							column["width"] = "50";
+						if(item == "allowance") {
+							column["width"] = "80";
 						}else if(item == "customer_count") {
 							column["width"] = "80";
-						}else if(item == "customer_id") {
-							
 						}else if(item == "modifyTime") {
 							column["width"] = "130";
-						}else if(item == "prePay") {
-							column["width"] = "50";
 						}else if(item == "status") {
-							column["width"] = "80";
-						}else if(item == "submit_time") {
-							column["width"] = "130";
+							column["width"] = "60";
 						}else if(item == "total_price") {
-							column["width"] = "100";
-						}else if(item == "user_id") {
-							column["width"] = "50";
+							column["width"] = "80";
 						}else if(item == "foods") {
-							column["width"] = "150";
+							column["width"] = "190";
 						}else if(item == "tables") {
-							column["width"] = "150";
+							column["width"] = "100";
 						}else if(item == "customer") {
-							column["width"] = "50";
-						}else if( item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
-							//do nothing
+							column["width"] = "80";
 						}else {
 							column["width"] = "50";
 						}
