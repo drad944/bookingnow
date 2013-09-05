@@ -901,9 +901,9 @@ var userManagement = {
 
 		initOperateUserGridElements:function () {
 			
-			$("#addUserRowButton").jqxButton({ theme: theme });
-			$("#deleteUserRowButton").jqxButton({ theme: theme });
-			$("#updateUserRowButton").jqxButton({ theme: theme });
+			$("#addUserRowButton").jqxButton({ height: 25,theme: theme });
+			$("#deleteUserRowButton").jqxButton({ height: 25,theme: theme });
+			$("#updateUserRowButton").jqxButton({ height: 25,theme: theme });
 		},	
 
 		addOperateUserGridEventListeners:function () {

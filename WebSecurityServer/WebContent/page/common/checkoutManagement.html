@@ -9,24 +9,24 @@
 	
 <body>
 	<div id="content">
-	
-		<div id='jqxWidget' style="font-size: 13px; font-family: Verdana; float: left;">
-			<div id="J_Nav" class="main-nav">
-				<ul>
-					
-					<li class="J_nav_1">
-						<div>
-		                	<input id="checkOrderRowButton" type="button" value="输入折扣并结账" />
-		            	</div>
-					</li>
-					
-					
-				</ul>
-			</div>
+			<table style="width:100%">
+	    		<tr style="width:100%">
+					<td style="width:100%" align="center">
+				    	<div id="controlbar" style="width:800px">
+				    		<div style="float:left">
+				    			<input id="checkOrderRowButton" type="button" value="输入折扣并结账" />
+			            	</div>
+				    	</div>
+		    		</td>
+	    		</tr>
+	   			<tr style="width:100%">
+	   				<td style="width:100%" align="center">
+					   	<div id="checkOrderDataGrid" style="float: left;" ></div>
+	   				</td>
+	   			</tr>
+	   		</table>
         	
-	        
-        	<div id="checkOrderDataGrid" style="float: left;" ></div>
-        	<div id="checkoutOrderAllowanceWindow" style="overflow:hidden;visibility:hidden;">
+        	<div id="checkoutOrderAllowanceWindow" style="overflow:hidden;display:none;">
         		<div><h3 data-i18n="window.registerWindow">请输入订单折扣:</h3></div>
 				<div id="checkoutOrderAllowanceDiv">
 					<div>
@@ -62,10 +62,7 @@
 		            <div id="checkoutOrderAllowanceResult"></div>
 			    </div>
         	</div>
-        	
-        	
 			
-		</div>
 	</div>
 	
 </body>

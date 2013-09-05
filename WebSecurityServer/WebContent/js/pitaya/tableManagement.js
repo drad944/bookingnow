@@ -20,6 +20,7 @@ var tableManagement = {
 		},
 
 		visit : function (){
+			
 			this.init();
 		},
 		init : function(){
@@ -95,12 +96,7 @@ var tableManagement = {
 		            theme: theme
 		    });
 		    
-		    $("#updateTablePopupWindow").jqxWindow({
-		    	position:position, isModal: true,width: 350, height: 250, resizable: false,autoOpen : false, theme: theme, cancelButton: $("#updateTableCancelButton"), modalOpacity: 0.01,
-		    	initContent: function () {
-		            $('#updateTablePopupWindow').jqxWindow('focus');
-		        }
-		    });
+		    
 			
 		},
 
@@ -157,14 +153,14 @@ var tableManagement = {
 			me.formatUpdateTableElements(rowData);
 			
 			// initialize the popup window and buttons.
-			/*
+			
 		    $("#updateTablePopupWindow").jqxWindow({
 		    	position:position, isModal: true,width: 350, height: 250, resizable: false, theme: theme, cancelButton: $("#updateTableCancelButton"), modalOpacity: 0.01,
 		    	initContent: function () {
 		            $('#updateTablePopupWindow').jqxWindow('focus');
 		        }
 		    });
-		    */
+		    
 		    $("#updateTablePopupWindow").jqxWindow('open');
 		},
 
@@ -336,9 +332,9 @@ var tableManagement = {
 		},
 
 		initOperateTableGridElements:function () {
-			$("#addTableRowButton").jqxButton({ theme: theme });
-			$("#deleteTableRowButton").jqxButton({ theme: theme });
-			$("#updateTableRowButton").jqxButton({ theme: theme });
+			$("#addTableRowButton").jqxButton({ height: 25,theme: theme });
+			$("#deleteTableRowButton").jqxButton({ height: 25,theme: theme });
+			$("#updateTableRowButton").jqxButton({ height: 25,theme: theme });
 		},	
 
 		addOperateTableGridEventListeners:function () {
