@@ -71,9 +71,9 @@ var tableManagement = {
 		    $('#updateTableMaxCustomerCountInput').jqxNumberInput({ width: 120, height: 20,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
 		    $('#updateTableIndoorPriceInput').jqxNumberInput({ width: 120, height: 20, digits: 3,symbolPosition: 'right', symbol: '￥', theme: theme, spinButtons: true});
 		    var tableStatusData = [
-		                                { value: 2, label: i18n.t("status.EMPTY") },
-		                                { value: 3, label: i18n.t("status.BOOKING") },
-		                                { value: 4, label: i18n.t("status.USING") }
+		                                { value: 2, label: i18n.t("tableManagement.status.EMPTY") },
+		                                { value: 3, label: i18n.t("tableManagement.status.BOOKING") },
+		                                { value: 4, label: i18n.t("tableManagement.status.USING") }
 		                             ];
 		     
 		 	$("#updateTableStatusCombobox").jqxComboBox({ 
@@ -182,7 +182,7 @@ var tableManagement = {
 				
 				if (result != null && result["id"] != null) {
 					
-					$("#updateTableResult").text(i18n.t("result.updateSuccess"));
+					$("#updateTableResult").text(i18n.t("tableManagement.result.updateSuccess"));
 					$("#updateTablePopupWindow").jqxWindow('close');
 					
 					var tableUIResult = me.parseTableDataToUIData(result);
@@ -196,11 +196,11 @@ var tableManagement = {
 		                $("#tableDataGrid").jqxGrid('ensurerowvisible', selectedrowindex);
 		            }
 					
-					$("#eventLog").text(i18n.t("result.updateSuccess"));
+					$("#eventLog").text(i18n.t("tableManagement.result.updateSuccess"));
 
 				} else if (result != null && result["executeResult"] != null
 						&& result["executeResult"] == false) {
-					$("#updateTableResult").text(i18n.t("result.updateFail"));
+					$("#updateTableResult").text(i18n.t("tableManagement.result.updateFail"));
 				}
 			});
 		},
@@ -219,9 +219,9 @@ var tableManagement = {
 		    $('#registerTableMaxCustomerCountInput').jqxNumberInput({ width: 120, height: 20,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
 		    $('#registerTableIndoorPriceInput').jqxNumberInput({ width: 120, height: 20, digits: 3,symbolPosition: 'right', symbol: '￥', theme: theme, spinButtons: true});
 		    var tableStatusData = [
-		                                { value: 2, label: i18n.t("status.EMPTY") },
-		                                { value: 3, label: i18n.t("status.BOOKING") },
-		                                { value: 4, label: i18n.t("status.USING") }
+		                                { value: 2, label: i18n.t("tableManagement.status.EMPTY") },
+		                                { value: 3, label: i18n.t("tableManagement.status.BOOKING") },
+		                                { value: 4, label: i18n.t("tableManagement.status.USING") }
 		                             ];
 		    
 		    
@@ -318,15 +318,15 @@ var tableManagement = {
 				if (result != null && result["id"] != null) {
 					result = me.parseTableDataToUIData(result);
 					
-					$("#registerTableResult").text(i18n.t("result.insertSuccess"));
+					$("#registerTableResult").text(i18n.t("tableManagement.result.insertSuccess"));
 					$('#addTablePopupWindow').jqxWindow('close');
 					
 					var commit = $("#tableDataGrid").jqxGrid('addrow', null, result);
 					
-					$("#eventLog").text(i18n.t("result.insertSuccess"));
+					$("#eventLog").text(i18n.t("tableManagement.result.insertSuccess"));
 				} else if (result != null && result["executeResult"] != null
 						&& result["executeResult"] == false) {
-					$("#registerTableResult").text(i18n.t("result.insertFail"));
+					$("#registerTableResult").text(i18n.t("tableManagement.result.insertFail"));
 				}
 			});
 		},
@@ -355,17 +355,7 @@ var tableManagement = {
 						me.initUpdateTableWindow(rowData,position);
 					}
 				}else {
-					var option = {
-							fallbackLng: 'en-US',
-							lng: 'en-US',
-					//		lng: 'zh-CN',
-							resGetPath: 'resources/locales/__lng__/__ns__.json',
-							getAsync: false,
-							ns: 'bookingnow.content.tableManagement'
-						};
-					 
-					i18n.init(option);
-					$("#eventLog").text(i18n.t("message.requireSelectOneRow"));
+					$("#eventLog").text(i18n.t("tableManagement.message.requireSelectOneRow"));
 				}
 			    
 			});
@@ -387,7 +377,7 @@ var tableManagement = {
 			});
 			
 			$("#tableDataGrid").bind('rowselect', function (event) {
-		        $("#eventLog").text(i18n.t("grid.selectRow", {index: event.args.rowindex}));
+		        $("#eventLog").text(i18n.t("tableManagement.grid.selectRow", {index: event.args.rowindex}));
 		    });
 			
 			// delete row.
@@ -429,7 +419,7 @@ var tableManagement = {
 						//		resPostPath: 'resources/locales/__lng__/__ns__.json',
 								getAsync: false,
 						//		postAsync: false,
-								ns: 'bookingnow.content.tableManagement',
+								ns: 'bookingnow.view',
 								fallbackToDefaultNS: true,
 								load:'current',
 								useCookie: false
@@ -458,33 +448,33 @@ var tableManagement = {
 									
 									if(item == "id"){
 										datafield["type"] = "number";
-										column["text"] = i18n.t("field.id");
+										column["text"] = i18n.t("tableManagement.field.id");
 										column["filtertype"] = 'number';
 									}else if(item == "status") {
 										datafield["type"] = "string";
-										column["text"] = i18n.t("field.status");
+										column["text"] = i18n.t("tableManagement.field.status");
 										column["filtertype"] = 'textbox';
 									}else if(item == "minCustomerCount") {
 										datafield["type"] = "number";
-										column["text"] = i18n.t("field.minCustomerCount");
+										column["text"] = i18n.t("tableManagement.field.minCustomerCount");
 										column["filtertype"] = 'number';
 									}else if(item == "maxCustomerCount") {
 										datafield["type"] = "number";
-										column["text"] = i18n.t("field.maxCustomerCount");
+										column["text"] = i18n.t("tableManagement.field.maxCustomerCount");
 										column["filtertype"] = 'number';
 									}else if(item == "address") {
 										datafield["type"] = "number";
-										column["text"] = i18n.t("field.address");
+										column["text"] = i18n.t("tableManagement.field.address");
 										column["filtertype"] = 'textbox';
 									}else if(item == "indoorPrice") {
 										datafield["type"] = "number";
-										column["text"] = i18n.t("field.indoorPrice");
+										column["text"] = i18n.t("tableManagement.field.indoorPrice");
 										column["filtertype"] = 'number';
 									}else if(item == "enabled"){
 										//do nothing
 									}else {
 										datafield["type"] = "string";
-										column["text"] = i18n.t("field.xx");
+										column["text"] = i18n.t("tableManagement.field.xx");
 									}
 									
 									if(item == "enabled"){
@@ -602,15 +592,15 @@ var tableManagement = {
 		},
 
 		initTableManagementLocaleElements:function () {
-			$("#addTableRowButton").val(i18n.t("button.operationTableGrid.addTableRow"));
-			$("#updateTableRowButton").val(i18n.t("button.operationTableGrid.updateTableRow"));
-			$("#deleteTableRowButton").val(i18n.t("button.operationTableGrid.deleteTableRow"));
-			$("#updateTableUpdateButton").val(i18n.t("button.update"));
-			$("#updateTableResetButton").val(i18n.t("button.reset"));
-			$("#updateTableCancelButton").val(i18n.t("button.cancel"));
-			$("#registerTableRegisterButton").val(i18n.t("button.register"));
-			$("#registerTableResetButton").val(i18n.t("button.reset"));
-			$("#registerTableCancelButton").val(i18n.t("button.cancel"));
+			$("#addTableRowButton").val(i18n.t("tableManagement.button.operationTableGrid.addTableRow"));
+			$("#updateTableRowButton").val(i18n.t("tableManagement.button.operationTableGrid.updateTableRow"));
+			$("#deleteTableRowButton").val(i18n.t("tableManagement.button.operationTableGrid.deleteTableRow"));
+			$("#updateTableUpdateButton").val(i18n.t("tableManagement.button.update"));
+			$("#updateTableResetButton").val(i18n.t("tableManagement.button.reset"));
+			$("#updateTableCancelButton").val(i18n.t("tableManagement.button.cancel"));
+			$("#registerTableRegisterButton").val(i18n.t("tableManagement.button.register"));
+			$("#registerTableResetButton").val(i18n.t("tableManagement.button.reset"));
+			$("#registerTableCancelButton").val(i18n.t("tableManagement.button.cancel"));
 			
 			$("#updateTablePopupWindow").i18n();
 			$("#addTablePopupWindow").i18n();

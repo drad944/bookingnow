@@ -44,7 +44,7 @@ var userManagement = {
 		    $("#registerUserRolesCombobox").jqxComboBox('uncheckAll');
 		    
 		    //init registerUserWindow store data
-			$("registerUserSexInput").val(i18n.t("sex.male"));
+			$("registerUserSexInput").val(i18n.t("userManagement.sex.male"));
 			$("#registerUserIdInput").val(null);
 			$("#registerUserAccountInput").val(null);
 			$("#registerUserRealNameInput").val(null);
@@ -70,7 +70,7 @@ var userManagement = {
 		    $('#acceptInput').jqxCheckBox({checked: false});
 		    $("#updateUserRolesCombobox").jqxComboBox('uncheckAll');
 		    
-			$("updateUserSexInput").val(i18n.t("sex.male"));
+			$("updateUserSexInput").val(i18n.t("userManagement.sex.male"));
 			$("#updateUserIdInput").val(null);
 			$("#updateUserAccountInput").val(null);
 			$("#updateUserRealNameInput").val(null);
@@ -103,15 +103,15 @@ var userManagement = {
 		    
 			$("#updateUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25,checked: true, theme: theme });
 			$("#updateUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25,  theme: theme });
-			$("updateUserSexInput").val(i18n.t("sex.male"));
+			$("updateUserSexInput").val(i18n.t("userManagement.sex.male"));
 		    
 			var userDepartmentData = [
-			          				{ value: 2, label: i18n.t("department.BUSSINESS") },
-			          				{ value: 3, label: i18n.t("department.PRODUCTION") },
-			          				{ value: 4, label: i18n.t("department.FINANCE") },
-			          				{ value: 5, label: i18n.t("department.PERSONNEL") },
-			          				{ value: 6, label: i18n.t("department.DEVERLOPE") },
-			          				{ value: 7, label: i18n.t("department.MANAGEMENT") }
+			          				{ value: 2, label: i18n.t("userManagement.department.BUSSINESS") },
+			          				{ value: 3, label: i18n.t("userManagement.department.PRODUCTION") },
+			          				{ value: 4, label: i18n.t("userManagement.department.FINANCE") },
+			          				{ value: 5, label: i18n.t("userManagement.department.PERSONNEL") },
+			          				{ value: 6, label: i18n.t("userManagement.department.DEVERLOPE") },
+			          				{ value: 7, label: i18n.t("userManagement.department.MANAGEMENT") }
 			                  ];
 			              
 		  	// Create a jqxComboBox
@@ -126,16 +126,16 @@ var userManagement = {
 		  	});
 		  
 		    var userRoleData = [
-						{ value: 2, label: i18n.t("role.ANONYMOUS") },
-						{ value: 3, label: i18n.t("role.CUSTOMER") },
-						{ value: 4, label: i18n.t("role.CUSTOMER_VIP1") },
-						{ value: 5, label: i18n.t("role.CUSTOMER_VIP2") },
-						{ value: 6, label: i18n.t("role.WELCOMER") },
-						{ value: 7, label: i18n.t("role.CHEF") },
-						{ value: 8, label: i18n.t("role.WAITER") },
-						{ value: 9, label: i18n.t("role.CASHIER") },
-						{ value: 10, label: i18n.t("role.MANAGER") },
-						{ value: 11, label: i18n.t("role.ADMIN") }
+						{ value: 2, label: i18n.t("userManagement.role.ANONYMOUS") },
+						{ value: 3, label: i18n.t("userManagement.role.CUSTOMER") },
+						{ value: 4, label: i18n.t("userManagement.role.CUSTOMER_VIP1") },
+						{ value: 5, label: i18n.t("userManagement.role.CUSTOMER_VIP2") },
+						{ value: 6, label: i18n.t("userManagement.role.WELCOMER") },
+						{ value: 7, label: i18n.t("userManagement.role.CHEF") },
+						{ value: 8, label: i18n.t("userManagement.role.WAITER") },
+						{ value: 9, label: i18n.t("userManagement.role.CASHIER") },
+						{ value: 10, label: i18n.t("userManagement.role.MANAGER") },
+						{ value: 11, label: i18n.t("userManagement.role.ADMIN") }
 		        ];
 		    
 			// Create a jqxComboBox
@@ -152,16 +152,16 @@ var userManagement = {
 		    // initialize validator.
 		    $('#updateUserInfoForm').jqxValidator({
 		     rules: [
-		            { input: '#updateUserAccountInput', message: i18n.t("validation.message.requireAccount"), action: 'keyup, blur', rule: 'required' },
-		            { input: '#updateUserAccountInput', message: i18n.t("validation.message.accountLength"), action: 'keyup, blur', rule: 'length=3,12' },
-		            { input: '#updateUserRealNameInput', message: i18n.t("validation.message.requireUsername"), action: 'keyup, blur', rule: 'required' },
-		            { input: '#updateUserRealNameInput', message: i18n.t("validation.message.requireUsernameLetter"), action: 'keyup', rule: 'notNumber' },
-		            { input: '#updateUserRealNameInput', message: i18n.t("validation.message.usernameLength"), action: 'keyup', rule: 'length=3,12' },
+		            { input: '#updateUserAccountInput', message: i18n.t("userManagement.validation.message.requireAccount"), action: 'keyup, blur', rule: 'required' },
+		            { input: '#updateUserAccountInput', message: i18n.t("userManagement.validation.message.accountLength"), action: 'keyup, blur', rule: 'length=3,12' },
+		            { input: '#updateUserRealNameInput', message: i18n.t("userManagement.validation.message.requireUsername"), action: 'keyup, blur', rule: 'required' },
+		            { input: '#updateUserRealNameInput', message: i18n.t("userManagement.validation.message.requireUsernameLetter"), action: 'keyup', rule: 'notNumber' },
+		            { input: '#updateUserRealNameInput', message: i18n.t("userManagement.validation.message.usernameLength"), action: 'keyup', rule: 'length=3,12' },
 		            
-		            { input: '#updateUserPasswordInput', message: i18n.t("validation.message.requirePassword"), action: 'keyup, blur', rule: 'required' },
-		            { input: '#updateUserPasswordInput', message: i18n.t("validation.message.passwordLength"), action: 'keyup, blur', rule: 'length=6,20' },
-		            { input: '#updateUserPasswordConfirmInput', message: i18n.t("validation.message.requireConfirmPassword"), action: 'keyup, blur', rule: 'required' },
-		            { input: '#updateUserPasswordConfirmInput', message: i18n.t("validation.message.NomatchPassword"), action: 'keyup, focus', rule: function (input, commit) {
+		            { input: '#updateUserPasswordInput', message: i18n.t("userManagement.validation.message.requirePassword"), action: 'keyup, blur', rule: 'required' },
+		            { input: '#updateUserPasswordInput', message: i18n.t("userManagement.validation.message.passwordLength"), action: 'keyup, blur', rule: 'length=6,20' },
+		            { input: '#updateUserPasswordConfirmInput', message: i18n.t("userManagement.validation.message.requireConfirmPassword"), action: 'keyup, blur', rule: 'required' },
+		            { input: '#updateUserPasswordConfirmInput', message: i18n.t("userManagement.validation.message.NomatchPassword"), action: 'keyup, focus', rule: function (input, commit) {
 		                // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
 		                    if (input.val() === $('#updateUserPasswordInput').val()) {
 		                        return true;
@@ -169,15 +169,15 @@ var userManagement = {
 		                    return false;
 		            	}
 		            },
-		            { input: '#updateUserBirthdayInput', message: i18n.t("validation.message.birthdayRange",{year:((new Date()).getFullYear() + 1)}), action: 'valuechanged', rule: function (input, commit) {
+		            { input: '#updateUserBirthdayInput', message: i18n.t("userManagement.validation.message.birthdayRange",{year:((new Date()).getFullYear() + 1)}), action: 'valuechanged', rule: function (input, commit) {
 		                var date = $('#updateUserBirthdayInput').jqxDateTimeInput('value');
 		                var result = date.getFullYear() >= 1900 && date.getFullYear() <= (new Date()).getFullYear();
 		                // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
 		                return result;
 		            	}
 		            },
-		            { input: '#updateUserEmailInput', message: i18n.t("validation.message.requireEmail"), action: 'keyup, blur', rule: 'required' },
-		            { input: '#updateUserEmailInput', message: i18n.t("validation.message.invalidEmail"), action: 'keyup', rule: 'email' }
+		            { input: '#updateUserEmailInput', message: i18n.t("userManagement.validation.message.requireEmail"), action: 'keyup, blur', rule: 'required' },
+		            { input: '#updateUserEmailInput', message: i18n.t("userManagement.validation.message.invalidEmail"), action: 'keyup', rule: 'email' }
 		            ], 
 		            theme: theme
 		    });
@@ -194,7 +194,7 @@ var userManagement = {
 			}
 		    $('#updateUserBirthdayInput').jqxDateTimeInput({formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
 		    
-		    if(rowData["sex"] != null && rowData["sex"] == i18n.t("sex.female")) {
+		    if(rowData["sex"] != null && rowData["sex"] == i18n.t("userManagement.sex.female")) {
 		    	$("#updateUserSexRadioButton1").jqxRadioButton({checked: false});
 		    	$("#updateUserSexRadioButton2").jqxRadioButton({checked: true});
 		    }else {
@@ -240,14 +240,14 @@ var userManagement = {
 		    $("#updateUserSexRadioButton1").bind('change', function (event) {
 		        var checked = event.args.checked;
 		        if (checked) {
-		        	 $("#updateUserSexInput").val(i18n.t("sex.male"));
+		        	 $("#updateUserSexInput").val(i18n.t("userManagement.sex.male"));
 		        }
 		    });
 		    $("#updateUserSexRadioButton2").bind('change', function (event) {
 		        var checked = event.args.checked;
 		        if (checked) {
 		        	
-		        	$("#updateUserSexInput").val(i18n.t("sex.female"));
+		        	$("#updateUserSexInput").val(i18n.t("userManagement.sex.female"));
 		        }
 		    });
 		    
@@ -328,7 +328,7 @@ var userManagement = {
 		    	
 				if (result != null && result["id"] != null) {
 					
-					$("#updateUserResult").text(i18n.t("result.updateSuccess"));
+					$("#updateUserResult").text(i18n.t("userManagement.result.updateSuccess"));
 					$("#updateUserPopupWindow").jqxWindow('close');
 					
 					var userUIResult = me.parseUserDataToUIData(result);
@@ -342,11 +342,11 @@ var userManagement = {
 		                $("#userDataGrid").jqxGrid('ensurerowvisible', selectedrowindex);
 		            }
 					
-					$("#eventLog").text(i18n.t("result.updateSuccess"));
+					$("#eventLog").text(i18n.t("userManagement.result.updateSuccess"));
 
 				} else if (result != null && result["executeResult"] != null
 						&& result["executeResult"] == false) {
-					$("#updateUserResult").text(i18n.t("result.updateFail"));
+					$("#updateUserResult").text(i18n.t("userManagement.result.updateFail"));
 				}
 			});
 		},
@@ -370,12 +370,12 @@ var userManagement = {
 		    $("#registerUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
 		    
 		    var userDepartmentData = [
-					{ value: 2, label: i18n.t("department.BUSSINESS") },
-					{ value: 3, label: i18n.t("department.PRODUCTION") },
-					{ value: 4, label: i18n.t("department.FINANCE") },
-					{ value: 5, label: i18n.t("department.PERSONNEL") },
-					{ value: 6, label: i18n.t("department.DEVERLOPE") },
-					{ value: 7, label: i18n.t("department.MANAGEMENT") }
+					{ value: 2, label: i18n.t("userManagement.department.BUSSINESS") },
+					{ value: 3, label: i18n.t("userManagement.department.PRODUCTION") },
+					{ value: 4, label: i18n.t("userManagement.department.FINANCE") },
+					{ value: 5, label: i18n.t("userManagement.department.PERSONNEL") },
+					{ value: 6, label: i18n.t("userManagement.department.DEVERLOPE") },
+					{ value: 7, label: i18n.t("userManagement.department.MANAGEMENT") }
 		                            ];
 		                        
 			// Create a jqxComboBox
@@ -390,16 +390,16 @@ var userManagement = {
 			});
 			
 			var userRoleData = [
-			    				{ value: 2, label: i18n.t("role.ANONYMOUS") },
-			    				{ value: 3, label: i18n.t("role.CUSTOMER") },
-			    				{ value: 4, label: i18n.t("role.CUSTOMER_VIP1") },
-			    				{ value: 5, label: i18n.t("role.CUSTOMER_VIP2") },
-			    				{ value: 6, label: i18n.t("role.WELCOMER") },
-			    				{ value: 7, label: i18n.t("role.CHEF") },
-			    				{ value: 8, label: i18n.t("role.WAITER") },
-			    				{ value: 9, label: i18n.t("role.CASHIER") },
-			    				{ value: 10, label: i18n.t("role.MANAGER") },
-			    				{ value: 11, label: i18n.t("role.ADMIN") }
+			    				{ value: 2, label: i18n.t("userManagement.role.ANONYMOUS") },
+			    				{ value: 3, label: i18n.t("userManagement.role.CUSTOMER") },
+			    				{ value: 4, label: i18n.t("userManagement.role.CUSTOMER_VIP1") },
+			    				{ value: 5, label: i18n.t("userManagement.role.CUSTOMER_VIP2") },
+			    				{ value: 6, label: i18n.t("userManagement.role.WELCOMER") },
+			    				{ value: 7, label: i18n.t("userManagement.role.CHEF") },
+			    				{ value: 8, label: i18n.t("userManagement.role.WAITER") },
+			    				{ value: 9, label: i18n.t("userManagement.role.CASHIER") },
+			    				{ value: 10, label: i18n.t("userManagement.role.MANAGER") },
+			    				{ value: 11, label: i18n.t("userManagement.role.ADMIN") }
 			            ];
 			// Create a jqxComboBox
 			$("#registerUserRolesCombobox").jqxComboBox({ 
@@ -414,16 +414,16 @@ var userManagement = {
 		    // initialize validator.
 		    $('#registerUserInfoForm').jqxValidator({
 		     rules: [
-		            { input: '#registerUserAccountInput', message: i18n.t("validation.message.requireAccount"), action: 'keyup, blur', rule: 'required' },
-		            { input: '#registerUserAccountInput', message: i18n.t("validation.message.accountLength"), action: 'keyup, blur', rule: 'length=3,12' },
-		            { input: '#registerUserRealNameInput', message: i18n.t("validation.message.requireUsername"), action: 'keyup, blur', rule: 'required' },
-		            { input: '#registerUserRealNameInput', message: i18n.t("validation.message.requireUsernameLetter"), action: 'keyup', rule: 'notNumber' },
-		            { input: '#registerUserRealNameInput', message: i18n.t("validation.message.usernameLength"), action: 'keyup', rule: 'length=3,12' },
+		            { input: '#registerUserAccountInput', message: i18n.t("userManagement.validation.message.requireAccount"), action: 'keyup, blur', rule: 'required' },
+		            { input: '#registerUserAccountInput', message: i18n.t("userManagement.validation.message.accountLength"), action: 'keyup, blur', rule: 'length=3,12' },
+		            { input: '#registerUserRealNameInput', message: i18n.t("userManagement.validation.message.requireUsername"), action: 'keyup, blur', rule: 'required' },
+		            { input: '#registerUserRealNameInput', message: i18n.t("userManagement.validation.message.requireUsernameLetter"), action: 'keyup', rule: 'notNumber' },
+		            { input: '#registerUserRealNameInput', message: i18n.t("userManagement.validation.message.usernameLength"), action: 'keyup', rule: 'length=3,12' },
 		            
-		            { input: '#registerUserPasswordInput', message: i18n.t("validation.message.requirePassword"), action: 'keyup, blur', rule: 'required' },
-		            { input: '#registerUserPasswordInput', message: i18n.t("validation.message.passwordLength"), action: 'keyup, blur', rule: 'length=6,20' },
-		            { input: '#registerUserPasswordConfirmInput', message: i18n.t("validation.message.requireConfirmPassword"), action: 'keyup, blur', rule: 'required' },
-		            { input: '#registerUserPasswordConfirmInput', message: i18n.t("validation.message.NomatchPassword"), action: 'keyup, focus', rule: function (input, commit) {
+		            { input: '#registerUserPasswordInput', message: i18n.t("userManagement.validation.message.requirePassword"), action: 'keyup, blur', rule: 'required' },
+		            { input: '#registerUserPasswordInput', message: i18n.t("userManagement.validation.message.passwordLength"), action: 'keyup, blur', rule: 'length=6,20' },
+		            { input: '#registerUserPasswordConfirmInput', message: i18n.t("userManagement.validation.message.requireConfirmPassword"), action: 'keyup, blur', rule: 'required' },
+		            { input: '#registerUserPasswordConfirmInput', message: i18n.t("userManagement.validation.message.NomatchPassword"), action: 'keyup, focus', rule: function (input, commit) {
 		                // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
 		                    if (input.val() === $('#registerUserPasswordInput').val()) {
 		                        return true;
@@ -431,16 +431,16 @@ var userManagement = {
 		                    return false;
 		            	}
 		            },
-		            { input: '#registerUserBirthdayInput', message: i18n.t("validation.message.birthdayRange",{year:((new Date()).getFullYear() + 1)}), action: 'valuechanged', rule: function (input, commit) {
+		            { input: '#registerUserBirthdayInput', message: i18n.t("userManagement.validation.message.birthdayRange",{year:((new Date()).getFullYear() + 1)}), action: 'valuechanged', rule: function (input, commit) {
 		                var date = $('#registerUserBirthdayInput').jqxDateTimeInput('value');
 		                var result = date.getFullYear() >= 1900 && date.getFullYear() <= (new Date()).getFullYear();
 		                // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
 		                return result;
 		            	}
 		            },
-		            { input: '#registerUserEmailInput', message: i18n.t("validation.message.requireEmail"), action: 'keyup, blur', rule: 'required' },
-		            { input: '#registerUserEmailInput', message: i18n.t("validation.message.invalidEmail"), action: 'keyup', rule: 'email' },
-		            { input: '#acceptInput', message: i18n.t("validation.message.acceptService"), action: 'change', rule: 'required', position: 'right:0,0'}
+		            { input: '#registerUserEmailInput', message: i18n.t("userManagement.validation.message.requireEmail"), action: 'keyup, blur', rule: 'required' },
+		            { input: '#registerUserEmailInput', message: i18n.t("userManagement.validation.message.invalidEmail"), action: 'keyup', rule: 'email' },
+		            { input: '#acceptInput', message: i18n.t("userManagement.validation.message.acceptService"), action: 'change', rule: 'required', position: 'right:0,0'}
 		            ], 
 		            theme: theme
 		    });
@@ -463,13 +463,13 @@ var userManagement = {
 		    $("#registerUserSexRadioButton1").bind('change', function (event) {
 		        var checked = event.args.checked;
 		        if (checked) {
-		        	 $("#registerUserSexInput").val(i18n.t("sex.male"));
+		        	 $("#registerUserSexInput").val(i18n.t("userManagement.sex.male"));
 		        }
 		    });
 		    $("#registerUserSexRadioButton2").bind('change', function (event) {
 		        var checked = event.args.checked;
 		        if (checked) {
-		        	$("#registerUserSexInput").val(i18n.t("sex.female"));
+		        	$("#registerUserSexInput").val(i18n.t("userManagement.sex.female"));
 		        }
 		    });
 		    
@@ -551,15 +551,15 @@ var userManagement = {
 				if (result != null && result["id"] != null) {
 					result = me.parseUserDataToUIData(result);
 					
-					$("#registerUserResult").text(i18n.t("result.insertSuccess"));
+					$("#registerUserResult").text(i18n.t("userManagement.result.insertSuccess"));
 					$('#addUserPopupWindow').jqxWindow('close');
 					
 					var commit = $("#userDataGrid").jqxGrid('addrow', null, result);
 					
-					$("#eventLog").text(i18n.t("result.insertSuccess"));
+					$("#eventLog").text(i18n.t("userManagement.result.insertSuccess"));
 				} else if (result != null && result["executeResult"] != null
 						&& result["executeResult"] == false) {
-					$("#registerUserResult").text(i18n.t("result.insertFail"));
+					$("#registerUserResult").text(i18n.t("userManagement.result.insertFail"));
 				}
 			});
 		},
@@ -910,7 +910,7 @@ var userManagement = {
 			var me = this;
 			// display selected row index.
 		    $("#userDataGrid").bind('rowselect', function (event) {
-		        $("#eventLog").text(i18n.t("grid.selectRow",{index:event.args.rowindex}));
+		        $("#eventLog").text(i18n.t("userManagement.grid.selectRow",{index:event.args.rowindex}));
 		    });
 		    
 			// update row.
@@ -930,7 +930,7 @@ var userManagement = {
 						}
 				}else {
 					
-					$("#eventLog").text(i18n.t("validation.message.requireSelectOneRow"));
+					$("#eventLog").text(i18n.t("userManagement.validation.message.requireSelectOneRow"));
 				}
 			});
 		    
@@ -980,15 +980,15 @@ var userManagement = {
 					function(matchedusers){
 						
 			var option = {
-					lng: 'zh-CN',
-					fallbackLng: 'zh-CN',
+					lng: 'zh',
+					fallbackLng: 'zh',
 			//		fallbackLng: 'en-US',
 			//		lng: 'en-US',
 					resGetPath: 'resources/locales/__lng__/__ns__.json',
 			//		resPostPath:'resources/locales/__lng__/__ns__.json',
 					getAsync: false,
-					ns: 'bookingnow.content.userManagement',
-					preload:'zh-CN',
+					ns: 'bookingnow.view',
+					preload:'zh',
 					load:'current'
 			//		load:'unspecific'
 				};
@@ -1021,65 +1021,65 @@ var userManagement = {
 						}else if(item == "modifyTime") {
 							/*
 							datafield["type"] = "number";
-							column["text"] = i18n.t("field.modifyTime");
+							column["text"] = i18n.t("userManagement.field.modifyTime");
 							*/
 						}else if(item == "image_size") {
 							/*
 							datafield["type"] = "number";
-							column["text"] = i18n.t("field.image_size");
+							column["text"] = i18n.t("userManagement.field.image_size");
 							column["filtertype"] = 'number';
 							*/
 						}else if(item == "image_relative_path") {
 							datafield["type"] = "string";
-							column["text"] = i18n.t("field.image_relative_path");
+							column["text"] = i18n.t("userManagement.field.image_relative_path");
 							column["cellsrenderer"] = imageRenderer;
 						}else if(item == "account") {
 							datafield["type"] = "string";
-							column["text"] = i18n.t("field.account");
+							column["text"] = i18n.t("userManagement.field.account");
 							column["filtertype"] = 'textbox';
 						}else if(item == "name") {
 							datafield["type"] = "string";
-							column["text"] = i18n.t("field.name");
+							column["text"] = i18n.t("userManagement.field.name");
 							column["filtertype"] = 'textbox';
 						}else if(item == "phone") {
 							datafield["type"] = "string";
-							column["text"] = i18n.t("field.phone");
+							column["text"] = i18n.t("userManagement.field.phone");
 							column["filtertype"] = 'textbox';
 						}else if(item == "sex") {
 							datafield["type"] = "string";
-							column["text"] = i18n.t("field.sex");
+							column["text"] = i18n.t("userManagement.field.sex");
 							column["filtertype"] = 'checkedlist';
 						}else if(item == "email") {
 							datafield["type"] = "string";
-							column["text"] = i18n.t("field.email");
+							column["text"] = i18n.t("userManagement.field.email");
 							column["filtertype"] = 'textbox';
 						}else if(item == "address") {
 							datafield["type"] = "string";
-							column["text"] = i18n.t("field.address");
+							column["text"] = i18n.t("userManagement.field.address");
 							column["filtertype"] = 'textbox';
 						}else if(item == "birthday") {
 							datafield["type"] = "string";
-							column["text"] = i18n.t("field.birthday");
+							column["text"] = i18n.t("userManagement.field.birthday");
 							
 						}else if(item == "description") {
 							/*
 							datafield["type"] = "string";
-							column["text"] = i18n.t("field.description");
+							column["text"] = i18n.t("userManagement.field.description");
 							column["filtertype"] = 'textbox';
 							*/
 						}else if(item == "department") {
 							datafield["type"] = "string";
-							column["text"] = i18n.t("field.department");
+							column["text"] = i18n.t("userManagement.field.department");
 							column["filtertype"] = 'checkedlist';
 						}else if(item == "sub_system") {
 							/*
 							datafield["type"] = "number";
-							column["text"] = i18n.t("field.sub_system");
+							column["text"] = i18n.t("userManagement.field.sub_system");
 							column["filtertype"] = 'textbox';
 							*/
 						}else if(item == "roles"){
 							datafield["type"] = "string";
-							column["text"] = i18n.t("field.role_Details.role.name");
+							column["text"] = i18n.t("userManagement.field.role_Details.role.name");
 							column["filtertype"] = 'textbox';
 						}else if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
 							//do nothing
@@ -1214,40 +1214,40 @@ var userManagement = {
 
 		initUserManagementLocaleElements:function () {
 				var option = {
-					fallbackLng: 'en-US',
-					lng: 'en-US',
+					fallbackLng: 'zh',
+					lng: 'zh',
 			//		lng: 'zh-CN',
 					resGetPath: 'resources/locales/__lng__/__ns__.json',
 					getAsync: false,
-					ns: 'bookingnow.content.userManagement'
+					ns: 'bookingnow.view'
 				};
 			 
 			i18n.init(option);
 			
-			$("#addUserRowButton").val(i18n.t("button.operationUserGrid.addUserRow"));
-			$("#updateUserRowButton").val(i18n.t("button.operationUserGrid.updateUserRow"));
-			$("#deleteUserRowButton").val(i18n.t("button.operationUserGrid.deleteUserRow"));
+			$("#addUserRowButton").val(i18n.t("userManagement.button.operationUserGrid.addUserRow"));
+			$("#updateUserRowButton").val(i18n.t("userManagement.button.operationUserGrid.updateUserRow"));
+			$("#deleteUserRowButton").val(i18n.t("userManagement.button.operationUserGrid.deleteUserRow"));
 			
-			$("#registerUserSexRadioButton1").val(i18n.t("sex.male"));
-			$("#registerUserSexRadioButton2").val(i18n.t("sex.female"));
-			$("#registerUserSexInput").val(i18n.t("sex.male"));
+			$("#registerUserSexRadioButton1").val(i18n.t("userManagement.sex.male"));
+			$("#registerUserSexRadioButton2").val(i18n.t("userManagement.sex.female"));
+			$("#registerUserSexInput").val(i18n.t("userManagement.sex.male"));
 			
-			$("#acceptInput").val(i18n.t("service.accept"));
+			$("#acceptInput").val(i18n.t("userManagement.service.accept"));
 			
-			$("#updateUserSexRadioButton1").val(i18n.t("sex.male"));
-			$("#updateUserSexRadioButton2").val(i18n.t("sex.female"));
-			$("#updateUserSexInput").val(i18n.t("sex.male"));
+			$("#updateUserSexRadioButton1").val(i18n.t("userManagement.sex.male"));
+			$("#updateUserSexRadioButton2").val(i18n.t("userManagement.sex.female"));
+			$("#updateUserSexInput").val(i18n.t("userManagement.sex.male"));
 			
-			$("#updateUserUpdateButton").val(i18n.t("button.update"));
-			$("#updateUserResetButton").val(i18n.t("button.reset"));
-			$("#updateUserCancelButton").val(i18n.t("button.cancel"));
+			$("#updateUserUpdateButton").val(i18n.t("userManagement.button.update"));
+			$("#updateUserResetButton").val(i18n.t("userManagement.button.reset"));
+			$("#updateUserCancelButton").val(i18n.t("userManagement.button.cancel"));
 			
-			$("#registerUserRegisterButton").val(i18n.t("button.register"));
-			$("#registerUserResetButton").val(i18n.t("button.reset"));
-			$("#registerUserCancelButton").val(i18n.t("button.cancel"));
+			$("#registerUserRegisterButton").val(i18n.t("userManagement.button.register"));
+			$("#registerUserResetButton").val(i18n.t("userManagement.button.reset"));
+			$("#registerUserCancelButton").val(i18n.t("userManagement.button.cancel"));
 			
 			$("#updateUserPopupWindow").i18n();
-			$(".updateUserTable").i18n();
+	//		$(".updateUserTable").i18n();
 			
 			$("#addUserPopupWindow").i18n();
 		},

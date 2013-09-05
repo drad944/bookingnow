@@ -105,17 +105,7 @@ var checkoutManagement = {
 						checkOrderAllowance.initCheckoutOrderAllowanceWindow(rowData,position);
 					}
 				}else {
-					var option = {
-							fallbackLng: 'en-US',
-							lng: 'en-US',
-					//		lng: 'zh-CN',
-							resGetPath: 'resources/locales/__lng__/__ns__.json',
-							getAsync: false,
-							ns: 'bookingnow.content.tableManagement'
-						};
-					 
-					i18n.init(option);
-					$("#eventLog").text(i18n.t("message.requireSelectOneRow"));
+					$("#eventLog").text(i18n.t("checkoutOrderManagement.message.requireSelectOneRow"));
 				}
 				
 				
@@ -498,13 +488,13 @@ var checkoutManagement = {
 				{"order.enabled": true,"order.status":5}, 
 				function(matchedcheckOrders){
 		var option = {
-				lng: 'zh-CN',
-				fallbackLng: 'zh-CN',
+				lng: 'zh',
+				fallbackLng: 'zh',
 		//		fallbackLng: 'en-US',
 		//		lng: 'en-US',
 				resGetPath: 'resources/locales/__lng__/__ns__.json',
 				getAsync: false,
-				ns: 'bookingnow.content.checkOrderManagement',
+				ns: 'bookingnow.view',
 				load:'current'
 			};
 		i18n.init(option);
@@ -532,65 +522,65 @@ var checkoutManagement = {
 					if(item == "id"){
 						/*
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.id");
+						column["text"] = i18n.t("checkoutOrderManagement.field.id");
 						column["filtertype"] = 'number';
 						*/
 					}else if(item == "allowance") {
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.allowance");
+						column["text"] = i18n.t("checkoutOrderManagement.field.allowance");
 						column["filtertype"] = 'number';
 					}else if(item == "customer_count") {
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.customer_count");
+						column["text"] = i18n.t("checkoutOrderManagement.field.customer_count");
 						column["filtertype"] = 'number';
 					}else if(item == "customer_id") {
 						
 					}else if(item == "modifyTime") {
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.modifyTime");
+						column["text"] = i18n.t("checkoutOrderManagement.field.modifyTime");
 						
 					}else if(item == "prePay") {
 						/*
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.prePay");
+						column["text"] = i18n.t("checkoutOrderManagement.field.prePay");
 						column["filtertype"] = 'number';
 						*/
 					}else if(item == "status") {
 						datafield["type"] = "string";
-						column["text"] = i18n.t("field.status");
+						column["text"] = i18n.t("checkoutOrderManagement.field.status");
 						column["filtertype"] = 'textbox';
 					}else if(item == "submit_time") {
 						/*
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.submit_time");
+						column["text"] = i18n.t("checkoutOrderManagement.field.submit_time");
 						*/
 					}else if(item == "total_price") {
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.total_price");
+						column["text"] = i18n.t("checkoutOrderManagement.field.total_price");
 						column["filtertype"] = 'number';
 					}else if(item == "user_id") {
 						/*
 						datafield["type"] = "number";
-						column["text"] = i18n.t("field.user_id");
+						column["text"] = i18n.t("checkoutOrderManagement.field.user_id");
 						column["filtertype"] = 'number';
 						*/
 					}else if(item == "foods") {
 						datafield["type"] = "string";
-						column["text"] = i18n.t("field.foods");
+						column["text"] = i18n.t("checkoutOrderManagement.field.foods");
 						column["filtertype"] = 'textbox';
 					}else if(item == "tables") {
 						datafield["type"] = "string";
-						column["text"] = i18n.t("field.tables");
+						column["text"] = i18n.t("checkoutOrderManagement.field.tables");
 						column["filtertype"] = 'textbox';
 					}else if(item == "customer") {
 						datafield["type"] = "string";
-						column["text"] = i18n.t("field.customer");
+						column["text"] = i18n.t("checkoutOrderManagement.field.customer");
 						column["filtertype"] = 'textbox';
 					}else if( item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
 						//do nothing
 					}else {
 						datafield["type"] = "string";
-						column["text"] = i18n.t("field.xx");
+						column["text"] = i18n.t("checkoutOrderManagement.field.xx");
 					}
 					
 					if(item == "customer_id" || item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
