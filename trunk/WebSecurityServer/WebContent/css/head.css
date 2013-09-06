@@ -1,25 +1,4 @@
 
-#J_Nav ul li
-{
-	/*
-	display: inline;
-	list-style-type: none;
-	padding-right: 20px;
-	*/
-	
-	float:left;
-	list-style-type: none;
-	height:76px;
-	line-height:76px;
-	font-size:18px;
-	border-top:4px #FFF solid;
-	background:#FFF;
-	color:#666;
-	padding:0 16px;
-	margin:0 6px
-}
-
-
 #J_HeaderSearch ul li
 {
 	
