@@ -33,7 +33,7 @@ var userLogin = {
 
 		initUserLoginElements:function () {
 			
-		    $("#userLoginDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
+		    $("#userLoginDiv").jqxExpander({ toggleMode: 'none', width: '250px', showArrow: false, theme: theme });
 		    $('#user_login_button').jqxButton({ width: 60, height: 25, theme: theme });
 		    $('#user_register_button').jqxButton({ width: 60, height: 25, theme: theme });
 		    
@@ -74,7 +74,7 @@ var userLogin = {
 							window.location.href="main.html";
 						} else {
 							$('#user_password').val(null);
-							$("#eventLog").text("注册失败");
+							$("#loginResultLog").text("注册失败");
 						}
 					},function(){
 						alert("Fail to login!");
