@@ -181,7 +181,12 @@ var userManagement = {
 		            ], 
 		            theme: theme
 		    });
-			
+		    $("#updateUserPopupWindow").jqxWindow({
+		    	autoOpen : false,isModal: true,width: 300, height: 500, resizable: false, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
+		    	initContent: function () {
+		          //  $('#updateUserPopupWindow').jqxWindow('focus');
+		        }
+		    });
 		},
 
 		formatUpdateUserElements:function (rowData) {
@@ -295,13 +300,8 @@ var userManagement = {
 			me.formatUpdateUserElements(rowData);
 			
 			// initialize the popup window and buttons.
-		    $("#updateUserPopupWindow").jqxWindow({
-		    	position:position, isModal: true,width: 300, height: 500, resizable: false, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
-		    	initContent: function () {
-		            $('#updateUserPopupWindow').jqxWindow('focus');
-		        }
-		    });
-		    
+			$("#updateUserPopupWindow").jqxWindow({position:position});
+			
 		    $("#updateUserPopupWindow").jqxWindow('open');
 		},
 
@@ -445,7 +445,15 @@ var userManagement = {
 		            theme: theme
 		    });
 		    
-			
+		    $("#addUserPopupWindow").jqxWindow({
+		    	autoOpen : false,isModal: true,width: 300, height: 500, resizable: false, theme: theme, cancelButton: $("#registerUserCancelButton"), 
+		    	modalOpacity: 0.01,
+		    	
+		    	initContent: function () {
+		         //   $('#addUserPopupWindow').jqxWindow('focus');
+		        }
+		        
+		    });
 		},
 
 		addRegisterUserEventListeners:function () {
@@ -516,15 +524,7 @@ var userManagement = {
 			$("#addUserPopupWindow").removeAttr("style");
 			$("#addUserPopupWindow").attr("style","overflow:hidden");
 			
-			$("#addUserPopupWindow").jqxWindow({
-				position:position,isModal: true,width: 300, height: 500, resizable: false, theme: theme, cancelButton: $("#registerUserCancelButton"), 
-		    	modalOpacity: 0.01,
-		    	
-		    	initContent: function () {
-		            $('#addUserPopupWindow').jqxWindow('focus');
-		        }
-		        
-		    });
+			$("#addUserPopupWindow").jqxWindow({position:position});
 		    $("#addUserPopupWindow").jqxWindow('open');
 		},
 

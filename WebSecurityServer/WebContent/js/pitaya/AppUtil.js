@@ -95,7 +95,7 @@ var AppUtil = {
 	findRoleString:function (value) {
 		var values = null;
 		if(value.toString.length > 0) {
-			values = value.split(",");
+			values = ("" + value).split(",");
 		}
 		if(values != null&& values.length > 0){
 			for(var i = values.length;i >= 0;i--) {
@@ -126,7 +126,7 @@ var AppUtil = {
 				 }
 			 }
 			 if(valueString.length > 0) {
-				 valueString = valueString.substring(0, valueString.length - 2);
+				 valueString = valueString.substring(0, valueString.length - 1);
 			 }
 		}
 		 
