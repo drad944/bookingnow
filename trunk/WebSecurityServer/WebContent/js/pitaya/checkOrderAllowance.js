@@ -68,7 +68,7 @@ var checkOrderAllowance = {
 			
 			
 			$("#checkoutOrderAllowanceWindow").jqxWindow({
-		    	position:position, isModal: true,width: 250, height: 180, resizable: false, theme: theme, cancelButton: $("#checkoutOrderAllowanceCancelButton"), modalOpacity: 0.01,
+		    	position:position, isModal: true,width: 250, height: 150, resizable: false, theme: theme, cancelButton: $("#checkoutOrderAllowanceCancelButton"), modalOpacity: 0.01,
 		    	initContent: function () {
 		            $('#checkoutOrderAllowanceWindow').jqxWindow('focus');
 		        }

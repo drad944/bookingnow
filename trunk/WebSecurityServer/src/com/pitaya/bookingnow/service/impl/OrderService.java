@@ -408,20 +408,22 @@ public class OrderService implements IOrderService{
 							if (realTable_Detail != null && realTable_Detail.getId() != null) {
 								Table realTable = realTable_Detail.getTable();
 								if (realTable != null && realTable.getId() != null) {
+									
 									if (realTable.getStatus() == Constants.TABLE_USING) {
 										realTable.setStatus(Constants.TABLE_EMPTY);
-										if (tableDao.updateByPrimaryKeySelective(realTable) == 1) {
-											
-											realTable_Detail.setEnabled(false);
-											if (table_detailDao.updateByPrimaryKeySelective(realTable_Detail) == 1) {
-												result.setSubTrueCount(result.getSubTrueCount() + 1);
-											}else {
-												throw new RuntimeException("failed to update table detail status");
-											}
-											
+										
+									}
+									if (tableDao.updateByPrimaryKeySelective(realTable) == 1) {
+										
+										realTable_Detail.setEnabled(false);
+										if (table_detailDao.updateByPrimaryKeySelective(realTable_Detail) == 1) {
+											result.setSubTrueCount(result.getSubTrueCount() + 1);
 										}else {
-											throw new RuntimeException("failed to update table status");
+											throw new RuntimeException("failed to update table detail status");
 										}
+										
+									}else {
+										throw new RuntimeException("failed to update table status");
 									}
 									
 								}else {
@@ -1235,7 +1237,7 @@ public class OrderService implements IOrderService{
 				}
 				
 				if (realOrder.getAllowance() != null && realOrder.getAllowance() >= 0 && realOrder.getAllowance() <= 1) {
-					result.setTotalPriceOfOrder(new Double(new DecimalFormat(".00").format(result.getTotalPriceOfOrder() * realOrder.getAllowance())));
+					result.setTotalPriceOfOrder(new Double(new DecimalFormat(".0").format(result.getTotalPriceOfOrder() * realOrder.getAllowance())));
 					realOrder.setTotal_price(result.getTotalPriceOfOrder());
 					result.setOrder(realOrder);
 					result.setExecuteResult(true);
