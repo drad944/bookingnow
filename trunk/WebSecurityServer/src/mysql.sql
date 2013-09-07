@@ -291,16 +291,16 @@ create table pitaya_role(
 	module integer
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_role values (1,true,2,'ROLE_ANONYMOUS','anonymous',false,1101);	
-insert into pitaya_role values (2,true,3,'ROLE_CUSTOMER','customer',false,1101);
-insert into pitaya_role values (3,true,4,'ROLE_CUSTOMER_VIP1','vip1 customer',false,1101);
-insert into pitaya_role values (4,true,5,'ROLE_CUSTOMER_VIP2','vip2 customer',false,1101);
-insert into pitaya_role values (5,true,6,'ROLE_WELCOMER','welcomer',false,1101);
-insert into pitaya_role values (6,true,7,'ROLE_CHEF','chef',false,1101);
-insert into pitaya_role values (7,true,8,'ROLE_WAITER','waiter',false,1101);
-insert into pitaya_role values (8,true,9,'ROLE_CASHIER','cashier',false,1101);
-insert into pitaya_role values (9,true,10,'ROLE_MANAGER','manager',false,1101);
-insert into pitaya_role values (10,true,11,'ROLE_ADMIN','administrator',1,1101);
+insert into pitaya_role values (1,true,2,'ANONYMOUS','anonymous',false,1101);	
+insert into pitaya_role values (2,true,3,'CUSTOMER','customer',false,1101);
+insert into pitaya_role values (3,true,4,'CUSTOMER_VIP1','vip1 customer',false,1101);
+insert into pitaya_role values (4,true,5,'CUSTOMER_VIP2','vip2 customer',false,1101);
+insert into pitaya_role values (5,true,6,'WELCOMER','welcomer',false,1101);
+insert into pitaya_role values (6,true,7,'CHEF','chef',false,1101);
+insert into pitaya_role values (7,true,8,'WAITER','waiter',false,1101);
+insert into pitaya_role values (8,true,9,'CASHIER','cashier',false,1101);
+insert into pitaya_role values (9,true,10,'MANAGER','manager',false,1101);
+insert into pitaya_role values (10,true,11,'ADMIN','administrator',1,1101);
 
 
 
