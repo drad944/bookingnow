@@ -73,10 +73,6 @@ var menuManagement = {
 		        "parentid": "3",
 		        "text": i18n.t("menu.userManagement.showAllUsers")
 		    }, {
-		        "id": "7",
-		        "parentid": "3",
-		        "text": i18n.t("menu.userManagement.registerUser")
-		    }, {
 		        "id": "8",
 		        "parentid": "3",
 		        "text": i18n.t("menu.userManagement.userDetailInfo")
