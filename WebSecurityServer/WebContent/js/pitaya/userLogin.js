@@ -71,10 +71,23 @@ var userLogin = {
 					AppUtil.request("loginUser.action", loginUser, function(result){
 				    	
 						if(result != null && result["id"] != null) {
-							window.location.href="main.html";
+							var user = userManagement.parseUserDataToUIData(result);
+							if(user["roles"] != null){
+								if(contains(user["roles"],i18n.t("userManagement.role.MANAGER"),false)) {
+									window.location.href="main.html";
+								}else if(contains(user["roles"],i18n.t("userManagement.role.ADMIN"),false)) {
+									window.location.href="main.html";
+								}else if(contains(i18n.t("userManagement.role.CASHIER"))) {
+									window.location.href="main.html";
+								}else {
+									$('#user_password').val(null);
+									$("#loginResultLog").text("您的登录权限不足！");
+								}
+							}
+							
 						} else {
 							$('#user_password').val(null);
-							$("#loginResultLog").text("注册失败");
+							$("#loginResultLog").text("登录失败，用户名或密码不正确!");
 						}
 					},function(){
 						alert("Fail to login!");

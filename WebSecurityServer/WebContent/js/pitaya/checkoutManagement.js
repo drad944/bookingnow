@@ -100,7 +100,7 @@ var checkoutManagement = {
 						var offset = $("#checkOrderDataGrid").offset();
 						var position = {};
 						position.x = parseInt(offset.left) + 200;
-						position.y = parseInt(offset.top) - 150;
+						position.y = parseInt(offset.top) - 120;
 						checkOrderAllowance.init();
 						checkOrderAllowance.initCheckoutOrderAllowanceWindow(rowData,position);
 					}

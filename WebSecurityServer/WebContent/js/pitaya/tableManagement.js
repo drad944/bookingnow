@@ -155,7 +155,7 @@ var tableManagement = {
 			// initialize the popup window and buttons.
 			
 		    $("#updateTablePopupWindow").jqxWindow({
-		    	position:position, isModal: true,width: 350, height: 250, resizable: false, theme: theme, cancelButton: $("#updateTableCancelButton"), modalOpacity: 0.01,
+		    	position:position, isModal: true,width: 280, height: 250, resizable: false, theme: theme, cancelButton: $("#updateTableCancelButton"), modalOpacity: 0.01,
 		    	initContent: function () {
 		            $('#updateTablePopupWindow').jqxWindow('focus');
 		        }
@@ -287,7 +287,7 @@ var tableManagement = {
 			$("#addTablePopupWindow").attr("style","overflow:hidden");
 			
 			$("#addTablePopupWindow").jqxWindow({
-				position:position,isModal: true,width: 350, height: 250, resizable: false, theme: theme, cancelButton: $("#registerTableCancelButton"), 
+				position:position,isModal: true,width: 280, height: 250, resizable: false, theme: theme, cancelButton: $("#registerTableCancelButton"), 
 		    	modalOpacity: 0.01,
 		    	
 		    	initContent: function () {
@@ -350,7 +350,7 @@ var tableManagement = {
 						var offset = $("#tableDataGrid").offset();
 						var position = {};
 						position.x = parseInt(offset.left) + 200;
-						position.y = parseInt(offset.top) - 150;
+						position.y = parseInt(offset.top) - 120;
 						
 						me.initUpdateTableWindow(rowData,position);
 					}
@@ -367,7 +367,7 @@ var tableManagement = {
 				var offset = $("#tableDataGrid").offset();
 				var position = {};
 				position.x = parseInt(offset.left) + 200;
-				position.y = parseInt(offset.top) - 150;
+				position.y = parseInt(offset.top) - 120;
 				
 				
 				// show the popup window.

@@ -296,7 +296,7 @@ var userManagement = {
 			
 			// initialize the popup window and buttons.
 		    $("#updateUserPopupWindow").jqxWindow({
-		    	position:position, isModal: true,width: 400, height: 520, resizable: false, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
+		    	position:position, isModal: true,width: 300, height: 500, resizable: false, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
 		    	initContent: function () {
 		            $('#updateUserPopupWindow').jqxWindow('focus');
 		        }
@@ -517,7 +517,7 @@ var userManagement = {
 			$("#addUserPopupWindow").attr("style","overflow:hidden");
 			
 			$("#addUserPopupWindow").jqxWindow({
-				position:position,isModal: true,width: 450, height: 520, resizable: false, theme: theme, cancelButton: $("#registerUserCancelButton"), 
+				position:position,isModal: true,width: 300, height: 500, resizable: false, theme: theme, cancelButton: $("#registerUserCancelButton"), 
 		    	modalOpacity: 0.01,
 		    	
 		    	initContent: function () {
@@ -924,7 +924,7 @@ var userManagement = {
 							var offset = $("#userDataGrid").offset();
 							var position = {};
 							position.x = parseInt(offset.left) + 200;
-							position.y = parseInt(offset.top) - 200;
+							position.y = parseInt(offset.top) - 120;
 							
 							me.initUpdateUserWindow(rowData,position);
 						}
@@ -941,7 +941,7 @@ var userManagement = {
 				var offset = $("#userDataGrid").offset();
 				var position = {};
 				position.x = parseInt(offset.left) + 200;
-				position.y = parseInt(offset.top) - 200;
+				position.y = parseInt(offset.top) - 120;
 				
 				
 				// show the popup window.
@@ -1079,7 +1079,7 @@ var userManagement = {
 							*/
 						}else if(item == "roles"){
 							datafield["type"] = "string";
-							column["text"] = i18n.t("userManagement.field.role_Details.role.name");
+							column["text"] = i18n.t("userManagement.field.roles");
 							column["filtertype"] = 'textbox';
 						}else if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
 							//do nothing
@@ -1228,14 +1228,14 @@ var userManagement = {
 			$("#updateUserRowButton").val(i18n.t("userManagement.button.operationUserGrid.updateUserRow"));
 			$("#deleteUserRowButton").val(i18n.t("userManagement.button.operationUserGrid.deleteUserRow"));
 			
-			$("#registerUserSexRadioButton1").val(i18n.t("userManagement.sex.male"));
-			$("#registerUserSexRadioButton2").val(i18n.t("userManagement.sex.female"));
+			$("#registerUserSexRadioButton1").text(i18n.t("userManagement.sex.male"));
+			$("#registerUserSexRadioButton2").text(i18n.t("userManagement.sex.female"));
 			$("#registerUserSexInput").val(i18n.t("userManagement.sex.male"));
 			
-			$("#acceptInput").val(i18n.t("userManagement.service.accept"));
+			$("#acceptInput").text(i18n.t("userManagement.service.accept"));
 			
-			$("#updateUserSexRadioButton1").val(i18n.t("userManagement.sex.male"));
-			$("#updateUserSexRadioButton2").val(i18n.t("userManagement.sex.female"));
+			$("#updateUserSexRadioButton1").text(i18n.t("userManagement.sex.male"));
+			$("#updateUserSexRadioButton2").text(i18n.t("userManagement.sex.female"));
 			$("#updateUserSexInput").val(i18n.t("userManagement.sex.male"));
 			
 			$("#updateUserUpdateButton").val(i18n.t("userManagement.button.update"));
@@ -1247,7 +1247,6 @@ var userManagement = {
 			$("#registerUserCancelButton").val(i18n.t("userManagement.button.cancel"));
 			
 			$("#updateUserPopupWindow").i18n();
-	//		$(".updateUserTable").i18n();
 			
 			$("#addUserPopupWindow").i18n();
 		},

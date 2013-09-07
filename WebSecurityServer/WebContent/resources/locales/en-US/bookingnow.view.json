@@ -227,7 +227,7 @@
 				"enabled":"Enabled",
 				"xx":"XX"
 		},
-		"fieldLable":{
+		"fieldLabel":{
 				"id":"Id:",
 				"status":"Status:",
 				"minCustomerCount":"MinCustomerCount:",
