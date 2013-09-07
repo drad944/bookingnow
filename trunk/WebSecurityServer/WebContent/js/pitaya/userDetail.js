@@ -22,6 +22,7 @@ var userDetail = {
 			me.showUserDetailInfo();
 		},
 		
+		
 		showUserDetailInfo:function () {
 			$.post("findLoginUser.action", function(user) {
 				
