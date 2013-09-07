@@ -1213,16 +1213,6 @@ var userManagement = {
 		},
 
 		initUserManagementLocaleElements:function () {
-				var option = {
-					fallbackLng: 'zh',
-					lng: 'zh',
-			//		lng: 'zh-CN',
-					resGetPath: 'resources/locales/__lng__/__ns__.json',
-					getAsync: false,
-					ns: 'bookingnow.view'
-				};
-			 
-			i18n.init(option);
 			
 			$("#addUserRowButton").val(i18n.t("userManagement.button.operationUserGrid.addUserRow"));
 			$("#updateUserRowButton").val(i18n.t("userManagement.button.operationUserGrid.updateUserRow"));

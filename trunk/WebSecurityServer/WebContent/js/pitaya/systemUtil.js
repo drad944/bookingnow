@@ -1,3 +1,23 @@
+function getURLParameters(key) {
+	var url=location.href; 
+	var urlParams = url.split("?")[1]; 
+	if(urlParams != null) {
+		var params = urlParams.split("&");
+		for(var i = 0;i< params.length;i++) {
+			var item = params[i];
+			if(item != null) {
+				var paramMap = item.split("=");
+				if(paramMap != null && paramMap.length == 2) {
+					if(key == paramMap[0]) {
+						return paramMap[1];
+					}
+				}
+			}
+		}
+	}
+	return null;
+}
+
 function contains(string,substr,isIgnoreCase)
 {
     if(isIgnoreCase)

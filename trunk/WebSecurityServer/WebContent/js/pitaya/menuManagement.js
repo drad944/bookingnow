@@ -88,10 +88,6 @@ var menuManagement = {
 		        "id": "10",
 		        "parentid": "-1",
 		        "text": i18n.t("menu.admin")
-		    }, {
-		        "id": "11",
-		        "parentid": "1",
-		        "text": i18n.t("menu.orderManagement.checkoutOrder")
 		    }];
 		    // prepare the data
 		    var source =
