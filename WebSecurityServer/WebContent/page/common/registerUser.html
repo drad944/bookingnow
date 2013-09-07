@@ -3,159 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <title>register user</title>
-	<link rel="stylesheet" type="text/css" href="../../css/head.css">
-	<link rel="stylesheet" href="../../css/jqwidgets/styles/jqx.base.css" type="text/css" />
 	
-	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
-	<script type="text/javascript" src="../../js/AppUtil.js"></script>
-	
-	
-    <script type="text/javascript" src="../../js/jqwidgets/jqxcore.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxdata.js"></script>
-    
-     
-    <script type="text/javascript" src="../../js/jqwidgets/jqxbuttons.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxdropdownlist.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxlistbox.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxscrollbar.js"></script>
-    
-    <script type="text/javascript" src="../../js/jqwidgets/jqxnumberinput.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxwindow.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxinput.js"></script>
-    
-    <script type="text/javascript" src="../../js/jqwidgets/gettheme.js"></script>
-    <script type="text/javascript">
-         $(document).ready(function () {
-        	var theme = getDemoTheme();
-            $("#addUserTable #reset").jqxButton({ theme: theme });
-            $("#addUserTable #registerUserButton").jqxButton({ theme: theme });
-            
-            // create new row
-            $("#registerUserButton").on('click', function () {
-                if($("#addUserTable #account").val() != null && $("#addUserTable #password").val() != null){
-                    var registerUserData = { 
-                    	"user.account": $("#addUserTable #account").val(), 
-                    	"user.name": $("#addUserTable #name").val(),
-                        "user.password": $("#addUserTable #password").val(),
-                       	"user.address": $("#addUserTable #address").val(),
-                        "user.birthday": $("#addUserTable #birthday").val(),
-                        "user.department": $("#addUserTable #department").val(),
-                        "user.email": $("#addUserTable #email").val(),
-                        "user.phone": $("#addUserTable #phone").val(),
-                        "user.sex": $("#addUserTable #sex").val()
-                    };
-                    
-                    $.post("registerUser.action", registerUserData,function(result){
-						if(result != null && result["id"] != null){
-		                    $("#registerUserResult").text("register user successfully!");
-		                    
-	                    }else if(result != null && result["executeResult"] != null && result["executeResult"] == false){
-	                    	$("#registerUserResult").text("register user failed,please check user info!");
-	                    }
-					});
-                }
-            });
-            
-            
-    });
-	</script>
 </head>
 	
 <body>
 	<div id="content">
-			<div id="registerUserPanel">
-				<div>
-					Register User
-				</div>
-				<div id="userTable">
-						<table id="addUserTable">
-							<tr>
-								<td align="right">
-									Account:
-								</td>
-								<td align="left">
-									<input id="account" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Name:
-								</td>
-								<td align="left">
-									<input id="name" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Password:
-								</td>
-								<td align="left">
-									<input id="password" />
-								</td>
-							</tr>
-							
-							
-							<tr>
-								<td align="right">
-									Address:
-								</td>
-								<td align="left">
-									<input id="address" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Birthday:
-								</td>
-								<td align="left">
-									<input id="birthday" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Department:
-								</td>
-								<td align="left">
-									<input id="department" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Email:
-								</td>
-								<td align="left">
-									<input id="email" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Phone:
-								</td>
-								<td align="left">
-									<input id="phone" />
-								</td>
-							</tr>
-							
-							<tr>
-								<td align="right">
-									Sex:
-								</td>
-								<td align="left">
-									<input id="sex" />
-								</td>
-							</tr>
-							
-							
-							<tr>
-								<td align="right"></td>
-								<td style="padding-top: 10px;" align="right">
-									<input id="registerUserButton" style="margin-right: 5px;" type="button" value="Register User" />
-									<input id="reset" type="button" value="Reset" />
-								</td>
-							</tr>
-						</table>
-				</div>
-				<div id="registerUserResult"></div>
+			<div id="addUserPopupWindow">
+				<div><h3 data-i18n="userManagement.window.registerWindow"></h3></div>
+				<div id="registerUserDiv">
+	        		
+			        <div>
+			            <form id="registerUserInfoForm" action="./">
+			                <table class="registerUserTable">
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.account"></td>
+			                        <td><input type="text" id="registerUserAccountInput" class="registerUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.password"></td>
+			                        <td><input type="password" id="registerUserPasswordInput" class="registerUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.confirmPassword"></td>
+			                        <td><input type="password" id="registerUserPasswordConfirmInput" class="registerUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.name"></td>
+			                        <td><input type="text" id="registerUserRealNameInput" class="registerUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.department"></td>
+			                        <td>
+			                        	<div id='registerUserDepartmentCombobox'></div>
+			                        	<input id="registerUserDepartmentInput" type="hidden" value="2" />
+		        					</td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.birthday"></td>
+			                        <td><div id="registerUserBirthdayInput"></div></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.email"></td>
+			                        <td><input type="text" id="registerUserEmailInput" placeholder="someone@mail.com" class="registerUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.address"></td>
+			                        <td><div id="registerUserAddressInput"></div></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.phone"></td>
+			                        <td><div id="registerUserPhoneInput"></div></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.sex"></td>
+			                        <td>
+			                        	<div style='margin-top: 10px;'>
+							            	<span id='registerUserSexRadioButton1' style='float:left;'></span>
+							            	<span id='registerUserSexRadioButton2' style='float:right;'></span>
+							            	<input id="registerUserSexInput" type="hidden" />
+							            </div>
+			                        </td>
+			                    </tr>
+			                    <tr>
+			                        <td colspan="2" style="padding: 5px;">
+			                        	<div id="acceptInput" style="margin-left: 50px;"></div>
+			                        </td>
+			                    </tr>
+			                    <tr style="text-align: center;">
+			                        <td>
+			                        	<input id="registerUserRegisterButton" type="button" />
+			                        </td>
+			                        <td>
+			                        	<input id="registerUserResetButton" type="reset" />
+			                        	<input id="registerUserCancelButton" type="button" />
+			                        </td>
+			                    </tr>
+			                </table>
+			            </form>
+			        </div>
+			        <div id="registerUserResult"></div>
+	    		</div>
 			</div>
 	</div>
 </body>

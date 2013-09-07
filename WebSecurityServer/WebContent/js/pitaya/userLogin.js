@@ -55,6 +55,8 @@ var userLogin = {
 		addUserLoginEventListeners:function () {
 			$("#user_register_button").bind('click', function(event) {
 				$('#userLoginForm').jqxValidator('hide');
+				var date = new Date();
+				window.location.href="framework.html?subPage=" + "page/common/registerUser.html" + "&uid=" + date.getTime();
 			});
 
 			$("#user_login_button").bind('click', function() {
@@ -73,12 +75,14 @@ var userLogin = {
 						if(result != null && result["id"] != null) {
 							var user = userManagement.parseUserDataToUIData(result);
 							if(user["roles"] != null){
-								if(contains(user["roles"],i18n.t("userManagement.role.MANAGER"),false)) {
+								if(contains(user["roles"],"ROLE_MANAGER",false)) {
 									window.location.href="main.html";
-								}else if(contains(user["roles"],i18n.t("userManagement.role.ADMIN"),false)) {
+								}else if(contains(user["roles"],"ROLE_ADMIN",false)) {
 									window.location.href="main.html";
-								}else if(contains(i18n.t("userManagement.role.CASHIER"))) {
-									window.location.href="main.html";
+								}else if(contains(user["roles"],"ROLE_CASHIER",false)) {
+									var date = new Date();
+									window.location.href="framework.html?subPage=page/common/checkoutManagement.html&roles=" + user["roles"] + "&uid=" + date.getTime();
+									
 								}else {
 									$('#user_password').val(null);
 									$("#loginResultLog").text("您的登录权限不足！");

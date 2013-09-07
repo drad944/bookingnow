@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>framework.html</title>
+	<link rel="stylesheet" type="text/css" href="css/head.css">
+	<link rel="stylesheet" type="text/css" href="css/body.css">
+	<link rel="stylesheet" href="css/jqwidgets/styles/jqx.base.css" type="text/css" />
+	<link rel="stylesheet" href="css/jqwidgets/styles/jqx.energyblue.css" type="text/css" />
+	
+	<link rel="stylesheet" type="text/css" href="css/uploadify.css">
+	
+	<link rel="stylesheet" type="text/css" href="css/imgareaselect-default.css">
+	
+	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/i18next-1.6.3.js"></script>
+	<script type="text/javascript" src="js/pitaya/Constants.js"></script>
+	<script type="text/javascript" src="js/pitaya/AppUtil.js"></script>
+	<script type="text/javascript" src="js/pitaya/uploader.js"></script>
+	<script type="text/javascript" src="js/pitaya/admin.js"></script>
+	<script type="text/javascript" src="js/pitaya/notification.js"></script>
+	<script type="text/javascript" src="js/pitaya/userManagement.js"></script>
+	<script type="text/javascript" src="js/pitaya/tableManagement.js"></script>
+	<script type="text/javascript" src="js/pitaya/orderManagement.js"></script>
+	<script type="text/javascript" src="js/pitaya/foodManagement.js"></script>
+	<script type="text/javascript" src="js/pitaya/checkoutManagement.js"></script>
+	<script type="text/javascript" src="js/pitaya/checkOrderAllowance.js"></script>
+	<script type="text/javascript" src="js/pitaya/menuManagement.js"></script>
+	<script type="text/javascript" src="js/pitaya/userDetail.js"></script>
+	<script type="text/javascript" src="js/pitaya/userRegister.js"></script>
+	<script type="text/javascript" src="js/pitaya/systemUtil.js"></script>
+	
+	<script type="text/javascript" src="js/jquery.color.js"></script>
+	
+	<script type="text/javascript" src="js/jquery.imgareaselect.js"></script>
+	
+	<script type="text/javascript" src="js/swfobject.js"></script>  
+	<script type="text/javascript" src="js/jquery.uploadify.min.js"></script>
+	
+    <script type="text/javascript" src="js/jqwidgets/gettheme.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxdata.js"></script>
+    
+    <script type="text/javascript" src="js/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxmenu.js"></script>
+     
+    <script type="text/javascript" src="js/jqwidgets/jqxdropdownlist.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxlistbox.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.filter.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.sort.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.pager.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.selection.js"></script> 
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.columnsresize.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.columnsreorder.js"></script> 
+    
+    <script type="text/javascript" src="js/jqwidgets/jqxnumberinput.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxwindow.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxinput.js"></script>
+    
+    <script type="text/javascript" src="js/jqwidgets/jqxvalidator.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxcheckbox.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxexpander.js"></script> 
+    <script type="text/javascript" src="js/jqwidgets/globalization/globalize.js"></script> 
+    <script type="text/javascript" src="js/jqwidgets/jqxcalendar.js"></script> 
+    <script type="text/javascript" src="js/jqwidgets/jqxdatetimeinput.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxtooltip.js"></script> 
+    <script type="text/javascript" src="js/jqwidgets/jqxmaskedinput.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxradiobutton.js"></script> 
+    <script type="text/javascript" src="js/jqwidgets/jqxcombobox.js"></script> 
+    
+    <script type="text/javascript" src="js/jqwidgets/jqxgrid.grouping.js"></script> 
+    <script >
+    $(document).ready(function(){
+    	theme = Constants.theme;
+    	var option = {
+				fallbackLng: 'zh',
+				lng: 'zh',
+				resGetPath: 'resources/locales/__lng__/__ns__.json',
+				getAsync: false,
+				ns: 'bookingnow.view'
+			};
+		 
+		i18n.init(option);
+		
+    	var subPageParam = getURLParameters("subPage");
+    	var roleParam = getURLParameters("roles");
+    	if(subPageParam != null) {
+    		if(contains(subPageParam,"registerUser.html",false)) {
+    			openContentPage('framework_top','page/common/top.html','topImage1');
+        		openContentPage('framework_main','page/common/registerUser.html','content');
+        		currentPage = userRegister;
+        		if(currentPage.visit){
+            		currentPage.visit();
+            	}
+    		}else if(contains(subPageParam,"checkoutManagement.html",false)) {
+    			if(roleParam != null && contains(roleParam,"ROLE_CASHIER",false)) {
+    	    		openContentPage('framework_top','page/common/top.html','topImage1');
+    	    		openContentPage('framework_main','page/common/checkoutManagement.html','content');
+    	        	currentPage = checkoutManagement;
+    	        	if(currentPage.visit){
+    	        		currentPage.visit();
+    	        	}
+    	    	}
+    		}
+    		
+    	}
+    	
+    });
+    
+    </script>
+</head>
+
+<body>
+	<table id="framework_table" width="800" height="600" align="center">
+	<tr height="5%">
+		<td>
+			<div id="framework_head">bookingNow</div>
+		
+		</td>
+	</tr>
+	<tr height="10%">
+		<td>
+			<div id="framework_top"></div>
+		
+		</td>
+	</tr>
+	<tr height="5%">
+		<td>
+			<div id="framework_dividingLine">
+				<hr />
+			</div>
+		</td>
+	</tr>
+	<tr height="60%">
+		<td>
+			<div id="framework_main">welcome to bookingNow management!</div>
+		</td>
+	</tr>
+	<tr height="20%">
+		<td>
+			<div id="framework_foot">
+				
+			</div>
+		</td>
+	</tr>
+	
+</table>
+
+</body>
+</html>
