@@ -96,7 +96,12 @@ var tableManagement = {
 		            theme: theme
 		    });
 		    
-		    
+		    $("#updateTablePopupWindow").jqxWindow({
+		    	autoOpen : false, isModal: true,width: 280, height: 250, resizable: false, theme: theme, cancelButton: $("#updateTableCancelButton"), modalOpacity: 0.01,
+		    	initContent: function () {
+		       //     $('#updateTablePopupWindow').jqxWindow('focus');
+		        }
+		    });
 			
 		},
 
@@ -153,12 +158,8 @@ var tableManagement = {
 			me.formatUpdateTableElements(rowData);
 			
 			// initialize the popup window and buttons.
-			
 		    $("#updateTablePopupWindow").jqxWindow({
-		    	position:position, isModal: true,width: 280, height: 250, resizable: false, theme: theme, cancelButton: $("#updateTableCancelButton"), modalOpacity: 0.01,
-		    	initContent: function () {
-		            $('#updateTablePopupWindow').jqxWindow('focus');
-		        }
+		    	position:position
 		    });
 		    
 		    $("#updateTablePopupWindow").jqxWindow('open');
@@ -244,7 +245,13 @@ var tableManagement = {
 		            theme: theme
 		    });
 		    
-			
+		    $("#addTablePopupWindow").jqxWindow({
+		    	autoOpen : false,isModal: true,width: 280, height: 250, resizable: false, theme: theme, cancelButton: $("#registerTableCancelButton"), 
+		    	modalOpacity: 0.01,
+		    	initContent: function () {
+		      //      $('#addTablePopupWindow').jqxWindow('focus');
+		        }
+		    });
 		},
 
 		addRegisterTableEventListeners:function () {
@@ -286,14 +293,9 @@ var tableManagement = {
 			$("#addTablePopupWindow").removeAttr("style");
 			$("#addTablePopupWindow").attr("style","overflow:hidden");
 			
+			
 			$("#addTablePopupWindow").jqxWindow({
-				position:position,isModal: true,width: 280, height: 250, resizable: false, theme: theme, cancelButton: $("#registerTableCancelButton"), 
-		    	modalOpacity: 0.01,
-		    	
-		    	initContent: function () {
-		            $('#addTablePopupWindow').jqxWindow('focus');
-		        }
-		        
+				position:position
 		    });
 		    $("#addTablePopupWindow").jqxWindow('open');
 		},
