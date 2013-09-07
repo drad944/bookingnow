@@ -27,6 +27,7 @@
 	<script type="text/javascript" src="js/pitaya/checkOrderAllowance.js"></script>
 	<script type="text/javascript" src="js/pitaya/menuManagement.js"></script>
 	<script type="text/javascript" src="js/pitaya/userDetail.js"></script>
+	<script type="text/javascript" src="js/pitaya/topUser.js"></script>
 	<script type="text/javascript" src="js/pitaya/userRegister.js"></script>
 	<script type="text/javascript" src="js/pitaya/systemUtil.js"></script>
 	
@@ -86,7 +87,6 @@
 		i18n.init(option);
 		
     	var subPageParam = getURLParameters("subPage");
-    	var roleParam = getURLParameters("roles");
     	if(subPageParam != null) {
     		if(contains(subPageParam,"registerUser.html",false)) {
     			openContentPage('framework_top','page/common/top.html','topImage1');
@@ -96,14 +96,26 @@
             		currentPage.visit();
             	}
     		}else if(contains(subPageParam,"checkoutManagement.html",false)) {
-    			if(roleParam != null && contains(roleParam,"ROLE_CASHIER",false)) {
-    	    		openContentPage('framework_top','page/common/top.html','topImage1');
-    	    		openContentPage('framework_main','page/common/checkoutManagement.html','content');
-    	        	currentPage = checkoutManagement;
-    	        	if(currentPage.visit){
-    	        		currentPage.visit();
-    	        	}
-    	    	}
+    			AppUtil.request("findLoginUser.action", null, function(result){
+    				if(result && result["id"] != null){
+    					var loginUser = userManagement.parseUserDataToUIData(result); 
+    					if(loginUser != null && contains(loginUser["roles"],"ROLE_CASHIER",false)) {
+    	    	    		openContentPage('framework_top','page/common/top.html','topImage1');
+    	    	    		
+    	    	    		
+    	    	    		openContentPage('framework_main','page/common/checkoutManagement.html','content');
+    	    	        	currentPage = checkoutManagement;
+    	    	        	if(currentPage.visit){
+    	    	        		topUser.visit(loginUser);
+    	    	        		currentPage.visit();
+    	    	        	}
+    	    	    	}
+    				}
+    			}, function(){
+    				alert("Fail to get login data from server!");
+    			});
+    			
+    			
     		}
     		
     	}
