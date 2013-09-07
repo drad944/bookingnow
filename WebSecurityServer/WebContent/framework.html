@@ -99,7 +99,7 @@
     			AppUtil.request("findLoginUser.action", null, function(result){
     				if(result && result["id"] != null){
     					var loginUser = userManagement.parseUserDataToUIData(result); 
-    					if(loginUser != null && contains(loginUser["roles"],"ROLE_CASHIER",false)) {
+    					if(loginUser != null && contains(loginUser["roles"],i18n.t("userManagement.role.CASHIER"),false)) {
     	    	    		openContentPage('framework_top','page/common/top.html','topImage1');
     	    	    		
     	    	    		

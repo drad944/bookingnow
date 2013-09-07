@@ -19,6 +19,12 @@ var checkOrderAllowance = {
 			$('#checkoutOrderAllowanceCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
 			$('#checkoutOrderAllowanceInput').jqxNumberInput({ width: 120, height: 20,min: 0.01, max: 1, decimalDigits:2, digits: 1, theme: theme, spinButtons: true});
 			
+			$("#checkoutOrderAllowanceWindow").jqxWindow({
+				autoOpen : false, isModal: true,width: 250, height: 150, resizable: false, theme: theme, cancelButton: $("#checkoutOrderAllowanceCancelButton"), modalOpacity: 0.01,
+		    	initContent: function () {
+		        //    $('#checkoutOrderAllowanceWindow').jqxWindow('focus');
+		        }
+		    });
 		},
 		emptyCheckoutOrderAllowanceWindow:function () {
 			$("#checkoutOrderAllowanceInput").val(null);
@@ -66,12 +72,8 @@ var checkOrderAllowance = {
 			
 			me.formatCheckoutOrderAllowanceElements(rowData);
 			
-			
 			$("#checkoutOrderAllowanceWindow").jqxWindow({
-		    	position:position, isModal: true,width: 250, height: 150, resizable: false, theme: theme, cancelButton: $("#checkoutOrderAllowanceCancelButton"), modalOpacity: 0.01,
-		    	initContent: function () {
-		            $('#checkoutOrderAllowanceWindow').jqxWindow('focus');
-		        }
+		    	position:position
 		    });
 		    
 		    $("#checkoutOrderAllowanceWindow").jqxWindow('open');
