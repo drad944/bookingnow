@@ -80,7 +80,9 @@ var checkoutManagement = {
 			var me = this;
 			
 			notification.subscribeTopic("order", function(event){
-				alert(event);
+				checkoutManagement.leave();
+				checkoutManagement.visit();
+				$("#eventLog").text("您有新的订单要结账啦");
 				//add new order in data grid here,then highlight it
 				
 			});
@@ -301,16 +303,17 @@ var checkoutManagement = {
 		invoiceOrderTable:function (invoiceData) {
 			var orderDivBegin = "<div>";
 			var orderDivEnd = "</div><div id='checkOrderResult'></div>";
-			var orderTableBegin="<table border='1px' cellspacing='0px' style='border-collapse:collapse'>";
+			var orderTableBegin="<table width='400' border='1px' cellspacing='0px' style='border-collapse:collapse'>";
 			var orderTableEnd="</table>";
 			var orderTableRowBegin="<tr>";
 			var orderTableRowEnd="</tr>";
 			var orderTableColumnBegin="<td>";
 			var orderTableColumnEnd="</td>";
-			var orderTableFirstRow = "<tr><td>商品名称</td><td>数量</td><td>价格</td></tr>";
-			var orderIdRow = "<tr><td>订单编号</td><td id='checkoutOrderIdDetail'>" + invoiceData["id"].value + "</td><td></td></tr>";
-			var orderTableButton ='<tr style="text-align: center;"><td><input id="checkoutOrderButton" type="button" value="checkout" /></td><td><input id="checkOrderCancelButton" type="button" value="Cancel" /></td></tr>';
+			var orderTableFirstRow = "<tr><td width='200'>商品名称</td><td>数量</td><td>价格</td></tr>";
+			var orderIdRow = "<tr><td  width='200'>订单编号</td><td id='checkoutOrderIdDetail'>" + invoiceData["id"].value + "</td></tr>";
 			var orderTable = orderDivBegin + orderTableBegin;
+			var summaryTable = orderTableBegin;
+			summaryTable = summaryTable + orderIdRow;
 			orderTable = orderTable + orderTableFirstRow;
 			if(invoiceData != null) {
 				for(var rowAttr in invoiceData) {
@@ -417,18 +420,9 @@ var checkoutManagement = {
 									break;
 								}
 							}
-							for(var columnAttr in rowObject) {
-								if(columnAttr == "price") {
-									var columnTable = orderTableColumnBegin;
-									columnTable = columnTable + rowObject[columnAttr];
-									columnTable = columnTable + orderTableColumnEnd;
-									rowTable = rowTable + columnTable;
-									break;
-								}
-							}
 							
 							rowTable = rowTable + orderTableRowEnd;
-							orderTable = orderTable + rowTable;
+							summaryTable = summaryTable + rowTable;
 						}
 						delete invoiceData[rowAttr];
 						break;
@@ -448,15 +442,7 @@ var checkoutManagement = {
 									break;
 								}
 							}
-							for(var columnAttr in rowObject) {
-								if(columnAttr == "count") {
-									var columnTable = orderTableColumnBegin;
-									columnTable = columnTable + rowObject[columnAttr];
-									columnTable = columnTable + orderTableColumnEnd;
-									rowTable = rowTable + columnTable;
-									break;
-								}
-							}
+							
 							for(var columnAttr in rowObject) {
 								if(columnAttr == "price") {
 									var columnTable = orderTableColumnBegin;
@@ -467,21 +453,26 @@ var checkoutManagement = {
 								}
 							}
 							rowTable = rowTable + orderTableRowEnd;
-							orderTable = orderTable + rowTable;
+							summaryTable = summaryTable + rowTable;
 						}
 						delete invoiceData[rowAttr];
 						break;
 					}
 				}
 				
-				orderTable = orderTable + orderIdRow;
-				orderTable = orderTable + orderTableButton;
+				
+				summaryTable = summaryTable + orderTableEnd;
+				
 				orderTable = orderTable + orderTableEnd;
+				
+				orderTable = orderTable + summaryTable;
 				orderTable = orderTable + orderDivEnd;
 				
 			}
 			return orderTable;
 		},
+		
+		
 		parseCheckOrderGridHtml:function () {
 			var me = this;
 			$.post("searchOrder.action", 

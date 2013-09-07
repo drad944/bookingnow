@@ -38,6 +38,9 @@
 		}
 	},
 	"checkoutOrderManagement":{
+		"message":{
+				"requireSelectOneRow":"please select one row!"
+		},
 		"status":{
 				"NEW":"NEW",
 				"WELCOMER_NEW":"WELCOMER_NEW",

@@ -45,6 +45,17 @@ var userRegister = {
 		},
 		
 		initUserRegisterLocaleElements:function () {
+			var option = {
+					fallbackLng: 'zh',
+					lng: 'zh',
+			//		lng: 'zh-CN',
+					resGetPath: 'resources/locales/__lng__/__ns__.json',
+					getAsync: false,
+					ns: 'bookingnow.view'
+				};
+			 
+			i18n.init(option);
+			
 			$("#registerUserSexRadioButton1").text(i18n.t("userManagement.sex.male"));
 			$("#registerUserSexRadioButton2").text(i18n.t("userManagement.sex.female"));
 			$("#registerUserSexInput").val(i18n.t("userManagement.sex.male"));
