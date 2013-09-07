@@ -272,7 +272,7 @@ var userManagement = {
 		                var items = $("#updateUserRolesCombobox").jqxComboBox('getCheckedItems');
 		                var checkedItems = "";
 		                $.each(items, function (index) {
-		                    checkedItems += this.label + ", ";                          
+		                    checkedItems += this.value + ", ";                          
 		                });
 		                if(checkedItems.length > 0) {
 		                	checkedItems = checkedItems.substring(0, checkedItems.length - 2);
@@ -494,7 +494,7 @@ var userManagement = {
 		                var items = $("#registerUserRolesCombobox").jqxComboBox('getCheckedItems');
 		                var checkedItems = "";
 		                $.each(items, function (index) {
-		                    checkedItems += this.label + ", ";                          
+		                    checkedItems += this.value + ", ";                          
 		                });
 		                if(checkedItems.length > 0) {
 		                	checkedItems = checkedItems.substring(0, checkedItems.length - 2);
@@ -1255,7 +1255,7 @@ var userManagement = {
 						if(roles.length > 0) {
 							
 							for(var i = 0;i< roles.length;i++) {
-								record["user.role_Details[" + i + "].role.name"] = roles[i];
+								record["user.role_Details[" + i + "].role.type"] = roles[i];
 							}
 							record[attr] = undefined;
 						}
@@ -1286,8 +1286,8 @@ var userManagement = {
 							for(var item in roleDetail) {
 								if(item == "role") {
 									var role = roleDetail[item];
-									if(role != null && role != "undefined" && role["name"] != null){
-										roles = roles + role["name"] + ",";
+									if(role != null && role != "undefined" && role["type"] != null){
+										roles = roles + AppUtil.findRoleString(role["type"]) + ",";
 									}
 								}
 							}

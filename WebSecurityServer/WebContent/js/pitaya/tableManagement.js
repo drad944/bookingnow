@@ -446,10 +446,8 @@ var tableManagement = {
 									var datafield = {};
 									var column = {};
 									
-									if(item == "id"){
-										datafield["type"] = "number";
-										column["text"] = i18n.t("tableManagement.field.id");
-										column["filtertype"] = 'number';
+									if(item == "id" || item == "enabled"){
+										
 									}else if(item == "status") {
 										datafield["type"] = "string";
 										column["text"] = i18n.t("tableManagement.field.status");
@@ -470,32 +468,26 @@ var tableManagement = {
 										datafield["type"] = "number";
 										column["text"] = i18n.t("tableManagement.field.indoorPrice");
 										column["filtertype"] = 'number';
-									}else if(item == "enabled"){
-										//do nothing
 									}else {
 										datafield["type"] = "string";
 										column["text"] = i18n.t("tableManagement.field.xx");
 									}
 									
-									if(item == "enabled"){
+									if(item == "id" || item == "enabled"){
 										
 									}else {
 										column["datafield"] = item;
 										
-										if(item == "id"){
-											column["width"] = "130";
-										}else if(item == "status") {
-											column["width"] = "140";
+										if(item == "status") {
+											column["width"] = "160";
 										}else if(item == "minCustomerCount") {
-											column["width"] = "140";
+											column["width"] = "160";
 										}else if(item == "maxCustomerCount") {
-											column["width"] = "130";
+											column["width"] = "160";
 										}else if(item == "address") {
-											column["width"] = "130";
+											column["width"] = "160";
 										}else if(item == "indoorPrice") {
-											column["width"] = "130";
-										}else if(item == "enabled"){
-											//do nothing
+											column["width"] = "160";
 										}else {
 											column["width"] = "130";
 										}
@@ -510,7 +502,7 @@ var tableManagement = {
 							
 							var rowData = {};
 							for(var item in table) {
-								if(item == "enabled"){
+								if(item == "enabled" ){
 										
 								}else {
 									rowData[item] = table[item];
