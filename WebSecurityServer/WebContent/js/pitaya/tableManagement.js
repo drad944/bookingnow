@@ -25,7 +25,7 @@ var tableManagement = {
 		},
 		init : function(){
 			var me = this;
-			me.parseTableGridHtml();
+			me.initTableGrid();
 		},
 		emptyRegisterTableWindow:function (){
 			//init registerTableWindow widget data
@@ -97,7 +97,14 @@ var tableManagement = {
 		    });
 		    
 		    $("#updateTablePopupWindow").jqxWindow({
-		    	autoOpen : false, isModal: true,width: 280, height: 250, resizable: false, theme: theme, cancelButton: $("#updateTableCancelButton"), modalOpacity: 0.01,
+		    	autoOpen : false, 
+		    	isModal: true,
+		    	width: 280, 
+		    	height: 250, 
+		    	resizable: false, 
+		    	theme: theme, 
+		    	cancelButton: $("#updateTableCancelButton"), 
+		    	modalOpacity: 0.5,
 		    	initContent: function () {
 		       //     $('#updateTablePopupWindow').jqxWindow('focus');
 		        }
@@ -246,8 +253,14 @@ var tableManagement = {
 		    });
 		    
 		    $("#addTablePopupWindow").jqxWindow({
-		    	autoOpen : false,isModal: true,width: 280, height: 250, resizable: false, theme: theme, cancelButton: $("#registerTableCancelButton"), 
-		    	modalOpacity: 0.01,
+		    	autoOpen : false,
+		    	isModal: true,
+		    	width: 280, 
+		    	height: 250, 
+		    	resizable: false,
+		    	theme: theme, 
+		    	cancelButton: $("#registerTableCancelButton"), 
+		    	modalOpacity: 0.5,
 		    	initContent: function () {
 		      //      $('#addTablePopupWindow').jqxWindow('focus');
 		        }
@@ -405,7 +418,144 @@ var tableManagement = {
 			});
 		},
 
-
+		initTableGrid:function () {
+			var me = this;
+			$.post("searchTable.action", 
+				{"table.enabled": true}, 
+				function(matchedtables){
+					
+					var option = {
+							lng: 'zh',
+							fallbackLng: 'zh',
+					//		fallbackLng: 'en-US',
+					//		lng: 'en-US',
+							resGetPath: 'resources/locales/__lng__/__ns__.json',
+					//		resPostPath: 'resources/locales/__lng__/__ns__.json',
+							getAsync: false,
+					//		postAsync: false,
+							ns: 'bookingnow.view',
+							fallbackToDefaultNS: true,
+							load:'current',
+							useCookie: false
+						};
+					 
+					i18n.init(option);
+					
+					var columns = [
+							        { text: i18n.t("tableManagement.field.status"), datafield: 'status',filtertype:'textbox', width: 160 },
+							        { text: i18n.t("tableManagement.field.minCustomerCount"), datafield: 'minCustomerCount',filtertype:'number', width: 160 },
+							        { text: i18n.t("tableManagement.field.maxCustomerCount"), datafield: 'maxCustomerCount',filtertype:'number', width: 160 },
+							        { text: i18n.t("tableManagement.field.address"), datafield: 'address',filtertype:'textbox', width: 160 },
+							        { text: i18n.t("tableManagement.field.indoorPrice"), datafield: 'indoorPrice',filtertype:'number', width: 160 }
+							    ];
+					
+					var datafields = [
+					                  {"type":"string"},
+					                  {"type":"number"},
+					                  {"type":"number"},
+					                  {"type":"string"},
+					                  {"type":"number"}
+					                  ];
+					
+					if(matchedtables != null && matchedtables.result != null){
+						tables = matchedtables.result;
+					}
+					
+					var tableSize = tables.length;
+					var tableData = {};
+					
+					
+					for(var i = 0;i < tableSize; i++) {
+						table = me.parseTableDataToUIData(tables[i]);
+						
+						var rowData = {};
+						for(var item in table) {
+							if(item == "enabled" ){
+									
+							}else {
+								rowData[item] = table[item];
+							}
+						
+						}
+						
+						tableData[i] = rowData;
+					}
+		
+		
+		var source =
+		{
+		    localdata: tableData,
+		    datatype: "local",
+		    datafields:datafields,
+		    addrow: function (rowid, rowdata, position, commit) {
+		        // synchronize with the server - send insert command
+		        // call commit with parameter true if the synchronization with the server is successful 
+		        //and with parameter false if the synchronization failed.
+		        // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
+		        commit(true);
+		    },
+		    deleterow: function (rowid, commit) {
+		        // synchronize with the server - send delete command
+		        // call commit with parameter true if the synchronization with the server is successful 
+		        //and with parameter false if the synchronization failed.
+		        commit(true);
+		    },
+		    updaterow: function (rowid, newdata, commit) {
+		        // synchronize with the server - send update command
+		        // call commit with parameter true if the synchronization with the server is successful 
+		        // and with parameter false if the synchronization failed.
+		        commit(true);
+		    }
+		};
+		var dataAdapter = new $.jqx.dataAdapter(source);
+		// initialize jqxGrid
+		$("#tableDataGrid").jqxGrid(
+		{
+		    width: 800,
+		    height: 350,
+		    source: dataAdapter,
+		    theme: theme,
+		    selectionmode: 'multiplerowsextended',
+		    sortable: true,
+		    showfilterrow: true,
+	        filterable: true,
+	        altrows: true,
+	        altstart: 0,
+	        altstep: 1,
+	        enableellipsis: true,
+		    pageable: true,
+		    autoheight: true,
+		    selectionmode:'singlerow',
+		    columnsresize: true,
+		  //  columnsreorder: true,
+		    columns: columns
+		});
+		
+		// display selected row index.
+	    
+	    me.initTableManagementLocaleElements();
+	    me.initOperateTableGridElements();
+	    me.addOperateTableGridEventListeners();
+		
+	    me.initUpdateTableElements();
+	    me.addUpdateTableEventListeners();
+		
+		// initialize the popup window and buttons.
+	    me.initRegisterTableElements();
+	    me.addRegisterTableEventListeners();
+		
+		/*
+		 $("#tableDataGrid").on('columnreordered', function (event) {
+		    var column = event.args.columntext;
+		    var newindex = event.args.newindex
+		    var oldindex = event.args.oldindex;
+		});
+		*/
+		});
+	
+		
+		},
+		
 		parseTableGridHtml:function () {
 			var me = this;
 				$.post("searchTable.action", 
@@ -553,6 +703,10 @@ var tableManagement = {
 			    sortable: true,
 			    showfilterrow: true,
 		        filterable: true,
+		        altrows: true,
+		        altstart: 0,
+		        altstep: 1,
+		        enableellipsis: true,
 			    pageable: true,
 			    autoheight: true,
 			    selectionmode:'singlerow',

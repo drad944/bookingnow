@@ -182,7 +182,14 @@ var userManagement = {
 		            theme: theme
 		    });
 		    $("#updateUserPopupWindow").jqxWindow({
-		    	autoOpen : false,isModal: true,width: 300, height: 500, resizable: false, theme: theme, cancelButton: $("#updateUserCancelButton"), modalOpacity: 0.01,
+		    	autoOpen : false,
+		    	isModal: true,
+		    	width: 300, 
+		    	height: 500, 
+		    	resizable: false, 
+		    	theme: theme, 
+		    	cancelButton: $("#updateUserCancelButton"), 
+		    	modalOpacity: 0.5,
 		    	initContent: function () {
 		          //  $('#updateUserPopupWindow').jqxWindow('focus');
 		        }
@@ -446,8 +453,14 @@ var userManagement = {
 		    });
 		    
 		    $("#addUserPopupWindow").jqxWindow({
-		    	autoOpen : false,isModal: true,width: 300, height: 500, resizable: false, theme: theme, cancelButton: $("#registerUserCancelButton"), 
-		    	modalOpacity: 0.01,
+		    	autoOpen : false,
+		    	isModal: true,
+		    	width: 300, 
+		    	height: 500, 
+		    	resizable: false, 
+		    	theme: theme, 
+		    	cancelButton: $("#registerUserCancelButton"), 
+		    	modalOpacity: 0.5,
 		    	
 		    	initContent: function () {
 		         //   $('#addUserPopupWindow').jqxWindow('focus');
@@ -1178,10 +1191,13 @@ var userManagement = {
 			    height: 350,
 			    source: dataAdapter,
 			    theme: theme,
-			    selectionmode: 'multiplerowsextended',
 			    sortable: true,
 			    showfilterrow: true,
+			    enableellipsis: true,
 		        filterable: true,
+		        altrows: true,
+		        altstart: 0,
+		        altstep: 1,
 			    pageable: true,
 			    autoheight: true,
 			    selectionmode:'singlerow',

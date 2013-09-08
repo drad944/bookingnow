@@ -390,7 +390,7 @@ var checkoutManagement = {
 								}
 							}
 							rowTable = rowTable + orderTableRowEnd;
-							orderTable = orderTable + rowTable;
+							summaryTable = summaryTable + rowTable;
 						}
 						delete invoiceData[rowAttr];
 					}
@@ -658,10 +658,13 @@ var checkoutManagement = {
 		    height: 350,
 		    source: dataAdapter,
 		    theme: theme,
-		    selectionmode: 'multiplerowsextended',
 		    sortable: true,
 		    showfilterrow: true,
 	        filterable: true,
+	        altrows: true,
+	        altstart: 0,
+	        altstep: 1,
+	        enableellipsis: true,
 		    pageable: true,
 		    autoheight: true,
 		    selectionmode:'singlerow',

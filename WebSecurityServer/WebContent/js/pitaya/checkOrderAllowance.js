@@ -20,7 +20,14 @@ var checkOrderAllowance = {
 			$('#checkoutOrderAllowanceInput').jqxNumberInput({ width: 120, height: 20,min: 0.01, max: 1, decimalDigits:2, digits: 1, theme: theme, spinButtons: true});
 			
 			$("#checkoutOrderAllowanceWindow").jqxWindow({
-				autoOpen : false, isModal: true,width: 250, height: 150, resizable: false, theme: theme, cancelButton: $("#checkoutOrderAllowanceCancelButton"), modalOpacity: 0.01,
+				autoOpen : false, 
+				isModal: true,
+				width: 250, 
+				height: 150, 
+				resizable: false, 
+				theme: theme, 
+				cancelButton: $("#checkoutOrderAllowanceCancelButton"), 
+				modalOpacity: 0.5,
 		    	initContent: function () {
 		        //    $('#checkoutOrderAllowanceWindow').jqxWindow('focus');
 		        }
