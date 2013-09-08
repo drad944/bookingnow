@@ -516,7 +516,6 @@ public class OrderDetailAdapter extends BaseAdapter {
 		if(itemView == null){
 			itemView = View.inflate(mContext, this.getItemViewId(), null);
 			setupConvertView(itemView, new ViewHolder());
-			//Log.d("orderdetailadapter", "item view is null !!!!!!!!!!!!!!!");
 		}
 		
 		Item item = (Item)this.getItem(position);
@@ -524,19 +523,20 @@ public class OrderDetailAdapter extends BaseAdapter {
 		final int quantity = item.quantity;
 		final ViewHolder holder = (ViewHolder)itemView.getTag();
 		holder.food = food;
+		
 		holder.nameText.setText(food.getName());
-        if(food.isFree()){
+        if(holder.food.isFree()){
         	holder.totalPriceText.setText("0元");
         } else {
-        	holder.totalPriceText.setText(String.valueOf(food.getPrice() * quantity) + "元");
+        	holder.totalPriceText.setText(String.valueOf(holder.food.getPrice() * quantity) + "元");
         }
         
         if(mOrder.getStatus() == Constants.ORDER_NEW || mOrder.getStatus() == Constants.ORDER_COMMITED){
-        	food.setOnFoodStatusChangedListener(new Order.OnFoodStatusChangedListener() {
+        	holder.food.setOnFoodStatusChangedListener(new Order.OnFoodStatusChangedListener() {
     			
     			@Override
     			public void onFoodStatusChanged(Order.Food food, int status, int old_status) {
-    				updateFoodStatus(holder, status, old_status);
+    				 updateFoodStatus(holder, status, old_status);
     			}
         		
         	});
@@ -548,7 +548,7 @@ public class OrderDetailAdapter extends BaseAdapter {
         }
         
         if(this instanceof WorkerOrderDetailAdapter){
-	        if(food.isFree()){
+	        if(holder.food.isFree()){
 	        	holder.freeBtn.setText(R.string.cancelfreebtn);
 	        } else {
 	        	holder.freeBtn.setText(R.string.freebtn);
@@ -578,7 +578,7 @@ public class OrderDetailAdapter extends BaseAdapter {
 	        	
 	        });
         } else if(this instanceof CustomerOrderDetailAdapter){
-        	if(food.isFree()){
+        	if(holder.food.isFree()){
         		holder.freeStatusText.setText("赠菜");
         		holder.freeStatusText.setTextColor(mContext.getResources().getColor(R.color.green));
         	}

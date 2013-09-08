@@ -318,7 +318,8 @@ public class EnhancedMessageService extends Service implements Runnable {
 			Log.i(TAG, "Start message server on port:" + this.port);
         	while(flag){
         		Socket client_socket = this.mServerSocket.accept();
-				this.mMessageReceiverPool.execute(new MessageReceiver(client_socket, this));
+				//this.mMessageReceiverPool.execute(new MessageReceiver(client_socket, this));
+        		new Thread(new MessageReceiver(client_socket, this)).start();
         	}
         } catch(IOException e) {
             e.printStackTrace();
