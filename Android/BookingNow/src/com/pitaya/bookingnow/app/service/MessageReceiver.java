@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.util.Log;
 
@@ -28,7 +30,14 @@ public class MessageReceiver implements Runnable {
         	in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
 			bwriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
 			String message = null;
-			this.sendMessage("ready");
+			new Timer().schedule(new TimerTask(){
+
+				@Override
+				public void run() {
+					sendMessage("ready");
+				}
+				
+			}, 3000);
         	while((message = in.readLine()) != null){
         		this.service.onMessage(message);
         	}

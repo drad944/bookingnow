@@ -121,8 +121,8 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		
 		public void onServiceDisconnected(){
 			mMessageService.unregisterHandler(mMessageHandler);
-			mMessageService = null;
 			mIsBound = false;
+			mMessageService = null;
 		}
 		
 		protected void doBindService() {

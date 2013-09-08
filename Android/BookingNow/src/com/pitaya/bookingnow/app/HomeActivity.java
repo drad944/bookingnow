@@ -449,7 +449,7 @@ public class HomeActivity extends FragmentActivity {
 		this.onDisconnect();
 	}
 	
-	private void onDisconnect(){
+	private synchronized void onDisconnect(){
 		HomeActivity.this.refreshMenuByRole();
 		if(this.homecontent.getCurrentContentViewKey().equals("order")){
 			((FoodMenuContentView)this.homecontent.getContentView("menu")).setOrder(null);
