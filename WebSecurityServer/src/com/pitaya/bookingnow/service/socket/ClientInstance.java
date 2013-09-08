@@ -149,16 +149,22 @@ public class ClientInstance {
     	});
     }
     
-    public synchronized boolean doSendMessage(String msg) {
+    public boolean doSendMessage(String msg) {
     	this.messageQueue.add(msg);
     	if(this.mConnectionCloser != null){
     		this.mConnectionCloser.cancel();
     		this.mConnectionCloser = null;
     	}
-    	boolean isReused = false;
     	if(!this.isReady()){
         	try {
     			this.setupConnection();
+    			socket.setSoTimeout(15000);
+    			String recvMessage = null;
+				while((recvMessage = in.readLine()) != null){
+					if(recvMessage.equals("ready")){
+						break;
+					}
+				}
     		} catch (UnknownHostException e) {
     			e.printStackTrace();
     		} catch (IOException e) {
@@ -166,7 +172,6 @@ public class ClientInstance {
     		}
     	} else {
     		//socket still available, reuse it
-    		isReused = true;
     		logger.debug("Try to reuse current socket");
     	}
 		if(!this.isReady()){
@@ -175,14 +180,6 @@ public class ClientInstance {
 			return false;
 		}
     	try {
-    		String recvMessage = null;
-    		if(isReused == false){
-				while((recvMessage = in.readLine()) != null){
-					if(recvMessage.equals("ready")){
-						break;
-					}
-				}
-    		}
     		while(this.messageQueue.size() > 0){
     			String message = this.messageQueue.get(0);
     			this.bwriter.write(message + "\r\n");
