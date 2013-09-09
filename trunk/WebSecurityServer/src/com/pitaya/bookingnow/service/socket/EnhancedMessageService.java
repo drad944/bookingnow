@@ -142,7 +142,7 @@ public class EnhancedMessageService implements Runnable{
 	protected boolean start(){
 		if(!hasStarted){
 			try {
-				new Thread(this).start();
+				//new Thread(this).start();
 	            serverSocket = new ServerSocket(this.port);
 	            serverThread = new MessageServerThread();
 	            serverThread.start();

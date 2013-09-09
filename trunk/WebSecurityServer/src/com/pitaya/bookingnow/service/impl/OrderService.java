@@ -1435,18 +1435,14 @@ public class OrderService implements IOrderService{
 						List<Order_Table_Detail> tableDetails = finishOrder.getTable_details();
 						List<TableMessage> messages = new ArrayList<TableMessage>();
 						for(Order_Table_Detail tableDetail : tableDetails){
+							Table freeTable = tableDetail.getTable();
+							Table temp = new Table();
+							temp.setStatus(Constants.TABLE_EMPTY);
+							temp.setId(freeTable.getId());
+							if(tableDao.updateByPrimaryKeySelective(temp) != 1) {
+								throw new RuntimeException("[updateOrderToPaying] Failed to update table status to empty in DB.");
+							}
 							if(waitingOrders.size() > 0){
-								Table freeTable = tableDetail.getTable();
-								Table temp = new Table();
-								temp.setStatus(Constants.TABLE_EMPTY);
-								temp.setId(freeTable.getId());
-								if(tableDao.updateByPrimaryKeySelective(temp) != 1) {
-									throw new RuntimeException("[updateOrderToPaying] Failed to update table status to empty in DB.");
-								} else {
-									if (table_detailDao.deleteByPrimaryKey(tableDetail.getId()) != 1) {
-										throw new RuntimeException("[updateOrderToPaying] Failed to disable table detail in DB.");
-									}
-								}
 								int nextorderidx = -1;
 								Order nextOrder = null;
 								for(int i = 0; i < waitingOrders.size(); i++){
@@ -1462,8 +1458,6 @@ public class OrderService implements IOrderService{
 									waitingOrders.remove(nextorderidx);
 									messages.add(new TableMessage(freeTable, nextOrder));
 								}
-							} else {
-								break;
 							}
 						}
 						for(TableMessage message: messages){
