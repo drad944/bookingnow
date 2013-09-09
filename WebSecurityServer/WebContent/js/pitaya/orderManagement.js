@@ -73,111 +73,32 @@ var orderManagement = {
 		var orderSize = orders.length;
 		var orderData = {};
 		
-		var columns = {};
+		var columns = [
+						{ text: i18n.t("orderManagement.field.allowance"), datafield: 'allowance',filtertype:'number', width: 120 },
+						{ text: i18n.t("orderManagement.field.customer_count"), datafield: 'customer_count',filtertype:'number', width: 100 },
+						{ text: i18n.t("orderManagement.field.modifyTime"), datafield: 'modifyTime',filtertype:'textbox', width: 130 },
+						{ text: i18n.t("orderManagement.field.prePay"), datafield: 'prePay',filtertype:'number', width: 100 },
+						{ text: i18n.t("orderManagement.field.submit_time"), datafield: 'submit_time',filtertype:'textbox', width: 130 },
+						{ text: i18n.t("orderManagement.field.status"), datafield: 'status',filtertype:'textbox', width: 100 },
+						{ text: i18n.t("orderManagement.field.total_price"), datafield: 'total_price',filtertype:'number', width: 120 }
+						
+							    ];
+		var datafields = [
+						{name: 'id',type:"number"},
+		                  {name: 'allowance',type:"number"},
+		                  {name: 'customer_count',type:"number"},
+		                  {name: 'modifyTime',type:"string"},
+		                  {name: 'prePay',type:"number"},
+		                  {name: 'submit_time',type:"string"},
+		                  {name: 'status',type:"string"},
+		                  {name: 'total_price',type:"number"},
+		                  {name: 'foods',type:"string"},
+		                  {name: 'tables',type:"string"},
+		                  {name: 'customer',type:"string"}
+		                  ];
 		
-		var datafields = {};
 		for(var i = 0;i < orderSize; i++) {
 			order = me.parseOrderDataToUIData(orders[i]);
-			if(i==0) {
-				var j=0;
-				
-				for(var item in order) {
-					var datafield = {};
-					var column = {};
-					
-					if(item == "id"){
-						/*
-						datafield["type"] = "number";
-						column["text"] = i18n.t("orderManagement.field.id");
-						column["filtertype"] = 'number';
-						*/
-					}else if(item == "allowance") {
-						datafield["type"] = "number";
-						column["text"] = i18n.t("orderManagement.field.allowance");
-						column["filtertype"] = 'number';
-					}else if(item == "customer_count") {
-						datafield["type"] = "number";
-						column["text"] = i18n.t("orderManagement.field.customer_count");
-						column["filtertype"] = 'number';
-					}else if(item == "customer_id") {
-						/*
-						datafield["type"] = "number";
-						column["text"] = i18n.t("orderManagement.field.customer_id");
-						column["filtertype"] = 'number';
-						*/
-					}else if(item == "modifyTime") {
-						datafield["type"] = "number";
-						column["text"] = i18n.t("orderManagement.field.modifyTime");
-						
-					}else if(item == "prePay") {
-						datafield["type"] = "number";
-						column["text"] = i18n.t("orderManagement.field.prePay");
-						column["filtertype"] = 'number';
-					}else if(item == "status") {
-						datafield["type"] = "string";
-						column["text"] = i18n.t("orderManagement.field.status");
-						column["filtertype"] = 'textbox';
-					}else if(item == "submit_time") {
-						datafield["type"] = "number";
-						column["text"] = i18n.t("orderManagement.field.submit_time");
-						
-					}else if(item == "total_price") {
-						datafield["type"] = "number";
-						column["text"] = i18n.t("orderManagement.field.total_price");
-						column["filtertype"] = 'number';
-					}else if(item == "user_id") {
-						/*
-						datafield["type"] = "number";
-						column["text"] = i18n.t("orderManagement.field.user_id");
-						column["filtertype"] = 'number';
-						*/
-					}else if(item == "customer" || item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
-						//do nothing
-					}else {
-						datafield["type"] = "string";
-						column["text"] = i18n.t("orderManagement.field.xx");
-					}
-					
-					if(item == "customer" || item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
-						
-					}else if(item == "id" || item == "customer_id" ||item == "user_id"){
-						
-					}else {
-						column["datafield"] = item;
-						
-						if(item == "id"){
-		//					column["width"] = "50";
-						}else if(item == "allowance") {
-							column["width"] = "120";
-						}else if(item == "customer_count") {
-							column["width"] = "100";
-						}else if(item == "customer_id") {
-		//					column["width"] = "80";
-						}else if(item == "modifyTime") {
-							column["width"] = "130";
-						}else if(item == "prePay") {
-							column["width"] = "100";
-						}else if(item == "status") {
-							column["width"] = "100";
-						}else if(item == "submit_time") {
-							column["width"] = "130";
-						}else if(item == "total_price") {
-							column["width"] = "120";
-						}else if(item == "user_id") {
-		//					column["width"] = "50";
-						}else if(item == "customer" || item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
-							//do nothing
-						}else {
-							column["width"] = "50";
-						}
-						
-						columns[j] = column;
-						
-						datafields[j] = datafield;
-						j++;
-					}
-				}
-			}
 			
 			var rowData = {};
 			for(var item in order) {
