@@ -55,6 +55,7 @@ public class EnhancedMessageService extends Service implements Runnable {
     private Thread mUPDServerThread;
     //private String remote_addr;
     //private int remote_port;
+    private ConnectionReceiver mConnectionReceiver;
     //private int port;
     private boolean flag;
     private ExecutorService mMessageReceiverPool;
@@ -112,7 +113,8 @@ public class EnhancedMessageService extends Service implements Runnable {
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         mCM = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         mIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        this.registerReceiver(new ConnectionReceiver(), mIntentFilter);
+        mConnectionReceiver = new ConnectionReceiver();
+        this.registerReceiver(mConnectionReceiver, mIntentFilter);
         this.start();
         Log.i(TAG,  "In message service oncreate");
     }
@@ -120,20 +122,17 @@ public class EnhancedMessageService extends Service implements Runnable {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Received start id " + startId + ": " + intent);
-//        if(Build.VERSION.SDK_INT == 17){
-//        	Settings.Global.putInt(this.getContentResolver(), Settings.Global.WIFI_SLEEP_POLICY, Settings.Global.WIFI_SLEEP_POLICY_NEVER);
-//        } else if(Build.VERSION.SDK_INT < 17){
-//        	Settings.System.putInt(this.getContentResolver(), Settings.System.WIFI_SLEEP_POLICY, Settings.System.WIFI_SLEEP_POLICY_NEVER);
-//        }
         if(intent != null && intent.getExtras() != null){
-//        	Bundle bundle = intent.getExtras();
-//        	if(bundle.getBoolean("connected") == false){
-//        		Log.i(TAG, "Connection status changed to false");
-//        		this.onDisconnect();
-//        		return START_STICKY;
-//        	}
+        	Bundle bundle = intent.getExtras();
+        	if(bundle.getBoolean("connected") == false){
+        		Log.i(TAG, "Connection status changed to false");
+        		this.onDisconnect("网络中断");
+        	} else {
+        		this.start();
+        	}
+        } else {
+        	this.start();
         }
-        this.start();
         return START_STICKY;
     }
     
@@ -141,7 +140,8 @@ public class EnhancedMessageService extends Service implements Runnable {
     public void onDestroy() {
     	Log.i(TAG, "In message service on destroy");
         mNM.cancelAll();
-        this.onDisconnect("与服务器的连接中断");
+        this.unregisterReceiver(mConnectionReceiver);
+        this.onDisconnect("消息服务意外终止");
     }
     
     private synchronized void start(){
@@ -194,8 +194,8 @@ public class EnhancedMessageService extends Service implements Runnable {
 	}
 	
 	public boolean isReady(){
-		return this.mServerSocket != null && this.mServerSocket.isBound()
-				&& this.mUDPService != null && this.mUDPService.isRunnning();
+		return this.mServerSocket != null && this.mServerSocket.isBound();
+				//&& this.mUDPService != null && this.mUDPService.isRunnning();
 	}
 	
 	void onMessage(Message message){
@@ -248,11 +248,13 @@ public class EnhancedMessageService extends Service implements Runnable {
 	}
 	
 	void onConnectServer(){
-    	if(this.mUDPService == null || !this.mUDPService.isRunnning()){
-    		this.mUDPService = new UDPService(this);
-    		mUPDServerThread = new Thread(this.mUDPService);
-    		mUPDServerThread.start();
-    	}
+//    	if(this.mUDPService == null || !this.mUDPService.isRunnning()){
+//    		this.mUDPService = new UDPService(this);
+//    		mUPDServerThread = new Thread(this.mUDPService);
+//    		mUPDServerThread.start();
+//    	}
+		this.isConnecting = false;
+		this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.SUCCESS, "连接服务器成功"));
 	}
 	
 	void onUDPServiceStart(){
@@ -260,12 +262,13 @@ public class EnhancedMessageService extends Service implements Runnable {
 		this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.SUCCESS, "连接服务器成功"));
 	}
 
-	void onDisconnect(String msg){
+	synchronized void  onDisconnect(String msg){
 		UserManager.setLoginUser(this, null);
 		this.isConnecting = false;
+		this.shutdown();
 		if(this.mServerThread != null){
-			this.shutdown();
 			this.mServerThread.interrupt();
+			this.mServerThread = null;
 		}
 		if(this.mUDPService != null){
 			this.mUDPService.shutdown();
@@ -283,7 +286,7 @@ public class EnhancedMessageService extends Service implements Runnable {
 	
 	private void shutdown(){
 		this.flag = false;
-		if(this.mServerSocket != null){
+		if(this.mServerSocket != null && !this.mServerSocket.isClosed()){
 			try {
 				this.mServerSocket.close();
 			} catch (IOException e) {

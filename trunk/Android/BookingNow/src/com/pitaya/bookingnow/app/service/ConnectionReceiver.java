@@ -19,15 +19,14 @@ public class ConnectionReceiver extends BroadcastReceiver{
 	     boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
 	     Intent newintent = new Intent(context, EnhancedMessageService.class);
 	     Bundle bundle = new Bundle();
-	     newintent.putExtras(bundle);
 		 if(isConnected){
 			 bundle.putBoolean("connected", true);
-			 context.startService(newintent);
 			 Log.d(TAG, "Connection established");
 		 } else {
 			 bundle.putBoolean("connected", false);
-			 context.startService(newintent);
 			 Log.d(TAG, "Connection down");
 		 }
+	     newintent.putExtras(bundle);
+	     context.startService(newintent);
 	 }
 }
