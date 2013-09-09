@@ -137,7 +137,7 @@ public class WaitingOrderListView extends OrderListView{
 						@Override
 						public void onFail(String action, int statuscode) {
 							ToastUtil.showToast(getContext(), getContext().getResources().getString(R.string.operationfail), Toast.LENGTH_LONG);
-							Log.e(TAG, "[OrderService.submitOrder] Network error:" + statuscode);
+							Log.e(TAG, "[OrderService.commitWaitingOrder] Network error:" + statuscode);
 						}
 					});
 				} else {

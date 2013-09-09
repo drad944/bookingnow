@@ -53,9 +53,9 @@ public class EnhancedMessageService extends Service implements Runnable {
     private UDPService mUDPService;
     private Thread mServerThread;
     private Thread mUPDServerThread;
-    private String remote_addr;
-    private int remote_port;
-    private int port;
+    //private String remote_addr;
+    //private int remote_port;
+    //private int port;
     private boolean flag;
     private ExecutorService mMessageReceiverPool;
     private volatile boolean isConnecting = false;
@@ -102,9 +102,6 @@ public class EnhancedMessageService extends Service implements Runnable {
 	
 	public EnhancedMessageService(){
 		this.handlers = new ConcurrentHashMap<String, List<Handler>>();
-		this.remote_addr = HttpService.IP;
-		this.remote_port = HttpService.REMOTE_PORT;
-		this.port = HttpService.PORT;
 		this.mMessageReceiverPool =  new ThreadPoolExecutor(5,10,30L, TimeUnit.MINUTES, 
 				new ArrayBlockingQueue<Runnable>(5), 
 				new ThreadPoolExecutor.CallerRunsPolicy());
@@ -193,7 +190,7 @@ public class EnhancedMessageService extends Service implements Runnable {
 	}
 	
 	public void sendMessage(Message message){
-		new MessageSender(this.remote_addr, this.remote_port, parseMessage(message), this).start();
+		new MessageSender(HttpService.IP, HttpService.REMOTE_PORT, parseMessage(message), this).start();
 	}
 	
 	public boolean isReady(){
@@ -313,9 +310,9 @@ public class EnhancedMessageService extends Service implements Runnable {
 	public void run() {
 		this.flag = true;
 		try {
-			this.mServerSocket = new ServerSocket(this.port);
+			this.mServerSocket = new ServerSocket(HttpService.PORT);
 			this.connectServer();
-			Log.i(TAG, "Start message server on port:" + this.port);
+			Log.i(TAG, "Start message server on port:" + HttpService.PORT);
         	while(flag){
         		Socket client_socket = this.mServerSocket.accept();
 				//this.mMessageReceiverPool.execute(new MessageReceiver(client_socket, this));
@@ -357,7 +354,7 @@ public class EnhancedMessageService extends Service implements Runnable {
     
 	private void connectServer(){
 		//Connect to server so it can remember me
-    	new MessageSender(this.remote_addr, this.remote_port, "", this).start();
+    	new MessageSender(HttpService.IP, HttpService.REMOTE_PORT, "", this).start();
 	}
 
 }
