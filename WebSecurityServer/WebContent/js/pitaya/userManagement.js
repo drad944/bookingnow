@@ -1101,6 +1101,7 @@ var userManagement = {
 			    showfilterrow: true,
 			    enableellipsis: true,
 		        filterable: true,
+		        enabletooltips: true,
 		        altrows: true,
 		        altstart: 0,
 		        altstep: 1,
