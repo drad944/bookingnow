@@ -203,6 +203,28 @@ public class UserAction extends BaseAction{
 		}
 	}
 	
+	public String existUser() {
+		if (result == null) {
+			result = new MyResult();
+		}
+		
+		if(user != null && user.getAccount() != null && (user.getAccount().equals("") == false)) {
+			if(userService.existUser(user)) {
+				result.setExecuteResult(true);
+			}else {
+				result.getErrorDetails().put("user_exist", "can not find user account in DB data.");
+				result.setErrorType(Constants.SUCCESS);
+				result.setExecuteResult(false);
+			}
+			return "existUserSuccess";
+        }else {
+			result.setErrorType(Constants.FAIL);
+			result.setExecuteResult(false);
+			result.getErrorDetails().put("user_exist", "can not find user account in client data.");
+			return "Fail";
+		}
+	}
+	
 	public String findUser() {
 		if(user != null) {
         	List<User> users = userService.searchUsers(user);
