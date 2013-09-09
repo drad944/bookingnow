@@ -116,7 +116,7 @@ var userManagement = {
 			              
 		  	// Create a jqxComboBox
 		  	$("#updateUserDepartmentCombobox").jqxComboBox({ 
-		  		selectedIndex: 0, 
+		  		checkboxes: true, 
 		  		source: userDepartmentData, 
 		  		displayMember: "label", 
 		  		valueMember: "value", 
@@ -155,8 +155,7 @@ var userManagement = {
 		            { input: '#updateUserAccountInput', message: i18n.t("userManagement.validation.message.requireAccount"), action: 'keyup, blur', rule: 'required' },
 		            { input: '#updateUserAccountInput', message: i18n.t("userManagement.validation.message.accountLength"), action: 'keyup, blur', rule: 'length=3,12' },
 		            { input: '#updateUserRealNameInput', message: i18n.t("userManagement.validation.message.requireUsername"), action: 'keyup, blur', rule: 'required' },
-		            { input: '#updateUserRealNameInput', message: i18n.t("userManagement.validation.message.requireUsernameLetter"), action: 'keyup', rule: 'notNumber' },
-		            { input: '#updateUserRealNameInput', message: i18n.t("userManagement.validation.message.usernameLength"), action: 'keyup', rule: 'length=3,12' },
+		            { input: '#updateUserRealNameInput', message: i18n.t("userManagement.validation.message.usernameLength"), action: 'keyup', rule: 'length=1,12' },
 		            
 		            { input: '#updateUserPasswordInput', message: i18n.t("userManagement.validation.message.requirePassword"), action: 'keyup, blur', rule: 'required' },
 		            { input: '#updateUserPasswordInput', message: i18n.t("userManagement.validation.message.passwordLength"), action: 'keyup, blur', rule: 'length=6,20' },
@@ -230,7 +229,7 @@ var userManagement = {
 			$("#updateUserSexInput").val(rowData["sex"]);
 		    
 			// Create a jqxComboBox
-			$("#updateUserDepartmentCombobox").jqxComboBox({ selectedIndex: AppUtil.findDepartmentValue($("#updateUserDepartmentInput").val()) - 2});
+			$("#updateUserDepartmentCombobox").jqxComboBox('checkIndex', AppUtil.findDepartmentValue($("#updateUserDepartmentInput").val()) - 2);
 			
 			var roleValues = AppUtil.findRoleValue($("#updateUserRolesInput").val());
 			for(var i = 0;i< roleValues.length;i++) {
@@ -268,10 +267,18 @@ var userManagement = {
 		        $('#updateUserPopupWindow').jqxWindow('close');
 		    });
 		        
-		    $("#updateUserDepartmentCombobox").bind('select', function (event) {
+		    $("#updateUserDepartmentCombobox").bind('checkChange', function (event) {
 		            if (event.args) {
 		                var item = event.args.item;
-		                if (item) {
+		                if (item && item.checked) {
+		                	var checkedItems = $("#updateUserDepartmentCombobox").jqxComboBox('getCheckedItems');
+		                	if(checkedItems && checkedItems.length > 1) {
+		                		$.each(checkedItems, function (index) {
+				                    if(checkedItems[index].value != item.value) {
+				                    	 $("#updateUserDepartmentCombobox").jqxComboBox('uncheckItem',checkedItems[index]);
+				                    }
+				                });
+		                	}
 		                	$("#updateUserDepartmentInput").val(item.value);
 		                }
 		            }
@@ -387,7 +394,7 @@ var userManagement = {
 		                        
 			// Create a jqxComboBox
 			$("#registerUserDepartmentCombobox").jqxComboBox({ 
-				selectedIndex: 0, 
+				checkboxes: true,
 				source: userDepartmentData, 
 				displayMember: "label", 
 				valueMember: "value", 
@@ -424,8 +431,7 @@ var userManagement = {
 		            { input: '#registerUserAccountInput', message: i18n.t("userManagement.validation.message.requireAccount"), action: 'keyup, blur', rule: 'required' },
 		            { input: '#registerUserAccountInput', message: i18n.t("userManagement.validation.message.accountLength"), action: 'keyup, blur', rule: 'length=3,12' },
 		            { input: '#registerUserRealNameInput', message: i18n.t("userManagement.validation.message.requireUsername"), action: 'keyup, blur', rule: 'required' },
-		            { input: '#registerUserRealNameInput', message: i18n.t("userManagement.validation.message.requireUsernameLetter"), action: 'keyup', rule: 'notNumber' },
-		            { input: '#registerUserRealNameInput', message: i18n.t("userManagement.validation.message.usernameLength"), action: 'keyup', rule: 'length=3,12' },
+		            { input: '#registerUserRealNameInput', message: i18n.t("userManagement.validation.message.usernameLength"), action: 'keyup', rule: 'length=1,12' },
 		            
 		            { input: '#registerUserPasswordInput', message: i18n.t("userManagement.validation.message.requirePassword"), action: 'keyup, blur', rule: 'required' },
 		            { input: '#registerUserPasswordInput', message: i18n.t("userManagement.validation.message.passwordLength"), action: 'keyup, blur', rule: 'length=6,20' },
@@ -499,12 +505,23 @@ var userManagement = {
 		        
 		    });
 		        
-		    $("#registerUserDepartmentCombobox").bind('select', function (event) {
+		    $("#registerUserDepartmentCombobox").bind('checkChange', function (event) {
 		            if (event.args) {
 		                var item = event.args.item;
-		                if (item) {
-		                	$("#registerUserDepartmentInput").val(item.value);
-		                }
+		                if (event.args) {
+			                var item = event.args.item;
+			                if (item && item.checked) {
+			                	var checkedItems = $("#registerUserDepartmentCombobox").jqxComboBox('getCheckedItems');
+			                	if(checkedItems && checkedItems.length > 1) {
+			                		$.each(checkedItems, function (index) {
+					                    if(checkedItems[index].value != item.value) {
+					                    	 $("#registerUserDepartmentCombobox").jqxComboBox('uncheckItem',checkedItems[index]);
+					                    }
+					                });
+			                	}
+			                	$("#registerUserDepartmentInput").val(item.value);
+			                }
+			            }
 		            }
 		        });
 		    
@@ -1033,6 +1050,7 @@ var userManagement = {
 			
 			var datafields = [
 							{name: 'id',type:"number"},
+							{name: 'password',type:"string"},
 			                  {name: 'image_relative_path',type:"string",cellsrenderer:imageRenderer},
 			                  {name: 'account',type:"string"},
 			                  {name: 'name',type:"string"},
