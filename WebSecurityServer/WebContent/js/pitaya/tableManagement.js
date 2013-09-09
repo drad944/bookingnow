@@ -26,6 +26,7 @@ var tableManagement = {
 		init : function(){
 			var me = this;
 			me.initTableGrid();
+		//	me.parseTableGridHtml();
 		},
 		emptyRegisterTableWindow:function (){
 			//init registerTableWindow widget data
@@ -99,7 +100,7 @@ var tableManagement = {
 		    $("#updateTablePopupWindow").jqxWindow({
 		    	autoOpen : false, 
 		    	isModal: true,
-		    	width: 280, 
+		    	width: 300, 
 		    	height: 250, 
 		    	resizable: false, 
 		    	theme: theme, 
@@ -441,26 +442,27 @@ var tableManagement = {
 					 
 					i18n.init(option);
 					
-					var columns = [
-							        { text: i18n.t("tableManagement.field.status"), datafield: 'status',filtertype:'textbox', width: 160 },
-							        { text: i18n.t("tableManagement.field.minCustomerCount"), datafield: 'minCustomerCount',filtertype:'number', width: 160 },
-							        { text: i18n.t("tableManagement.field.maxCustomerCount"), datafield: 'maxCustomerCount',filtertype:'number', width: 160 },
-							        { text: i18n.t("tableManagement.field.address"), datafield: 'address',filtertype:'textbox', width: 160 },
-							        { text: i18n.t("tableManagement.field.indoorPrice"), datafield: 'indoorPrice',filtertype:'number', width: 160 }
-							    ];
 					
-					var datafields = [
-					                  {"type":"string"},
-					                  {"type":"number"},
-					                  {"type":"number"},
-					                  {"type":"string"},
-					                  {"type":"number"}
-					                  ];
 					
 					if(matchedtables != null && matchedtables.result != null){
 						tables = matchedtables.result;
 					}
+					var columns = [
+						{ text: i18n.t("tableManagement.field.address"), datafield: 'address',filtertype:'textbox', width: 160 },
+						{ text: i18n.t("tableManagement.field.indoorPrice"), datafield: 'indoorPrice',filtertype:'number', width: 160 },
+						{ text: i18n.t("tableManagement.field.maxCustomerCount"), datafield: 'maxCustomerCount',filtertype:'number', width: 160 },	        
+						{ text: i18n.t("tableManagement.field.minCustomerCount"), datafield: 'minCustomerCount',filtertype:'number', width: 160 },
+						{ text: i18n.t("tableManagement.field.status"), datafield: 'status',filtertype:'textbox', width: 160 }      
+							    ];
 					
+					var datafields = [
+									{name: 'id',type:"number"},
+					                  {name: 'address',type:"string"},
+					                  {name: 'indoorPrice',type:"number"},
+					                  {name: 'maxCustomerCount',type:"number"},
+					                  {name: 'minCustomerCount',type:"number"},
+					                  {name: 'status',type:"string"}
+					                  ];
 					var tableSize = tables.length;
 					var tableData = {};
 					
@@ -482,263 +484,79 @@ var tableManagement = {
 					}
 		
 		
-		var source =
-		{
-		    localdata: tableData,
-		    datatype: "local",
-		    datafields:datafields,
-		    addrow: function (rowid, rowdata, position, commit) {
-		        // synchronize with the server - send insert command
-		        // call commit with parameter true if the synchronization with the server is successful 
-		        //and with parameter false if the synchronization failed.
-		        // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
-		        commit(true);
-		    },
-		    deleterow: function (rowid, commit) {
-		        // synchronize with the server - send delete command
-		        // call commit with parameter true if the synchronization with the server is successful 
-		        //and with parameter false if the synchronization failed.
-		        commit(true);
-		    },
-		    updaterow: function (rowid, newdata, commit) {
-		        // synchronize with the server - send update command
-		        // call commit with parameter true if the synchronization with the server is successful 
-		        // and with parameter false if the synchronization failed.
-		        commit(true);
-		    }
-		};
-		var dataAdapter = new $.jqx.dataAdapter(source);
-		// initialize jqxGrid
-		$("#tableDataGrid").jqxGrid(
-		{
-		    width: 800,
-		    height: 350,
-		    source: dataAdapter,
-		    theme: theme,
-		    selectionmode: 'multiplerowsextended',
-		    sortable: true,
-		    showfilterrow: true,
-	        filterable: true,
-	        altrows: true,
-	        altstart: 0,
-	        altstep: 1,
-	        enableellipsis: true,
-		    pageable: true,
-		    autoheight: true,
-		    selectionmode:'singlerow',
-		    columnsresize: true,
-		  //  columnsreorder: true,
-		    columns: columns
-		});
-		
-		// display selected row index.
-	    
-	    me.initTableManagementLocaleElements();
-	    me.initOperateTableGridElements();
-	    me.addOperateTableGridEventListeners();
-		
-	    me.initUpdateTableElements();
-	    me.addUpdateTableEventListeners();
-		
-		// initialize the popup window and buttons.
-	    me.initRegisterTableElements();
-	    me.addRegisterTableEventListeners();
-		
-		/*
-		 $("#tableDataGrid").on('columnreordered', function (event) {
-		    var column = event.args.columntext;
-		    var newindex = event.args.newindex
-		    var oldindex = event.args.oldindex;
-		});
-		*/
-		});
+				var source =
+				{
+				    localdata: tableData,
+				    datatype: "local",
+				    datafields:datafields,
+				    addrow: function (rowid, rowdata, position, commit) {
+				        // synchronize with the server - send insert command
+				        // call commit with parameter true if the synchronization with the server is successful 
+				        //and with parameter false if the synchronization failed.
+				        // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
+				        commit(true);
+				    },
+				    deleterow: function (rowid, commit) {
+				        // synchronize with the server - send delete command
+				        // call commit with parameter true if the synchronization with the server is successful 
+				        //and with parameter false if the synchronization failed.
+				        commit(true);
+				    },
+				    updaterow: function (rowid, newdata, commit) {
+				        // synchronize with the server - send update command
+				        // call commit with parameter true if the synchronization with the server is successful 
+				        // and with parameter false if the synchronization failed.
+				        commit(true);
+				    }
+				};
+				var dataAdapter = new $.jqx.dataAdapter(source);
+				// initialize jqxGrid
+				$("#tableDataGrid").jqxGrid(
+				{
+				    width: 800,
+				    height: 350,
+				    source: dataAdapter,
+				    theme: theme,
+				    sortable: true,
+				    showfilterrow: true,
+			        filterable: true,
+			        altrows: true,
+			        altstart: 0,
+			        altstep: 1,
+			        enableellipsis: true,
+				    pageable: true,
+				    autoheight: true,
+				    selectionmode:'singlerow',
+				    columnsresize: true,
+				  //  columnsreorder: true,
+				    columns: columns
+				});
+				
+				// display selected row index.
+			    
+			    me.initTableManagementLocaleElements();
+			    me.initOperateTableGridElements();
+			    me.addOperateTableGridEventListeners();
+				
+			    me.initUpdateTableElements();
+			    me.addUpdateTableEventListeners();
+				
+				// initialize the popup window and buttons.
+			    me.initRegisterTableElements();
+			    me.addRegisterTableEventListeners();
+				
+				/*
+				 $("#tableDataGrid").on('columnreordered', function (event) {
+				    var column = event.args.columntext;
+				    var newindex = event.args.newindex
+				    var oldindex = event.args.oldindex;
+				});
+				*/
+				});
 	
 		
 		},
 		
-		parseTableGridHtml:function () {
-			var me = this;
-				$.post("searchTable.action", 
-					{"table.enabled": true}, 
-					function(matchedtables){
-						
-						var option = {
-								lng: 'zh',
-								fallbackLng: 'zh',
-						//		fallbackLng: 'en-US',
-						//		lng: 'en-US',
-								resGetPath: 'resources/locales/__lng__/__ns__.json',
-						//		resPostPath: 'resources/locales/__lng__/__ns__.json',
-								getAsync: false,
-						//		postAsync: false,
-								ns: 'bookingnow.view',
-								fallbackToDefaultNS: true,
-								load:'current',
-								useCookie: false
-							};
-						 
-						i18n.init(option);
-						
-						
-						if(matchedtables != null && matchedtables.result != null){
-							tables = matchedtables.result;
-						}
-						
-						var tableSize = tables.length;
-						var tableData = {};
-						
-						var columns = {};
-						
-						var datafields = {};
-						for(var i = 0;i < tableSize; i++) {
-							table = me.parseTableDataToUIData(tables[i]);
-							if(i==0) {
-								var j=0;
-								for(var item in table) {
-									var datafield = {};
-									var column = {};
-									
-									if(item == "id" || item == "enabled"){
-										
-									}else if(item == "status") {
-										datafield["type"] = "string";
-										column["text"] = i18n.t("tableManagement.field.status");
-										column["filtertype"] = 'textbox';
-									}else if(item == "minCustomerCount") {
-										datafield["type"] = "number";
-										column["text"] = i18n.t("tableManagement.field.minCustomerCount");
-										column["filtertype"] = 'number';
-									}else if(item == "maxCustomerCount") {
-										datafield["type"] = "number";
-										column["text"] = i18n.t("tableManagement.field.maxCustomerCount");
-										column["filtertype"] = 'number';
-									}else if(item == "address") {
-										datafield["type"] = "number";
-										column["text"] = i18n.t("tableManagement.field.address");
-										column["filtertype"] = 'textbox';
-									}else if(item == "indoorPrice") {
-										datafield["type"] = "number";
-										column["text"] = i18n.t("tableManagement.field.indoorPrice");
-										column["filtertype"] = 'number';
-									}else {
-										datafield["type"] = "string";
-										column["text"] = i18n.t("tableManagement.field.xx");
-									}
-									
-									if(item == "id" || item == "enabled"){
-										
-									}else {
-										column["datafield"] = item;
-										
-										if(item == "status") {
-											column["width"] = "160";
-										}else if(item == "minCustomerCount") {
-											column["width"] = "160";
-										}else if(item == "maxCustomerCount") {
-											column["width"] = "160";
-										}else if(item == "address") {
-											column["width"] = "160";
-										}else if(item == "indoorPrice") {
-											column["width"] = "160";
-										}else {
-											column["width"] = "130";
-										}
-										
-										columns[j] = column;
-										
-										datafields[j] = datafield;
-										j++;
-									}
-								}
-							}
-							
-							var rowData = {};
-							for(var item in table) {
-								if(item == "enabled" ){
-										
-								}else {
-									rowData[item] = table[item];
-								}
-							
-							}
-							
-							tableData[i] = rowData;
-						}
-			
-			
-			var source =
-			{
-			    localdata: tableData,
-			    datatype: "local",
-			    datafields:datafields,
-			    addrow: function (rowid, rowdata, position, commit) {
-			        // synchronize with the server - send insert command
-			        // call commit with parameter true if the synchronization with the server is successful 
-			        //and with parameter false if the synchronization failed.
-			        // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
-			        commit(true);
-			    },
-			    deleterow: function (rowid, commit) {
-			        // synchronize with the server - send delete command
-			        // call commit with parameter true if the synchronization with the server is successful 
-			        //and with parameter false if the synchronization failed.
-			        commit(true);
-			    },
-			    updaterow: function (rowid, newdata, commit) {
-			        // synchronize with the server - send update command
-			        // call commit with parameter true if the synchronization with the server is successful 
-			        // and with parameter false if the synchronization failed.
-			        commit(true);
-			    }
-			};
-			var dataAdapter = new $.jqx.dataAdapter(source);
-			// initialize jqxGrid
-			$("#tableDataGrid").jqxGrid(
-			{
-			    width: 800,
-			    height: 350,
-			    source: dataAdapter,
-			    theme: theme,
-			    selectionmode: 'multiplerowsextended',
-			    sortable: true,
-			    showfilterrow: true,
-		        filterable: true,
-		        altrows: true,
-		        altstart: 0,
-		        altstep: 1,
-		        enableellipsis: true,
-			    pageable: true,
-			    autoheight: true,
-			    selectionmode:'singlerow',
-			    columnsresize: true,
-			  //  columnsreorder: true,
-			    columns: columns
-			});
-			
-			// display selected row index.
-		    
-		    me.initTableManagementLocaleElements();
-		    me.initOperateTableGridElements();
-		    me.addOperateTableGridEventListeners();
-			
-		    me.initUpdateTableElements();
-		    me.addUpdateTableEventListeners();
-			
-			// initialize the popup window and buttons.
-		    me.initRegisterTableElements();
-		    me.addRegisterTableEventListeners();
-			
-			/*
-			 $("#tableDataGrid").on('columnreordered', function (event) {
-			    var column = event.args.columntext;
-			    var newindex = event.args.newindex
-			    var oldindex = event.args.oldindex;
-			});
-			*/
-			});
-				
-		},
-
 		initTableManagementLocaleElements:function () {
 			$("#addTableRowButton").val(i18n.t("tableManagement.button.operationTableGrid.addTableRow"));
 			$("#updateTableRowButton").val(i18n.t("tableManagement.button.operationTableGrid.updateTableRow"));
