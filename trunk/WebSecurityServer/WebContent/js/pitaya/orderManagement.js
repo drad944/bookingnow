@@ -157,6 +157,7 @@ var orderManagement = {
 	        altstep: 1,
 	        enableellipsis: true,
 		    pageable: true,
+		    enabletooltips: true,
 		    autoheight: true,
 		    selectionmode:'singlerow',
 		    columnsresize: true,

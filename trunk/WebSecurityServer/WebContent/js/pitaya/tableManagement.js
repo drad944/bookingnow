@@ -526,6 +526,7 @@ var tableManagement = {
 			        enableellipsis: true,
 				    pageable: true,
 				    autoheight: true,
+				    enabletooltips: true,
 				    selectionmode:'singlerow',
 				    columnsresize: true,
 				  //  columnsreorder: true,
