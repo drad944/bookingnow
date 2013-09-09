@@ -1,6 +1,10 @@
 var Constants = {
 	
 	theme : "energyblue",
+	unit:{
+		Chinese:"￥",
+		America:"$"
+	},
 		
 	ORDER_NEW : 1,
 	ORDER_WELCOMER_NEW : 2,

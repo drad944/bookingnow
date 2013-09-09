@@ -342,7 +342,7 @@ var checkoutManagement = {
 							for(var columnAttr in rowObject) {
 								if(columnAttr == "price") {
 									var columnTable = orderTableColumnBegin;
-									columnTable = columnTable + rowObject[columnAttr];
+									columnTable = columnTable + rowObject[columnAttr] + Constants.unit.Chinese;
 									columnTable = columnTable + orderTableColumnEnd;
 									rowTable = rowTable + columnTable;
 									break;
@@ -365,7 +365,7 @@ var checkoutManagement = {
 							for(var columnAttr in rowObject) {
 								if(columnAttr == "name") {
 									var columnTable = orderTableColumnBegin;
-									columnTable = columnTable + rowObject[columnAttr];
+									columnTable = columnTable + rowObject[columnAttr] + "(包间费)";
 									columnTable = columnTable + orderTableColumnEnd;
 									rowTable = rowTable + columnTable;
 									break;
@@ -374,7 +374,7 @@ var checkoutManagement = {
 							for(var columnAttr in rowObject) {
 								if(columnAttr == "price") {
 									var columnTable = orderTableColumnBegin;
-									columnTable = columnTable + rowObject[columnAttr];
+									columnTable = columnTable + rowObject[columnAttr] + Constants.unit.Chinese;
 									columnTable = columnTable + orderTableColumnEnd;
 									rowTable = rowTable + columnTable;
 									break;
@@ -424,6 +424,7 @@ var checkoutManagement = {
 						var rowObject = invoiceData[rowAttr];
 						if(rowObject != null) {
 							var rowTable = orderTableRowBegin;
+							
 							for(var columnAttr in rowObject) {
 								if(columnAttr == "name") {
 									var columnTable = orderTableColumnBegin;
@@ -437,7 +438,7 @@ var checkoutManagement = {
 							for(var columnAttr in rowObject) {
 								if(columnAttr == "price") {
 									var columnTable = orderTableColumnBegin;
-									columnTable = columnTable + rowObject[columnAttr];
+									columnTable = columnTable + rowObject[columnAttr] + Constants.unit.Chinese;
 									columnTable = columnTable + orderTableColumnEnd;
 									rowTable = rowTable + columnTable;
 									break;
