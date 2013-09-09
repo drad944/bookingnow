@@ -372,15 +372,6 @@ var checkoutManagement = {
 								}
 							}
 							for(var columnAttr in rowObject) {
-								if(columnAttr == "count") {
-									var columnTable = orderTableColumnBegin;
-									columnTable = columnTable + rowObject[columnAttr];
-									columnTable = columnTable + orderTableColumnEnd;
-									rowTable = rowTable + columnTable;
-									break;
-								}
-							}
-							for(var columnAttr in rowObject) {
 								if(columnAttr == "price") {
 									var columnTable = orderTableColumnBegin;
 									columnTable = columnTable + rowObject[columnAttr];
@@ -498,116 +489,30 @@ var checkoutManagement = {
 		var checkOrderSize = checkOrders.length;
 		var checkOrderData = {};
 		
-		var columns = {};
-		
-		var datafields = {};
+		var columns = [
+						{ text: i18n.t("checkoutOrderManagement.field.allowance"), datafield: 'allowance',filtertype:'number', width: 80 },
+						{ text: i18n.t("checkoutOrderManagement.field.customer_count"), datafield: 'customer_count',filtertype:'number', width: 80 },
+						{ text: i18n.t("checkoutOrderManagement.field.modifyTime"), datafield: 'modifyTime',filtertype:'number', width: 130 },
+						{ text: i18n.t("checkoutOrderManagement.field.status"), datafield: 'status',filtertype:'textbox', width: 60 },
+						{ text: i18n.t("checkoutOrderManagement.field.total_price"), datafield: 'total_price',filtertype:'number', width: 80 },
+						{ text: i18n.t("checkoutOrderManagement.field.foods"), datafield: 'foods',filtertype:'textbox', width: 190 },
+						{ text: i18n.t("checkoutOrderManagement.field.tables"), datafield: 'tables',filtertype:'textbox', width: 100 },
+						{ text: i18n.t("checkoutOrderManagement.field.customer"), datafield: 'customer',filtertype:'textbox', width: 80 }
+							    ];
+		var datafields = [
+						{name: 'id',type:"number"},
+		                  {name: 'allowance',type:"number"},
+		                  {name: 'customer_count',type:"number"},
+		                  {name: 'modifyTime',type:"number"},
+		                  {name: 'status',type:"string"},
+		                  {name: 'total_price',type:"number"},
+		                  {name: 'foods',type:"string"},
+		                  {name: 'tables',type:"string"},
+		                  {name: 'customer',type:"string"}
+		                  ];
+					
 		for(var i = 0;i < checkOrderSize; i++) {
 			checkOrder = me.parseCheckOrderDataToUIData(checkOrders[i]);
-			if(i==0) {
-				var j=0;
-				
-				for(var item in checkOrder) {
-					var datafield = {};
-					var column = {};
-					
-					if(item == "id"){
-						/*
-						datafield["type"] = "number";
-						column["text"] = i18n.t("checkoutOrderManagement.field.id");
-						column["filtertype"] = 'number';
-						*/
-					}else if(item == "allowance") {
-						datafield["type"] = "number";
-						column["text"] = i18n.t("checkoutOrderManagement.field.allowance");
-						column["filtertype"] = 'number';
-					}else if(item == "customer_count") {
-						datafield["type"] = "number";
-						column["text"] = i18n.t("checkoutOrderManagement.field.customer_count");
-						column["filtertype"] = 'number';
-					}else if(item == "customer_id") {
-						
-					}else if(item == "modifyTime") {
-						datafield["type"] = "number";
-						column["text"] = i18n.t("checkoutOrderManagement.field.modifyTime");
-						
-					}else if(item == "prePay") {
-						/*
-						datafield["type"] = "number";
-						column["text"] = i18n.t("checkoutOrderManagement.field.prePay");
-						column["filtertype"] = 'number';
-						*/
-					}else if(item == "status") {
-						datafield["type"] = "string";
-						column["text"] = i18n.t("checkoutOrderManagement.field.status");
-						column["filtertype"] = 'textbox';
-					}else if(item == "submit_time") {
-						/*
-						datafield["type"] = "number";
-						column["text"] = i18n.t("checkoutOrderManagement.field.submit_time");
-						*/
-					}else if(item == "total_price") {
-						datafield["type"] = "number";
-						column["text"] = i18n.t("checkoutOrderManagement.field.total_price");
-						column["filtertype"] = 'number';
-					}else if(item == "user_id") {
-						/*
-						datafield["type"] = "number";
-						column["text"] = i18n.t("checkoutOrderManagement.field.user_id");
-						column["filtertype"] = 'number';
-						*/
-					}else if(item == "foods") {
-						datafield["type"] = "string";
-						column["text"] = i18n.t("checkoutOrderManagement.field.foods");
-						column["filtertype"] = 'textbox';
-					}else if(item == "tables") {
-						datafield["type"] = "string";
-						column["text"] = i18n.t("checkoutOrderManagement.field.tables");
-						column["filtertype"] = 'textbox';
-					}else if(item == "customer") {
-						datafield["type"] = "string";
-						column["text"] = i18n.t("checkoutOrderManagement.field.customer");
-						column["filtertype"] = 'textbox';
-					}else if( item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
-						//do nothing
-					}else {
-						datafield["type"] = "string";
-						column["text"] = i18n.t("checkoutOrderManagement.field.xx");
-					}
-					
-					if(item == "customer_id" || item == "food_details" ||item == "table_details" ||item == "user" || item == "enabled"){
-						
-					}else if(item == "id" || item == "submit_time" || item == "user_id" || item == "prePay"){
-						
-					}else {
-						column["datafield"] = item;
-						
-						if(item == "allowance") {
-							column["width"] = "80";
-						}else if(item == "customer_count") {
-							column["width"] = "80";
-						}else if(item == "modifyTime") {
-							column["width"] = "130";
-						}else if(item == "status") {
-							column["width"] = "60";
-						}else if(item == "total_price") {
-							column["width"] = "80";
-						}else if(item == "foods") {
-							column["width"] = "190";
-						}else if(item == "tables") {
-							column["width"] = "100";
-						}else if(item == "customer") {
-							column["width"] = "80";
-						}else {
-							column["width"] = "50";
-						}
-						
-						columns[j] = column;
-						
-						datafields[j] = datafield;
-						j++;
-					}
-				}
-			}
 			
 			var rowData = {};
 			for(var item in checkOrder) {
