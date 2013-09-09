@@ -247,7 +247,7 @@
 				"reset":"Reset",
 				"cancel":"Cancel",
 				"update":"Update",
-				"register":"Register",
+				"register":"Save",
 				"operationTableGrid":{
 					"addTableRow":"Add New Row",
 					"updateTableRow":"Update Selected Row",
@@ -374,7 +374,7 @@
 				"reset":"Reset",
 				"cancel":"Cancel",
 				"update":"Update",
-				"register":"Register",
+				"register":"Save",
 				"operationUserGrid":{
 					"addUserRow":"Add New Row",
 					"updateUserRow":"Update Selected Row",

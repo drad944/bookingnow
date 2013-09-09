@@ -75,6 +75,12 @@
 	    </action>
 	        
 		<action name="*User" class="com.pitaya.bookingnow.action.UserAction" method="{1}User">
+		    
+		    <result name="existUserSuccess" type="json">
+			   	<param name="excludeNullProperties">true</param>
+				<param name="root">result</param>
+	        </result>
+	        
 			<result name="loginUserSuccess" type="json">
 			   	<param name="excludeNullProperties">true</param>
 				<param name="root">user</param>
