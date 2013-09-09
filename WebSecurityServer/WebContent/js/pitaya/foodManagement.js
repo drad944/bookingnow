@@ -373,9 +373,9 @@ var foodManagement = {
 		});
 
 		$("#addbtn").bind('click', function() {
+			var me = this;
 			me.foodeditrow = -1;
 			me.newaddimgid = null;
-			var me = this;
 			$("#name").val("");
 			$("#desc").val("");
 			$("#category").jqxComboBox('selectIndex', 0);

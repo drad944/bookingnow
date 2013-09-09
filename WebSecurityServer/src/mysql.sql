@@ -1,4 +1,3 @@
-
 show databases;
 create database bookingnow;
 
@@ -6,24 +5,23 @@ grant all privileges on bookingnow.* to 'testUser'@'localhost' identified by '12
 grant all privileges on bookingnow.* to 'testUser'@'%' identified by '123456';
 flush privileges;
 
+use bookingnow;
 
-
-drop table pitaya_authority_resource_detail;
-drop table pitaya_role_authority_detail;
-drop table pitaya_user_role_detail;
-drop table pitaya_resource;
-drop table pitaya_authority;
-drop table pitaya_role;
-drop table pitaya_food_material_detail;
-drop table pitaya_material;
-drop table pitaya_user;
-drop table pitaya_customer;
-drop table pitaya_order_food_detail;
-drop table pitaya_food;
-drop table pitaya_order_table_detail;
-drop table pitaya_order;
-drop table pitaya_table;
-
+drop table if exists pitaya_authority_resource_detail;
+drop table if exists pitaya_role_authority_detail;
+drop table if exists pitaya_user_role_detail;
+drop table if exists pitaya_resource;
+drop table if exists pitaya_authority;
+drop table if exists pitaya_role;
+drop table if exists pitaya_food_material_detail;
+drop table if exists pitaya_material;
+drop table if exists pitaya_user;
+drop table if exists pitaya_customer;
+drop table if exists pitaya_order_food_detail;
+drop table if exists pitaya_food;
+drop table if exists pitaya_order_table_detail;
+drop table if exists pitaya_order;
+drop table if exists pitaya_table;
 
 create table pitaya_table(
 	id bigint not null auto_increment primary key,
@@ -35,17 +33,16 @@ create table pitaya_table(
 	indoorPrice double
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_table values (1,1,2,1,2,'A1',60);	
-insert into pitaya_table values (2,1,2,1,2,'A2',50);
-insert into pitaya_table values (3,1,2,2,5,'B3',0);
-insert into pitaya_table values (4,1,3,2,5,'A4',50);
-insert into pitaya_table values (5,1,3,4,7,'B5',0);
-insert into pitaya_table values (6,1,4,4,7,'A6',60);
-insert into pitaya_table values (7,1,4,6,9,'B7',0);
-insert into pitaya_table values (8,1,4,6,9,'A8',80);
-insert into pitaya_table values (9,1,4,8,11,'A9',0);
-insert into pitaya_table values (10,1,2,8,11,'B10',0);
-
+--insert into pitaya_table values (1,1,2,1,2,'A1',60);	
+--insert into pitaya_table values (2,1,2,1,2,'A2',50);
+--insert into pitaya_table values (3,1,2,2,5,'B3',0);
+--insert into pitaya_table values (4,1,3,2,5,'A4',50);
+--insert into pitaya_table values (5,1,3,4,7,'B5',0);
+--insert into pitaya_table values (6,1,4,4,7,'A6',60);
+--insert into pitaya_table values (7,1,4,6,9,'B7',0);
+--insert into pitaya_table values (8,1,4,6,9,'A8',80);
+--insert into pitaya_table values (9,1,4,8,11,'A9',0);
+--insert into pitaya_table values (10,1,2,8,11,'B10',0);
 
 create table pitaya_order(
 	id bigint not null auto_increment primary key,
@@ -61,13 +58,13 @@ create table pitaya_order(
 	enabled boolean
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 	
-insert into pitaya_order values (1,1,0,1,4,1375286400000,0.95,0,0,1375286400000,true);
-insert into pitaya_order values (2,2,1,0,5,1375286400000,0.90,0,0,1375286400000,false);
-insert into pitaya_order values (3,3,0,2,6,1375286400000,0.95,0,0,1375286400000,true);
-insert into pitaya_order values (4,4,0,3,7,1375286400000,1,0,0,1375286400000,true);
-insert into pitaya_order values (5,5,2,0,4,1375286400000,0.90,0,0,1375286400000,true);
-insert into pitaya_order values (6,6,3,0,5,1375286400000,0.95,0,0,1375286400000,false);
-insert into pitaya_order values (7,3,1,0,4,1375286400000,0.90,0,0,1375286400000,true);
+--insert into pitaya_order values (1,1,0,1,4,1375286400000,0.95,0,0,1375286400000,true);
+--insert into pitaya_order values (2,2,1,0,5,1375286400000,0.90,0,0,1375286400000,false);
+--insert into pitaya_order values (3,3,0,2,6,1375286400000,0.95,0,0,1375286400000,true);
+--insert into pitaya_order values (4,4,0,3,7,1375286400000,1,0,0,1375286400000,true);
+--insert into pitaya_order values (5,5,2,0,4,1375286400000,0.90,0,0,1375286400000,true);
+--insert into pitaya_order values (6,6,3,0,5,1375286400000,0.95,0,0,1375286400000,false);
+--insert into pitaya_order values (7,3,1,0,4,1375286400000,0.90,0,0,1375286400000,true);
 
 create table pitaya_order_table_detail(
 	id bigint not null auto_increment primary key,
@@ -81,16 +78,16 @@ create table pitaya_order_table_detail(
 	CONSTRAINT fk_order_table_detail_order FOREIGN KEY (order_id) REFERENCES pitaya_order (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_order_table_detail values (1,0,false,1,1);
-insert into pitaya_order_table_detail values (2,4,true,2,2);
-insert into pitaya_order_table_detail values (3,3,true,3,2);
-insert into pitaya_order_table_detail values (4,7,true,4,3);
-insert into pitaya_order_table_detail values (5,0,true,5,4);
-insert into pitaya_order_table_detail values (6,8,true,6,5);
-insert into pitaya_order_table_detail values (7,7,true,7,5);
-insert into pitaya_order_table_detail values (8,0,true,8,6);
-insert into pitaya_order_table_detail values (9,0,true,9,6);
-insert into pitaya_order_table_detail values (10,3,true,10,7);
+--insert into pitaya_order_table_detail values (1,0,false,1,1);
+--insert into pitaya_order_table_detail values (2,4,true,2,2);
+--insert into pitaya_order_table_detail values (3,3,true,3,2);
+--insert into pitaya_order_table_detail values (4,7,true,4,3);
+--insert into pitaya_order_table_detail values (5,0,true,5,4);
+--insert into pitaya_order_table_detail values (6,8,true,6,5);
+--insert into pitaya_order_table_detail values (7,7,true,7,5);
+--insert into pitaya_order_table_detail values (8,0,true,8,6);
+--insert into pitaya_order_table_detail values (9,0,true,9,6);
+--insert into pitaya_order_table_detail values (10,3,true,10,7);
 
 
 create table pitaya_food(
@@ -151,24 +148,24 @@ create table pitaya_order_food_detail(
 	CONSTRAINT fk_order_food_detail_order FOREIGN KEY (order_id) REFERENCES pitaya_order (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_order_food_detail values (1,1,2,2,1375286400000,true,false,1,1);
-insert into pitaya_order_food_detail values (2,2,2,2,1375286400000,true,true,2,1);
-insert into pitaya_order_food_detail values (3,3,3,3,1375286400000,true,false,3,1);
-insert into pitaya_order_food_detail values (4,4,2,4,1375286400000,true,false,4,2);
-insert into pitaya_order_food_detail values (5,4,1,2,1375286400000,true,true,5,2);
-insert into pitaya_order_food_detail values (6,1,3,2,1375286400000,true,false,6,2);
-insert into pitaya_order_food_detail values (7,1,1,3,1375286400000,true,true,7,2);
-insert into pitaya_order_food_detail values (8,2,2,4,1375286400000,true,false,8,3);
-insert into pitaya_order_food_detail values (9,2,1,2,1375286400000,true,false,9,4);
-insert into pitaya_order_food_detail values (10,3,1,4,1375286400000,true,false,10,5);
-insert into pitaya_order_food_detail values (11,2,2,2,1375286400000,true,true,11,5);
-insert into pitaya_order_food_detail values (12,3,1,3,1375286400000,true,false,12,6);
-insert into pitaya_order_food_detail values (13,4,3,2,1375286400000,true,false,13,6);
-insert into pitaya_order_food_detail values (14,2,1,2,1375286400000,true,false,14,6);
-insert into pitaya_order_food_detail values (15,3,4,3,1375286400000,true,false,15,6);
-insert into pitaya_order_food_detail values (16,1,1,2,1375286400000,true,true,16,7);
-insert into pitaya_order_food_detail values (17,4,2,3,1375286400000,true,false,17,7);
-insert into pitaya_order_food_detail values (18,2,1,3,1375286400000,true,false,18,7);
+--insert into pitaya_order_food_detail values (1,1,2,2,1375286400000,true,false,1,1);
+--insert into pitaya_order_food_detail values (2,2,2,2,1375286400000,true,true,2,1);
+--insert into pitaya_order_food_detail values (3,3,3,3,1375286400000,true,false,3,1);
+--insert into pitaya_order_food_detail values (4,4,2,4,1375286400000,true,false,4,2);
+--insert into pitaya_order_food_detail values (5,4,1,2,1375286400000,true,true,5,2);
+--insert into pitaya_order_food_detail values (6,1,3,2,1375286400000,true,false,6,2);
+--insert into pitaya_order_food_detail values (7,1,1,3,1375286400000,true,true,7,2);
+--insert into pitaya_order_food_detail values (8,2,2,4,1375286400000,true,false,8,3);
+--insert into pitaya_order_food_detail values (9,2,1,2,1375286400000,true,false,9,4);
+--insert into pitaya_order_food_detail values (10,3,1,4,1375286400000,true,false,10,5);
+--insert into pitaya_order_food_detail values (11,2,2,2,1375286400000,true,true,11,5);
+--insert into pitaya_order_food_detail values (12,3,1,3,1375286400000,true,false,12,6);
+--insert into pitaya_order_food_detail values (13,4,3,2,1375286400000,true,false,13,6);
+--insert into pitaya_order_food_detail values (14,2,1,2,1375286400000,true,false,14,6);
+--insert into pitaya_order_food_detail values (15,3,4,3,1375286400000,true,false,15,6);
+--insert into pitaya_order_food_detail values (16,1,1,2,1375286400000,true,true,16,7);
+--insert into pitaya_order_food_detail values (17,4,2,3,1375286400000,true,false,17,7);
+--insert into pitaya_order_food_detail values (18,2,1,3,1375286400000,true,false,18,7);
 
 
 
@@ -189,12 +186,12 @@ create table pitaya_customer(
 	birthday bigint
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_customer values (1,true,1375286400000,0,'images/customer/1_c_134563223.jpg','','zhang','zhang','123456','13579024832',3,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000);
-insert into pitaya_customer values (2,true,1375286400000,0,'images/customer/2_c_134563223.jpg','','li','li','123456','13579024832',2,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000);
-insert into pitaya_customer values (3,true,1375286400000,0,'images/customer/3_c_134563223.jpg','','wang di','wang di','123456','13579024832',3,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000);
-insert into pitaya_customer values (4,true,1375286400000,0,'images/customer/4_c_134563223.jpg','','cheng','cheng','123456','13579024832',2,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000);
-insert into pitaya_customer values (5,true,1375286400000,0,'images/customer/5_c_134563223.jpg','','yang','yang','123456','13579024832',3,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000);
-insert into pitaya_customer values (6,true,1375286400000,0,'images/customer/6_c_134563223.jpg','','zhouli','zhouli','123456','13579024832',2,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000);
+--insert into pitaya_customer values (1,true,1375286400000,0,'images/customer/1_c_134563223.jpg','','zhang','zhang','123456','13579024832',3,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000);
+--insert into pitaya_customer values (2,true,1375286400000,0,'images/customer/2_c_134563223.jpg','','li','li','123456','13579024832',2,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000);
+--insert into pitaya_customer values (3,true,1375286400000,0,'images/customer/3_c_134563223.jpg','','wang di','wang di','123456','13579024832',3,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000);
+--insert into pitaya_customer values (4,true,1375286400000,0,'images/customer/4_c_134563223.jpg','','cheng','cheng','123456','13579024832',2,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000);
+--insert into pitaya_customer values (5,true,1375286400000,0,'images/customer/5_c_134563223.jpg','','yang','yang','123456','13579024832',3,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000);
+--insert into pitaya_customer values (6,true,1375286400000,0,'images/customer/6_c_134563223.jpg','','zhouli','zhouli','123456','13579024832',2,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000);
 
 create table pitaya_user(
 	id bigint not null auto_increment primary key,
@@ -216,27 +213,27 @@ create table pitaya_user(
 	sub_system integer
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_user values (1,true,1375286400000,0,'images/user/1_u_134563223.jpg','','hang','hang','123456','13579024832',3,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
-insert into pitaya_user values (2,true,1375286400000,0,'images/user/2_u_134563223.jpg','','lili','lili','123456','13579024832',2,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a waiter',3,1000);
-insert into pitaya_user values (3,true,1375286400000,0,'images/user/3_u_134563223.jpg','','zrm','zrm','123456','13579024832',3,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a boss',4,1000);
-insert into pitaya_user values (4,true,1375286400000,0,'images/user/4_u_134563223.jpg','','che','che','123456','13579024832',2,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a casher',5,1000);
-insert into pitaya_user values (5,true,1375286400000,0,'images/user/5_u_134563223.jpg','','yan','yan','123456','13579024832',3,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a service man',6,1000);
-insert into pitaya_user values (6,true,1375286400000,0,'images/user/6_u_134563223.jpg','','zhoushuai','zhoushuai','123456','13579024832',2,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
-insert into pitaya_user values (7,true,1375286400000,0,'images/user/7_u_134563223.jpg','','admin','admin','123456','13579024832',2,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
-insert into pitaya_user values (8,true,1375286400000,0,'images/user/8_u_134563223.jpg','','mengfei','mengfei','123456','13579024832',2,'mengfei@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',3,1000);
-insert into pitaya_user values (9,true,1375286400000,0,'images/user/9_u_134563223.jpg','','nidaye','nidaye','123456','13579024832',3,'nidaye@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',4,1000);
-insert into pitaya_user values (10,true,1375286400000,0,'images/user/10_u_134563223.jpg','','laozi','laozi','123456','13579024832',2,'laozi@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',5,1000);
-
-insert into pitaya_user values (11,true,1375286400000,0,'images/user/1_u_134563223.jpg','','1hang','hang','123456','13579024832',3,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',5,1000);
-insert into pitaya_user values (12,true,1375286400000,0,'images/user/2_u_134563223.jpg','','1lili','lili','123456','13579024832',2,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a waiter',4,1000);
-insert into pitaya_user values (13,true,1375286400000,0,'images/user/3_u_134563223.jpg','','1zrm','zrm','123456','13579024832',3,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a boss',2,1000);
-insert into pitaya_user values (14,true,1375286400000,0,'images/user/4_u_134563223.jpg','','1che','che','123456','13579024832',2,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a casher',3,1000);
-insert into pitaya_user values (15,true,1375286400000,0,'images/user/5_u_134563223.jpg','','1yan','yan','123456','13579024832',3,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a service man',4,1000);
-insert into pitaya_user values (16,true,1375286400000,0,'images/user/6_u_134563223.jpg','','1zhoushuai','zhoushuai','123456','13579024832',2,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
-insert into pitaya_user values (17,true,1375286400000,0,'images/user/7_u_134563223.jpg','','1admin','admin','123456','13579024832',2,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
-insert into pitaya_user values (18,true,1375286400000,0,'images/user/8_u_134563223.jpg','','1mengfei','mengfei','123456','13579024832',2,'mengfei@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
-insert into pitaya_user values (19,true,1375286400000,0,'images/user/9_u_134563223.jpg','','1nidaye','nidaye','123456','13579024832',3,'nidaye@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
-insert into pitaya_user values (20,true,1375286400000,0,'images/user/10_u_134563223.jpg','','1laozi','laozi','123456','13579024832',2,'laozi@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
+--insert into pitaya_user values (1,true,1375286400000,0,'images/user/1_u_134563223.jpg','','hang','hang','123456','13579024832',3,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
+--insert into pitaya_user values (2,true,1375286400000,0,'images/user/2_u_134563223.jpg','','lili','lili','123456','13579024832',2,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a waiter',3,1000);
+--insert into pitaya_user values (3,true,1375286400000,0,'images/user/3_u_134563223.jpg','','zrm','zrm','123456','13579024832',3,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a boss',4,1000);
+--insert into pitaya_user values (4,true,1375286400000,0,'images/user/4_u_134563223.jpg','','che','che','123456','13579024832',2,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a casher',5,1000);
+--insert into pitaya_user values (5,true,1375286400000,0,'images/user/5_u_134563223.jpg','','yan','yan','123456','13579024832',3,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a service man',6,1000);
+--insert into pitaya_user values (6,true,1375286400000,0,'images/user/6_u_134563223.jpg','','zhoushuai','zhoushuai','123456','13579024832',2,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
+--insert into pitaya_user values (7,true,1375286400000,0,'images/user/7_u_134563223.jpg','','admin','admin','123456','13579024832',2,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
+--insert into pitaya_user values (8,true,1375286400000,0,'images/user/8_u_134563223.jpg','','mengfei','mengfei','123456','13579024832',2,'mengfei@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',3,1000);
+--insert into pitaya_user values (9,true,1375286400000,0,'images/user/9_u_134563223.jpg','','nidaye','nidaye','123456','13579024832',3,'nidaye@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',4,1000);
+--insert into pitaya_user values (10,true,1375286400000,0,'images/user/10_u_134563223.jpg','','laozi','laozi','123456','13579024832',2,'laozi@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',5,1000);
+--
+--insert into pitaya_user values (11,true,1375286400000,0,'images/user/1_u_134563223.jpg','','1hang','hang','123456','13579024832',3,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',5,1000);
+--insert into pitaya_user values (12,true,1375286400000,0,'images/user/2_u_134563223.jpg','','1lili','lili','123456','13579024832',2,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a waiter',4,1000);
+--insert into pitaya_user values (13,true,1375286400000,0,'images/user/3_u_134563223.jpg','','1zrm','zrm','123456','13579024832',3,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a boss',2,1000);
+--insert into pitaya_user values (14,true,1375286400000,0,'images/user/4_u_134563223.jpg','','1che','che','123456','13579024832',2,'cheng@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a casher',3,1000);
+--insert into pitaya_user values (15,true,1375286400000,0,'images/user/5_u_134563223.jpg','','1yan','yan','123456','13579024832',3,'yang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a service man',4,1000);
+--insert into pitaya_user values (16,true,1375286400000,0,'images/user/6_u_134563223.jpg','','1zhoushuai','zhoushuai','123456','13579024832',2,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
+--insert into pitaya_user values (17,true,1375286400000,0,'images/user/7_u_134563223.jpg','','1admin','admin','123456','13579024832',2,'zhou@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
+--insert into pitaya_user values (18,true,1375286400000,0,'images/user/8_u_134563223.jpg','','1mengfei','mengfei','123456','13579024832',2,'mengfei@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
+--insert into pitaya_user values (19,true,1375286400000,0,'images/user/9_u_134563223.jpg','','1nidaye','nidaye','123456','13579024832',3,'nidaye@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
+--insert into pitaya_user values (20,true,1375286400000,0,'images/user/10_u_134563223.jpg','','1laozi','laozi','123456','13579024832',2,'laozi@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
 
 
 create table pitaya_material(
@@ -247,11 +244,11 @@ create table pitaya_material(
 	category integer
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_material values (1,true,'Garlic','big garlic,haha',901);
-insert into pitaya_material values (2,true,'Onions','big garlic,haha',901);
-insert into pitaya_material values (3,true,'salt','big garlic,haha',901);
-insert into pitaya_material values (4,true,'Soy sauce','big garlic,haha',901);
-insert into pitaya_material values (5,true,'huajiao','big garlic,haha',901);
+--insert into pitaya_material values (1,true,'Garlic','big garlic,haha',901);
+--insert into pitaya_material values (2,true,'Onions','big garlic,haha',901);
+--insert into pitaya_material values (3,true,'salt','big garlic,haha',901);
+--insert into pitaya_material values (4,true,'Soy sauce','big garlic,haha',901);
+--insert into pitaya_material values (5,true,'huajiao','big garlic,haha',901);
 
 
 create table pitaya_food_material_detail(
@@ -268,16 +265,16 @@ create table pitaya_food_material_detail(
 	CONSTRAINT fk_food_material_detail_material FOREIGN KEY (material_id) REFERENCES pitaya_material (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_food_material_detail values (1,1,10,0,true,1,1);
-insert into pitaya_food_material_detail values (2,1,20,2,true,1,2);
-insert into pitaya_food_material_detail values (3,1,10,0,true,1,3);
-insert into pitaya_food_material_detail values (4,0,10,3,true,2,1);
-insert into pitaya_food_material_detail values (5,1,10,0,true,2,4);
-insert into pitaya_food_material_detail values (6,0,10,12,true,3,5);
-insert into pitaya_food_material_detail values (7,1,10,0,true,3,4);
-insert into pitaya_food_material_detail values (8,0,10,2,true,6,2);
-insert into pitaya_food_material_detail values (9,1,10,0,true,9,3);
-insert into pitaya_food_material_detail values (10,1,10,0,true,10,1);
+--insert into pitaya_food_material_detail values (1,1,10,0,true,1,1);
+--insert into pitaya_food_material_detail values (2,1,20,2,true,1,2);
+--insert into pitaya_food_material_detail values (3,1,10,0,true,1,3);
+--insert into pitaya_food_material_detail values (4,0,10,3,true,2,1);
+--insert into pitaya_food_material_detail values (5,1,10,0,true,2,4);
+--insert into pitaya_food_material_detail values (6,0,10,12,true,3,5);
+--insert into pitaya_food_material_detail values (7,1,10,0,true,3,4);
+--insert into pitaya_food_material_detail values (8,0,10,2,true,6,2);
+--insert into pitaya_food_material_detail values (9,1,10,0,true,9,3);
+--insert into pitaya_food_material_detail values (10,1,10,0,true,10,1);
 
 
 
@@ -291,10 +288,10 @@ create table pitaya_role(
 	module integer
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_role values (1,true,2,'ANONYMOUS','anonymous',false,1101);	
-insert into pitaya_role values (2,true,3,'CUSTOMER','customer',false,1101);
-insert into pitaya_role values (3,true,4,'CUSTOMER_VIP1','vip1 customer',false,1101);
-insert into pitaya_role values (4,true,5,'CUSTOMER_VIP2','vip2 customer',false,1101);
+--insert into pitaya_role values (1,true,2,'ANONYMOUS','anonymous',false,1101);	
+--insert into pitaya_role values (2,true,3,'CUSTOMER','customer',false,1101);
+--insert into pitaya_role values (3,true,4,'CUSTOMER_VIP1','vip1 customer',false,1101);
+--insert into pitaya_role values (4,true,5,'CUSTOMER_VIP2','vip2 customer',false,1101);
 insert into pitaya_role values (5,true,6,'WELCOMER','welcomer',false,1101);
 insert into pitaya_role values (6,true,7,'CHEF','chef',false,1101);
 insert into pitaya_role values (7,true,8,'WAITER','waiter',false,1101);
@@ -364,17 +361,17 @@ create table pitaya_user_role_detail(
 	CONSTRAINT fk_user_role_detail_user FOREIGN KEY (user_id) REFERENCES pitaya_user (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_user_role_detail values (1,true,1,1);
-insert into pitaya_user_role_detail values (2,true,2,2);
-insert into pitaya_user_role_detail values (3,true,3,3);
-insert into pitaya_user_role_detail values (4,true,4,4);
-insert into pitaya_user_role_detail values (5,true,5,5);
-insert into pitaya_user_role_detail values (6,true,7,6);
-insert into pitaya_user_role_detail values (7,true,6,7);
-insert into pitaya_user_role_detail values (8,true,8,8);
-insert into pitaya_user_role_detail values (9,true,9,9);
-insert into pitaya_user_role_detail values (10,true,10,10);
-
+--insert into pitaya_user_role_detail values (1,true,1,1);
+--insert into pitaya_user_role_detail values (2,true,2,2);
+--insert into pitaya_user_role_detail values (3,true,3,3);
+--insert into pitaya_user_role_detail values (4,true,4,4);
+--insert into pitaya_user_role_detail values (5,true,5,5);
+--insert into pitaya_user_role_detail values (6,true,7,6);
+--insert into pitaya_user_role_detail values (7,true,6,7);
+--insert into pitaya_user_role_detail values (8,true,8,8);
+--insert into pitaya_user_role_detail values (9,true,9,9);
+--insert into pitaya_user_role_detail values (10,true,10,10);
+--
 
 
 create table pitaya_role_authority_detail(
@@ -388,36 +385,36 @@ create table pitaya_role_authority_detail(
 	CONSTRAINT fk_role_authority_detail_authority FOREIGN KEY (authority_id) REFERENCES pitaya_authority (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_role_authority_detail values (1,true,1,1);
-insert into pitaya_role_authority_detail values (2,true,1,2);
-insert into pitaya_role_authority_detail values (3,true,8,3);
-insert into pitaya_role_authority_detail values (4,true,2,1);
-insert into pitaya_role_authority_detail values (5,true,2,2);
-insert into pitaya_role_authority_detail values (6,true,2,4);
-insert into pitaya_role_authority_detail values (7,true,3,1);
-insert into pitaya_role_authority_detail values (8,true,3,2);
-insert into pitaya_role_authority_detail values (9,true,4,1);
-insert into pitaya_role_authority_detail values (10,true,4,5);
-insert into pitaya_role_authority_detail values (11,true,5,1);
-insert into pitaya_role_authority_detail values (12,true,5,2);
-insert into pitaya_role_authority_detail values (13,true,5,3);
-insert into pitaya_role_authority_detail values (14,true,6,1);
-insert into pitaya_role_authority_detail values (15,true,10,2);
-insert into pitaya_role_authority_detail values (16,true,6,3);
-insert into pitaya_role_authority_detail values (17,true,7,1);
-insert into pitaya_role_authority_detail values (18,true,9,2);
-insert into pitaya_role_authority_detail values (19,true,7,3);
-insert into pitaya_role_authority_detail values (20,true,7,4);
-insert into pitaya_role_authority_detail values (21,true,6,5);
-insert into pitaya_role_authority_detail values (22,true,7,9);
-insert into pitaya_role_authority_detail values (23,true,7,6);
-insert into pitaya_role_authority_detail values (24,true,7,7);
-insert into pitaya_role_authority_detail values (25,true,8,8);
-insert into pitaya_role_authority_detail values (26,true,7,4);
-insert into pitaya_role_authority_detail values (27,true,9,9);
-insert into pitaya_role_authority_detail values (28,true,7,10);
-insert into pitaya_role_authority_detail values (29,true,10,4);
-insert into pitaya_role_authority_detail values (30,true,10,8);
+--insert into pitaya_role_authority_detail values (1,true,1,1);
+--insert into pitaya_role_authority_detail values (2,true,1,2);
+--insert into pitaya_role_authority_detail values (3,true,8,3);
+--insert into pitaya_role_authority_detail values (4,true,2,1);
+--insert into pitaya_role_authority_detail values (5,true,2,2);
+--insert into pitaya_role_authority_detail values (6,true,2,4);
+--insert into pitaya_role_authority_detail values (7,true,3,1);
+--insert into pitaya_role_authority_detail values (8,true,3,2);
+--insert into pitaya_role_authority_detail values (9,true,4,1);
+--insert into pitaya_role_authority_detail values (10,true,4,5);
+--insert into pitaya_role_authority_detail values (11,true,5,1);
+--insert into pitaya_role_authority_detail values (12,true,5,2);
+--insert into pitaya_role_authority_detail values (13,true,5,3);
+--insert into pitaya_role_authority_detail values (14,true,6,1);
+--insert into pitaya_role_authority_detail values (15,true,10,2);
+--insert into pitaya_role_authority_detail values (16,true,6,3);
+--insert into pitaya_role_authority_detail values (17,true,7,1);
+--insert into pitaya_role_authority_detail values (18,true,9,2);
+--insert into pitaya_role_authority_detail values (19,true,7,3);
+--insert into pitaya_role_authority_detail values (20,true,7,4);
+--insert into pitaya_role_authority_detail values (21,true,6,5);
+--insert into pitaya_role_authority_detail values (22,true,7,9);
+--insert into pitaya_role_authority_detail values (23,true,7,6);
+--insert into pitaya_role_authority_detail values (24,true,7,7);
+--insert into pitaya_role_authority_detail values (25,true,8,8);
+--insert into pitaya_role_authority_detail values (26,true,7,4);
+--insert into pitaya_role_authority_detail values (27,true,9,9);
+--insert into pitaya_role_authority_detail values (28,true,7,10);
+--insert into pitaya_role_authority_detail values (29,true,10,4);
+--insert into pitaya_role_authority_detail values (30,true,10,8);
 
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -432,49 +429,49 @@ create table pitaya_authority_resource_detail(
 	CONSTRAINT fk_authority_resource_detail_authority FOREIGN KEY (authority_id) REFERENCES pitaya_authority (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into pitaya_authority_resource_detail values (1,true,1,1);
-insert into pitaya_authority_resource_detail values (2,true,2,1);
-insert into pitaya_authority_resource_detail values (3,true,3,1);
-insert into pitaya_authority_resource_detail values (4,true,4,1);
-insert into pitaya_authority_resource_detail values (5,true,5,1);
-insert into pitaya_authority_resource_detail values (6,true,6,1);
-insert into pitaya_authority_resource_detail values (7,true,7,1);
-insert into pitaya_authority_resource_detail values (8,true,8,1);
-insert into pitaya_authority_resource_detail values (9,true,9,1);
-insert into pitaya_authority_resource_detail values (10,true,10,1);
-insert into pitaya_authority_resource_detail values (11,true,1,2);
-insert into pitaya_authority_resource_detail values (12,true,2,2);
-insert into pitaya_authority_resource_detail values (13,true,3,2);
-insert into pitaya_authority_resource_detail values (14,true,4,2);
-insert into pitaya_authority_resource_detail values (15,true,5,2);
-insert into pitaya_authority_resource_detail values (16,true,6,2);
-insert into pitaya_authority_resource_detail values (17,true,7,2);
-insert into pitaya_authority_resource_detail values (18,true,8,2);
-insert into pitaya_authority_resource_detail values (19,true,5,3);
-insert into pitaya_authority_resource_detail values (20,true,6,9);
-insert into pitaya_authority_resource_detail values (21,true,7,3);
-insert into pitaya_authority_resource_detail values (22,true,8,3);
-insert into pitaya_authority_resource_detail values (23,true,9,3);
-insert into pitaya_authority_resource_detail values (24,true,10,3);
-insert into pitaya_authority_resource_detail values (25,true,6,4);
-insert into pitaya_authority_resource_detail values (26,true,7,4);
-insert into pitaya_authority_resource_detail values (27,true,9,4);
-insert into pitaya_authority_resource_detail values (28,true,3,5);
-insert into pitaya_authority_resource_detail values (29,true,4,5);
-insert into pitaya_authority_resource_detail values (30,true,5,5);
-insert into pitaya_authority_resource_detail values (31,true,6,6);
-insert into pitaya_authority_resource_detail values (32,true,7,6);
-insert into pitaya_authority_resource_detail values (33,true,8,6);
-insert into pitaya_authority_resource_detail values (34,true,1,7);
-insert into pitaya_authority_resource_detail values (35,true,2,7);
-insert into pitaya_authority_resource_detail values (36,true,3,8);
-insert into pitaya_authority_resource_detail values (37,true,4,7);
-insert into pitaya_authority_resource_detail values (38,true,5,9);
-insert into pitaya_authority_resource_detail values (39,true,6,7);
-insert into pitaya_authority_resource_detail values (40,true,7,10);
-insert into pitaya_authority_resource_detail values (41,true,8,7);
-insert into pitaya_authority_resource_detail values (42,true,9,8);
-insert into pitaya_authority_resource_detail values (43,true,10,7);
+--insert into pitaya_authority_resource_detail values (1,true,1,1);
+--insert into pitaya_authority_resource_detail values (2,true,2,1);
+--insert into pitaya_authority_resource_detail values (3,true,3,1);
+--insert into pitaya_authority_resource_detail values (4,true,4,1);
+--insert into pitaya_authority_resource_detail values (5,true,5,1);
+--insert into pitaya_authority_resource_detail values (6,true,6,1);
+--insert into pitaya_authority_resource_detail values (7,true,7,1);
+--insert into pitaya_authority_resource_detail values (8,true,8,1);
+--insert into pitaya_authority_resource_detail values (9,true,9,1);
+--insert into pitaya_authority_resource_detail values (10,true,10,1);
+--insert into pitaya_authority_resource_detail values (11,true,1,2);
+--insert into pitaya_authority_resource_detail values (12,true,2,2);
+--insert into pitaya_authority_resource_detail values (13,true,3,2);
+--insert into pitaya_authority_resource_detail values (14,true,4,2);
+--insert into pitaya_authority_resource_detail values (15,true,5,2);
+--insert into pitaya_authority_resource_detail values (16,true,6,2);
+--insert into pitaya_authority_resource_detail values (17,true,7,2);
+--insert into pitaya_authority_resource_detail values (18,true,8,2);
+--insert into pitaya_authority_resource_detail values (19,true,5,3);
+--insert into pitaya_authority_resource_detail values (20,true,6,9);
+--insert into pitaya_authority_resource_detail values (21,true,7,3);
+--insert into pitaya_authority_resource_detail values (22,true,8,3);
+--insert into pitaya_authority_resource_detail values (23,true,9,3);
+--insert into pitaya_authority_resource_detail values (24,true,10,3);
+--insert into pitaya_authority_resource_detail values (25,true,6,4);
+--insert into pitaya_authority_resource_detail values (26,true,7,4);
+--insert into pitaya_authority_resource_detail values (27,true,9,4);
+--insert into pitaya_authority_resource_detail values (28,true,3,5);
+--insert into pitaya_authority_resource_detail values (29,true,4,5);
+--insert into pitaya_authority_resource_detail values (30,true,5,5);
+--insert into pitaya_authority_resource_detail values (31,true,6,6);
+--insert into pitaya_authority_resource_detail values (32,true,7,6);
+--insert into pitaya_authority_resource_detail values (33,true,8,6);
+--insert into pitaya_authority_resource_detail values (34,true,1,7);
+--insert into pitaya_authority_resource_detail values (35,true,2,7);
+--insert into pitaya_authority_resource_detail values (36,true,3,8);
+--insert into pitaya_authority_resource_detail values (37,true,4,7);
+--insert into pitaya_authority_resource_detail values (38,true,5,9);
+--insert into pitaya_authority_resource_detail values (39,true,6,7);
+--insert into pitaya_authority_resource_detail values (40,true,7,10);
+--insert into pitaya_authority_resource_detail values (41,true,8,7);
+--insert into pitaya_authority_resource_detail values (42,true,9,8);
+--insert into pitaya_authority_resource_detail values (43,true,10,7);
 
 
 
