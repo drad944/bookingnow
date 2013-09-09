@@ -1018,129 +1018,35 @@ var userManagement = {
 			var userSize = users.length;
 			var userData = {};
 			
-			var columns = {};
+			var columns = [
+							{ text: i18n.t("userManagement.field.image_relative_path"), datafield: 'image_relative_path',filtertype:'textbox', width: 100 },
+							{ text: i18n.t("userManagement.field.account"), datafield: 'account',filtertype:'textbox', width: 100 },
+							{ text: i18n.t("userManagement.field.name"), datafield: 'name',filtertype:'textbox', width: 100 },
+							{ text: i18n.t("userManagement.field.phone"), datafield: 'phone',filtertype:'textbox', width: 100 },
+							{ text: i18n.t("userManagement.field.sex"), datafield: 'sex',filtertype:'checkedlist', width: 80 },
+							{ text: i18n.t("userManagement.field.email"), datafield: 'email',filtertype:'textbox', width: 100 },
+							{ text: i18n.t("userManagement.field.address"), datafield: 'address',filtertype:'textbox', width: 100 },
+							{ text: i18n.t("userManagement.field.birthday"), datafield: 'birthday',filtertype:'textbox', width: 130 },
+							{ text: i18n.t("userManagement.field.department"), datafield: 'department',filtertype:'checkedlist', width: 150 },
+							{ text: i18n.t("userManagement.field.roles"), datafield: 'roles',filtertype:'textbox', width: 200 }
+								    ];
 			
-			var datafields = {};
+			var datafields = [
+							{name: 'id',type:"number"},
+			                  {name: 'image_relative_path',type:"string",cellsrenderer:imageRenderer},
+			                  {name: 'account',type:"string"},
+			                  {name: 'name',type:"string"},
+			                  {name: 'phone',type:"string"},
+			                  {name: 'sex',type:"string"},
+			                  {name: 'email',type:"string"},
+			                  {name: 'address',type:"string"},
+			                  {name: 'birthday',type:"string"},
+			                  {name: 'department',type:"string"},
+			                  {name: 'roles',type:"string"}
+			                  ];
+			
 			for(var i = 0;i < userSize; i++) {
 				user = me.parseUserDataToUIData(users[i]);
-				if(i==0) {
-					var j=0;
-					for(var item in user) {
-						var datafield = {};
-						var column = {};
-						
-						if(item == "id" || item == "password"){
-							
-						}else if(item == "modifyTime") {
-							/*
-							datafield["type"] = "number";
-							column["text"] = i18n.t("userManagement.field.modifyTime");
-							*/
-						}else if(item == "image_size") {
-							/*
-							datafield["type"] = "number";
-							column["text"] = i18n.t("userManagement.field.image_size");
-							column["filtertype"] = 'number';
-							*/
-						}else if(item == "image_relative_path") {
-							datafield["type"] = "string";
-							column["text"] = i18n.t("userManagement.field.image_relative_path");
-							column["cellsrenderer"] = imageRenderer;
-						}else if(item == "account") {
-							datafield["type"] = "string";
-							column["text"] = i18n.t("userManagement.field.account");
-							column["filtertype"] = 'textbox';
-						}else if(item == "name") {
-							datafield["type"] = "string";
-							column["text"] = i18n.t("userManagement.field.name");
-							column["filtertype"] = 'textbox';
-						}else if(item == "phone") {
-							datafield["type"] = "string";
-							column["text"] = i18n.t("userManagement.field.phone");
-							column["filtertype"] = 'textbox';
-						}else if(item == "sex") {
-							datafield["type"] = "string";
-							column["text"] = i18n.t("userManagement.field.sex");
-							column["filtertype"] = 'checkedlist';
-						}else if(item == "email") {
-							datafield["type"] = "string";
-							column["text"] = i18n.t("userManagement.field.email");
-							column["filtertype"] = 'textbox';
-						}else if(item == "address") {
-							datafield["type"] = "string";
-							column["text"] = i18n.t("userManagement.field.address");
-							column["filtertype"] = 'textbox';
-						}else if(item == "birthday") {
-							datafield["type"] = "string";
-							column["text"] = i18n.t("userManagement.field.birthday");
-							
-						}else if(item == "description") {
-							/*
-							datafield["type"] = "string";
-							column["text"] = i18n.t("userManagement.field.description");
-							column["filtertype"] = 'textbox';
-							*/
-						}else if(item == "department") {
-							datafield["type"] = "string";
-							column["text"] = i18n.t("userManagement.field.department");
-							column["filtertype"] = 'checkedlist';
-						}else if(item == "sub_system") {
-							/*
-							datafield["type"] = "number";
-							column["text"] = i18n.t("userManagement.field.sub_system");
-							column["filtertype"] = 'textbox';
-							*/
-						}else if(item == "roles"){
-							datafield["type"] = "string";
-							column["text"] = i18n.t("userManagement.field.roles");
-							column["filtertype"] = 'textbox';
-						}else if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
-							//do nothing
-						}else {
-							datafield["type"] = "string";
-							column["text"] = "XX";
-						}
-						
-						if(item == "role_Details" || item == "image" || item == "image_absolute_path" || item == "enabled"){
-							
-						}else if(item == "modifyTime" || item == "image_size" || item == "sub_system" || item == "description") {
-							
-						}else if(item == "password" || item == "id") {
-							
-						}else {
-							column["datafield"] = item;
-							
-							if(item == "image_relative_path") {
-								column["width"] = "100";
-							}else if(item == "account") {
-								column["width"] = "100";
-							}else if(item == "name") {
-								column["width"] = "100";
-							}else if(item == "phone") {
-								column["width"] = "100";
-							}else if(item == "sex") {
-								column["width"] = "80";
-							}else if(item == "email") {
-								column["width"] = "100";
-							}else if(item == "address") {
-								column["width"] = "100";
-							}else if(item == "birthday") {
-								column["width"] = "130";
-							}else if(item == "department") {
-								column["width"] = "150";
-							}else if(item == "roles"){
-								column["width"] = "200";
-							}else {
-								column["width"] = "50";
-							}
-							
-							columns[j] = column;
-							
-							datafields[j] = datafield;
-							j++;
-						}
-					}
-				}
 				
 				var rowData = {};
 				for(var item in user) {
