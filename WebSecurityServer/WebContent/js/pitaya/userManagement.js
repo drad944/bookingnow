@@ -1,4 +1,5 @@
 var userManagement = {
+		userAccountExist : -1,
 		
 		leave : function (){
 			$("#userDataGrid").unbind('rowselect');
@@ -31,6 +32,27 @@ var userManagement = {
 		init : function(){
 			var me = this;
 			me.parseUserGridHtml();
+		},
+		checkUserAccountExist : function(){
+			var me = this;
+			if($("#registerUserAccountInput").val() == null || $("#registerUserAccountInput").val() == "") {
+				return true;
+			}
+			$.post("existUser.action", {"user.account":$("#registerUserAccountInput").val()}, function(result){
+				if(result && result.executeResult == true){
+					me.userAccountExist = 1;
+				}else if(result && result.executeResult == false && result.errorType == Constants.SUCCESS){
+					me.userAccountExist = 0;
+				}
+				return true;
+			});
+			if(me.userAccountExist == 0) {
+				return true;
+			}else if(me.userAccountExist == 1) {
+				return false;
+			}else {
+				return me.checkUserAccountExist();
+			}
 		},
 		emptyRegisterUserWindow:function (){
 			
@@ -366,6 +388,7 @@ var userManagement = {
 		},
 
 		initRegisterUserElements:function () {
+			var me = this;
 			
 		    $("#registerUserDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
 		    $('#registerUserRegisterButton').jqxButton({ width: 60, height: 25, theme: theme });
@@ -425,11 +448,19 @@ var userManagement = {
 				height: 25, 
 				theme: theme 
 			});
+			
+			$('#registerUserAccountInput').on('validationSuccess', function (event) { userAccountExist = -1;});
+			
 		    // initialize validator.
 		    $('#registerUserInfoForm').jqxValidator({
 		     rules: [
 		            { input: '#registerUserAccountInput', message: i18n.t("userManagement.validation.message.requireAccount"), action: 'keyup, blur', rule: 'required' },
 		            { input: '#registerUserAccountInput', message: i18n.t("userManagement.validation.message.accountLength"), action: 'keyup, blur', rule: 'length=3,12' },
+		            { input: '#registerUserAccountInput', message: i18n.t("userManagement.validation.message.accountLength"), action: 'blur', rule: function(input, commit){
+		            		return me.checkUserAccountExist();
+		            	
+		            	}
+		            },
 		            { input: '#registerUserRealNameInput', message: i18n.t("userManagement.validation.message.requireUsername"), action: 'keyup, blur', rule: 'required' },
 		            { input: '#registerUserRealNameInput', message: i18n.t("userManagement.validation.message.usernameLength"), action: 'keyup', rule: 'length=1,12' },
 		            
@@ -486,7 +517,7 @@ var userManagement = {
 			$('#registerUserRegisterButton').bind('click', function () {
 		        $('#registerUserInfoForm').jqxValidator('validate');
 		    });
-		    
+			
 		    $("#registerUserSexRadioButton1").bind('change', function (event) {
 		        var checked = event.args.checked;
 		        if (checked) {
