@@ -99,7 +99,7 @@ var userManagement = {
 		    $('.updateUserTextInput').jqxInput({width: 150, height: 25, theme: theme });
 		    
 		    var d1 = new Date();
-		    $('#updateUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 150, height: 22,formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
+		    $('#updateUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 150, height: 22,formatString: "yyyy/MM/dd", value: d1 });
 		    
 			$("#updateUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25,checked: true, theme: theme });
 			$("#updateUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25,  theme: theme });
@@ -203,7 +203,7 @@ var userManagement = {
 			}else {
 				d1= new Date();
 			}
-		    $('#updateUserBirthdayInput').jqxDateTimeInput({formatString: "yyyy/MM/dd HH:mm:ss", value: d1 });
+		    $('#updateUserBirthdayInput').jqxDateTimeInput({formatString: "yyyy/MM/dd", value: d1 });
 		    
 		    if(rowData["sex"] != null && rowData["sex"] == i18n.t("userManagement.sex.female")) {
 		    	$("#updateUserSexRadioButton1").jqxRadioButton({checked: false});
@@ -379,7 +379,7 @@ var userManagement = {
 		    $("#registerUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 25, theme: theme });
 		    $('.registerUserTextInput').jqxInput({width: 150, height: 25, theme: theme });
 		    var date = AppUtil.findDateTime("2000-01-01 00:00:00");
-		    $('#registerUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 150, height: 25,formatString: "yyyy/MM/dd HH:mm:ss", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
+		    $('#registerUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 150, height: 25,formatString: "yyyy/MM/dd", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
 		    $("#registerUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
 		    $("#registerUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
 		    
@@ -1040,12 +1040,12 @@ var userManagement = {
 							{ text: i18n.t("userManagement.field.account"), datafield: 'account',filtertype:'textbox', width: 100 },
 							{ text: i18n.t("userManagement.field.name"), datafield: 'name',filtertype:'textbox', width: 100 },
 							{ text: i18n.t("userManagement.field.phone"), datafield: 'phone',filtertype:'textbox', width: 100 },
-							{ text: i18n.t("userManagement.field.sex"), datafield: 'sex',filtertype:'checkedlist', width: 80 },
+							{ text: i18n.t("userManagement.field.sex"), datafield: 'sex',filtertype:'checkedlist', width: 50 },
 							{ text: i18n.t("userManagement.field.email"), datafield: 'email',filtertype:'textbox', width: 100 },
 							{ text: i18n.t("userManagement.field.address"), datafield: 'address',filtertype:'textbox', width: 100 },
-							{ text: i18n.t("userManagement.field.birthday"), datafield: 'birthday',filtertype:'textbox', width: 130 },
-							{ text: i18n.t("userManagement.field.department"), datafield: 'department',filtertype:'checkedlist', width: 150 },
-							{ text: i18n.t("userManagement.field.roles"), datafield: 'roles',filtertype:'textbox', width: 200 }
+							{ text: i18n.t("userManagement.field.birthday"), datafield: 'birthday',filtertype:'textbox', width: 80 },
+							{ text: i18n.t("userManagement.field.department"), datafield: 'department',filtertype:'checkedlist', width: 80 },
+							{ text: i18n.t("userManagement.field.roles"), datafield: 'roles',filtertype:'textbox', width: 150 }
 								    ];
 			
 			var datafields = [
@@ -1215,7 +1215,7 @@ var userManagement = {
 					}else if(attr == "sex") {
 						user[attr] = AppUtil.findSexString(user[attr]);
 					}else if(attr == "birthday") {
-						user[attr] = new Date(user[attr]).Format("yyyy-MM-dd HH:mm:ss");
+						user[attr] = new Date(user[attr]).Format("yyyy-MM-dd");
 					}else if(attr == "user.department") {
 						record[attr] = AppUtil.findDepartmentString(record[attr]);
 					}else if(attr == "role_Details") {
