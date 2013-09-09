@@ -60,7 +60,7 @@ public class ClientInstance {
 		this.timeout_times = 0;
 		this.messageQueue = new ArrayList<String>();
 		this.lastRecvTime = 0L;
-		this.init();
+		//this.init();
 	}
 	
 	private void init(){
@@ -212,7 +212,7 @@ public class ClientInstance {
         	this.mChecker.cancel();
         	this.mChecker = null;
     	}
-    	this.udpSocket.close();
+    	//this.udpSocket.close();
     	//This will result in shutdown invoking later
     	this._service.removeClient(this, true);
     }

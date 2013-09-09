@@ -40,8 +40,8 @@ var foodManagement = {
 		    		}
 		    		data.push(rowdata);
 		    	}
-		    	me.setupFoodView(data, categories);
 			}
+			me.setupFoodView(data, categories);
 		}, function(){
 			alert("Fail to get data!");
 		});
