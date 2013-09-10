@@ -105,6 +105,8 @@
 				"selectRow":"select row index : __index__"
 		},
 		"button":{
+				"back":"back",
+				"checkout":"checkout",
 				"reset":"Reset",
 				"cancel":"Cancel",
 				"update":"Update",

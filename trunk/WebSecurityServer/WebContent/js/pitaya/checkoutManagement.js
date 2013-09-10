@@ -20,8 +20,13 @@ var checkoutManagement = {
 			$("#checkOrderDiv").html(null);
 			$("#checkOrderResult").text("");
 		},
-
+		
+		
 		initCheckOrderElements:function () {
+			$('#backToCheckoutManagement').val(i18n.t("checkoutOrderManagement.button.back"));
+			$('#checkoutOrderButton').val(i18n.t("checkoutOrderManagement.button.checkout"));
+			$('#checkOrderCancelButton').val(i18n.t("checkoutOrderManagement.button.cancel"));
+			
 			$('#backToCheckoutManagement').jqxButton({ width: 60, height: 25, theme: theme });
 			
 		    $('#checkoutOrderButton').jqxButton({ width: 60, height: 25, theme: theme });
