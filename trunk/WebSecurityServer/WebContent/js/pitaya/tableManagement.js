@@ -28,6 +28,26 @@ var tableManagement = {
 			me.initTableGrid();
 		//	me.parseTableGridHtml();
 		},
+		
+		checkTableAddressExist : function(){
+			if($("#registerTableAddressInput").val() == null || $("#registerTableAddressInput").val() == "") {
+				return true;
+			}
+			var existTableAddressValidation = false;
+			$.ajaxSetup({ async: false }); 
+			$.post("existTable.action", {"table.address":$("#registerTableAddressInput").val()}, function(result){
+				$.ajaxSetup({ async: true });
+				if(result && result.executeResult == true){
+					existTableAddressValidation = false;
+				}else if(result && result.executeResult == false && result.errorType == Constants.SUCCESS){
+					existTableAddressValidation =  true;
+				}else {
+					existTableAddressValidation =  true;
+				}
+			});
+			return existTableAddressValidation;
+		},
+		
 		emptyRegisterTableWindow:function (){
 			//init registerTableWindow widget data
 			$("#registerTableStatusCombobox").jqxComboBox({ selectedIndex: 0});
@@ -67,7 +87,7 @@ var tableManagement = {
 		    
 		    $('.updateTableTextInput').jqxInput({ theme: theme });
 		    
-			$('#updateTableAddressInput').jqxInput({width: 120, height: 20, theme: theme });
+			$('#updateTableAddressInput').jqxInput({disabled: true, width: 120, height: 20, theme: theme });
 		    $('#updateTableMinCustomerCountInput').jqxNumberInput({ width: 120, height: 20,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
 		    $('#updateTableMaxCustomerCountInput').jqxNumberInput({ width: 120, height: 20,min: 1, max: 20, decimalDigits:0, digits: 2, theme: theme, spinButtons: true});
 		    $('#updateTableIndoorPriceInput').jqxNumberInput({ width: 120, height: 20, digits: 3,symbolPosition: 'right', symbol: '￥', theme: theme, spinButtons: true});
@@ -88,11 +108,43 @@ var tableManagement = {
 		 	});
 		    
 		    
-		    
-		    // initialize validator.
 		    $('#updateTableInfoForm').jqxValidator({
 		     rules: [
-		            { input: '#updateTableAddressInput', message: 'address is required!', action: 'keyup, blur', rule: 'required' }
+
+						{ input: '#updateTableMinCustomerCountInput', message: i18n.t("tableManagement.validation.message.minCountBeyondZero"), action: 'blur', rule: function (input, commit) {
+							    if (input.val() > 0) {
+							        return true;
+							    }
+							    return false;
+							} 
+						},
+						
+						{ input: '#updateTableMinCustomerCountInput', message: i18n.t("tableManagement.validation.message.minLessMaxCount"), action: 'blur', rule: function (input, commit) {
+							    var maxCount = $("#updateTableMaxCustomerCountInput").val();
+								if (input.val() < maxCount) {
+							        return true;
+							    }
+							    return false;
+							} 
+						},
+						
+						{ input: '#updateTableMaxCustomerCountInput', message: i18n.t("tableManagement.validation.message.maxCountBeyondZero"), action: 'blur', rule: function (input, commit) {
+							    if (input.val() > 0) {
+							        return true;
+							    }
+							    return false;
+							} 
+						},
+						
+						{ input: '#updateTableMaxCustomerCountInput', message: i18n.t("tableManagement.validation.message.maxLargeMinCount"), action: 'blur', rule: function (input, commit) {
+							    var minCount = $("#updateTableMinCustomerCountInput").val();
+								if (input.val() > minCount) {
+							        return true;
+							    }
+							    return false;
+							} 
+						}
+
 		            ], 
 		            theme: theme
 		    });
@@ -215,6 +267,7 @@ var tableManagement = {
 		},
 
 		initRegisterTableElements:function () {
+			var me = this;
 		    
 		    $("#registerTableDiv").jqxExpander({ toggleMode: 'none', width: '300px', showArrow: false, theme: theme });
 		    $('#registerTableRegisterButton').jqxButton({ width: 60, height: 25, theme: theme });
@@ -248,7 +301,47 @@ var tableManagement = {
 		    // initialize validator.
 		    $('#registerTableInfoForm').jqxValidator({
 		     rules: [
-		            { input: '#registerTableAddressInput', message: 'address is required!', action: 'keyup, blur', rule: 'required' }
+					{ input: '#registerTableMinCustomerCountInput', message: i18n.t("tableManagement.validation.message.minCountBeyoundZero"), action: 'blur', rule: function (input, commit) {
+						    if (input.val() > 0) {
+						        return true;
+						    }
+						    return false;
+						} 
+					},
+					
+					{ input: '#registerTableMinCustomerCountInput', message: i18n.t("tableManagement.validation.message.minLessMaxCount"), action: 'blur', rule: function (input, commit) {
+						    var maxCount = $("#registerTableMaxCustomerCountInput").val();
+							if (input.val() < maxCount) {
+						        return true;
+						    }
+						    return false;
+						} 
+					},
+					
+					{ input: '#registerTableMaxCustomerCountInput', message: i18n.t("tableManagement.validation.message.maxCountBeyoundZero"), action: 'blur', rule: function (input, commit) {
+						    if (input.val() > 0) {
+						        return true;
+						    }
+						    return false;
+						} 
+					},
+					
+					{ input: '#registerTableMaxCustomerCountInput', message: i18n.t("tableManagement.validation.message.maxLargeMinCount"), action: 'blur', rule: function (input, commit) {
+						    var minCount = $("#registerTableMinCustomerCountInput").val();
+							if (input.val() > minCount) {
+						        return true;
+						    }
+						    return false;
+						} 
+					},
+							             
+							             
+					{ input: '#registerTableAddressInput', message: i18n.t("tableManagement.validation.message.existAddress"), action: 'blur', rule: function(input, commit){
+							return me.checkTableAddressExist();
+						}
+					},
+					
+		            { input: '#registerTableAddressInput', message: i18n.t("tableManagement.validation.message.requireAddress"), action: 'keyup, blur', rule: 'required' }
 		            ], 
 		            theme: theme
 		    });

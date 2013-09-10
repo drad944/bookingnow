@@ -313,6 +313,10 @@
 		
 		<action name="*Table" class="com.pitaya.bookingnow.action.TableAction" method="{1}Table">
 	        
+	        <result name="existTableSuccess" type="json">
+				<param name="root">result</param>
+	        </result>
+	        
 	        <result name="findAvailableTablesSuccess" type="json">
 				<param name="root">matchedTables</param>
 	        </result>

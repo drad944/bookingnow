@@ -205,11 +205,23 @@
 	},
 	
 	"tableManagement":{
+		"validation":{
+			"message":{
+				"minCountBeyondZero":"min customer count need large than 0!",
+				"minLessMaxCount":"min customer count should less than max customer count!",
+				"maxCountBeyondZero":"max customer count need large than 0!",
+				"maxLargeMinCount":"max customer count should large than min customer count!",
+				"existAddress":"this address have been registered,please input others!",
+				"requireAddress":"address is required!"
+			}
+		},		
+		
 		"status":{
 				"EMPTY":"TABLE_EMPTY",
 				"BOOKING":"TABLE_BOOKING",
 				"USING":"TABLE_USING"
 		},
+		
 		"result":{
 			"insertSuccess":"congratulations,insert table successfully!",
 			"insertFail":"sorry,insert table failed,please check table info!",
@@ -298,6 +310,7 @@
 			"message":{
 				"requireAccount":"Account is required!",
 				"accountLength":"Your account must be between 3 and 12 characters!",
+				"existAccount":"this account have been registered by others,please input other account!",
 				"requireUsername":"Real Name is required!",
 				"usernameLength":"Your name must be between 1 and 12 characters!",
 				"requirePassword":"Password is required!",

@@ -1,5 +1,4 @@
 var userManagement = {
-		userAccountExist : -1,
 		
 		leave : function (){
 			$("#userDataGrid").unbind('rowselect');
@@ -34,25 +33,22 @@ var userManagement = {
 			me.parseUserGridHtml();
 		},
 		checkUserAccountExist : function(){
-			var me = this;
 			if($("#registerUserAccountInput").val() == null || $("#registerUserAccountInput").val() == "") {
 				return true;
 			}
+			var existUserAccountValidation = false;
+			$.ajaxSetup({ async: false }); 
 			$.post("existUser.action", {"user.account":$("#registerUserAccountInput").val()}, function(result){
+				$.ajaxSetup({ async: true });
 				if(result && result.executeResult == true){
-					me.userAccountExist = 1;
+					existUserAccountValidation = false;
 				}else if(result && result.executeResult == false && result.errorType == Constants.SUCCESS){
-					me.userAccountExist = 0;
+					existUserAccountValidation =  true;
+				}else {
+					existUserAccountValidation =  true;
 				}
-				return true;
 			});
-			if(me.userAccountExist == 0) {
-				return true;
-			}else if(me.userAccountExist == 1) {
-				return false;
-			}else {
-				return me.checkUserAccountExist();
-			}
+			return existUserAccountValidation;
 		},
 		emptyRegisterUserWindow:function (){
 			
@@ -119,6 +115,7 @@ var userManagement = {
 		  //  $("#updateUserAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
 		    $("#updateUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 25, theme: theme });
 		    $('.updateUserTextInput').jqxInput({width: 150, height: 25, theme: theme });
+		    $('#updateUserAccountInput').jqxInput({disabled: true });
 		    
 		    var d1 = new Date();
 		    $('#updateUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 150, height: 22,formatString: "yyyy/MM/dd", value: d1 });
@@ -456,9 +453,8 @@ var userManagement = {
 		     rules: [
 		            { input: '#registerUserAccountInput', message: i18n.t("userManagement.validation.message.requireAccount"), action: 'keyup, blur', rule: 'required' },
 		            { input: '#registerUserAccountInput', message: i18n.t("userManagement.validation.message.accountLength"), action: 'keyup, blur', rule: 'length=3,12' },
-		            { input: '#registerUserAccountInput', message: i18n.t("userManagement.validation.message.accountLength"), action: 'blur', rule: function(input, commit){
+		            { input: '#registerUserAccountInput', message: i18n.t("userManagement.validation.message.existAccount"), action: 'blur', rule: function(input, commit){
 		            		return me.checkUserAccountExist();
-		            	
 		            	}
 		            },
 		            { input: '#registerUserRealNameInput', message: i18n.t("userManagement.validation.message.requireUsername"), action: 'keyup, blur', rule: 'required' },

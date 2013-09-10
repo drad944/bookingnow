@@ -17,7 +17,7 @@
 	
 	<select id="existTable" resultMap="BaseResultMap">
 		select
-		<include refid="Base_Column_List" />
+			id,address,status
 		from pitaya_table
 		where enabled = true and address = #{address,jdbcType=VARCHAR}
 	</select>
