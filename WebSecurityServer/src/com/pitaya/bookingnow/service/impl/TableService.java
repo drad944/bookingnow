@@ -116,7 +116,7 @@ public class TableService implements ITableService{
 
 	@Override
 	public Boolean existTable(Table table) {
-		if (table != null && table.getAddress() != null) {
+		if (table != null && table.getAddress() != null && (table.getAddress().equals("") == false)) {
 			Table existTable =  tableDao.existTable(table);
 			if (existTable != null && existTable.getId() != null) {
 				return true;

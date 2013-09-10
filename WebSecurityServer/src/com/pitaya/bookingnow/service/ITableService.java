@@ -14,7 +14,7 @@ public interface ITableService {
 	MyResult removeTableById(Long id);
 	
 	MyResult remove(Table table);
-
+	
 	MyResult modify(Table table);
 	
 	Table searchByPrimaryKey(Long id);
