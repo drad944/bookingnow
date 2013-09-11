@@ -26,26 +26,38 @@ var topUser = {
 				$("#topUserAccount").text(user["account"]);
 				$("#topUserRoles").text(user["roles"]);
 				
-				$("#topUserLoginAndOut").bind('click', function () {
-	                AppUtil.request("logoutUser.action", null, function(result){
-	    				if(result == true){
-	    					window.location.href="index.html";
-	    				}
-	    			}, function(){
-	    				alert("Fail to get logout from server!");
-	    			});
-                });
+				$("#jqxMenu").bind('itemclick', function (event) {
+			        if(event.args.id == 1) {
+			        	
+			        }else if(event.args.id == 2) {
+			        	AppUtil.request("logoutUser.action", null, function(result){
+		    				if(result == true){
+		    					window.location.href="index.html";
+		    				}
+		    			}, function(){
+		    				alert("Fail to get logout from server!");
+		    			});
+			        }
+			    });
 				
 			}else {
-				$("#topUserLoginAndOut").jqxButton({ width: '80', theme: theme });
+				$("#topUserLoginAndOut").text("登录");
+				$("#topUserAccount").text("匿名");
+				$("#topUserRoles").text("无角色");
 				
-				$("#topUserLoginAndOut").val("登录");
-				$("#topUserAccount").val("匿名");
-				$("#topUserRoles").val("无角色");
-				
-				$("#topUserLoginAndOut").bind('click', function () {
-					window.location.href="index.html";
-                });
+				$("#jqxMenu").bind('itemclick', function (event) {
+			        if(event.args.id == 1) {
+			        	
+			        }else if(event.args.id == 2) {
+			        	AppUtil.request("logoutUser.action", null, function(result){
+		    				if(result == true){
+		    					window.location.href="index.html";
+		    				}
+		    			}, function(){
+		    				alert("Fail to get logout from server!");
+		    			});
+			        }
+			    });
 			}
 			
 		}
