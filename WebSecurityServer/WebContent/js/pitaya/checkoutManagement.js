@@ -85,8 +85,7 @@ var checkoutManagement = {
 			var me = this;
 			
 			notification.subscribeTopic("order", function(event){
-				var jsonEvent = strToJson(event);
-				var newOrder = me.parseCheckOrderDataToUIData(jsonEvent);
+				var newOrder = me.parseCheckOrderDataToUIData(strToJson(event));
 				var commit = $("#checkOrderDataGrid").jqxGrid('addrow', null, newOrder);
 				
 				$("#eventLog").text("您有新的订单要结账啦");
@@ -500,18 +499,18 @@ var checkoutManagement = {
 		var columns = [
 						{ text: i18n.t("checkoutOrderManagement.field.allowance"), datafield: 'allowance',filtertype:'number', width: 80 },
 						{ text: i18n.t("checkoutOrderManagement.field.customer_count"), datafield: 'customer_count',filtertype:'number', width: 80 },
-						{ text: i18n.t("checkoutOrderManagement.field.modifyTime"), datafield: 'modifyTime',filtertype:'number', width: 130 },
+						{ text: i18n.t("checkoutOrderManagement.field.modifyTime"), datafield: 'modifyTime',filtertype:'string', width: 150 },
 						{ text: i18n.t("checkoutOrderManagement.field.status"), datafield: 'status',filtertype:'textbox', width: 60 },
 						{ text: i18n.t("checkoutOrderManagement.field.total_price"), datafield: 'total_price',filtertype:'number', width: 80 },
 						{ text: i18n.t("checkoutOrderManagement.field.foods"), datafield: 'foods',filtertype:'textbox', width: 190 },
-						{ text: i18n.t("checkoutOrderManagement.field.tables"), datafield: 'tables',filtertype:'textbox', width: 100 },
+						{ text: i18n.t("checkoutOrderManagement.field.tables"), datafield: 'tables',filtertype:'textbox', width: 80 },
 						{ text: i18n.t("checkoutOrderManagement.field.customer"), datafield: 'customer',filtertype:'textbox', width: 80 }
 							    ];
 		var datafields = [
 						{name: 'id',type:"number"},
 		                  {name: 'allowance',type:"number"},
 		                  {name: 'customer_count',type:"number"},
-		                  {name: 'modifyTime',type:"number"},
+		                  {name: 'modifyTime',type:"string"},
 		                  {name: 'status',type:"string"},
 		                  {name: 'total_price',type:"number"},
 		                  {name: 'foods',type:"string"},
