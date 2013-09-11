@@ -8,8 +8,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -51,7 +54,9 @@ public class HttpService {
 	private static ExecutorService pool;
 	
 	static {
-		pool = Executors.newFixedThreadPool(10);
+		pool = new ThreadPoolExecutor(10, 30, 30L, TimeUnit.MINUTES, 
+					new ArrayBlockingQueue<Runnable>(10), 
+					new ThreadPoolExecutor.CallerRunsPolicy());
 		IP = "192.168.0.102";
 		PORT = 25252;
 		REMOTE_PORT = 19191;
@@ -63,6 +68,11 @@ public class HttpService {
 		URL = url;
 	}
 	
+	public static void setIp(String ip){
+		IP = ip.split(":")[0];
+		URL = "http://" + ip + "/Booking/";
+	}
+	
 	public static HttpResponse get(){
 		HttpGet httpRequest = new HttpGet(URL);  
         HttpClient httpclient = new DefaultHttpClient();
@@ -72,7 +82,7 @@ public class HttpService {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}  
+		}
         return null;
 	}
 	
@@ -80,7 +90,7 @@ public class HttpService {
 		pool.execute(new Thread(){
 			@Override
 			public void run(){
-				jsonparam.setContentEncoding("utf-8");
+				jsonparam.setContentEncoding(HTTP.UTF_8);
 				HttpPost httpRequest = new HttpPost(URL + action);
 				httpRequest.addHeader(HTTP.CONTENT_TYPE, "application/json");
 		        httpRequest.setEntity(jsonparam);
@@ -139,7 +149,7 @@ public class HttpService {
 			
 			@Override
 			public void run(){
-				jsonparam.setContentEncoding("utf-8");
+				jsonparam.setContentEncoding(HTTP.UTF_8);
 				HttpPost httpRequest = new HttpPost(URL + action);
 				httpRequest.addHeader(HTTP.CONTENT_TYPE, "application/json");
 		        httpRequest.setEntity(jsonparam);
@@ -160,11 +170,11 @@ public class HttpService {
 		         } catch (ClientProtocolException e) {
 					e.printStackTrace();
 	        		bundle.putInt("result", Constants.FAIL);
-	        		bundle.putInt("statusCode", Constants.PROTOCOL_EXCEPTION_ERROR);
+	        		bundle.putInt(HttpHandler.ERROR_CODE, Constants.PROTOCOL_EXCEPTION_ERROR);
 		         } catch (IOException e) {
 					e.printStackTrace();
 					bundle.putInt("result", Constants.FAIL);
-	        		bundle.putInt("statusCode", Constants.IO_EXCEPTION_ERROR);
+	        		bundle.putInt(HttpHandler.ERROR_CODE, Constants.IO_EXCEPTION_ERROR);
 		         }
 	        	amsg.setData(bundle);
 		        handler.sendMessage(amsg);
@@ -172,12 +182,6 @@ public class HttpService {
 			
 		});
 
-	}
-	
-	public class FileDownloader{
-		
-
-		
 	}
 	
 }
