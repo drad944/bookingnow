@@ -85,7 +85,8 @@ var checkoutManagement = {
 			var me = this;
 			
 			notification.subscribeTopic("order", function(event){
-				var newOrder = me.parseCheckOrderDataToUIData(event);
+				var jsonEvent = strToJson(event);
+				var newOrder = me.parseCheckOrderDataToUIData(jsonEvent);
 				var commit = $("#checkOrderDataGrid").jqxGrid('addrow', null, newOrder);
 				
 				$("#eventLog").text("您有新的订单要结账啦");

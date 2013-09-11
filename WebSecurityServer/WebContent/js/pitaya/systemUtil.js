@@ -1,3 +1,8 @@
+function strToJson(str){  
+     var json = eval('(' + str + ')');  
+     return json;  
+}
+
 function getURLParameters(key) {
 	var url=location.href; 
 	var urlParams = url.split("?")[1]; 
