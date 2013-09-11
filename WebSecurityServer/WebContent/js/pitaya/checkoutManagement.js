@@ -85,8 +85,9 @@ var checkoutManagement = {
 			var me = this;
 			
 			notification.subscribeTopic("order", function(event){
-				checkoutManagement.leave();
-				checkoutManagement.visit();
+				var newOrder = me.parseCheckOrderDataToUIData(event);
+				var commit = $("#checkOrderDataGrid").jqxGrid('addrow', null, newOrder);
+				
 				$("#eventLog").text("您有新的订单要结账啦");
 				//add new order in data grid here,then highlight it
 				
