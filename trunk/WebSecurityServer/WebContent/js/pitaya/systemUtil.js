@@ -49,10 +49,30 @@ function callAction(actionName,parameter) {
 		
 		return result;
 };
+
+function openSubPage(sourceDiv,url,targetDiv,initFunction,initParam) {
+	var contentPage = $('#' + sourceDiv);
+	contentPage.load(url, function(data) {
+			var tmp = $('<div></div>').html(data);
+		 
+	        data = tmp.find('#' + targetDiv).html();
+	        tmp.remove();
+		         
+		    contentPage.html(data);
+		    data = null;
+		    if(initFunction) {
+		    	if(initParam) {
+		    		initFunction.visit(initParam);
+		    	}else {
+		    		initFunction.visit();
+		    	}
+		    }
+	    });
+};
 	
 function openContentPage(sourceDiv,url,targetDiv) {
 	var contentPage = $('#' + sourceDiv);
-	contentPage.load(url, null, function(data) {
+	contentPage.load(url, function(data) {
 			var tmp = $('<div></div>').html(data);
 		 
 	        data = tmp.find('#' + targetDiv).html();
