@@ -1422,8 +1422,8 @@ public class OrderService implements IOrderService{
 			order.setStatus(Constants.ORDER_PAYING);
 			if(orderDao.updateByPrimaryKeySelective(order) == 1){
 				result.setExecuteResult(true);
-				this.eventManager.publish(EventManager.ORDER_EVENT, order);
-				Order finishOrder = this.getTablesOfOrder(order.getId());
+				Order finishOrder = orderDao.selectFullOrderByPrimaryKey(order.getId());
+				this.eventManager.publish(EventManager.ORDER_EVENT, finishOrder);
 				if(finishOrder != null && finishOrder.getTable_details() != null && finishOrder.getTable_details().size() > 0){
 					SearchParams params = new SearchParams();
 					List<Integer> statuslist = new ArrayList<Integer>();
@@ -1431,38 +1431,36 @@ public class OrderService implements IOrderService{
 					statuslist.add(Constants.ORDER_WAITING);
 					params.setOrderStatusList(statuslist);
 					List<Order> waitingOrders = this.searchFullOrdersWithoutFoods(params);
-					if(waitingOrders != null && waitingOrders.size() > 0){
-						List<Order_Table_Detail> tableDetails = finishOrder.getTable_details();
-						List<TableMessage> messages = new ArrayList<TableMessage>();
-						for(Order_Table_Detail tableDetail : tableDetails){
-							Table freeTable = tableDetail.getTable();
-							Table temp = new Table();
-							temp.setStatus(Constants.TABLE_EMPTY);
-							temp.setId(freeTable.getId());
-							if(tableDao.updateByPrimaryKeySelective(temp) != 1) {
-								throw new RuntimeException("[updateOrderToPaying] Failed to update table status to empty in DB.");
-							}
-							if(waitingOrders.size() > 0){
-								int nextorderidx = -1;
-								Order nextOrder = null;
-								for(int i = 0; i < waitingOrders.size(); i++){
-									Order waitingOrder = waitingOrders.get(i);
-									if(freeTable.getMinCustomerCount() <= waitingOrder.getCustomer_count()
-											&& waitingOrder.getCustomer_count() <= freeTable.getMaxCustomerCount()
-										    && (nextorderidx == -1 || waitingOrder.getSubmit_time() < nextOrder.getSubmit_time())){
-											nextorderidx = i;
-											nextOrder = waitingOrder;
-									}
-								}
-								if(nextorderidx != -1){
-									waitingOrders.remove(nextorderidx);
-									messages.add(new TableMessage(freeTable, nextOrder));
+					List<Order_Table_Detail> tableDetails = finishOrder.getTable_details();
+					List<TableMessage> messages = new ArrayList<TableMessage>();
+					for(Order_Table_Detail tableDetail : tableDetails){
+						Table freeTable = tableDetail.getTable();
+						Table temp = new Table();
+						temp.setStatus(Constants.TABLE_EMPTY);
+						temp.setId(freeTable.getId());
+						if(tableDao.updateByPrimaryKeySelective(temp) != 1) {
+							throw new RuntimeException("[updateOrderToPaying] Failed to update table status to empty in DB.");
+						}
+						if(waitingOrders != null && waitingOrders.size() > 0){
+							int nextorderidx = -1;
+							Order nextOrder = null;
+							for(int i = 0; i < waitingOrders.size(); i++){
+								Order waitingOrder = waitingOrders.get(i);
+								if(freeTable.getMinCustomerCount() <= waitingOrder.getCustomer_count()
+										&& waitingOrder.getCustomer_count() <= freeTable.getMaxCustomerCount()
+									    && (nextorderidx == -1 || waitingOrder.getSubmit_time() < nextOrder.getSubmit_time())){
+										nextorderidx = i;
+										nextOrder = waitingOrder;
 								}
 							}
+							if(nextorderidx != -1){
+								waitingOrders.remove(nextorderidx);
+								messages.add(new TableMessage(freeTable, nextOrder));
+							}
 						}
-						for(TableMessage message: messages){
-							this.messageService.sendMessageToOne(message.getOrder().getUser_id(), message);
-						}
+					}
+					for(TableMessage message: messages){
+						this.messageService.sendMessageToOne(message.getOrder().getUser_id(), message);
 					}
 				}
 			} else {
