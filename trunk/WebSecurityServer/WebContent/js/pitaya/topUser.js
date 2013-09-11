@@ -20,13 +20,11 @@ var topUser = {
 			var me = this;
 			
 			if(user) {
-				$("#topUserLoginAndOut").jqxButton({ width: '80', theme: theme });
-				$("#topUserAccount").jqxButton({ width: '80', theme: theme });
-				$("#topUserRoles").jqxButton({ width: '80', theme: theme });
+				$("#jqxMenu").jqxMenu({ width: '150px',autoOpen: false, showTopLevelArrows: true, height: '30px', theme: theme });
 				
-				$("#topUserLoginAndOut").val("退出");
-				$("#topUserAccount").val(user["account"]);
-				$("#topUserRoles").val(user["roles"]);
+				$("#topUserLoginAndOut").text("退出");
+				$("#topUserAccount").text(user["account"]);
+				$("#topUserRoles").text(user["roles"]);
 				
 				$("#topUserLoginAndOut").bind('click', function () {
 	                AppUtil.request("logoutUser.action", null, function(result){
@@ -40,8 +38,6 @@ var topUser = {
 				
 			}else {
 				$("#topUserLoginAndOut").jqxButton({ width: '80', theme: theme });
-				$("#topUserAccount").jqxButton({ disabled: true,width: '80', theme: theme });
-				$("#topUserRoles").jqxButton({ disabled: true,width: '80', theme: theme });
 				
 				$("#topUserLoginAndOut").val("登录");
 				$("#topUserAccount").val("匿名");
