@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,7 +85,7 @@ public class OrderService {
 			jorder.put("customer", jcustomer);
 			jorder.put("customer_count", count);
 			jreq.put("order", jorder);
-			HttpService.post("submitWaitingOrder.action", new StringEntity(jreq.toString()), callback);
+			HttpService.post("submitWaitingOrder.action", new StringEntity(jreq.toString(), HTTP.UTF_8), callback);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {

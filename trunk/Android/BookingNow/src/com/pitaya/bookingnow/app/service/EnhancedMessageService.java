@@ -53,10 +53,7 @@ public class EnhancedMessageService extends Service implements Runnable {
     private UDPService mUDPService;
     private Thread mServerThread;
     private Thread mUPDServerThread;
-    //private String remote_addr;
-    //private int remote_port;
     private ConnectionReceiver mConnectionReceiver;
-    //private int port;
     private boolean flag;
     private ExecutorService mMessageReceiverPool;
     private volatile boolean isConnecting = false;
@@ -64,7 +61,6 @@ public class EnhancedMessageService extends Service implements Runnable {
 	private Map<String, List<Handler>> handlers;
 	private int mUpdateNotifyID = 1;
 	private int lastNotifyID = 2;
-	
 	
 	public static String parseMessage(Message message){
 		JSONObject jsonObj = new JSONObject();

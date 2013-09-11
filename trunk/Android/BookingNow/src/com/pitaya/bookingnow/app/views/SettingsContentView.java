@@ -17,6 +17,7 @@ public class SettingsContentView extends BaseContentView{
 	public static final String CHECK_MENU_UPDATE = "check_update";
 	public static final String CONNECT_SERVER = "connect_server";
 	public static final String CLEAN_DATA ="clean_data";
+	public static final String ADDRESS = "server_address";
 	
 	private static final String TAG = "SettingsContentView";
 	private Fragment mSettingsFragment;
