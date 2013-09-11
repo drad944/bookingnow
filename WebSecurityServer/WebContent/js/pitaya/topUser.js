@@ -1,10 +1,10 @@
 var topUser = {
 		
 		leave : function (){
-			$("#topUserAccount").text(null);
-			$("#topUserRoles").text(null);
-			$("#topUserLoginAndOut").text("登录");
-		//	$("#topUserLoginAndOut").attr("href","index.html");
+			$("#topUserLoginAndOut").val("登录");
+			$("#topUserAccount").val("匿名");
+			$("#topUserRoles").val("空角色");
+			$("#topUserLoginAndOut").unbind("click");
 		},
 
 		visit : function (user){
@@ -13,21 +13,45 @@ var topUser = {
 		
 		init : function(user){
 			var me = this;
-			me.showTopUserInfo(user);
+			me.initTopUserElement(user);
 		},
 		
-		showTopUserInfo : function(user){
+		initTopUserElement : function(user){
+			var me = this;
+			
 			if(user) {
-				$("#topUserAccount").text(user["account"]);
-				$("#topUserRoles").text(user["roles"]);
-				$("#topUserLoginAndOut").text("注销");
-			//	$("#topUserLoginAndOut").attr("href","logoutUser.action");
+				$("#topUserLoginAndOut").jqxButton({ width: '80', theme: theme });
+				$("#topUserAccount").jqxButton({ width: '80', theme: theme });
+				$("#topUserRoles").jqxButton({ width: '80', theme: theme });
+				
+				$("#topUserLoginAndOut").val("退出");
+				$("#topUserAccount").val(user["account"]);
+				$("#topUserRoles").val(user["roles"]);
+				
+				$("#topUserLoginAndOut").bind('click', function () {
+	                AppUtil.request("logoutUser.action", null, function(result){
+	    				if(result == true){
+	    					window.location.href="index.html";
+	    				}
+	    			}, function(){
+	    				alert("Fail to get logout from server!");
+	    			});
+                });
+				
 			}else {
-				$("#topUserAccount").text(null);
-				$("#topUserRoles").text(null);
-				$("#topUserLoginAndOut").text("登录");
-			//	$("#topUserLoginAndOut").attr("href","index.html");
+				$("#topUserLoginAndOut").jqxButton({ width: '80', theme: theme });
+				$("#topUserAccount").jqxButton({ disabled: true,width: '80', theme: theme });
+				$("#topUserRoles").jqxButton({ disabled: true,width: '80', theme: theme });
+				
+				$("#topUserLoginAndOut").val("登录");
+				$("#topUserAccount").val("匿名");
+				$("#topUserRoles").val("无角色");
+				
+				$("#topUserLoginAndOut").bind('click', function () {
+					window.location.href="index.html";
+                });
 			}
+			
 		}
 		
 };

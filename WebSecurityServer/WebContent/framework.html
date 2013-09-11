@@ -73,6 +73,9 @@
     <script type="text/javascript" src="js/jqwidgets/jqxcombobox.js"></script> 
     
     <script type="text/javascript" src="js/jqwidgets/jqxgrid.grouping.js"></script> 
+    
+    <script type="text/javascript" src="js/jqwidgets/jqxtabs.js"></script>
+    
     <script >
     $(document).ready(function(){
     	theme = Constants.theme;
@@ -89,26 +92,21 @@
     	var subPageParam = getURLParameters("subPage");
     	if(subPageParam != null) {
     		if(contains(subPageParam,"registerUser.html",false)) {
-    			openContentPage('framework_top','page/common/top.html','topImage1');
-        		openContentPage('framework_main','page/common/registerUser.html','content');
+    			openSubPage('framework_top','page/common/top.html','topImage1',topUser);
         		currentPage = userRegister;
-        		if(currentPage.visit){
-            		currentPage.visit();
-            	}
+        		
+        		openSubPage('framework_main','page/common/registerUser.html','content',userRegister);
+        		
+        		
     		}else if(contains(subPageParam,"checkoutManagement.html",false)) {
     			AppUtil.request("findLoginUser.action", null, function(result){
     				if(result && result["id"] != null){
     					var loginUser = userManagement.parseUserDataToUIData(result); 
     					if(loginUser != null && contains(loginUser["roles"],i18n.t("userManagement.role.CASHIER"),false)) {
-    	    	    		openContentPage('framework_top','page/common/top.html','topImage1');
+    	    	    		openSubPage('framework_top','page/common/top.html','topImage1',topUser,loginUser);
     	    	    		
-    	    	    		
-    	    	    		openContentPage('framework_main','page/common/checkoutManagement.html','content');
-    	    	        	currentPage = checkoutManagement;
-    	    	        	if(currentPage.visit){
-    	    	        		topUser.visit(loginUser);
-    	    	        		currentPage.visit();
-    	    	        	}
+    	    	    		currentPage = checkoutManagement;
+    	    	    		openSubPage('framework_main','page/common/checkoutManagement.html','content',checkoutManagement,null);
     	    	    	}
     				}
     			}, function(){
