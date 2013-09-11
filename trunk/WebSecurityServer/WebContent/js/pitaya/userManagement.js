@@ -394,8 +394,6 @@ var userManagement = {
 		    
 		    $('#acceptInput').jqxCheckBox({ width: 130, theme: theme ,checked: false});
 		    
-		    
-		    $("#registerUserAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 25, theme: theme });
 		    $("#registerUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 25, theme: theme });
 		    $('.registerUserTextInput').jqxInput({width: 150, height: 25, theme: theme });
 		    var date = AppUtil.findDateTime("2000-01-01 00:00:00");
