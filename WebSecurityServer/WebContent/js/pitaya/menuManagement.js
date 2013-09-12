@@ -5,61 +5,151 @@ var menuManagement = {
 					$("#myMenu").unbind('itemclick');
 		},
 
-		visit : function (){
-			this.init();
+		visit : function (user){
+			this.init(user);
 		},
 		
-		init : function(){
+		init : function(user){
 			var me = this;
-			me.parseMenuHtml();
+			me.parseMenuHtml(user);
 		},
 		
-		parseMenuHtml:function () {
+		parseMenuHtml:function (user) {
+			
+			
+			var data = {};
+				
+			if(user && contains(user["roles"],i18n.t("userManagement.role.ADMIN"),false)) {
+				data = [
+			    {
+			        "id": "1",
+			        "text": i18n.t("menu.orderManagement.home"),
+			        "parentid": "-1",
+			        "subMenuWidth": '100px'
+			    }
+			    ,
+			    {
+			        "text": i18n.t("menu.foodManagement.home"),
+			        "id": "2",
+			        "parentid": "-1",
+			        "subMenuWidth": '100px'
+			    }
+			    , {
+			        "id": "3",
+			        "parentid": "-1",
+			        "text": i18n.t("menu.userManagement.home"),
+			        "subMenuWidth": '100px'
+			    }, {
+			        "id": "4",
+			        "parentid": "-1",
+			        "text": i18n.t("menu.tableManagement.home")
+			    }, {
+			        "id": "6",
+			        "parentid": "3",
+			        "text": i18n.t("menu.userManagement.showAllUsers")
+			    },{
+			        "id": "8",
+			        "parentid": "3",
+			        "text": i18n.t("menu.userManagement.userDetailInfo")
+			    },{
+			        "id": "10",
+			        "parentid": "-1",
+			        "text": i18n.t("menu.admin")
+			    }];
+			}else if(user && contains(user["roles"],i18n.t("userManagement.role.MANAGER"),false)) {
+				data = [
+			    {
+			        "id": "1",
+			        "text": i18n.t("menu.orderManagement.home"),
+			        "parentid": "-1",
+			        "subMenuWidth": '100px'
+			    }
+			    ,
+			    {
+			        "text": i18n.t("menu.foodManagement.home"),
+			        "id": "2",
+			        "parentid": "-1",
+			        "subMenuWidth": '100px'
+			    }
+			    , {
+			        "id": "3",
+			        "parentid": "-1",
+			        "text": i18n.t("menu.userManagement.home"),
+			        "subMenuWidth": '100px'
+			    }, {
+			        "id": "4",
+			        "parentid": "-1",
+			        "text": i18n.t("menu.tableManagement.home")
+			    }, {
+			        "id": "6",
+			        "parentid": "3",
+			        "text": i18n.t("menu.userManagement.showAllUsers")
+			    },{
+			        "id": "8",
+			        "parentid": "3",
+			        "text": i18n.t("menu.userManagement.userDetailInfo")
+			    },{
+			        "id": "10",
+			        "parentid": "-1",
+			        "text": i18n.t("menu.admin")
+			    }];
+			}else if(user && contains(user["roles"],i18n.t("userManagement.role.CASHIER"),false)) {
+				data = [
+			    {
+			        "id": "11",
+			        "text": i18n.t("menu.orderManagement.home"),
+			        "parentid": "-1",
+			        "subMenuWidth": '100px'
+			    }
+			    
+			    , {
+			        "id": "3",
+			        "parentid": "-1",
+			        "text": i18n.t("menu.userManagement.home"),
+			        "subMenuWidth": '100px'
+			    }, {
+			        "id": "8",
+			        "parentid": "3",
+			        "text": i18n.t("menu.userManagement.userDetailInfo")
+			    }, {
+			        "id": "9",
+			        "parentid": "3",
+			        "text": i18n.t("menu.userManagement.changeUserImage")
+			    }];
+			}else {
+				data = [
+			    {
+			        "id": "3",
+			        "parentid": "-1",
+			        "text": i18n.t("menu.userManagement.home"),
+			        "subMenuWidth": '100px'
+			    }, {
+			        "id": "8",
+			        "parentid": "3",
+			        "text": i18n.t("menu.userManagement.userDetailInfo")
+			    }];
+			}
 			/*
-			var setLng = $.url().param('setLng');
-		    if (setLng)
-		    {
-		      language_complete = setLng.split("-");
-		    }
-		    else
-		    {
-		      language_complete = navigator.language.split("-");
-		    }
-		    language = (language_complete[0]);
-		    */
 			
-			var option = {
-			//		fallbackLng: 'en-US',
-			//		lng: 'en-US',
-					lng: 'zh',
-					fallbackLng: 'zh',
-					resGetPath: 'resources/locales/__lng__/__ns__.json',
-					getAsync: false,
-					ns: 'bookingnow.view',
-					fallbackToDefaultNS: true,
-					load:'current'
-				};
-			i18n.init(option);
-			
-		 //   var theme = getDemoTheme();
-		    var data = [
+		    data = [
 		    {
 		        "id": "1",
 		        "text": i18n.t("menu.orderManagement.home"),
 		        "parentid": "-1",
-		        "subMenuWidth": '250px'
+		        "subMenuWidth": '100px'
 		    }
 		    ,
 		    {
 		        "text": i18n.t("menu.foodManagement.home"),
 		        "id": "2",
 		        "parentid": "-1",
-		        "subMenuWidth": '250px'
+		        "subMenuWidth": '100px'
 		    }
 		    , {
 		        "id": "3",
 		        "parentid": "-1",
-		        "text": i18n.t("menu.userManagement.home")
+		        "text": i18n.t("menu.userManagement.home"),
+		        "subMenuWidth": '100px'
 		    }, {
 		        "id": "4",
 		        "parentid": "-1",
@@ -85,6 +175,7 @@ var menuManagement = {
 		        "parentid": "-1",
 		        "text": i18n.t("menu.admin")
 		    }];
+			*/
 		    // prepare the data
 		    var source =
 		    {

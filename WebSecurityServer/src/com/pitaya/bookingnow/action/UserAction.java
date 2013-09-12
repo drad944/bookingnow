@@ -112,6 +112,34 @@ public class UserAction extends BaseAction{
 		return "Fail";
 		
 	}
+	public String switchPageByUser() {
+		Map<String,Object> session = ActionContext.getContext().getSession();
+		loginUser = (User) session.get("loginUser");
+		
+		if (loginUser != null && loginUser.getId() != null) {
+			if(loginUser.getRole_Details().get(0).getRole().getType() == Constants.ROLE_ADMIN) {
+				return "switchToAdminPage";
+			}else if(loginUser.getRole_Details().get(0).getRole().getType() == Constants.ROLE_MANAGER) {
+				return "switchToManagerPage";
+			}else if(loginUser.getRole_Details().get(0).getRole().getType() == Constants.ROLE_CASHIER) {
+				return "switchToCashierPage";
+			}else if(loginUser.getRole_Details().get(0).getRole().getType() == Constants.ROLE_CHEF) {
+				return "switchToChefPage";
+			}else if(loginUser.getRole_Details().get(0).getRole().getType() == Constants.ROLE_WAITER) {
+				return "switchToWaiterPage";
+			}else if(loginUser.getRole_Details().get(0).getRole().getType() == Constants.ROLE_WELCOMER) {
+				return "switchToWelcomerPage";
+			}else if(loginUser.getRole_Details().get(0).getRole().getType() == Constants.ROLE_ANONYMOUS
+					|| loginUser.getRole_Details().get(0).getRole().getType() == Constants.ROLE_CUSTOMER
+					|| loginUser.getRole_Details().get(0).getRole().getType() == Constants.ROLE_CUSTOMER_VIP1
+					|| loginUser.getRole_Details().get(0).getRole().getType() == Constants.ROLE_CUSTOMER_VIP2)
+			{
+				return "switchToCustomerPage";
+			}
+			
+		}
+		return "switchToOtherPage";
+	}
 	
 	public String findLoginUser() {
 		Map<String,Object> session = ActionContext.getContext().getSession();
