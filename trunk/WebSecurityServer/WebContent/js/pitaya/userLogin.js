@@ -80,8 +80,7 @@ var userLogin = {
 								}else if(contains(user["roles"],i18n.t("userManagement.role.ADMIN"),false)) {
 									window.location.href="main.html";
 								}else if(contains(user["roles"],i18n.t("userManagement.role.CASHIER"),false)) {
-									var date = new Date();
-									window.location.href="framework.html?subPage=page/common/checkoutManagement.html&roles=" + user["roles"] + "&uid=" + date.getTime();
+									window.location.href="main.html";
 									
 								}else {
 									$('#user_password').val(null);

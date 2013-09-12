@@ -76,36 +76,75 @@
     
 	<script>
 		var theme = Constants.theme;
+		/*
+			var setLng = $.url().param('setLng');
+		    if (setLng)
+		    {
+		      language_complete = setLng.split("-");
+		    }
+		    else
+		    {
+		      language_complete = navigator.language.split("-");
+		    }
+		    language = (language_complete[0]);
+		    */
+			
+			var option = {
+			//		fallbackLng: 'en-US',
+			//		lng: 'en-US',
+					lng: 'zh',
+					fallbackLng: 'zh',
+					resGetPath: 'resources/locales/__lng__/__ns__.json',
+					getAsync: false,
+					ns: 'bookingnow.view',
+					fallbackToDefaultNS: true,
+					load:'current'
+				};
+			i18n.init(option);
 		
 		$(document).ready(function(){
-		    var top = $('#framework_top');
-		     
-		    top.load('page/common/top.html',function(data) {
-		        var tmp = $('<div></div>').html(data);
-		 
-		        data = tmp.find('#content').html();
-		        tmp.remove();
-		         
-		        top.html(data);
-		        menuManagement.visit();
-		        topUser.visit();
-		    });
+		
+			AppUtil.request("findLoginUser.action", null, function(result){
+				    	
+				if(result != null && result["id"] != null) {
+				
+					var user = userManagement.parseUserDataToUIData(result);
+					
+					openSubPage('framework_top_menu','page/common/top.html','topMenuPanel',menuManagement,user);
+					
+					openSubPage('framework_top_user','page/common/top.html','topUserPanel',topUser,user);
+					
+				} else {
+					window.location.href="index.html";
+					$('#user_password').val(null);
+					$("#loginResultLog").text("登录失败，用户名或密码不正确!");
+				}
+			},function(){
+				alert("Fail to login!");
+			});
+					
 		});
 	</script>
 	
 </head>
 
 <body>
-<table id="framework_table" align="center">
+<table id="framework_table" width="800" height="600" align="center">
 	<tr height="5%">
 		<td>
 			<div id="framework_head">bookingNow</div>
 		
 		</td>
 	</tr>
-	<tr height="10%">
+	<tr height="5%">
 		<td>
-			<div id="framework_top"></div>
+			<div id="framework_top_menu"></div>
+		
+		</td>
+	</tr>
+	<tr height="5%">
+		<td>
+			<div id="framework_top_user"></div>
 		
 		</td>
 	</tr>
