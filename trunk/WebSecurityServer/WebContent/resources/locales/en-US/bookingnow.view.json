@@ -385,10 +385,22 @@
 		"grid":{
 				"selectRow":"select row index : __index__"
 		},
+		"page":{
+			"userDetail":{
+				"basicInfo":"basic information",
+				"advancedInfo":"advanced information",
+				"userPictrue":"user pictrue",
+				"jobInfo":"job information"
+			}
+		},
 		"button":{
 				"reset":"Reset",
 				"cancel":"Cancel",
 				"update":"Update",
+				"saveBasicInfo":"save",
+				"saveAdvancedInfo":"save",
+				"saveJobInfo":"save",
+				"saveUserPictrue":"save",
 				"register":"Save",
 				"operationUserGrid":{
 					"addUserRow":"Add New Row",

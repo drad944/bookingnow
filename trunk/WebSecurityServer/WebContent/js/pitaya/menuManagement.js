@@ -134,8 +134,7 @@ var menuManagement = {
 		        	openContentPage('framework_main','page/common/registerUser.html','content');
 		        	currentPage = {};
 		        }else if(event.args.id == 8) {
-		        	openContentPage('framework_main','page/security/showUserInfo.html','content');
-		        	currentPage = userDetail;
+		        	openSubPage('framework_main','page/security/showUserInfo.html','content',userDetail,null);
 		        }else if(event.args.id == 9) {
 		        	openContentPage('framework_main','page/security/updateUserPicture.html','content');
 		        	uploadUserImage();

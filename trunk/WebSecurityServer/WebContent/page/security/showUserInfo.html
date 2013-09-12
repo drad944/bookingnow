@@ -3,50 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>register user</title>
-	<link rel="stylesheet" type="text/css" href="../../css/head.css">
-	<link rel="stylesheet" href="../../css/jqwidgets/styles/jqx.base.css" type="text/css" />
-	
-	<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
-	<script type="text/javascript" src="../../js/AppUtil.js"></script>
-	
-    <script type="text/javascript" src="../../js/jqwidgets/jqxcore.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxdata.js"></script>
-    
-     
-    <script type="text/javascript" src="../../js/jqwidgets/jqxbuttons.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxdropdownlist.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxlistbox.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxscrollbar.js"></script>
-    
-    <script type="text/javascript" src="../../js/jqwidgets/jqxnumberinput.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxwindow.js"></script>
-    <script type="text/javascript" src="../../js/jqwidgets/jqxinput.js"></script>
-    
-    <script type="text/javascript" src="../../js/jqwidgets/gettheme.js"></script>
-    <script type="text/javascript">
-         $(document).ready(function () {
-            
-        	 $.post("findLoginUser.action", 
-         			function(user){
-     					if(user != null && user.id != null) {
-     						$("#showUsreTable #account").text(user["account"]);
-     						$("#showUsreTable #name").text(user["name"]);
-     						$("#showUsreTable #password").text(user["password"]);
-     						$("#showUsreTable #address").text(user["address"]);
-     						$("#showUsreTable #birthday").text(user["birthday"]);
-     						$("#showUsreTable #department").text(user["department"]);
-     						$("#showUsreTable #email").text(user["email"]);
-     						$("#showUsreTable #image_relative_path").attr("src","../../" + user["image_relative_path"]);
-     						
-     						$("#showUsreTable #phone").text(user["phone"]);
-     						$("#showUsreTable #sex").text(user["sex"]);
-     					}
-     					
-         			});
-            
-            
-    });
-	</script>
 </head>
 	
 <body>
@@ -54,153 +10,142 @@
 	
 	
 	
-	<div id='jqxTabs'>
+		<div id='jqxTabs' style="float: left;">
             <ul>
                 <li style="margin-left: 30px;">
-                    基本资料
+                   	<div id="userBasicInfoLabel"></div>
                 </li>
                 <li>
-                    头像照片
+                   <div id="userAdvancedInfoLabel"></div>
                 </li>
                 <li>
-                    工作情况
+                    <div id="userPictrueLabel"></div>
+                </li>
+                <li>
+                    <div id="userJobInfoLabel"></div>
                 </li>
             </ul>
-            <div style="overflow: hidden;">
-                			<table class="registerUserTable">
+            
+            <div>
+            	<div style="text-align: center;border:1px solid blue;text-align:center;padding-top:50px;">
+                		<form id="updateUserInfoForm">
+                			<table class="updateUserTable">
+			                	<tr style="display:none">
+			                        <td data-i18n="userManagement.fieldLabel.id"></td>
+			                        <td><input type="text" id="updateUserIdInput" class="updateUserTextInput" /></td>
+			                    </tr>
 			                    <tr>
 			                        <td data-i18n="userManagement.fieldLabel.account"></td>
-			                        <td><input type="text" id="registerUserAccountInput" class="registerUserTextInput" /></td>
+			                        <td><input type="text" id="updateUserAccountInput" class="updateUserTextInput" /></td>
 			                    </tr>
 			                    <tr>
 			                        <td data-i18n="userManagement.fieldLabel.password"></td>
-			                        <td><input type="password" id="registerUserPasswordInput" class="registerUserTextInput" /></td>
+			                        <td><input type="password" id="updateUserPasswordInput" class="updateUserTextInput" /></td>
 			                    </tr>
 			                    <tr>
 			                        <td data-i18n="userManagement.fieldLabel.confirmPassword"></td>
-			                        <td><input type="password" id="registerUserPasswordConfirmInput" class="registerUserTextInput" /></td>
+			                        <td><input type="password" id="updateUserPasswordConfirmInput" class="updateUserTextInput" /></td>
 			                    </tr>
 			                    <tr>
 			                        <td data-i18n="userManagement.fieldLabel.name"></td>
-			                        <td><input type="text" id="registerUserRealNameInput" class="registerUserTextInput" /></td>
+			                        <td><input type="text" id="updateUserRealNameInput" class="updateUserTextInput" /></td>
 			                    </tr>
+			                   
 			                    
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.birthday"></td>
+			                        <td><div id="updateUserBirthdayInput"></div></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.sex"></td>
+			                        <td>
+			                        	<div style='margin-top: 10px;'>
+							            	<span id='updateUserSexRadioButton1' style='float:left;'></span>
+							            	<span id='updateUserSexRadioButton2' style='float:right;'></span>
+							            	<input id="updateUserSexInput" type="hidden" />
+							            </div>
+			                        </td>
+			                    </tr>
 			                    <tr style="text-align: center;">
 			                        <td>
-			                        	<input id="registerUserRegisterButton" type="button" />
-			                        </td>
-			                        <td>
-			                        	<input id="registerUserResetButton" type="reset" />
-			                        	<input id="registerUserCancelButton" type="button" />
+			                        	<input id="updateUserBasicInfoButton" type="button" />
 			                        </td>
 			                    </tr>
 			                </table>
+			            </form>
+			     </div>
             </div>
-            <div style="overflow: hidden;">
+            
+            <div>
+            	<div  style="text-align: center;border:1px solid blue;text-align:center;padding-top:50px;">
+                		<form id="updateUserInfoForm">
+                			<table class="updateUserTable">
+			                	<tr style="display:none">
+			                        <td data-i18n="userManagement.fieldLabel.id"></td>
+			                        <td><input type="text" id="updateUserIdInput" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.email"></td>
+			                        <td><input type="text" id="updateUserEmailInput" placeholder="someone@mail.com" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.address"></td>
+			                        <td><input type="text" id="updateUserAddressInput" placeholder="省-市-区-街道-小区-门牌号" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.phone"></td>
+			                        <td><div id="updateUserPhoneInput"></div></td>
+			                    </tr>
+			                    <tr style="text-align: center;">
+			                        <td>
+			                        	<input id="updateUserAdvancedInfoButton" type="button" />
+			                        </td>
+			                        <td>
+			                        </td>
+			                    </tr>
+			                </table>
+			            </form>
+			     </div>
+            </div>
+            <div>
+            	<div style="text-align: center;border:1px solid blue;text-align:center;padding-top:50px;">xxdx</div>
                 
             </div>
-            <div style="overflow: hidden;">
-                <tr>
+            <div>
+            	<div style="text-align: center;border:1px solid blue;text-align:center;padding-top:50px;">
+                			<table class="updateUserTable">
+			                	<tr style="display:none">
+			                        <td data-i18n="userManagement.fieldLabel.id"></td>
+			                        <td><input type="text" id="updateUserIdInput" class="updateUserTextInput" /></td>
+			                    </tr>
+			                     <tr>
 			                        <td data-i18n="userManagement.fieldLabel.department"></td>
 			                        <td>
-			                        	<div id='registerUserDepartmentCombobox'></div>
-			                        	<input id="registerUserDepartmentInput" type="hidden" value="2" />
+			                        	<div id='updateUserDepartmentCombobox'></div>
+			                        	<input id="updateUserDepartmentInput" type="hidden" value="2" />
 		        					</td>
 			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.roles"></td>
+			                        <td>
+			                        	<div id='updateUserRolesCombobox'></div>
+			                        	<input id="updateUserRolesInput" type="hidden" value="2" />
+		        					</td>
+			                    </tr>
+			                    <tr style="text-align: center;">
+			                        <td>
+			                        	<input id="updateUserJobInfoButton" type="button" />
+			                        </td>
+			                        <td>
+			                        </td>
+			                    </tr>
+			                </table>
+			     </div>
             </div>
         </div>
 	
 	
-	
-	
-	
-	
-	
-	
-			<div id="showUserPanel">
-				<div>
-					User Detail information:
-				</div>
-				<div id="userTable">
-						<table id="showUsreTable">
-							<tr>
-								<td align="right">
-									Account:
-								</td>
-								<td id="account" align="left">
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Name:
-								</td>
-								<td id="name" align="left">
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Picture:
-								</td>
-								<td align="left">
-									<img id="image_relative_path" style="margin-left: 5px;" height="60" width="60" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Password:
-								</td>
-								<td id="password" align="left">
-								</td>
-							</tr>
-							
-							
-							<tr>
-								<td align="right">
-									Address:
-								</td>
-								<td id="address" align="left">
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Birthday:
-								</td>
-								<td id="birthday" align="left">
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Department:
-								</td>
-								<td id="department" align="left">
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Email:
-								</td>
-								<td  id="email" align="left">
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									Phone:
-								</td>
-								<td id="phone" align="left">
-								</td>
-							</tr>
-							
-							<tr>
-								<td align="right">
-									Sex:
-								</td>
-								<td id="sex" align="left">
-								</td>
-							</tr>
-							
-						</table>
-				</div>
-			</div>
 	</div>
 </body>
 </html>

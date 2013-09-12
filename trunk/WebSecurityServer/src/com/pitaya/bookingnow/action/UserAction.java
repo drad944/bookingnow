@@ -118,7 +118,7 @@ public class UserAction extends BaseAction{
 		loginUser = (User) session.get("loginUser");
 		//test code here,please delete when project is ready
 		if (loginUser == null) {
-			loginUser = userService.searchUserById(2L);
+			loginUser = userService.getUserRole(2L);
 		}
 		
 		
