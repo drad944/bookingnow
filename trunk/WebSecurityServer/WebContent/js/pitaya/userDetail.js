@@ -15,8 +15,9 @@ var userDetail = {
 			me.initUpdateUserElements();
 			me.addUpdateUserEventListeners();
 			me.showUserDetailInfo();
-			
+			openSubPage('cropUserpicturePanel','previewPicture.html','content',cropUserPicture,null);
 		},
+		
 		
 		initLocaleUserTab:function (){
 			
@@ -152,7 +153,7 @@ var userDetail = {
 		    $('#jqxTabs').jqxTabs({ 
 		    	selectionTracker: true, 
 		    	width: '800', 
-		    	height: 400, 
+		    	height: 500, 
 		 //   	position: 'top', 
 		    	theme: theme 
 		    });
