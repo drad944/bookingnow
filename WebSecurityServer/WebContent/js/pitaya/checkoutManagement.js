@@ -1,5 +1,5 @@
 var checkoutManagement = {
-		
+		highlightRows:[],
 		leave : function (){
 			$("#checkOrderDataGrid").unbind('rowselect');
 			$("#backToCheckoutManagement").unbind('click');
@@ -95,6 +95,12 @@ var checkoutManagement = {
 			
 			$("#checkOrderDataGrid").bind('rowselect', function (event) {
 		        $("#eventLog").text("select row index : " + event.args.rowindex);
+		        for (var i = 0; i < checkoutManagement.highlightRows.length; i++) {
+                    if (checkoutManagement.highlightRows[i].index == event.args.rowindex) {
+                        checkoutManagement.highlightRows.remove(i);
+                    }
+                }
+		        $('#checkOrderDataGrid').jqxGrid('render');
 		    });
 			// update row.
 			$("#checkOrderRowButton").bind('click', function () {
@@ -473,6 +479,7 @@ var checkoutManagement = {
 		
 		parseCheckOrderGridHtml:function () {
 			var me = this;
+			me.highlightRows = [];
 			$.post("searchOrder.action", 
 				{"order.enabled": true,"order.status":5}, 
 				function(matchedcheckOrders){
@@ -487,7 +494,14 @@ var checkoutManagement = {
 				load:'current'
 			};
 		i18n.init(option);
-					
+		
+		var cellclass = function (row, datafield, value, rowdata) {
+            for (var i = 0; i < me.highlightRows.length; i++) {
+                if (me.highlightRows[i].index == row) {
+                    return "highlightRow";
+                }
+            }
+        }
 					
 		if(matchedcheckOrders != null && matchedcheckOrders.result != null){
 			checkOrders = matchedcheckOrders.result;
@@ -497,14 +511,14 @@ var checkoutManagement = {
 		var checkOrderData = {};
 		
 		var columns = [
-						{ text: i18n.t("checkoutOrderManagement.field.allowance"), datafield: 'allowance',filtertype:'number', width: 80 },
-						{ text: i18n.t("checkoutOrderManagement.field.customer_count"), datafield: 'customer_count',filtertype:'number', width: 80 },
-						{ text: i18n.t("checkoutOrderManagement.field.modifyTime"), datafield: 'modifyTime',filtertype:'string', width: 150 },
-						{ text: i18n.t("checkoutOrderManagement.field.status"), datafield: 'status',filtertype:'textbox', width: 60 },
-						{ text: i18n.t("checkoutOrderManagement.field.total_price"), datafield: 'total_price',filtertype:'number', width: 80 },
-						{ text: i18n.t("checkoutOrderManagement.field.foods"), datafield: 'foods',filtertype:'textbox', width: 190 },
-						{ text: i18n.t("checkoutOrderManagement.field.tables"), datafield: 'tables',filtertype:'textbox', width: 80 },
-						{ text: i18n.t("checkoutOrderManagement.field.customer"), datafield: 'customer',filtertype:'textbox', width: 80 }
+						{ cellclassname: cellclass, text: i18n.t("checkoutOrderManagement.field.allowance"), datafield: 'allowance',filtertype:'number', width: 80 },
+						{ cellclassname: cellclass, text: i18n.t("checkoutOrderManagement.field.customer_count"), datafield: 'customer_count',filtertype:'number', width: 80 },
+						{ cellclassname: cellclass, text: i18n.t("checkoutOrderManagement.field.modifyTime"), datafield: 'modifyTime',filtertype:'string', width: 150 },
+						{ cellclassname: cellclass, text: i18n.t("checkoutOrderManagement.field.status"), datafield: 'status',filtertype:'textbox', width: 60 },
+						{ cellclassname: cellclass, text: i18n.t("checkoutOrderManagement.field.total_price"), datafield: 'total_price',filtertype:'number', width: 80 },
+						{ cellclassname: cellclass, text: i18n.t("checkoutOrderManagement.field.foods"), datafield: 'foods',filtertype:'textbox', width: 190 },
+						{ cellclassname: cellclass, text: i18n.t("checkoutOrderManagement.field.tables"), datafield: 'tables',filtertype:'textbox', width: 80 },
+						{ cellclassname: cellclass, text: i18n.t("checkoutOrderManagement.field.customer"), datafield: 'customer',filtertype:'textbox', width: 80 }
 							    ];
 		var datafields = [
 						{name: 'id',type:"number"},
@@ -543,6 +557,8 @@ var checkoutManagement = {
 		    datatype: "local",
 		    datafields:datafields,
 		    addrow: function (rowid, rowdata, position, commit) {
+				var rowindex = ($('#checkOrderDataGrid').jqxGrid('getboundrows')).length;
+                me.highlightRows.push({ index: rowindex, data: rowdata });
 		        // synchronize with the server - send insert command
 		        // call commit with parameter true if the synchronization with the server is successful 
 		        //and with parameter false if the synchronization failed.
@@ -556,6 +572,8 @@ var checkoutManagement = {
 		        commit(true);
 		    },
 		    updaterow: function (rowid, newdata, commit) {
+		    	var rowindex = $("#checkOrderDataGrid").jqxGrid('getrowboundindexbyid', rowid);          
+				me.highlightRows.push({ index: rowindex, data: newdata });
 		        // synchronize with the server - send update command
 		        // call commit with parameter true if the synchronization with the server is successful 
 		        // and with parameter false if the synchronization failed.
