@@ -15,7 +15,10 @@ var userDetail = {
 			me.initUpdateUserElements();
 			me.addUpdateUserEventListeners();
 			me.showUserDetailInfo();
-			openSubPage('cropUserpicturePanel','previewPicture.html','content',cropUserPicture,null);
+			//openSubPage('cropUserpicturePanel','previewPicture.html','content',cropUserPicture,null);
+			$('#jqxTabs').jqxTabs('select', 2);
+			cropUserPicture.visit();
+			$('#jqxTabs').jqxTabs('select', 0);
 		},
 		
 		
@@ -151,14 +154,14 @@ var userDetail = {
 		    });
 		    
 		    $('#jqxTabs').jqxTabs({ 
-		    	selectionTracker: true, 
+		 //   	selectionTracker: true, 
 		    	width: '800', 
-		    	height: 500, 
+		    	height: 600, 
 		 //   	position: 'top', 
 		    	theme: theme 
 		    });
 		},
-
+		
 		formatUpdateUserElements:function (rowData) {
 			
 		    var d1 = {};
@@ -203,6 +206,7 @@ var userDetail = {
 
 		addUpdateUserEventListeners:function () {
 			var me = this;
+			
 			$('#updateUserBasicInfoButton').bind('click', function () {
 		        me.updateUser('basic');
 		    });

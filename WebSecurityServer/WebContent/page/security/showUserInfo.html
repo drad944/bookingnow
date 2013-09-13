@@ -109,7 +109,22 @@
 			     </div>
             </div>
             <div>
-            	<div id="cropUserpicturePanel" style="height:400px; text-align: center;border:1px solid blue;text-align:center;padding-top:50px;"></div>
+            	<div id="cropUserpicturePanel" style="height:500px; text-align: center;border:1px solid blue;text-align:center;padding-top:50px;">
+	            		<div class="avataria" title="头像上传前预览">
+							<div class="cont">
+								<div class="thumb"></div>
+								<form enctype="application/x-www-form-urlencoded">
+									<div class="ui_fileup"><input type="file" id="file" accept="image/*" onerror="alert('请选择一个图片')">浏览</div>
+									&nbsp;
+									<input type="submit" class="ui_button" value="保存">
+									<input name="crop" type="hidden">
+								</form>
+							</div>
+							<div class="cont">
+								<div id="preview" class="preview"></div>
+							</div>
+						</div>
+            	</div>
                 
             </div>
             <div>
