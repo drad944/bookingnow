@@ -96,7 +96,7 @@ var checkoutManagement = {
 			$("#checkOrderDataGrid").bind('rowselect', function (event) {
 		        $("#eventLog").text("select row index : " + event.args.rowindex);
 		        for (var i = 0; i < checkoutManagement.highlightRows.length; i++) {
-                    if (checkoutManagement.highlightRows[i].index == event.args.rowindex) {
+                    if (checkoutManagement.highlightRows[i].data["id"] == event.args.row["id"]) {
                         checkoutManagement.highlightRows.remove(i);
                     }
                 }
@@ -497,7 +497,7 @@ var checkoutManagement = {
 		
 		var cellclass = function (row, datafield, value, rowdata) {
             for (var i = 0; i < me.highlightRows.length; i++) {
-                if (me.highlightRows[i].index == row) {
+                if (me.highlightRows[i].data["id"] == rowdata["id"]) {
                     return "highlightRow";
                 }
             }

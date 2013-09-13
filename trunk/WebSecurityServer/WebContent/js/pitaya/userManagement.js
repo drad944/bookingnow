@@ -967,7 +967,7 @@ var userManagement = {
 		    $("#userDataGrid").bind('rowselect', function (event) {
 		        $("#eventLog").text(i18n.t("userManagement.grid.selectRow",{index:event.args.rowindex}));
 		    	for (var i = 0; i < userManagement.highlightRows.length; i++) {
-                    if (userManagement.highlightRows[i].index == event.args.rowindex) {
+                    if (userManagement.highlightRows[i].data["id"] == event.args.row["id"]) {
                         userManagement.highlightRows.remove(i);
                     }
                 }
@@ -1059,7 +1059,7 @@ var userManagement = {
 			
 			var cellclass = function (row, datafield, value, rowdata) {
                 for (var i = 0; i < me.highlightRows.length; i++) {
-                    if (me.highlightRows[i].index == row) {
+                    if (me.highlightRows[i].data["id"] == rowdata["id"]) {
                         return "highlightRow";
                     }
                 }
