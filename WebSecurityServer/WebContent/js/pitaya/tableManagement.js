@@ -1,4 +1,5 @@
 var tableManagement = {
+		editedRows:[],
 		
 		leave : function (){
 			$("#updateTablePopupWindow").unbind('close');
@@ -486,7 +487,14 @@ var tableManagement = {
 			});
 			
 			$("#tableDataGrid").bind('rowselect', function (event) {
-		        $("#eventLog").text(i18n.t("tableManagement.grid.selectRow", {index: event.args.rowindex}));
+		        var me = this;
+				$("#eventLog").text(i18n.t("tableManagement.grid.selectRow", {index: event.args.rowindex}));
+		        for (var i = 0; i < tableManagement.editedRows.length; i++) {
+                    if (tableManagement.editedRows[i].index == event.args.rowindex) {
+                        tableManagement.editedRows.remove(i);
+                    }
+                }
+		        $('#tableDataGrid').jqxGrid('render');
 		    });
 			
 			// delete row.
@@ -514,6 +522,7 @@ var tableManagement = {
 
 		initTableGrid:function () {
 			var me = this;
+			me.editedRows = [];
 			$.post("searchTable.action", 
 				{"table.enabled": true}, 
 				function(matchedtables){
@@ -534,18 +543,35 @@ var tableManagement = {
 						};
 					 
 					i18n.init(option);
-					
-					
+					/*
+					var cellsrenderer = function (row, column, value, defaultHtml) {
+						for (var i = 0; i < me.editedRows.length; i++) {
+		                    if (me.editedRows[i].index == row) {
+		                    	var element = $(defaultHtml);
+		                    	element.css('color', '#b90f0f');
+		                    	return element[0].outerHTML;
+		                    }
+		                }
+		                return defaultHtml;
+		            }
+					*/
+					var cellclass = function (row, datafield, value, rowdata) {
+		                for (var i = 0; i < me.editedRows.length; i++) {
+		                    if (me.editedRows[i].index == row) {
+		                        return "highlightRow";
+		                    }
+		                }
+		            }
 					
 					if(matchedtables != null && matchedtables.result != null){
 						tables = matchedtables.result;
 					}
 					var columns = [
-						{ text: i18n.t("tableManagement.field.address"), datafield: 'address',filtertype:'textbox', width: 160 },
-						{ text: i18n.t("tableManagement.field.indoorPrice"), datafield: 'indoorPrice',filtertype:'number', width: 160 },
-						{ text: i18n.t("tableManagement.field.maxCustomerCount"), datafield: 'maxCustomerCount',filtertype:'number', width: 160 },	        
-						{ text: i18n.t("tableManagement.field.minCustomerCount"), datafield: 'minCustomerCount',filtertype:'number', width: 160 },
-						{ text: i18n.t("tableManagement.field.status"), datafield: 'status',filtertype:'textbox', width: 160 }      
+						{ cellclassname: cellclass, text: i18n.t("tableManagement.field.address"), datafield: 'address',filtertype:'textbox', width: 160 },
+						{ cellclassname: cellclass, text: i18n.t("tableManagement.field.indoorPrice"), datafield: 'indoorPrice',filtertype:'number', width: 160 },
+						{ cellclassname: cellclass, text: i18n.t("tableManagement.field.maxCustomerCount"), datafield: 'maxCustomerCount',filtertype:'number', width: 160 },	        
+						{ cellclassname: cellclass, text: i18n.t("tableManagement.field.minCustomerCount"), datafield: 'minCustomerCount',filtertype:'number', width: 160 },
+						{ cellclassname: cellclass, text: i18n.t("tableManagement.field.status"), datafield: 'status',filtertype:'textbox', width: 160 }      
 							    ];
 					
 					var datafields = [
@@ -576,13 +602,15 @@ var tableManagement = {
 						tableData[i] = rowData;
 					}
 		
-		
+				
 				var source =
 				{
 				    localdata: tableData,
 				    datatype: "local",
 				    datafields:datafields,
 				    addrow: function (rowid, rowdata, position, commit) {
+						var rowindex = ($('#tableDataGrid').jqxGrid('getboundrows')).length;
+                    	me.editedRows.push({ index: rowindex, data: rowdata });
 				        // synchronize with the server - send insert command
 				        // call commit with parameter true if the synchronization with the server is successful 
 				        //and with parameter false if the synchronization failed.
@@ -596,6 +624,8 @@ var tableManagement = {
 				        commit(true);
 				    },
 				    updaterow: function (rowid, newdata, commit) {
+				    	var rowindex = $("#tableDataGrid").jqxGrid('getrowboundindexbyid', rowid);          
+				    	me.editedRows.push({ index: rowindex, data: newdata });
 				        // synchronize with the server - send update command
 				        // call commit with parameter true if the synchronization with the server is successful 
 				        // and with parameter false if the synchronization failed.

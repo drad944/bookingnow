@@ -1,5 +1,14 @@
 @CHARSET "UTF-8";
 
+.highlightRow {
+	color: #b90f0f !important;
+	font-style: italic;
+}
+.lowlightRow {
+	color: #000000 !important;
+	font-style: normal;
+}
+
 .browser_file {
 	color:White;
 }
