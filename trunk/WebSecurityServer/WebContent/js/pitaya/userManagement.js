@@ -1,5 +1,5 @@
 var userManagement = {
-		
+		highlightRows:[],
 		leave : function (){
 			$("#userDataGrid").unbind('rowselect');
 			$("#updateUserRowButton").unbind('click');
@@ -966,6 +966,12 @@ var userManagement = {
 			// display selected row index.
 		    $("#userDataGrid").bind('rowselect', function (event) {
 		        $("#eventLog").text(i18n.t("userManagement.grid.selectRow",{index:event.args.rowindex}));
+		    	for (var i = 0; i < userManagement.highlightRows.length; i++) {
+                    if (userManagement.highlightRows[i].index == event.args.rowindex) {
+                        userManagement.highlightRows.remove(i);
+                    }
+                }
+		        $('#userDataGrid').jqxGrid('render');
 		    });
 		    
 			// update row.
@@ -1030,6 +1036,7 @@ var userManagement = {
 
 		parseUserGridHtml:function () {
 			var me = this;
+			me.highlightRows = [];
 				$.post("findRoleWithUser.action", 
 					{"user.enabled": true}, 
 					function(matchedusers){
@@ -1049,6 +1056,14 @@ var userManagement = {
 				};
 			 
 			i18n.init(option);
+			
+			var cellclass = function (row, datafield, value, rowdata) {
+                for (var i = 0; i < me.highlightRows.length; i++) {
+                    if (me.highlightRows[i].index == row) {
+                        return "highlightRow";
+                    }
+                }
+            }
 			        	
 			if(matchedusers != null && matchedusers.result != null){
 				users = matchedusers.result;
@@ -1061,16 +1076,16 @@ var userManagement = {
 			var userData = {};
 			
 			var columns = [
-							{ text: i18n.t("userManagement.field.image_relative_path"), datafield: 'image_relative_path',filtertype:'textbox', width: 100 },
-							{ text: i18n.t("userManagement.field.account"), datafield: 'account',filtertype:'textbox', width: 100 },
-							{ text: i18n.t("userManagement.field.name"), datafield: 'name',filtertype:'textbox', width: 100 },
-							{ text: i18n.t("userManagement.field.phone"), datafield: 'phone',filtertype:'textbox', width: 100 },
-							{ text: i18n.t("userManagement.field.sex"), datafield: 'sex',filtertype:'checkedlist', width: 50 },
-							{ text: i18n.t("userManagement.field.email"), datafield: 'email',filtertype:'textbox', width: 100 },
-							{ text: i18n.t("userManagement.field.address"), datafield: 'address',filtertype:'textbox', width: 100 },
-							{ text: i18n.t("userManagement.field.birthday"), datafield: 'birthday',filtertype:'textbox', width: 80 },
-							{ text: i18n.t("userManagement.field.department"), datafield: 'department',filtertype:'checkedlist', width: 80 },
-							{ text: i18n.t("userManagement.field.roles"), datafield: 'roles',filtertype:'textbox', width: 150 }
+							{ cellclassname: cellclass, text: i18n.t("userManagement.field.image_relative_path"), datafield: 'image_relative_path',filtertype:'textbox', width: 100 },
+							{ cellclassname: cellclass, text: i18n.t("userManagement.field.account"), datafield: 'account',filtertype:'textbox', width: 100 },
+							{ cellclassname: cellclass, text: i18n.t("userManagement.field.name"), datafield: 'name',filtertype:'textbox', width: 100 },
+							{ cellclassname: cellclass, text: i18n.t("userManagement.field.phone"), datafield: 'phone',filtertype:'textbox', width: 100 },
+							{ cellclassname: cellclass, text: i18n.t("userManagement.field.sex"), datafield: 'sex',filtertype:'checkedlist', width: 50 },
+							{ cellclassname: cellclass, text: i18n.t("userManagement.field.email"), datafield: 'email',filtertype:'textbox', width: 100 },
+							{ cellclassname: cellclass, text: i18n.t("userManagement.field.address"), datafield: 'address',filtertype:'textbox', width: 100 },
+							{ cellclassname: cellclass, text: i18n.t("userManagement.field.birthday"), datafield: 'birthday',filtertype:'textbox', width: 80 },
+							{ cellclassname: cellclass, text: i18n.t("userManagement.field.department"), datafield: 'department',filtertype:'checkedlist', width: 80 },
+							{ cellclassname: cellclass, text: i18n.t("userManagement.field.roles"), datafield: 'roles',filtertype:'textbox', width: 150 }
 								    ];
 			
 			var datafields = [
@@ -1113,6 +1128,8 @@ var userManagement = {
 			    datatype: "local",
 			    datafields:datafields,
 			    addrow: function (rowid, rowdata, position, commit) {
+					var rowindex = ($('#userDataGrid').jqxGrid('getboundrows')).length;
+                    me.highlightRows.push({ index: rowindex, data: rowdata });
 			        // synchronize with the server - send insert command
 			        // call commit with parameter true if the synchronization with the server is successful 
 			        //and with parameter false if the synchronization failed.
@@ -1126,6 +1143,8 @@ var userManagement = {
 			        commit(true);
 			    },
 			    updaterow: function (rowid, newdata, commit) {
+			    	var rowindex = $("#userDataGrid").jqxGrid('getrowboundindexbyid', rowid);          
+				    me.highlightRows.push({ index: rowindex, data: newdata });
 			        // synchronize with the server - send update command
 			        // call commit with parameter true if the synchronization with the server is successful 
 			        // and with parameter false if the synchronization failed.

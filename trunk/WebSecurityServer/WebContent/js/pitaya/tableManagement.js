@@ -1,5 +1,5 @@
 var tableManagement = {
-		editedRows:[],
+		highlightRows:[],
 		
 		leave : function (){
 			$("#updateTablePopupWindow").unbind('close');
@@ -489,9 +489,9 @@ var tableManagement = {
 			$("#tableDataGrid").bind('rowselect', function (event) {
 		        var me = this;
 				$("#eventLog").text(i18n.t("tableManagement.grid.selectRow", {index: event.args.rowindex}));
-		        for (var i = 0; i < tableManagement.editedRows.length; i++) {
-                    if (tableManagement.editedRows[i].index == event.args.rowindex) {
-                        tableManagement.editedRows.remove(i);
+		        for (var i = 0; i < tableManagement.highlightRows.length; i++) {
+                    if (tableManagement.highlightRows[i].data["id"] == event.args.row["id"]) {
+                        tableManagement.highlightRows.remove(i);
                     }
                 }
 		        $('#tableDataGrid').jqxGrid('render');
@@ -522,7 +522,7 @@ var tableManagement = {
 
 		initTableGrid:function () {
 			var me = this;
-			me.editedRows = [];
+			me.highlightRows = [];
 			$.post("searchTable.action", 
 				{"table.enabled": true}, 
 				function(matchedtables){
@@ -543,21 +543,10 @@ var tableManagement = {
 						};
 					 
 					i18n.init(option);
-					/*
-					var cellsrenderer = function (row, column, value, defaultHtml) {
-						for (var i = 0; i < me.editedRows.length; i++) {
-		                    if (me.editedRows[i].index == row) {
-		                    	var element = $(defaultHtml);
-		                    	element.css('color', '#b90f0f');
-		                    	return element[0].outerHTML;
-		                    }
-		                }
-		                return defaultHtml;
-		            }
-					*/
+					
 					var cellclass = function (row, datafield, value, rowdata) {
-		                for (var i = 0; i < me.editedRows.length; i++) {
-		                    if (me.editedRows[i].index == row) {
+		                for (var i = 0; i < me.highlightRows.length; i++) {
+		                    if (me.highlightRows[i].data["id"] == rowdata["id"]) {
 		                        return "highlightRow";
 		                    }
 		                }
@@ -610,7 +599,7 @@ var tableManagement = {
 				    datafields:datafields,
 				    addrow: function (rowid, rowdata, position, commit) {
 						var rowindex = ($('#tableDataGrid').jqxGrid('getboundrows')).length;
-                    	me.editedRows.push({ index: rowindex, data: rowdata });
+                    	me.highlightRows.push({ index: rowindex, data: rowdata });
 				        // synchronize with the server - send insert command
 				        // call commit with parameter true if the synchronization with the server is successful 
 				        //and with parameter false if the synchronization failed.
@@ -625,7 +614,7 @@ var tableManagement = {
 				    },
 				    updaterow: function (rowid, newdata, commit) {
 				    	var rowindex = $("#tableDataGrid").jqxGrid('getrowboundindexbyid', rowid);          
-				    	me.editedRows.push({ index: rowindex, data: newdata });
+				    	me.highlightRows.push({ index: rowindex, data: newdata });
 				        // synchronize with the server - send update command
 				        // call commit with parameter true if the synchronization with the server is successful 
 				        // and with parameter false if the synchronization failed.
