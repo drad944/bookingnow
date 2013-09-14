@@ -11,11 +11,12 @@ var userDetail = {
 		
 		init : function(){
 			var me = this;
+			
 			me.initLocaleUserTab();
 			me.initUpdateUserElements();
 			me.addUpdateUserEventListeners();
 			me.showUserDetailInfo();
-			//openSubPage('cropUserpicturePanel','previewPicture.html','content',cropUserPicture,null);
+			
 			$('#jqxTabs').jqxTabs('select', 2);
 			cropUserPicture.visit();
 			$('#jqxTabs').jqxTabs('select', 0);

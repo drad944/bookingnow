@@ -7,29 +7,69 @@ var AppUtil = {
 			 domObj.style[p] = parameters[p];
 		 }
 	},
-
-	request : function(url, parameter, success, fail, method){
-		if(method == null || method == "post"){
-			$.post(url, parameter, function(data){
-				if(success){
-					success(data);
-				}
-			}, "json").fail(function(){
-				if(fail){
-				  fail();
-				}
-			});
-		} else {
-			$.get(url, parameter, function(data){
-				if(success){
-					success(data);
-				}
-			}, "json").fail(function(){
-				if(fail){
-				  fail();
-				}
-			});
+	
+	request : function(url, parameter, success, fail, method,synchronous,always){
+		
+		if(synchronous != null && synchronous == true) {
+			
+			$.ajaxSetup({ async: false });
+			if(method == null || method == "post"){
+				$.post(url, parameter, function(data){
+					if(success){
+						success(data);
+					}
+				}, "json").fail(function(){
+					if(fail){
+					  fail();
+					}
+				}).always(function(){
+					if(always){
+						always();
+					}else {
+						$.ajaxSetup({ async: true }); 
+					}
+				});
+			} else {
+				$.get(url, parameter, function(data){
+					if(success){
+						success(data);
+					}
+				}, "json").fail(function(){
+					if(fail){
+					  fail();
+					}
+				}).always(function(){
+					if(always){
+						always();
+					}else {
+						$.ajaxSetup({ async: true }); 
+					}
+				});
+			}
+		}else {
+			if(method == null || method == "post"){
+				$.post(url, parameter, function(data){
+					if(success){
+						success(data);
+					}
+				}, "json").fail(function(){
+					if(fail){
+					  fail();
+					}
+				});
+			} else {
+				$.get(url, parameter, function(data){
+					if(success){
+						success(data);
+					}
+				}, "json").fail(function(){
+					if(fail){
+					  fail();
+					}
+				});
+			}
 		}
+		
 	},
 	
 	getFoodStatus : function(status){
