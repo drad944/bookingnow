@@ -35,9 +35,8 @@ var tableManagement = {
 				return true;
 			}
 			var existTableAddressValidation = false;
-			$.ajaxSetup({ async: false }); 
-			$.post("existTable.action", {"table.address":$("#registerTableAddressInput").val()}, function(result){
-				$.ajaxSetup({ async: true });
+			
+			AppUtil.request("existTable.action", {"table.address":$("#registerTableAddressInput").val()}, function(result){
 				if(result && result.executeResult == true){
 					existTableAddressValidation = false;
 				}else if(result && result.executeResult == false && result.errorType == Constants.SUCCESS){
@@ -45,7 +44,11 @@ var tableManagement = {
 				}else {
 					existTableAddressValidation =  true;
 				}
-			});
+			},function() { 
+				alert("meet error in server side when call existTable.action."); 
+			
+			},null,true);
+			
 			return existTableAddressValidation;
 		},
 		

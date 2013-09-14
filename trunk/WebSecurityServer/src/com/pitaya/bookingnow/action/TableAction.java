@@ -59,6 +59,7 @@ public class TableAction extends BaseAction{
 		if (result == null) {
 			result = new MyResult();
 		}
+		
 		if (table != null && table.getAddress() != null) {
 			
 			if (tableService.existTable(table)) {

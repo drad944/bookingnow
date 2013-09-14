@@ -93,7 +93,8 @@ var userLogin = {
 							$("#loginResultLog").text("登录失败，用户名或密码不正确!");
 						}
 					},function(){
-						alert("Fail to login!");
+						$('#user_password').val(null);
+						alert("Fail to login because of something wrong in server side!");
 					});
 					
 				}
