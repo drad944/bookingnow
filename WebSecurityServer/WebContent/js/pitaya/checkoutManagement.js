@@ -98,9 +98,11 @@ var checkoutManagement = {
 		        for (var i = 0; i < checkoutManagement.highlightRows.length; i++) {
                     if (checkoutManagement.highlightRows[i].data["id"] == event.args.row["id"]) {
                         checkoutManagement.highlightRows.remove(i);
+                        $('#checkOrderDataGrid').jqxGrid('render');
+                        break;
                     }
                 }
-		        $('#checkOrderDataGrid').jqxGrid('render');
+		        
 		    });
 			// update row.
 			$("#checkOrderRowButton").bind('click', function () {

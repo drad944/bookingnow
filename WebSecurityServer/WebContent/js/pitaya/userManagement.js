@@ -969,9 +969,11 @@ var userManagement = {
 		    	for (var i = 0; i < userManagement.highlightRows.length; i++) {
                     if (userManagement.highlightRows[i].data["id"] == event.args.row["id"]) {
                         userManagement.highlightRows.remove(i);
+                        $('#userDataGrid').jqxGrid('render');
+                        break;
                     }
                 }
-		        $('#userDataGrid').jqxGrid('render');
+		        
 		    });
 		    
 			// update row.

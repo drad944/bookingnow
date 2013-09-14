@@ -120,14 +120,6 @@ var tableManagement = {
 							} 
 						},
 						
-						{ input: '#updateTableMinCustomerCountInput', message: i18n.t("tableManagement.validation.message.minLessMaxCount"), action: 'blur', rule: function (input, commit) {
-							    var maxCount = $("#updateTableMaxCustomerCountInput").val();
-								if (input.val() < maxCount) {
-							        return true;
-							    }
-							    return false;
-							} 
-						},
 						
 						{ input: '#updateTableMaxCustomerCountInput', message: i18n.t("tableManagement.validation.message.maxCountBeyondZero"), action: 'blur', rule: function (input, commit) {
 							    if (input.val() > 0) {
@@ -310,14 +302,6 @@ var tableManagement = {
 						} 
 					},
 					
-					{ input: '#registerTableMinCustomerCountInput', message: i18n.t("tableManagement.validation.message.minLessMaxCount"), action: 'blur', rule: function (input, commit) {
-						    var maxCount = $("#registerTableMaxCustomerCountInput").val();
-							if (input.val() < maxCount) {
-						        return true;
-						    }
-						    return false;
-						} 
-					},
 					
 					{ input: '#registerTableMaxCustomerCountInput', message: i18n.t("tableManagement.validation.message.maxCountBeyoundZero"), action: 'blur', rule: function (input, commit) {
 						    if (input.val() > 0) {
@@ -492,9 +476,11 @@ var tableManagement = {
 		        for (var i = 0; i < tableManagement.highlightRows.length; i++) {
                     if (tableManagement.highlightRows[i].data["id"] == event.args.row["id"]) {
                         tableManagement.highlightRows.remove(i);
+                        $('#tableDataGrid').jqxGrid('render');
+                        break;
                     }
                 }
-		        $('#tableDataGrid').jqxGrid('render');
+		        
 		    });
 			
 			// delete row.
