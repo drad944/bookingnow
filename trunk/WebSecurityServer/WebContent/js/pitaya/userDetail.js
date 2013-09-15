@@ -33,11 +33,9 @@ var userDetail = {
 			$('#userBasicInfoLabel').text(i18n.t("userManagement.page.userDetail.basicInfo"));
 			$('#userAdvancedInfoLabel').text(i18n.t("userManagement.page.userDetail.advancedInfo"));
 			$('#userPictrueLabel').text(i18n.t("userManagement.page.userDetail.userPictrue"));
-			$('#userJobInfoLabel').text(i18n.t("userManagement.page.userDetail.jobInfo"));
 			
 			$('#updateUserBasicInfoButton').val(i18n.t("userManagement.button.saveBasicInfo"));
 		    $('#updateUserAdvancedInfoButton').val(i18n.t("userManagement.button.saveAdvancedInfo"));
-		    $('#updateUserJobInfoButton').val(i18n.t("userManagement.button.saveJobInfo"));
 		},
 		
 		emptyUpdateUserTab:function (){
@@ -47,8 +45,6 @@ var userDetail = {
 			
 			$("#updateUserSexRadioButton1").jqxRadioButton({checked: true});
 		    $("#updateUserSexRadioButton2").jqxRadioButton({checked: false});
-		    $('#acceptInput').jqxCheckBox({checked: false});
-		    $("#updateUserRolesCombobox").jqxComboBox('uncheckAll');
 		    
 			$("updateUserSexInput").val(i18n.t("userManagement.sex.male"));
 			$("#updateUserIdInput").val(null);
@@ -58,10 +54,6 @@ var userDetail = {
 			$("#updateUserPasswordConfirmInput").val(null);
 			$("#updateUserAddressInput").val(null);
 			
-			$("#updateUserDepartmentInput").val(null);
-			$("#updateUserRolesInput").val(null);
-			$("#updateUserRolesInput").val(null);
-			$("#updateUserEmailInput").val(null);
 			$("#updateUserResult").text("");
 		},
 
@@ -69,7 +61,6 @@ var userDetail = {
 			
 		    $('#updateUserBasicInfoButton').jqxButton({ width: 100, height: 25, theme: theme });
 		    $('#updateUserAdvancedInfoButton').jqxButton({ width: 100, height: 25, theme: theme });
-		    $('#updateUserJobInfoButton').jqxButton({ width: 100, height: 25, theme: theme });
 		    
 		  //  $("#updateUserAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
 		    $("#updateUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 25, theme: theme });
@@ -83,49 +74,6 @@ var userDetail = {
 			$("#updateUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25,  theme: theme });
 			$("updateUserSexInput").val(i18n.t("userManagement.sex.male"));
 		    
-			var userDepartmentData = [
-			          				{ value: 2, label: i18n.t("userManagement.department.BUSSINESS") },
-			          				{ value: 3, label: i18n.t("userManagement.department.PRODUCTION") },
-			          				{ value: 4, label: i18n.t("userManagement.department.FINANCE") },
-			          				{ value: 5, label: i18n.t("userManagement.department.PERSONNEL") },
-			          				{ value: 6, label: i18n.t("userManagement.department.DEVERLOPE") },
-			          				{ value: 7, label: i18n.t("userManagement.department.MANAGEMENT") }
-			                  ];
-			              
-		  	// Create a jqxComboBox
-		  	$("#updateUserDepartmentCombobox").jqxComboBox({ 
-		  		checkboxes: true, 
-		  		source: userDepartmentData, 
-		  		displayMember: "label", 
-		  		valueMember: "value", 
-		  		width: 150, 
-		  		height: 25, 
-		  		theme: theme 
-		  	});
-		  
-		    var userRoleData = [
-						{ value: 2, label: i18n.t("userManagement.role.ANONYMOUS") },
-						{ value: 3, label: i18n.t("userManagement.role.CUSTOMER") },
-						{ value: 4, label: i18n.t("userManagement.role.CUSTOMER_VIP1") },
-						{ value: 5, label: i18n.t("userManagement.role.CUSTOMER_VIP2") },
-						{ value: 6, label: i18n.t("userManagement.role.WELCOMER") },
-						{ value: 7, label: i18n.t("userManagement.role.CHEF") },
-						{ value: 8, label: i18n.t("userManagement.role.WAITER") },
-						{ value: 9, label: i18n.t("userManagement.role.CASHIER") },
-						{ value: 10, label: i18n.t("userManagement.role.MANAGER") },
-						{ value: 11, label: i18n.t("userManagement.role.ADMIN") }
-		        ];
-		    
-			// Create a jqxComboBox
-			$("#updateUserRolesCombobox").jqxComboBox({ 
-				checkboxes: true, 
-				source: userRoleData, 
-				displayMember: "label", 
-				valueMember: "value", 
-				width: 150, 
-				height: 25, 
-				theme: theme 
-			});
 		    // initialize validator.
 		    $('#updateUserInfoForm').jqxValidator({
 		     rules: [
@@ -189,20 +137,10 @@ var userDetail = {
 			$("#updateUserPasswordConfirmInput").val(rowData["password"]);
 			$("#updateUserAddressInput").val(rowData["address"]);
 			
-			$("#updateUserDepartmentInput").val(rowData["department"]);
-			$("#updateUserRolesInput").val(rowData["roles"]);
-			
 			$("#updateUserEmailInput").val(rowData["email"]);
 			$("#updateUserPhoneInput").val(rowData["phone"]);
 			$("#updateUserSexInput").val(rowData["sex"]);
 		    
-			// Create a jqxComboBox
-			$("#updateUserDepartmentCombobox").jqxComboBox('checkIndex', AppUtil.findDepartmentValue($("#updateUserDepartmentInput").val()) - 2);
-			
-			var roleValues = AppUtil.findRoleValue($("#updateUserRolesInput").val());
-			for(var i = 0;i< roleValues.length;i++) {
-				$("#updateUserRolesCombobox").jqxComboBox('checkIndex', roleValues[i] - 2);
-			}
 		},
 
 		addUpdateUserEventListeners:function () {
@@ -216,9 +154,6 @@ var userDetail = {
 		        me.updateUser('advanced');
 		    });
 			
-			$('#updateUserJobInfoButton').bind('click', function () {
-		        me.updateUser('job');
-		    });
 		    
 		    $("#updateUserSexRadioButton1").bind('change', function (event) {
 		        var checked = event.args.checked;
@@ -234,39 +169,6 @@ var userDetail = {
 		        }
 		    });
 		    
-		    $("#updateUserDepartmentCombobox").bind('checkChange', function (event) {
-		            if (event.args) {
-		                var item = event.args.item;
-		                if (item && item.checked) {
-		                	var checkedItems = $("#updateUserDepartmentCombobox").jqxComboBox('getCheckedItems');
-		                	if(checkedItems && checkedItems.length > 1) {
-		                		$.each(checkedItems, function (index) {
-				                    if(checkedItems[index].value != item.value) {
-				                    	 $("#updateUserDepartmentCombobox").jqxComboBox('uncheckItem',checkedItems[index]);
-				                    }
-				                });
-		                	}
-		                	$("#updateUserDepartmentInput").val(item.value);
-		                }
-		            }
-		        });
-		    
-		    $("#updateUserRolesCombobox").bind('checkChange', function (event) {
-		        if (event.args) {
-		            var item = event.args.item;
-		            if (item) {
-		                var items = $("#updateUserRolesCombobox").jqxComboBox('getCheckedItems');
-		                var checkedItems = "";
-		                $.each(items, function (index) {
-		                    checkedItems += this.value + ", ";                          
-		                });
-		                if(checkedItems.length > 0) {
-		                	checkedItems = checkedItems.substring(0, checkedItems.length - 2);
-		                }
-		                $("#updateUserRolesInput").val(checkedItems);
-		            }
-		        }
-		    });
 		    
 		},
 
@@ -289,12 +191,6 @@ var userDetail = {
 					"user.email" : $("#updateUserEmailInput").val(),
 					"user.phone" : $("#updateUserPhoneInput").val()
 				};
-			}else if(infoType == "job") {
-				updateUserUIData = {
-					"user.id" : $("#updateUserIdInput").val(),
-					"user.department" : $("#updateUserDepartmentInput").val(),
-					"user.roles" : $("#updateUserRolesInput").val()
-				};
 			}else if(infoType == "pictrue") {
 				
 			}else {
@@ -305,8 +201,6 @@ var userDetail = {
 					"user.password" : $("#updateUserPasswordConfirmInput").val(),
 					"user.address" : $("#updateUserAddressInput").val(),
 					"user.birthday" : $('#updateUserBirthdayInput').jqxDateTimeInput('value'),
-					"user.department" : $("#updateUserDepartmentInput").val(),
-					"user.roles" : $("#updateUserRolesInput").val(),
 					"user.email" : $("#updateUserEmailInput").val(),
 					"user.phone" : $("#updateUserPhoneInput").val(),
 					"user.sex" : $("#updateUserSexInput").val()
@@ -327,17 +221,6 @@ var userDetail = {
 					alert("Fail to update user info!");
 				});
 				
-			}else if(infoType == "job") {
-				AppUtil.request("updateRoleWithUser.action", updateUserData, function(result){
-					if(result && result.id != null){
-				    	$("#eventLog").text(i18n.t("userManagement.result.updateSuccess"));
-					}else {
-						$("#eventLog").text(i18n.t("userManagement.result.updateFail"));
-					}
-					
-				}, function(){
-					alert("Fail to update user info!");
-				});
 			}else if(infoType == "pictrue") {
 				
 			}else {

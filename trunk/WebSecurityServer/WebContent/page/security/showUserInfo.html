@@ -21,9 +21,6 @@
                 <li>
                     <div id="userPictrueLabel"></div>
                 </li>
-                <li>
-                    <div id="userJobInfoLabel"></div>
-                </li>
             </ul>
             
             <div>
@@ -118,6 +115,13 @@
 									&nbsp;
 									<input type="submit" class="ui_button" value="保存">
 									<input name="crop" type="hidden">
+									
+									<input type="hidden" id="updateUserIdInput" />
+									<input type="hidden" id="x" /> 
+									<input type="hidden" id="y" /> 
+									<input type="hidden" id="w" /> 
+									<input type="hidden" id="h" />
+									<input type="hidden" id="scaleRatio" />
 								</form>
 							</div>
 							<div class="cont">
@@ -127,37 +131,7 @@
             	</div>
                 
             </div>
-            <div>
-            	<div style="text-align: center;border:1px solid blue;text-align:center;padding-top:50px;">
-                			<table class="updateUserTable">
-			                	<tr style="display:none">
-			                        <td data-i18n="userManagement.fieldLabel.id"></td>
-			                        <td><input type="text" id="updateUserIdInput" class="updateUserTextInput" /></td>
-			                    </tr>
-			                     <tr>
-			                        <td data-i18n="userManagement.fieldLabel.department"></td>
-			                        <td>
-			                        	<div id='updateUserDepartmentCombobox'></div>
-			                        	<input id="updateUserDepartmentInput" type="hidden" value="2" />
-		        					</td>
-			                    </tr>
-			                    <tr>
-			                        <td data-i18n="userManagement.fieldLabel.roles"></td>
-			                        <td>
-			                        	<div id='updateUserRolesCombobox'></div>
-			                        	<input id="updateUserRolesInput" type="hidden" value="2" />
-		        					</td>
-			                    </tr>
-			                    <tr style="text-align: center;">
-			                        <td>
-			                        	<input id="updateUserJobInfoButton" type="button" />
-			                        </td>
-			                        <td>
-			                        </td>
-			                    </tr>
-			                </table>
-			     </div>
-            </div>
+           
         </div>
 	
 	
