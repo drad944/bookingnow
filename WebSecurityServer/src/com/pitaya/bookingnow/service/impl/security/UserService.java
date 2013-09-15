@@ -1,4 +1,5 @@
 package com.pitaya.bookingnow.service.impl.security;
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -192,7 +193,11 @@ public class UserService implements IUserService {
 					String imageType = ImageUtil.parseImageType(params.getImagePath());
 					String targetImagePath = ImageUtil.generateImagePath("images" + SystemUtils.getSystemDelimiter() + "user" + SystemUtils.getSystemDelimiter(), imageType);
 					String pathprefix = ServletActionContext.getServletContext().getRealPath("/");
-					if (ImageUtil.cut(pathprefix + params.getImagePath(), imageType, pathprefix + targetImagePath, params.getX(), params.getY(), params.getW(), params.getH(),params.getScaleRatio())) {
+					if (ImageUtil.cut(params.getImagePath(), imageType, pathprefix + targetImagePath, params.getX(), params.getY(), params.getW(), params.getH(),params.getScaleRatio())) {
+						String rootpath = ServletActionContext.getServletContext().getRealPath("/");
+		    			File oldImage = new File(rootpath + realUser.getImage_relative_path());
+		    			
+						
 						User newUser = new User();
 						newUser.setId(realUser.getId());
 						newUser.setImage_relative_path(targetImagePath);
@@ -200,6 +205,13 @@ public class UserService implements IUserService {
 						newUser.parseImageSize();
 						
 						if (userDao.updateByPrimaryKeySelective(newUser) == 1) {
+							if (oldImage.exists()) {
+								if(oldImage.delete()) {
+									
+								}else {
+									result.getErrorDetails().put("file_delete", "failed to delete file in server side.");
+								}
+							}
 							result.setExecuteResult(true);
 							result.setUser(userDao.selectByPrimaryKey(newUser.getId()));
 							

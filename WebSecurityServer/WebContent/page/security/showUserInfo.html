@@ -110,22 +110,20 @@
 	            		<div class="avataria" title="头像上传前预览">
 							<div class="cont">
 								<div class="thumb"></div>
-								<form enctype="application/x-www-form-urlencoded">
-									<div class="ui_fileup"><input type="file" id="file" accept="image/*" onerror="alert('请选择一个图片')">浏览</div>
+								<form id="uploadImageForUserForm" enctype="multipart/form-data" action="uploadImageForUser.action" method="post">
+									<div class="ui_fileup"><input type="file" id="userPictureFile" name="uploadImage" accept="image/*" onerror="alert('请选择一个图片')">浏览</div>
 									&nbsp;
-									<input type="submit" class="ui_button" value="保存">
-									<input name="crop" type="hidden">
+									<input id="uploadImageForUserButton" type="button" class="ui_button" value="保存">
 									
-									<input type="hidden" id="updateUserIdInput" />
-									<input type="hidden" id="x" /> 
-									<input type="hidden" id="y" /> 
-									<input type="hidden" id="w" /> 
-									<input type="hidden" id="h" />
-									<input type="hidden" id="scaleRatio" />
+									<input type="hidden" id="x" name="params.x" /> 
+									<input type="hidden" id="y" name="params.y" /> 
+									<input type="hidden" id="w" name="params.w" /> 
+									<input type="hidden" id="h" name="params.h" />
+									<input type="hidden" id="scaleRatio" name="params.scaleRatio"  />
 								</form>
 							</div>
 							<div class="cont">
-								<div id="preview" class="preview"></div>
+								<div id="userPicturePreview" class="preview"></div>
 							</div>
 						</div>
             	</div>

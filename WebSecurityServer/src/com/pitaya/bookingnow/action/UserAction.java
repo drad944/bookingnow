@@ -144,11 +144,6 @@ public class UserAction extends BaseAction{
 	public String findLoginUser() {
 		Map<String,Object> session = ActionContext.getContext().getSession();
 		loginUser = (User) session.get("loginUser");
-		//test code here,please delete when project is ready
-		if (loginUser == null) {
-			loginUser = userService.getUserRole(2L);
-		}
-		
 		
 		if (loginUser != null && loginUser.getId() != null) {
 			return "findLoginUserSuccess";
@@ -392,58 +387,58 @@ public class UserAction extends BaseAction{
 	
 	
 	public String uploadImageForUser() {
-		
-		String realpath = ServletActionContext.getServletContext().getRealPath("/images/user");
-        if (uploadImage != null) {
-        	String imageTypeString = ImageUtil.parseImageType(uploadImageFileName);
-        	String targetPath = ImageUtil.generateImagePath(realpath, imageTypeString);
-        	
-            File savefile = new File(targetPath);
-            if (!savefile.getParentFile().exists()){
-            	savefile.getParentFile().mkdirs();
-            }
-                
-            try {
-				FileUtils.copyFile(uploadImage, savefile);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-            Map<String,Object> session = ActionContext.getContext().getSession();
-            
-    		loginUser = (User) session.get("loginUser");
-    		
-    		//workaround here ,need to delete when project is ready.
-    		if (loginUser == null) {
-				loginUser = userService.searchUserById((long) 2);
-			}
-    		
-    		User newUser = new User();
-    		newUser.setId(loginUser.getId());
-    		String relativePath = ImageUtil.generateRelativePath(targetPath);
-    		newUser.setImage_relative_path(relativePath);
-    		newUser.setImage_absolute_path(targetPath);
-    		newUser.setImage_size((int) savefile.length());
-    		result = userService.modify(newUser);
-    		if(result.isExecuteResult()){ 
-    			String rootpath = ServletActionContext.getServletContext().getRealPath("/");
-    			File oldImage = new File(rootpath + loginUser.getImage_relative_path());
-    			if (oldImage.exists()) {
-					oldImage.delete();
-				}else {
-					result.getErrorDetails().put("file_delete", "failed to delete file in server side.");
+		Map<String,Object> session = ActionContext.getContext().getSession();
+		loginUser = (User) session.get("loginUser");
+		if(loginUser != null && loginUser.getId() != null) {
+			String realpath = ServletActionContext.getServletContext().getRealPath("/images/temp");
+	        if (uploadImage != null) {
+	        	String imageTypeString = ImageUtil.parseImageType(uploadImageFileName);
+	        	String targetPath = ImageUtil.generateImagePath(realpath, imageTypeString);
+	        	
+	            File savefile = new File(targetPath);
+	            if (!savefile.getParentFile().exists()){
+	            	savefile.getParentFile().mkdirs();
+	            }
+	            
+	                
+	            try {
+					FileUtils.copyFile(uploadImage, savefile);
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-    			
-				loginUser = result.getUser();
-    			return "uploadImageForUserSuccess";
-	        }else{  
-	            return "Fail";  
-	        }  
-        }
-        
-		if (result == null) {
-			result = new MyResult();
-			result.setErrorType(Constants.FAIL);
+	            //crop user picture
+	            params.setUser_id(loginUser.getId());
+	            params.setImagePath(savefile.getAbsolutePath());
+	            result = userService.cropPicture(params);
+	            
+	            if(savefile.exists()) {
+    				savefile.delete();
+    			}
+	    		if(result.isExecuteResult()){ 
+	    			
+					loginUser = result.getUser();
+					
+	    			return "uploadImageForUserSuccess";
+		        }else{  
+		            return "Fail";  
+		        }  
+	        }else {
+	        	if (result == null) {
+					result = new MyResult();
+					result.setErrorType(Constants.FAIL);
+					result.getErrorDetails().put("file_exist", "can not find file to upload.");
+				}
+	        }
+	        
+			
+		}else {
+			if (result == null) {
+				result = new MyResult();
+				result.setErrorType(Constants.FAIL);
+				result.getErrorDetails().put("user_exist", "can not find login user.");
+			}
 		}
+		
         return "Fail";
 	}
 }
