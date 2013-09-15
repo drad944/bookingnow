@@ -96,10 +96,7 @@
 				<param name="root">true</param>
 	        </result>
 	        
-	        <result name="cropPictureForUserSuccess" type="json">
-			    <param name="excludeNullProperties">true</param>
-				<param name="root">loginUser</param>
-	        </result>
+	        
 	        <result name="uploadImageForUserSuccess" type="json">
 			    <param name="excludeNullProperties">true</param>
 				<param name="root">loginUser</param>

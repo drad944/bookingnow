@@ -145,6 +145,27 @@ var userDetail = {
 
 		addUpdateUserEventListeners:function () {
 			var me = this;
+			$('#uploadImageForUserButton').bind('click', function () {
+				var uploadPluginOptions = {
+					    url: 'uploadImageForUser.action',
+					    dataType : "json",
+					    success: function(result) {
+					    	if(result && result["id"] != null) {
+								alert("恭喜您,上传成功!");
+							}else {
+								alert("对不起,上传失败!");
+							}
+							
+					    },
+					    error : function(result) {  
+			                  
+			                alert("对不起,上传失败!");  
+			            }   
+				};
+				
+				$("#uploadImageForUserForm").ajaxSubmit(uploadPluginOptions);
+				
+		    });
 			
 			$('#updateUserBasicInfoButton').bind('click', function () {
 		        me.updateUser('basic');

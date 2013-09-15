@@ -32,6 +32,18 @@ public class SearchParams {
 	private String imagePath;
 	
 	
+	public Integer getW() {
+		return w;
+	}
+	public void setW(Integer w) {
+		this.w = w;
+	}
+	public Integer getH() {
+		return h;
+	}
+	public void setH(Integer h) {
+		this.h = h;
+	}
 	public Double getScaleRatio() {
 		return scaleRatio;
 	}
@@ -55,18 +67,6 @@ public class SearchParams {
 	}
 	public void setY(Integer y) {
 		this.y = y;
-	}
-	public Integer getW() {
-		return w;
-	}
-	public void setW(Integer w) {
-		this.w = w;
-	}
-	public Integer getH() {
-		return h;
-	}
-	public void setH(Integer h) {
-		this.h = h;
 	}
 	public Integer getOffset() {
 		return offset;
