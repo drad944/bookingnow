@@ -305,6 +305,21 @@ var userManagement = {
 		    
 		    $("#updateUserRolesCombobox").bind('checkChange', function (event) {
 		        if (event.args) {
+		                var item = event.args.item;
+		                if (item && item.checked) {
+		                	var checkedItems = $("#updateUserRolesCombobox").jqxComboBox('getCheckedItems');
+		                	if(checkedItems && checkedItems.length > 1) {
+		                		$.each(checkedItems, function (index) {
+				                    if(checkedItems[index].value != item.value) {
+				                    	 $("#updateUserRolesCombobox").jqxComboBox('uncheckItem',checkedItems[index]);
+				                    }
+				                });
+		                	}
+		                	$("#updateUserRolesInput").val(item.value);
+		                }
+		            }
+		    	/*
+		    	if (event.args) {
 		            var item = event.args.item;
 		            if (item) {
 		                var items = $("#updateUserRolesCombobox").jqxComboBox('getCheckedItems');
@@ -318,6 +333,7 @@ var userManagement = {
 		                $("#updateUserRolesInput").val(checkedItems);
 		            }
 		        }
+		        */
 		    });
 		    
 		    $('#updateUserInfoForm').bind('validationSuccess', function (event) { 
@@ -551,20 +567,24 @@ var userManagement = {
 		        });
 		    
 		    $("#registerUserRolesCombobox").bind('checkChange', function (event) {
-		        if (event.args) {
-		            var item = event.args.item;
-		            if (item) {
-		                var items = $("#registerUserRolesCombobox").jqxComboBox('getCheckedItems');
-		                var checkedItems = "";
-		                $.each(items, function (index) {
-		                    checkedItems += this.value + ", ";                          
-		                });
-		                if(checkedItems.length > 0) {
-		                	checkedItems = checkedItems.substring(0, checkedItems.length - 2);
-		                }
-		                $("#registerUserRolesInput").val(checkedItems);
+		    	if (event.args) {
+		                var item = event.args.item;
+		                if (event.args) {
+			                var item = event.args.item;
+			                if (item && item.checked) {
+			                	var checkedItems = $("#registerUserRolesCombobox").jqxComboBox('getCheckedItems');
+			                	if(checkedItems && checkedItems.length > 1) {
+			                		$.each(checkedItems, function (index) {
+					                    if(checkedItems[index].value != item.value) {
+					                    	 $("#registerUserRolesCombobox").jqxComboBox('uncheckItem',checkedItems[index]);
+					                    }
+					                });
+			                	}
+			                	$("#registerUserRolesInput").val(item.value);
+			                }
+			            }
 		            }
-		        }
+		    	
 		    });
 		    
 		    $('#registerUserInfoForm').bind('validationSuccess', function (event) { 
