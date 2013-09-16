@@ -3,6 +3,7 @@ package com.pitaya.bookingnow.dao;
 import java.util.List;
 
 import com.pitaya.bookingnow.entity.Order_Food_Detail;
+import com.pitaya.bookingnow.entity.Order_Food_Detail_Table;
 import com.pitaya.bookingnow.util.SearchParams;
 
 public interface Order_Food_DetailMapper {
@@ -33,4 +34,8 @@ public interface Order_Food_DetailMapper {
     Order_Food_Detail selectFullByPrimaryKeyAndOrderId(SearchParams params);
     
     List<Order_Food_Detail> selectByParams(SearchParams params);
+    
+    List<Order_Food_Detail_Table> powerSelectByParams(SearchParams params);
+    
+    
 }

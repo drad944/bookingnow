@@ -14,6 +14,7 @@ import com.pitaya.bookingnow.dao.Order_Food_DetailMapper;
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Order;
 import com.pitaya.bookingnow.entity.Order_Food_Detail;
+import com.pitaya.bookingnow.entity.Order_Food_Detail_Table;
 import com.pitaya.bookingnow.message.OrderDetailMessage;
 import com.pitaya.bookingnow.service.socket.EnhancedMessageService;
 import com.pitaya.bookingnow.service.IOrder_Food_DetailService;
@@ -353,6 +354,23 @@ public class Order_Food_DetailService implements IOrder_Food_DetailService{
 			SearchParams params) {
 		if (params != null) {
 			return food_detailDao.selectFullByPrimaryKeyAndOrderId(params);
+		}
+		return null;
+	}
+
+	@Override
+	public List<Order_Food_Detail_Table> powerSearchFood_Details(SearchParams params) {
+		if (params != null) {
+			if(params.getFood_detail_id() != null 
+					&& params.getFood_detailStatusList() != null && params.getFood_detailStatusList().size() > 0 
+					&& params.getRowCount() != null){
+				List<Order_Food_Detail_Table> realFood_Details = food_detailDao.powerSelectByParams(params);
+				return realFood_Details;
+			}else {
+				logger.error("searchFood_Details:missing food_detail id in parameters");
+			}
+		}else {
+			logger.error("searchFood_Details: missing parameters");
 		}
 		return null;
 	}
