@@ -140,7 +140,14 @@ var userDetail = {
 			$("#updateUserEmailInput").val(rowData["email"]);
 			$("#updateUserPhoneInput").val(rowData["phone"]);
 			$("#updateUserSexInput").val(rowData["sex"]);
-		    
+			
+			/*
+			if(rowData["image_relative_path"] && rowData["image_relative_path"] != '') {
+				$("#userPictureFile").val(rowData["image_relative_path"]);
+			}else {
+				$("#userPictureFile").val('css/no_image.jpg');
+			}
+		    */
 		},
 
 		addUpdateUserEventListeners:function () {

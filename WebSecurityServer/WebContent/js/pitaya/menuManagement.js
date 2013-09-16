@@ -97,35 +97,22 @@ var menuManagement = {
 				data = [
 			    {
 			        "id": "11",
-			        "text": i18n.t("menu.orderManagement.home"),
+			        "text": i18n.t("menu.orderManagement.checkoutOrder"),
 			        "parentid": "-1",
 			        "subMenuWidth": '100px'
 			    }
 			    
-			    , {
-			        "id": "3",
-			        "parentid": "-1",
-			        "text": i18n.t("menu.userManagement.home"),
-			        "subMenuWidth": '100px'
-			    }, {
+			    ,
+			    {
 			        "id": "8",
-			        "parentid": "3",
+			        "parentid": "-1",
 			        "text": i18n.t("menu.userManagement.userDetailInfo")
-			    }, {
-			        "id": "9",
-			        "parentid": "3",
-			        "text": i18n.t("menu.userManagement.changeUserImage")
 			    }];
 			}else {
 				data = [
 			    {
-			        "id": "3",
-			        "parentid": "-1",
-			        "text": i18n.t("menu.userManagement.home"),
-			        "subMenuWidth": '100px'
-			    }, {
 			        "id": "8",
-			        "parentid": "3",
+			        "parentid": "-1",
 			        "text": i18n.t("menu.userManagement.userDetailInfo")
 			    }];
 			}

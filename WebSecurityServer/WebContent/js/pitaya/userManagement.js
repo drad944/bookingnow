@@ -1078,7 +1078,7 @@ var userManagement = {
 			var userData = {};
 			
 			var columns = [
-							{ cellclassname: cellclass, text: i18n.t("userManagement.field.image_relative_path"), datafield: 'image_relative_path',filtertype:'textbox', width: 100 },
+							{ cellsrenderer:imageRenderer,cellclassname: cellclass, text: i18n.t("userManagement.field.image_relative_path"), datafield: 'image_relative_path',filtertype:'textbox', width: 100 },
 							{ cellclassname: cellclass, text: i18n.t("userManagement.field.account"), datafield: 'account',filtertype:'textbox', width: 100 },
 							{ cellclassname: cellclass, text: i18n.t("userManagement.field.name"), datafield: 'name',filtertype:'textbox', width: 100 },
 							{ cellclassname: cellclass, text: i18n.t("userManagement.field.phone"), datafield: 'phone',filtertype:'textbox', width: 100 },
@@ -1093,7 +1093,7 @@ var userManagement = {
 			var datafields = [
 							{name: 'id',type:"number"},
 							{name: 'password',type:"string"},
-			                  {name: 'image_relative_path',type:"string",cellsrenderer:imageRenderer},
+			                  {name: 'image_relative_path',type:"string"},
 			                  {name: 'account',type:"string"},
 			                  {name: 'name',type:"string"},
 			                  {name: 'phone',type:"string"},
