@@ -113,12 +113,14 @@ var userManagement = {
 
 		    
 		  //  $("#updateUserAddressInput").jqxMaskedInput({ mask: '省-市-区-街道-门牌号', width: 150, height: 22, theme: theme });
-		    $("#updateUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 25, theme: theme });
+		    $("#updateUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 27, theme: theme });
 		    $('.updateUserTextInput').jqxInput({width: 150, height: 25, theme: theme });
 		    $('#updateUserAccountInput').jqxInput({disabled: true });
 		    
 		    var d1 = new Date();
-		    $('#updateUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 150, height: 22,formatString: "yyyy/MM/dd", value: d1 });
+		    $.getScript('js/jqwidgets/globalization/globalize.culture.zh-CN.js', function () {
+                $("#updateUserBirthdayInput").jqxDateTimeInput({ enableAbsoluteSelection: true,culture: 'zh-CN',theme: theme,width: 150, height: 22,formatString: "yyyy/MM/dd", value: d1 });
+            });
 		    
 			$("#updateUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25,checked: true, theme: theme });
 			$("#updateUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25,  theme: theme });
@@ -258,6 +260,7 @@ var userManagement = {
 
 		addUpdateUserEventListeners:function () {
 			var me = this;
+			
 			$('#updateUserPopupWindow').bind('close', function (event) { 
 				me.emptyUpdateUserWindow();
 				$('#updateUserInfoForm').jqxValidator('hide');
@@ -413,7 +416,10 @@ var userManagement = {
 		    $("#registerUserPhoneInput").jqxMaskedInput({ mask: '### #### ####', width: 150, height: 25, theme: theme });
 		    $('.registerUserTextInput').jqxInput({width: 150, height: 25, theme: theme });
 		    var date = AppUtil.findDateTime("2000-01-01 00:00:00");
-		    $('#registerUserBirthdayInput').jqxDateTimeInput({ theme: theme,width: 150, height: 25,formatString: "yyyy/MM/dd", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
+		    $.getScript('js/jqwidgets/globalization/globalize.culture.zh-CN.js', function () {
+                $("#registerUserBirthdayInput").jqxDateTimeInput({ culture: 'zh-CN',theme: theme,width: 150, height: 25,formatString: "yyyy/MM/dd", value: $.jqx._jqxDateTimeInput.getDateTime(date) });
+            });
+		    
 		    $("#registerUserSexRadioButton1").jqxRadioButton({ width: 70, height: 25, checked: true, theme: theme });
 		    $("#registerUserSexRadioButton2").jqxRadioButton({ width: 70, height: 25, theme: theme });
 		    
@@ -1098,14 +1104,15 @@ var userManagement = {
 			var userData = {};
 			
 			var columns = [
-							{ cellsrenderer:imageRenderer,cellclassname: cellclass, text: i18n.t("userManagement.field.image_relative_path"), datafield: 'image_relative_path',filtertype:'textbox', width: 100 },
+							
 							{ cellclassname: cellclass, text: i18n.t("userManagement.field.account"), datafield: 'account',filtertype:'textbox', width: 100 },
 							{ cellclassname: cellclass, text: i18n.t("userManagement.field.name"), datafield: 'name',filtertype:'textbox', width: 100 },
 							{ cellclassname: cellclass, text: i18n.t("userManagement.field.phone"), datafield: 'phone',filtertype:'textbox', width: 100 },
 							{ cellclassname: cellclass, text: i18n.t("userManagement.field.sex"), datafield: 'sex',filtertype:'checkedlist', width: 50 },
 							{ cellclassname: cellclass, text: i18n.t("userManagement.field.email"), datafield: 'email',filtertype:'textbox', width: 100 },
 							{ cellclassname: cellclass, text: i18n.t("userManagement.field.address"), datafield: 'address',filtertype:'textbox', width: 100 },
-							{ cellclassname: cellclass, text: i18n.t("userManagement.field.birthday"), datafield: 'birthday',filtertype:'textbox', width: 80 },
+							{ cellclassname: cellclass, text: i18n.t("userManagement.field.birthday"), datafield: 'birthday',filtertype:'textbox', width: 100 },
+							{ cellsrenderer:imageRenderer,cellclassname: cellclass, text: i18n.t("userManagement.field.image_relative_path"), datafield: 'image_relative_path',filtertype:'textbox', width: 100 },
 							{ cellclassname: cellclass, text: i18n.t("userManagement.field.department"), datafield: 'department',filtertype:'checkedlist', width: 80 },
 							{ cellclassname: cellclass, text: i18n.t("userManagement.field.roles"), datafield: 'roles',filtertype:'textbox', width: 150 }
 								    ];
