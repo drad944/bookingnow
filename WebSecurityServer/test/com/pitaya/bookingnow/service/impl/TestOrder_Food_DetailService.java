@@ -15,6 +15,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.entity.Order_Food_Detail;
+import com.pitaya.bookingnow.entity.Order_Food_Detail_Table;
 import com.pitaya.bookingnow.service.IOrder_Food_DetailService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
@@ -91,6 +92,26 @@ public class TestOrder_Food_DetailService {
 						+ realFood.getSmall_image());
 			}
 			System.out.println();
+		}
+	}
+	
+	@Test
+	public void testPowerSearchFood_Details() {
+		SearchParams params = new SearchParams();
+		params.setFood_detail_id(2l);
+		params.setOffset(1);
+		params.setRowCount(5);
+		List<Integer> food_detailStatusList = new ArrayList<Integer>();
+		food_detailStatusList.add(Constants.FOOD_NEW);
+		food_detailStatusList.add(Constants.FOOD_CONFIRMED);
+		
+		params.setFood_detailStatusList(food_detailStatusList);
+
+		List<Order_Food_Detail_Table> realFood_Details = food_detailService.powerSearchFood_Details(params);
+		for (int i = 0; i < realFood_Details.size(); i++) {
+			Order_Food_Detail_Table realFood_Detail = realFood_Details.get(i);
+			System.out.println(realFood_Detail.getTable_id());
+			System.out.println(realFood_Detail.getTable_address());
 		}
 	}
 

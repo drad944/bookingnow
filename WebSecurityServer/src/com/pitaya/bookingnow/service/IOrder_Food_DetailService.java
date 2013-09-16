@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.pitaya.bookingnow.entity.Order_Food_Detail;
+import com.pitaya.bookingnow.entity.Order_Food_Detail_Table;
 import com.pitaya.bookingnow.util.MyResult;
 import com.pitaya.bookingnow.util.SearchParams;
 
@@ -21,6 +22,8 @@ public interface IOrder_Food_DetailService {
 	List<Order_Food_Detail> searchOrder_Food_Details(Order_Food_Detail food_detail);
 	
 	List<Order_Food_Detail> searchFood_Details(SearchParams params);
+	
+	List<Order_Food_Detail_Table> powerSearchFood_Details(SearchParams params);
 			
 	MyResult updateFoodStatus(SearchParams params, Order_Food_Detail food_detail);
 	

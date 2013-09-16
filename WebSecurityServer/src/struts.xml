@@ -296,6 +296,12 @@
 				<param name="excludeNullProperties">true</param>
 	        </result>
 	        
+	        
+	        <result name="powerSearchFoodsInFood_DetailSuccess" type="json">
+	            <param name="excludeNullProperties">true</param>
+				<param name="root">powerMatchedFoods</param>
+	        </result>
+	        
 	        <result name="searchFoodsInFood_DetailSuccess" type="json">
 	            <param name="excludeNullProperties">true</param>
 				<param name="root">matchedFoods</param>
