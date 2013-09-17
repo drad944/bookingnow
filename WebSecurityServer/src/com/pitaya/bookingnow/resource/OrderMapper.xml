@@ -564,6 +564,13 @@
 					#{item} 
 				</foreach> 
 			</if>
+			
+			<if test="fromDateTime != null">
+				and O.modifyTime &gt; fromDateTime
+			</if>
+			<if test="toDateTime != null">
+				and O.modifyTime &lt; toDateTime
+			</if>
 		</where>
 	</select>
 	

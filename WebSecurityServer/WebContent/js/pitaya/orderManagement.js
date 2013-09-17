@@ -4,14 +4,21 @@ var orderManagement = {
 			$("#orderDataGrid").unbind('rowselect');
 		},
 
-		visit : function (){
-			this.init();
+		visit : function (searchOption){
+			this.init(searchOption);
 		},
-		init : function(){
+		init : function(searchOption){
 			var me = this;
-			me.parseOrderGridHtml();
+			me.parseOrderGridHtml(searchOption);
 		},
-		addOrderGridEventListeners:function() {
+		initLocaleOrderGrid:function() {
+			$("#backToSearchOrderOptionBar").val(i18n.t("orderManagement.button.back"));
+		},
+		orderGridEventListeners:function() {
+			$("#backToSearchOrderOptionBar").bind('click', function (event) {
+		        openSubPage('framework_main','page/common/orderSearchOptionBar.html','content',orderSearchOptionBar,null);
+		    });
+			
 			$("#orderDataGrid").bind('rowselect', function (event) {
 		        $("#eventLog").text("select row index : " + event.args.rowindex);
 		    });
@@ -48,10 +55,11 @@ var orderManagement = {
 			return null;
 		},
 
-		parseOrderGridHtml:function () {
+		parseOrderGridHtml:function (searchOption) {
 			var me = this;
-			$.post("searchOrder.action", 
-				{"order.enabled": true}, 
+				
+			$.post("powerSearchOrder.action", 
+				searchOption, 
 				function(matchedorders){
 		var option = {
 				lng: 'zh',
@@ -74,11 +82,11 @@ var orderManagement = {
 		var orderData = {};
 		
 		var columns = [
-						{ text: i18n.t("orderManagement.field.allowance"), datafield: 'allowance',filtertype:'number', width: 120 },
-						{ text: i18n.t("orderManagement.field.customer_count"), datafield: 'customer_count',filtertype:'number', width: 100 },
-						{ text: i18n.t("orderManagement.field.modifyTime"), datafield: 'modifyTime',filtertype:'textbox', width: 130 },
+						{ text: i18n.t("orderManagement.field.allowance"), datafield: 'allowance',filtertype:'number', width: 80 },
+						{ text: i18n.t("orderManagement.field.customer_count"), datafield: 'customer_count',filtertype:'number', width: 80 },
+						{ text: i18n.t("orderManagement.field.modifyTime"), datafield: 'modifyTime',filtertype:'textbox', width: 160 },
 						{ text: i18n.t("orderManagement.field.prePay"), datafield: 'prePay',filtertype:'number', width: 100 },
-						{ text: i18n.t("orderManagement.field.submit_time"), datafield: 'submit_time',filtertype:'textbox', width: 130 },
+						{ text: i18n.t("orderManagement.field.submit_time"), datafield: 'submit_time',filtertype:'textbox', width: 160 },
 						{ text: i18n.t("orderManagement.field.status"), datafield: 'status',filtertype:'textbox', width: 100 },
 						{ text: i18n.t("orderManagement.field.total_price"), datafield: 'total_price',filtertype:'number', width: 120 }
 						
@@ -167,7 +175,7 @@ var orderManagement = {
 		
 		// display selected row index.
 	    
-		me.addOrderGridEventListeners();
+		me.orderGridEventListeners();
 		/*
 		 $("#orderDataGrid").on('columnreordered', function (event) {
 		    var column = event.args.columntext;

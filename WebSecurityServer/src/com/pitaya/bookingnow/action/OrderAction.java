@@ -106,6 +106,26 @@ public class OrderAction extends BaseAction{
 		return "Fail";
 	}
 	
+	public String powerSearchOrder() {
+		
+		if (params != null) {
+			
+			List<Order> orders = orderService.powerSearchFullOrders(params);
+			if (matchedOrders == null) {
+				matchedOrders = new HashMap<String, List<Order>>();
+			}
+			matchedOrders.put("result", orders);
+			return "searchOrderSuccess";
+		}
+		if (result == null) {
+			result = new MyResult();
+		}
+		result.setErrorType(Constants.FAIL);
+		result.setExecuteResult(false);
+		result.getErrorDetails().put("order_exist", "can not find order info in client data");
+		return "searchOrderFail";
+	}
+	
 	public String searchOrder() {
 		
 		if (order != null) {

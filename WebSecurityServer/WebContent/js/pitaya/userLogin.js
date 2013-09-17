@@ -42,10 +42,10 @@ var userLogin = {
 		    
 		    $('#userLoginForm').jqxValidator({
 		     rules: [
-		            { input: '#user_account', message: i18n.t("userLogin.validation.message.requireAccount"), action: 'keyup, blur', rule: 'required' },
-		            { input: '#user_account', message: i18n.t("userLogin.validation.message.accountLength"), action: 'keyup, blur', rule: 'length=3,15' },
-		            { input: '#user_password', message: i18n.t("userLogin.validation.message.requirePassword"), action: 'keyup, blur', rule: 'required' },
-		            { input: '#user_password', message: i18n.t("userLogin.validation.message.passwordLength"), action: 'keyup, blur', rule: 'length=6,20' }
+		            { input: '#user_account', message: i18n.t("userLogin.validation.message.requireAccount"), action: 'blur', rule: 'required' },
+		            { input: '#user_account', message: i18n.t("userLogin.validation.message.accountLength"), action: 'blur', rule: 'length=3,15' },
+		            { input: '#user_password', message: i18n.t("userLogin.validation.message.requirePassword"), action: 'blur', rule: 'required' },
+		            { input: '#user_password', message: i18n.t("userLogin.validation.message.passwordLength"), action: 'blur', rule: 'length=6,20' }
 		            ], 
 		            theme: theme
 		    });

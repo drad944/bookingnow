@@ -191,8 +191,9 @@ var menuManagement = {
 		    	}
 		        $("#eventLog").text("Id: " + event.args.id + ", Text: " + $(event.args).text());
 		        if(event.args.id == 1) {
-		        	openContentPage('framework_main','page/common/orderManagement.html','content');
-		        	currentPage = orderManagement;
+		        	
+		        	openSubPage('framework_main','page/common/orderSearchOptionBar.html','content',orderSearchOptionBar,null);
+		        	
 		        }else if(event.args.id == 2) {
 		        	openContentPage('framework_main','page/common/foodManagement.html','content');
 		        	currentPage = foodManagement;
