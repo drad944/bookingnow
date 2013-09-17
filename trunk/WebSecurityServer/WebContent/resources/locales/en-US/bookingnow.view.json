@@ -125,6 +125,21 @@
 	},
 	
 	"orderManagement":{
+		"searchOptionBar":{
+				"fromDateTime":"begin time",
+				"toDateTime":"end time",
+				"status":"status",
+				"button":{
+					"search":"search",
+					"clear":"clear"
+				},
+				"validation":{
+					"message":{
+							"toTimeLTFromTime":"end time is before than begin time!"
+							
+						}
+				}
+		},
 		"status":{
 				"NEW":"NEW",
 				"WELCOMER_NEW":"WELCOMER_NEW",
@@ -190,6 +205,7 @@
 		},
 		"button":{
 				"reset":"Reset",
+				"back":"back",
 				"cancel":"Cancel",
 				"update":"Update",
 				"register":"Register",

@@ -31,7 +31,22 @@ public class SearchParams {
 	
 	private String imagePath;
 	
+	private Long fromDateTime;
+	private Long toDateTime;
 	
+	
+	public Long getFromDateTime() {
+		return fromDateTime;
+	}
+	public void setFromDateTime(Long fromDateTime) {
+		this.fromDateTime = fromDateTime;
+	}
+	public Long getToDateTime() {
+		return toDateTime;
+	}
+	public void setToDateTime(Long toDateTime) {
+		this.toDateTime = toDateTime;
+	}
 	public Integer getW() {
 		return w;
 	}

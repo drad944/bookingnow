@@ -21,6 +21,8 @@ public interface IOrderService {
 	
 	List<Order> searchFullOrdersWithoutFoods(SearchParams params);
 	
+	List<Order> powerSearchFullOrders(SearchParams params);
+	
 	List<Order> searchFullOrdersByFullOrder(Order order);
 	
 	List<Order> searchOrdersByFullOrder(Order order);
