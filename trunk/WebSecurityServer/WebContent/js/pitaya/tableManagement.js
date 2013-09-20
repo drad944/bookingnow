@@ -18,6 +18,47 @@ var tableManagement = {
 			$("#addTableRowButton").unbind('click');
 			$("#deleteTableRowButton").unbind('click');
 			$("#tableDataGrid").unbind('rowselect');
+			
+			
+			$('#updateTableDiv').jqxExpander('destroy');
+			/*
+		    $('#updateTableUpdateButton').jqxButton('destroy');
+		    $('#updateTableResetButton').jqxButton('destroy');
+		    $('#updateTableCancelButton').jqxButton('destroy');
+		    
+		    $('.updateTableTextInput').jqxInput('destroy');
+			$('#updateTableAddressInput').jqxInput('destroy');
+		    $('#updateTableMinCustomerCountInput').jqxNumberInput('destroy');
+		    $('#updateTableMaxCustomerCountInput').jqxNumberInput('destroy');
+		    $('#updateTableIndoorPriceInput').jqxNumberInput('destroy');
+		 	$("#updateTableStatusCombobox").jqxComboBox('destroy');
+		 	*/
+		 	$("#updateTablePopupWindow").jqxWindow('destroy');
+		 	
+		 	
+		 	$("#registerTableDiv").jqxExpander('destroy');
+		 	/*
+		    $('#registerTableRegisterButton').jqxButton('destroy');
+		    $('#registerTableResetButton').jqxButton('destroy');
+		    $('#registerTableCancelButton').jqxButton('destroy');
+		    $('.registerTableTextInput').jqxInput('destroy');
+			$('#registerTableAddressInput').jqxInput('destroy');
+		    $('#registerTableMinCustomerCountInput').jqxNumberInput('destroy');
+		    $('#registerTableMaxCustomerCountInput').jqxNumberInput('destroy');
+		    $('#registerTableIndoorPriceInput').jqxNumberInput('destroy');
+			$("#registerTableStatusCombobox").jqxComboBox('destroy');
+			*/
+		    $("#addTablePopupWindow").jqxWindow('destroy');
+		    
+		    $("#addTableRowButton").jqxButton('destroy');
+			$("#deleteTableRowButton").jqxButton('destroy');
+			$("#updateTableRowButton").jqxButton('destroy');
+			
+			$("#tableDataGrid").jqxGrid('clearfilters');
+			$("#tableDataGrid").jqxGrid('clear');
+			$('#tableDataGrid').jqxGrid({ filterable: false});
+			$('#tableDataGrid').jqxGrid('disabled');
+		//	$("#tableDataGrid").jqxGrid('destroy');
 		},
 
 		visit : function (){
@@ -508,7 +549,7 @@ var tableManagement = {
 			    }
 			});
 		},
-
+		
 		initTableGrid:function () {
 			var me = this;
 			me.highlightRows = [];
@@ -539,7 +580,7 @@ var tableManagement = {
 		                        return "highlightRow";
 		                    }
 		                }
-		            }
+		            };
 					
 					if(matchedtables != null && matchedtables.result != null){
 						tables = matchedtables.result;

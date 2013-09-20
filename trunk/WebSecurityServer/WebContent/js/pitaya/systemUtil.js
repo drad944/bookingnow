@@ -65,7 +65,7 @@ function openSubPage(sourceDiv,url,targetDiv,initFunction,initParam,synchronous)
 		 
 	        data = tmp.find('#' + targetDiv).html();
 	        tmp.remove();
-		         
+	        contentPage.html(null);     
 		    contentPage.html(data);
 		    data = null;
 		    if(initFunction) {
@@ -84,7 +84,7 @@ function openSubPage(sourceDiv,url,targetDiv,initFunction,initParam,synchronous)
 		 
 	        data = tmp.find('#' + targetDiv).html();
 	        tmp.remove();
-		         
+	        contentPage.html(null);     
 		    contentPage.html(data);
 		    data = null;
 		    if(initFunction) {
@@ -106,7 +106,7 @@ function openContentPage(sourceDiv,url,targetDiv) {
 		 
 	        data = tmp.find('#' + targetDiv).html();
 	        tmp.remove();
-		         
+	        contentPage.html(null);    
 		    contentPage.html(data);
 		    data = null;
 	    });
