@@ -566,10 +566,10 @@
 			</if>
 			
 			<if test="fromDateTime != null">
-				and O.modifyTime &gt; fromDateTime
+				and O.modifyTime &gt; #{fromDateTime,jdbcType=BIGINT}
 			</if>
 			<if test="toDateTime != null">
-				and O.modifyTime &lt; toDateTime
+				and O.modifyTime &lt; #{toDateTime,jdbcType=BIGINT}
 			</if>
 		</where>
 	</select>

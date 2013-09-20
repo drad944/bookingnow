@@ -1517,7 +1517,7 @@ public class OrderService implements IOrderService{
 
 	@Override
 	public List<Order> powerSearchFullOrders(SearchParams params) {
-		return orderDao.searchFullOrders(params);
+		return orderDao.searchMinFullOrders(params);
 	}
 
 }
