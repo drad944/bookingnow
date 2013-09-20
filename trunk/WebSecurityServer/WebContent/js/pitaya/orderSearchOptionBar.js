@@ -50,8 +50,8 @@ var orderSearchOptionBar = {
 		                var fromDateTime = $('#fromDateTime').val();
 		                var toDateTime = $('#toDateTime').val();
 		                if(fromDateTime && toDateTime && fromDateTime != "" && toDateTime != "") {
-		                	var from = new Date(fromDateTime).getTime();
-		                	var to = new Date(toDateTime).getTime();
+		                	var from = new Date(Date.parse(fromDateTime.replace(/-/g,"/")));
+		                	var to = new Date(Date.parse(toDateTime.replace(/-/g,"/")));
 		                	
 		                	var result = from < to;
 		                	return result;
@@ -70,10 +70,11 @@ var orderSearchOptionBar = {
 				var fromDateTime = $('#fromDateTime').val();
 		        var toDateTime = $('#toDateTime').val();
 		        if(fromDateTime && fromDateTime != "") {
-		        	 searchOption["params.fromDateTime"] = new Date(fromDateTime).getTime();
+		        	
+		        	searchOption["params.fromDateTime"] = (new Date(Date.parse(fromDateTime.replace(/-/g,"/")))).getTime();
 		        }
 		        if(toDateTime && toDateTime != "") {
-		        	searchOption["params.toDateTime"] = new Date(toDateTime).getTime();
+		        	searchOption["params.toDateTime"] = (new Date(Date.parse(toDateTime.replace(/-/g,"/")))).getTime();
 		        }        
 				
 				openSubPage('framework_main','page/common/orderManagement.html','content',orderManagement,searchOption);
