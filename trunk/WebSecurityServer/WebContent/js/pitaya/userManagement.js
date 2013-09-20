@@ -23,6 +23,21 @@ var userManagement = {
 			$("#registerUserDepartmentCombobox").unbind('select');
 			$("#registerUserRolesCombobox").unbind('checkChange');
 			$("#registerUserInfoForm").unbind('validationSuccess');
+			
+			$("#updateUserDiv").jqxExpander('destroy');
+			$("#updateUserPopupWindow").jqxWindow('destroy');
+			
+			$("#registerUserDiv").jqxExpander('destroy');
+		    $("#addUserPopupWindow").jqxWindow('destroy');
+		    
+		    $("#addUserRowButton").jqxButton('destroy');
+			$("#deleteUserRowButton").jqxButton('destroy');
+			$("#updateUserRowButton").jqxButton('destroy');
+			
+			$("#userDataGrid").jqxGrid('clearfilters');
+			$("#userDataGrid").jqxGrid('clear');
+			$('#userDataGrid').jqxGrid({ filterable: false});
+			$('#userDataGrid').jqxGrid('disabled');
 		},
 
 		visit : function (){

@@ -3,6 +3,19 @@ var userDetail = {
 		leave : function (){
 			var me = this;
 			me.emptyUpdateUserTab();
+			
+			$('#updateUserBasicInfoButton').jqxButton('destroy');
+		    $('#updateUserAdvancedInfoButton').jqxButton('destroy');
+		    
+		    $("#updateUserPhoneInput").jqxMaskedInput('destroy');
+		    $('.updateUserTextInput').jqxInput('destroy');
+		    
+		    $('#updateUserBirthdayInput').jqxDateTimeInput('destroy');
+		    
+			$("#updateUserSexRadioButton1").jqxRadioButton('destroy');
+			$("#updateUserSexRadioButton2").jqxRadioButton('destroy');
+		    
+		    $('#jqxTabs').jqxTabs('destroy');
 		},
 
 		visit : function (){

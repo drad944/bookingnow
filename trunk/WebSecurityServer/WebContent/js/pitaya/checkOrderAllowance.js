@@ -4,6 +4,13 @@ var checkOrderAllowance = {
 			$("#checkoutOrderAllowanceWindow").unbind('close');
 			$("#checkoutOrderAllowanceCancelButton").unbind('click');
 			$("#checkoutOrderAllowanceButton").unbind('click');
+			
+			/*
+			$('#checkoutOrderAllowanceButton').jqxButton('destroy');
+			$('#checkoutOrderAllowanceCancelButton').jqxButton('destroy');
+			$('#checkoutOrderAllowanceInput').jqxNumberInput('destroy');
+			*/
+			$("#checkoutOrderAllowanceWindow").jqxWindow('destroy');
 		},
 
 		visit : function (){
@@ -43,7 +50,7 @@ var checkOrderAllowance = {
 			var me = this;
 			$('#checkoutOrderAllowanceWindow').bind('close', function (event) { 
 				me.emptyCheckoutOrderAllowanceWindow();
-				me.leave();
+				//me.leave();
 			});
 			
 			$("#checkoutOrderAllowanceCancelButton").bind('click', function (event) {
