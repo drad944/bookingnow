@@ -10,7 +10,11 @@
 		<result column="order_id" property="order_id" jdbcType="BIGINT" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, realCustomerCount, enabled, table_id, order_id
+		id, 
+		realCustomerCount, 
+		enabled, 
+		table_id, 
+		order_id
 	</sql>
 	
 	
@@ -40,17 +44,17 @@
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 		insert into pitaya_order_table_detail (
-		realCustomerCount, 
-		enabled,
-		table_id,
-		order_id
-		)
+			realCustomerCount, 
+			enabled,
+			table_id,
+			order_id
+			)
 		values (
-		#{realCustomerCount,jdbcType=INTEGER}, 
-		#{enabled,jdbcType=BIT},
-		#{table_id,jdbcType=BIGINT},
-		#{order_id,jdbcType=BIGINT}
-		)
+			#{realCustomerCount,jdbcType=INTEGER}, 
+			#{enabled,jdbcType=BIT},
+			#{table_id,jdbcType=BIGINT},
+			#{order_id,jdbcType=BIGINT}
+			)
 	</insert>
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Order_Table_Detail">
 		<selectKey resultType="java.lang.Long" keyProperty="id"

@@ -138,6 +138,47 @@
 		
 	</sql>
 	
+	<sql id="TEMP_Food_Without_Image_Column_List">
+		F_id, 
+		F_recommendation, 
+		F_status, 
+		F_name, 
+		F_version, 
+		F_period, 
+		F_price,
+		F_category, 
+		F_description,
+		F_enabled
+	</sql>
+	
+	<sql id="TEMP_Full_Food_Column_List">
+		F_id, 
+		F_recommendation, 
+		F_status, 
+		F_name, 
+		F_version, 
+		F_period, 
+		F_price,
+		F_category, 
+		F_description,
+		F_enabled,
+		F_large_image_relative_path,
+		F_small_image_relative_path,
+		F_large_image_absolute_path,
+		F_small_image_absolute_path,
+		F_large_image_size,
+		F_small_image_size
+		
+	</sql>
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	<select id="powerSelectByParams" resultMap="Food_Detail_Table_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
            
 	    select
@@ -146,10 +187,14 @@
 		INTERAL_OT.OT_table_id as FD_table_id,
 		INTERAL_OT.OT_table_address as FD_table_address,
 		
-		<include refid="Food_Without_Image_Column_List" />
+		<include refid="TEMP_Food_Without_Image_Column_List" />
 		from pitaya_order_food_detail FD 
-			
-			left outer join pitaya_food F on FD.food_id = F.id
+			left outer join 
+			(
+				select <include refid="Food_Without_Image_Column_List" />
+				from pitaya_food F
+				where F.enabled = true
+			) as F on FD.food_id = F.F_id
 			
 			left outer join 
 			(
@@ -210,9 +255,15 @@
 	    select
 		<include refid="Food_Detail_Base_Column_List" />
 		,
-		<include refid="Food_Without_Image_Column_List" />
+		<include refid="TEMP_Food_Without_Image_Column_List" />
 		from pitaya_order_food_detail FD 
-			left outer join pitaya_food F on FD.food_id = F.id
+			left outer join 
+			(
+				select <include refid="Food_Without_Image_Column_List" />
+				from pitaya_food F
+				where F.enabled = true
+			) as F on FD.food_id = F.F_id
+			
 		<where>
 			FD.enabled = true
 		    <if test="food_detailStatusList != null">
@@ -280,9 +331,15 @@
 	    select
 		<include refid="Food_Detail_Base_Column_List" />
 		,
-		<include refid="Food_Without_Image_Column_List" />
+		<include refid="TEMP_Food_Without_Image_Column_List" />
 		from pitaya_order_food_detail FD
-			left outer join pitaya_food F on FD.food_id = F.id
+		
+			left outer join 
+			(
+				select <include refid="Food_Without_Image_Column_List" />
+				from pitaya_food F
+				where F.enabled = true
+			) as F on FD.food_id = F.F_id
 		<where>
 		    <if test="status != null">
 				FD.status = #{status,jdbcType=INTEGER}
@@ -376,9 +433,14 @@
 		select
 		<include refid="Food_Detail_Base_Column_List" />
 		,
-		<include refid="Food_Without_Image_Column_List" />
+		<include refid="TEMP_Food_Without_Image_Column_List" />
 		from pitaya_order_food_detail FD
-			left outer join pitaya_food F on FD.food_id = F.id
+			left outer join 
+			(
+				select <include refid="Food_Without_Image_Column_List" />
+				from pitaya_food F
+				where F.enabled = true
+			) as F on FD.food_id = F.F_id
 		where F.id = #{id,jdbcType=BIGINT} and F.enabled = true
 	</select>
 	
@@ -386,9 +448,14 @@
 		select
 		<include refid="Food_Detail_Base_Column_List" />
 		,
-		<include refid="Food_Without_Image_Column_List" />
+		<include refid="TEMP_Food_Without_Image_Column_List" />
 		from pitaya_order_food_detail FD
-			left outer join pitaya_food F on FD.food_id = F.id
+			left outer join 
+				(
+					select <include refid="Food_Without_Image_Column_List" />
+					from pitaya_food F
+					where F.enabled = true
+				) as F on FD.food_id = F.F_id
 		where FD.id = #{id,jdbcType=BIGINT} and F.enabled = true
 	</select>
 	
@@ -396,9 +463,14 @@
 		select
 		<include refid="Food_Detail_Base_Column_List" />
 		,
-		<include refid="Food_Without_Image_Column_List" />
+		<include refid="TEMP_Food_Without_Image_Column_List" />
 		from pitaya_order_food_detail FD
-			left outer join pitaya_food F on FD.food_id = F.id
+			left outer join 
+				(
+					select <include refid="Food_Without_Image_Column_List" />
+					from pitaya_food F
+					where F.enabled = true
+				) as F on FD.food_id = F.F_id
 		<where>
 		 	F.enabled = true
 		    <if test="food_detail_id != null">
@@ -446,25 +518,25 @@
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 		insert into pitaya_order_food_detail (
-		status, 
-		count, 
-		preference,
-		last_modify_time, 
-		enabled, 
-		isFree, 
-		food_id,
-		order_id
-		)
+			status, 
+			count, 
+			preference,
+			last_modify_time, 
+			enabled, 
+			isFree, 
+			food_id,
+			order_id
+			)
 		values (
-		#{status,jdbcType=INTEGER}, 
-		#{count,jdbcType=INTEGER},
-		#{preference,jdbcType=INTEGER},
-		#{last_modify_time,jdbcType=BIGINT},
-		#{enabled,jdbcType=BIT}, 
-		#{isFree,jdbcType=BIT}, 
-		#{food_id,jdbcType=BIGINT},
-		#{order_id,jdbcType=BIGINT}
-		)
+			#{status,jdbcType=INTEGER}, 
+			#{count,jdbcType=INTEGER},
+			#{preference,jdbcType=INTEGER},
+			#{last_modify_time,jdbcType=BIGINT},
+			#{enabled,jdbcType=BIT}, 
+			#{isFree,jdbcType=BIT}, 
+			#{food_id,jdbcType=BIGINT},
+			#{order_id,jdbcType=BIGINT}
+			)
 	</insert>
 	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Order_Food_Detail">
 		<selectKey resultType="java.lang.Long" keyProperty="id"
