@@ -22,6 +22,7 @@ var checkOrderDetail = {
 					var invoiceOrderHtml = me.invoiceOrderTable(order);
 					$("#detailOrderTable").html(invoiceOrderHtml);
 					me.initCheckOrderElements();
+					me.initCheckOrderLocale();
 					me.addOrderDetailEventListeners();
 		        }
 			});
@@ -294,13 +295,15 @@ var checkOrderDetail = {
 			return orderTable;
 		},
 		
-		initCheckOrderElements:function () {
+		initCheckOrderLocale:function() {
 			$('#backToCheckoutManagement').val(i18n.t("checkoutOrderManagement.button.back"));
 			$('#checkoutOrderButton').val(i18n.t("checkoutOrderManagement.button.checkout"));
 			$('#checkOrderCancelButton').val(i18n.t("checkoutOrderManagement.button.cancel"));
+		},
+		
+		initCheckOrderElements:function () {
 			
 			$('#backToCheckoutManagement').jqxButton({ width: 60, height: 25, theme: theme });
-			
 		    $('#checkoutOrderButton').jqxButton({ width: 60, height: 25, theme: theme });
 		    $('#checkOrderCancelButton').jqxButton({ width: 60, height: 25, theme: theme });
 		},
