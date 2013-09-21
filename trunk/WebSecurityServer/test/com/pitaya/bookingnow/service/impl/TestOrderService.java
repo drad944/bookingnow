@@ -176,6 +176,12 @@ public class TestOrderService {
 	}
 	
 	@Test
+	public void testSearchMaxFullOrderByPrimaryKey() {
+		Order realOrder = orderService.searchMaxFullOrderByPrimaryKey(3l);
+		showFullOrderInfo(realOrder);
+	}
+	
+	@Test
 	public void testSearchOrderById() {
 		Order order = new Order();
 		order.setId(1l);

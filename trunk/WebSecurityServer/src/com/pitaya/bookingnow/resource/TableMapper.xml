@@ -11,7 +11,13 @@
 		<result column="indoorPrice" property="indoorPrice" jdbcType="DOUBLE" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, status, minCustomerCount, maxCustomerCount, address,indoorPrice,enabled
+		id, 
+		status, 
+		minCustomerCount, 
+		maxCustomerCount, 
+		address,
+		indoorPrice,
+		enabled
 	</sql>
 	
 	
@@ -97,13 +103,20 @@
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 		insert into pitaya_table (
-		status, minCustomerCount, maxCustomerCount,
-		address,indoorPrice,enabled
-		)
+			status, 
+			minCustomerCount, 
+			maxCustomerCount,
+			address,
+			indoorPrice,
+			enabled
+			)
 		values (
-		#{status,jdbcType=INTEGER}, #{minCustomerCount,jdbcType=INTEGER},
-		#{maxCustomerCount,jdbcType=INTEGER},
-		#{address,jdbcType=VARCHAR},#{indoorPrice,jdbcType=DOUBLE},#{enabled,jdbcType=BIT}
+			#{status,jdbcType=INTEGER}, 
+			#{minCustomerCount,jdbcType=INTEGER},
+			#{maxCustomerCount,jdbcType=INTEGER},
+			#{address,jdbcType=VARCHAR},
+			#{indoorPrice,jdbcType=DOUBLE},
+			#{enabled,jdbcType=BIT}
 		)
 	</insert>
 	
@@ -184,11 +197,11 @@
 	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Table">
 		update pitaya_table
 		set status = #{status,jdbcType=INTEGER},
-		minCustomerCount = #{minCustomerCount,jdbcType=INTEGER},
-		maxCustomerCount = #{maxCustomerCount,jdbcType=INTEGER},
-		address = #{address,jdbcType=VARCHAR},
-		indoorPrice = #{indoorPrice,jdbcType=DOUBLE},
-		enabled = #{enabled,jdbcType=BIT}
+			minCustomerCount = #{minCustomerCount,jdbcType=INTEGER},
+			maxCustomerCount = #{maxCustomerCount,jdbcType=INTEGER},
+			address = #{address,jdbcType=VARCHAR},
+			indoorPrice = #{indoorPrice,jdbcType=DOUBLE},
+			enabled = #{enabled,jdbcType=BIT}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 </mapper>

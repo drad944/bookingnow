@@ -167,8 +167,11 @@ public class TestOrder_Food_DetailService {
 		Order_Food_Detail tempFood_Detail = new Order_Food_Detail();
 		tempFood_Detail.setId((long) 25);
 		tempFood_Detail.setStatus(Constants.FOOD_COOKING);
+		
+		SearchParams params = new SearchParams();
+		params.setUser_id(8l);
 
-		MyResult result = food_detailService.updateFoodStatus(tempFood_Detail);
+		MyResult result = food_detailService.updateFoodStatus(params,tempFood_Detail);
 		if (result.isExecuteResult()) {
 
 			System.out.println("add new order successfully!");
@@ -177,10 +180,8 @@ public class TestOrder_Food_DetailService {
 			Map<String, String> falseResults = result.getErrorDetails();
 			Iterator iter = falseResults.entrySet().iterator();
 			while (iter.hasNext()) {
-				Map.Entry<String, String> entry = (Map.Entry<String, String>) iter
-						.next();
-				System.out.println(entry.getKey().toString() + " : "
-						+ entry.getValue().toString());
+				Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next();
+				System.out.println(entry.getKey().toString() + " : " + entry.getValue().toString());
 			}
 
 		}
