@@ -11,9 +11,15 @@ var orderManagement = {
 			var me = this;
 			me.parseOrderGridHtml(searchOption);
 		},
-		initLocaleOrderGrid:function() {
+		
+		initOrderGridLocale:function() {
 			$("#backToSearchOrderOptionBar").val(i18n.t("orderManagement.button.back"));
 		},
+		
+		initOrderGridElement:function() {
+			$("#backToSearchOrderOptionBar").jqxButton({ width: 60, height: 25, theme: theme });
+		},
+		
 		orderGridEventListeners:function() {
 			$("#backToSearchOrderOptionBar").bind('click', function (event) {
 		        openSubPage('framework_main','page/common/orderSearchOptionBar.html','content',orderSearchOptionBar,null);
@@ -174,7 +180,8 @@ var orderManagement = {
 		});
 		
 		// display selected row index.
-	    
+	    me.initOrderGridLocale();
+	    me.initOrderGridElement();
 		me.orderGridEventListeners();
 		/*
 		 $("#orderDataGrid").on('columnreordered', function (event) {
