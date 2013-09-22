@@ -56,7 +56,7 @@ var userLogin = {
 			$("#user_register_button").bind('click', function(event) {
 				$('#userLoginForm').jqxValidator('hide');
 				var date = new Date();
-				window.location.href="framework.html?subPage=" + "page/common/registerUser.html" + "&uid=" + date.getTime();
+				window.location.href="main.html?subPage=" + "page/common/registerUser.html" + "&uid=" + date.getTime();
 			});
 
 			$("#user_login_button").bind('click', function() {

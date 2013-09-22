@@ -25,6 +25,11 @@ function getURLParameters(key) {
 
 function contains(string,substr,isIgnoreCase)
 {
+	if(string && substr) {
+		
+	}else {
+		return false;
+	}
     if(isIgnoreCase)
     {
      string=string.toLowerCase();

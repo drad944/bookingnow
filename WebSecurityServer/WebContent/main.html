@@ -45,6 +45,7 @@
 	<script type="text/javascript" src="js/pitaya/menuManagement.js"></script>
 	<script type="text/javascript" src="js/pitaya/userDetail.js"></script>
 	<script type="text/javascript" src="js/pitaya/topUser.js"></script>
+	<script type="text/javascript" src="js/pitaya/userRegister.js"></script>
 	<script type="text/javascript" src="js/pitaya/systemUtil.js"></script>
 	
 	<script type="text/javascript" src="js/jquery.color.js"></script>
@@ -120,8 +121,14 @@
 			i18n.init(option);
 		
 		$(document).ready(function(){
-		
-			AppUtil.request("findLoginUser.action", null, function(result){
+			var subPageParam = getURLParameters("subPage");
+			if(subPageParam && contains(subPageParam,"registerUser.html",false)) {
+    			openSubPage('framework_top','page/common/top.html','topUserPanel',topUser);
+        		currentPage = userRegister;
+        		
+        		openSubPage('framework_main','page/common/registerUser.html','content',userRegister);
+			}else {
+				AppUtil.request("findLoginUser.action", null, function(result){
 				    	
 				if(result != null && result["id"] != null) {
 				
@@ -139,6 +146,8 @@
 			},function(){
 				alert("Fail to login!");
 			});
+			}
+			
 					
 		});
 	</script>
