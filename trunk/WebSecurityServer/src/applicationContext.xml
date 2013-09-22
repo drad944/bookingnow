@@ -75,6 +75,10 @@
         <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
     </bean>
     
+    <bean id="role_detailService" class="com.pitaya.bookingnow.service.impl.security.User_Role_DetailService">
+		<property name="userRoleDetailDao" ref="role_detailDao" />
+	</bean>
+    
 	<bean id="userService" class="com.pitaya.bookingnow.service.impl.security.UserService">
 		<property name="userDao" ref="userDao" />
 		<property name="roleDao" ref="roleDao" />

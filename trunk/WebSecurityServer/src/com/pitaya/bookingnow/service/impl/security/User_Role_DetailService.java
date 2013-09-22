@@ -7,19 +7,20 @@ import com.pitaya.bookingnow.service.security.IUser_Role_DetailService;
 
 public class User_Role_DetailService implements IUser_Role_DetailService {
 
-	private User_Role_DetailMapper user_role_detailDao;
+	private User_Role_DetailMapper userRoleDetailDao;
 	
-	public User_Role_DetailMapper getUser_Role_DetailDao() {
-		return user_role_detailDao;
+
+	public User_Role_DetailMapper getUserRoleDetailDao() {
+		return userRoleDetailDao;
 	}
 
-	public void setUser_Role_DetailDao(User_Role_DetailMapper user_role_detailDao) {
-		this.user_role_detailDao = user_role_detailDao;
+	public void setUserRoleDetailDao(User_Role_DetailMapper userRoleDetailDao) {
+		this.userRoleDetailDao = userRoleDetailDao;
 	}
 
 	@Override
 	public boolean add(User_Role_Detail user_role_detail) {
-		if(user_role_detailDao.insertSelective(user_role_detail) > 0) {
+		if(userRoleDetailDao.insertSelective(user_role_detail) > 0) {
 			return true;
 		}
 		return false;
