@@ -213,6 +213,12 @@ create table pitaya_user(
 	sub_system integer
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+insert into pitaya_user(id,enabled,account,password,department) values(31,true,'user001','user001',3);
+insert into pitaya_user_role_detail(id,enabled,role_id,user_id) values (31,true,9,31);
+
+insert into pitaya_user(id,enabled,account,password,department) values(32,true,'user002','user002',3);
+insert into pitaya_user_role_detail(id,enabled,role_id,user_id) values (32,true,9,32);
+
 --insert into pitaya_user values (1,true,1375286400000,0,'images/user/1_u_134563223.jpg','','hang','hang','123456','13579024832',3,'zhang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a cooker',2,1000);
 --insert into pitaya_user values (2,true,1375286400000,0,'images/user/2_u_134563223.jpg','','lili','lili','123456','13579024832',2,'li@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a waiter',3,1000);
 --insert into pitaya_user values (3,true,1375286400000,0,'images/user/3_u_134563223.jpg','','zrm','zrm','123456','13579024832',3,'wang@qq.com','shan xi road,gulou,nanjing city,jiangsu province,china',567964800000,'I am a boss',4,1000);
@@ -360,6 +366,8 @@ create table pitaya_user_role_detail(
 	CONSTRAINT fk_user_role_detail_role FOREIGN KEY (role_id) REFERENCES pitaya_role (id),
 	CONSTRAINT fk_user_role_detail_user FOREIGN KEY (user_id) REFERENCES pitaya_user (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
 
 --insert into pitaya_user_role_detail values (1,true,1,1);
 --insert into pitaya_user_role_detail values (2,true,2,2);
