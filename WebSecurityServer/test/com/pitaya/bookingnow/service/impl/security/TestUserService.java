@@ -13,12 +13,24 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.pitaya.bookingnow.entity.security.User;
+import com.pitaya.bookingnow.entity.security.User_Role_Detail;
 import com.pitaya.bookingnow.service.security.IUserService;
+import com.pitaya.bookingnow.service.security.IUser_Role_DetailService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
 
 public class TestUserService {
 	private IUserService userService;
+	private IUser_Role_DetailService roleDetailService;
+
+
+	public IUser_Role_DetailService getRoleDetailService() {
+		return roleDetailService;
+	}
+
+	public void setRoleDetailService(IUser_Role_DetailService roleDetailService) {
+		this.roleDetailService = roleDetailService;
+	}
 
 	public IUserService getUserService() {
 		return userService;
@@ -36,6 +48,10 @@ public class TestUserService {
 		IUserService userService = aCtx.getBean(IUserService.class);
 		assertNotNull(userService);
 		this.userService = userService;
+		
+		IUser_Role_DetailService roleDetailService = aCtx.getBean(IUser_Role_DetailService.class);
+		assertNotNull(roleDetailService);
+		this.roleDetailService = roleDetailService;
 	}
 
 	public void showUser(User user) {
@@ -72,36 +88,51 @@ public class TestUserService {
 	@Test
 	public void testAddUser() {
 
-		User newUser = new User();
+		for (int i = 0; i < 50; i++) {
+			User newUser = new User();
+			if(i < 9) {
+				newUser.setAccount("user00" + (i + 1));
+			}else if(i<99 && i >= 9) {
+				newUser.setAccount("user0" + (i + 1));
+			}else{
+				newUser.setAccount("user" + (i + 1));
+			}
+			newUser.setAddress("lsdjf sldf sdlfkj sldkf");
+			newUser.setBirthday(new Date().getTime());
+			newUser.setDepartment(Constants.USER_DEPARTMENT_MANAGEMENT);
+			newUser.setDescription("good man");
+			newUser.setEmail("shax@qq.com");
+			newUser.setName("shax");
+			newUser.setPassword("123456");
+			newUser.setPhone("13245678910");
+			newUser.setSex(Constants.USER_FAMALE);
+			newUser.setSub_system(2);
 
-		newUser.setAccount("shax");
-		newUser.setAddress("lsdjf sldf sdlfkj sldkf");
-		newUser.setBirthday(new Date().getTime());
-		newUser.setDepartment(1);
-		newUser.setDescription("good man");
-		newUser.setEmail("shax@qq.com");
-		newUser.setName("shax");
-		newUser.setPassword("1234");
-		newUser.setPhone("13245678910");
-		newUser.setSex(1);
-		newUser.setSub_system(2);
+			MyResult result = userService.add(newUser);
+			if (result.isExecuteResult()) {
 
-		userService.add(newUser);
-
-		MyResult result = userService.add(newUser);
-		if (result.isExecuteResult()) {
-
-			System.out.println("add new user successfully!");
-		} else {
-			System.out.println("add new user failed!");
-			Map<String, String> falseResults = result.getErrorDetails();
-			Iterator iter = falseResults.entrySet().iterator();
-			while (iter.hasNext()) {
-				Map.Entry entry = (Map.Entry) iter.next();
-				System.out.println(entry.getKey().toString() + " : "
-						+ entry.getValue().toString());
+				System.out.println("add new user successfully!");
+				User_Role_Detail roleDetail = new User_Role_Detail();
+				roleDetail.setEnabled(true);
+				roleDetail.setUser_id(result.getUser().getId());
+				if(((i + 1 ) % 10) == 0) {
+					roleDetail.setRole_id(10l);
+				}else {
+					roleDetail.setRole_id((long) ((i + 1 ) % 10));
+				}
+				roleDetailService.add(roleDetail);
+			} else {
+				System.out.println("add new user failed!");
+				Map<String, String> falseResults = result.getErrorDetails();
+				Iterator iter = falseResults.entrySet().iterator();
+				while (iter.hasNext()) {
+					Map.Entry entry = (Map.Entry) iter.next();
+					System.out.println(entry.getKey().toString() + " : "
+							+ entry.getValue().toString());
+				}
 			}
 		}
+		
 	}
 
 	@Test
