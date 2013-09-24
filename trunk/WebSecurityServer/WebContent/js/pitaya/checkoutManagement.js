@@ -8,7 +8,8 @@ var checkoutManagement = {
 			$("#checkOrderRowButton").unbind('click');
 			
 			$("#checkOrderRowButton").jqxButton("destroy");
-					
+			
+			$('#checkOrderDataGrid').jqxGrid('removesort');
 			$("#checkOrderDataGrid").jqxGrid('clearfilters');
 			$("#checkOrderDataGrid").jqxGrid('clear');
 			$('#checkOrderDataGrid').jqxGrid({ filterable: false});

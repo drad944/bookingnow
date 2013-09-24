@@ -2,6 +2,8 @@ var orderManagement = {
 		
 		leave : function (){
 			$("#orderDataGrid").unbind('rowselect');
+			
+			$('#orderDataGrid').jqxGrid('removesort');
 		},
 
 		visit : function (searchOption){

@@ -24,9 +24,35 @@ var userManagement = {
 			$("#registerUserRolesCombobox").unbind('checkChange');
 			$("#registerUserInfoForm").unbind('validationSuccess');
 			
+			
+		    $('#updateUserUpdateButton').jqxButton('destroy');
+		    $('#updateUserResetButton').jqxButton('destroy');
+		    $('#updateUserCancelButton').jqxButton('destroy');
+		    $("#updateUserPhoneInput").jqxMaskedInput('destroy');
+	//	    $('.updateUserTextInput').jqxInput('destroy');
+		    $('#updateUserAccountInput').jqxInput('destroy');
+            $("#updateUserBirthdayInput").jqxDateTimeInput('destroy');
+			$("#updateUserSexRadioButton1").jqxRadioButton('destroy');
+			$("#updateUserSexRadioButton2").jqxRadioButton('destroy');
+		  	$("#updateUserDepartmentCombobox").jqxComboBox('destroy');
+			$("#updateUserRolesCombobox").jqxComboBox('destroy');
+				
 			$("#updateUserDiv").jqxExpander('destroy');
 			$("#updateUserPopupWindow").jqxWindow('destroy');
 			
+			
+
+		    $('#registerUserRegisterButton').jqxButton('destroy');
+		    $('#registerUserResetButton').jqxButton('destroy');
+		    $('#registerUserCancelButton').jqxButton('destroy');
+		    $('#acceptInput').jqxCheckBox('destroy');
+		    $("#registerUserPhoneInput").jqxMaskedInput('destroy');
+	//	    $('.registerUserTextInput').jqxInput('destroy');
+            $("#registerUserBirthdayInput").jqxDateTimeInput('destroy');
+		    $("#registerUserSexRadioButton1").jqxRadioButton('destroy');
+		    $("#registerUserSexRadioButton2").jqxRadioButton('destroy');
+			$("#registerUserDepartmentCombobox").jqxComboBox('destroy');
+			$("#registerUserRolesCombobox").jqxComboBox('destroy');
 			$("#registerUserDiv").jqxExpander('destroy');
 		    $("#addUserPopupWindow").jqxWindow('destroy');
 		    
@@ -34,6 +60,7 @@ var userManagement = {
 			$("#deleteUserRowButton").jqxButton('destroy');
 			$("#updateUserRowButton").jqxButton('destroy');
 			
+			$('#userDataGrid').jqxGrid('removesort');
 			$("#userDataGrid").jqxGrid('clearfilters');
 			$("#userDataGrid").jqxGrid('clear');
 			$('#userDataGrid').jqxGrid({ filterable: false});
