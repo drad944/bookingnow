@@ -20,44 +20,67 @@ var tableManagement = {
 			$("#tableDataGrid").unbind('rowselect');
 			
 			
-			$('#updateTableDiv').jqxExpander('destroy');
-			/*
-		    $('#updateTableUpdateButton').jqxButton('destroy');
+			$('#updateTableUpdateButton').jqxButton('destroy');
+			
+		    
 		    $('#updateTableResetButton').jqxButton('destroy');
 		    $('#updateTableCancelButton').jqxButton('destroy');
 		    
+		    /* 
 		    $('.updateTableTextInput').jqxInput('destroy');
+		    */
+		    
 			$('#updateTableAddressInput').jqxInput('destroy');
 		    $('#updateTableMinCustomerCountInput').jqxNumberInput('destroy');
 		    $('#updateTableMaxCustomerCountInput').jqxNumberInput('destroy');
 		    $('#updateTableIndoorPriceInput').jqxNumberInput('destroy');
 		 	$("#updateTableStatusCombobox").jqxComboBox('destroy');
-		 	*/
+		 	/* */
+			$('#updateTableDiv').jqxExpander('destroy');
 		 	$("#updateTablePopupWindow").jqxWindow('destroy');
 		 	
 		 	
-		 	$("#registerTableDiv").jqxExpander('destroy');
-		 	/*
 		    $('#registerTableRegisterButton').jqxButton('destroy');
 		    $('#registerTableResetButton').jqxButton('destroy');
 		    $('#registerTableCancelButton').jqxButton('destroy');
+		    /*
 		    $('.registerTableTextInput').jqxInput('destroy');
+		    */
 			$('#registerTableAddressInput').jqxInput('destroy');
 		    $('#registerTableMinCustomerCountInput').jqxNumberInput('destroy');
 		    $('#registerTableMaxCustomerCountInput').jqxNumberInput('destroy');
 		    $('#registerTableIndoorPriceInput').jqxNumberInput('destroy');
 			$("#registerTableStatusCombobox").jqxComboBox('destroy');
-			*/
+			$("#registerTableDiv").jqxExpander('destroy');
 		    $("#addTablePopupWindow").jqxWindow('destroy');
+		    
 		    
 		    $("#addTableRowButton").jqxButton('destroy');
 			$("#deleteTableRowButton").jqxButton('destroy');
 			$("#updateTableRowButton").jqxButton('destroy');
 			
+			$('#tableDataGrid').jqxGrid('removesort');
 			$("#tableDataGrid").jqxGrid('clearfilters');
 			$("#tableDataGrid").jqxGrid('clear');
-			$('#tableDataGrid').jqxGrid({ filterable: false});
+		//	$('#tableDataGrid').jqxGrid({ filterable: false});
+			
+			var filtersinfo = $('#tableDataGrid').jqxGrid('getfilterinformation');
+			if(filtersinfo) {
+				
+			}
+			var datafields = [
+									{name: 'id',type:"number"},
+					                  {name: 'address',type:"string"},
+					                  {name: 'indoorPrice',type:"number"},
+					                  {name: 'maxCustomerCount',type:"number"},
+					                  {name: 'minCustomerCount',type:"number"},
+					                  {name: 'status',type:"string"}
+					                  ];
+		//	$('#tableDataGrid').jqxGrid('getcolumn', 'columndatafield');
+			$('#tableDataGrid').jqxGrid('removefilter', datafields, true);
+			
 			$('#tableDataGrid').jqxGrid('disabled');
+			
 		//	$("#tableDataGrid").jqxGrid('destroy');
 		},
 
