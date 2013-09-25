@@ -325,6 +325,9 @@ var checkOrderDetail = {
 				if(orderId != null && orderId > 0) {
 					$.post("finishedOrder.action", {"order.id": orderId},function(order){
 						if(order != null && order["id"] != null && order["status"] == Constants.ORDER_FINISHED){
+							//print detail order here.
+							window.print();
+							
 							if(currentPage.leave){
 					    		currentPage.leave();
 					    	}
