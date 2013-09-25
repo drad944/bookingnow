@@ -88,7 +88,7 @@ public class TestUserService {
 	@Test
 	public void testAddUser() {
 
-		for (int i = 0; i < 50; i++) {
+		for (int i = 50; i < 60; i++) {
 			User newUser = new User();
 			if(i < 9) {
 				newUser.setAccount("user00" + (i + 1));
