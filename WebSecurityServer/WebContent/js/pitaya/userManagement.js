@@ -1089,16 +1089,25 @@ var userManagement = {
 			        //var id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
 			        
 			        var rowData = $('#userDataGrid').jqxGrid('getrowdata', selectedrowindex);
-			        $.post("removeUser.action", {"user.id": rowData["id"]},function(result){
-						if(result != null && result["executeResult"] != null && result["executeResult"] == true){
-							var id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
-		                    var commit = $("#userDataGrid").jqxGrid('deleterow', id);
-			            	
-			            	if(commit != null) {
-			            		
-			            	}
-			            }
-					});
+			        var r=confirm("您确定要删除账号: " + rowData["account"] + " 吗?");
+					if (r==true)
+					{
+						$.post("removeUser.action", {"user.id": rowData["id"]},function(result){
+							if(result != null && result["executeResult"] != null && result["executeResult"] == true){
+								var id = $("#userDataGrid").jqxGrid('getrowid', selectedrowindex);
+			                    var commit = $("#userDataGrid").jqxGrid('deleterow', id);
+				            	
+				            	if(commit != null) {
+				            		
+				            	}
+				            }
+						});
+					}
+					else
+					{
+					  
+					}
+			        
 			        
 			    }
 			});

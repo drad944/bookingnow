@@ -558,16 +558,21 @@ var tableManagement = {
 			        //var id = $("#tableDataGrid").jqxGrid('getrowid', selectedrowindex);
 			        
 			        var rowData = $('#tableDataGrid').jqxGrid('getrowdata', selectedrowindex);
-			        $.post("removeTable.action", {"table.id": rowData["id"]},function(result){
-						if(result != null && result["executeResult"] != null && result["executeResult"] == true){
-							var id = $("#tableDataGrid").jqxGrid('getrowid', selectedrowindex);
-		                    var commit = $("#tableDataGrid").jqxGrid('deleterow', id);
-			            	
-			            	if(commit != null) {
-			            		
-			            	}
-			            }
-					});
+			        var r=confirm("您确定要删除餐桌: " + rowData["address"] + " 吗?");
+					if (r==true)
+					{
+						$.post("removeTable.action", {"table.id": rowData["id"]},function(result){
+							if(result != null && result["executeResult"] != null && result["executeResult"] == true){
+								var id = $("#tableDataGrid").jqxGrid('getrowid', selectedrowindex);
+			                    var commit = $("#tableDataGrid").jqxGrid('deleterow', id);
+				            	
+				            	if(commit != null) {
+				            		
+				            	}
+				            }
+						});
+					}
+			        
 			        
 			    }
 			});
