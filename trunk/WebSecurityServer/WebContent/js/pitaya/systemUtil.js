@@ -9,15 +9,15 @@ function printdiv(printpage)
 	var footstr = "</body>";
 	var newstr = document.all.item(printpage).innerHTML;
 	var oldstr = document.body.innerHTML;
-	document.body.innerHTML = headstr+newstr+footstr;
-	if (window.print)
-	{
-		window.print();
-	}
-	document.body.innerHTML = oldstr;
-//	window.history.go(0);
 	
-	return true;
+    document.body.innerHTML=headstr+newstr+footstr;  
+    w=window.open("","_blank","k");  
+    w.document.write(headstr+newstr+footstr);  
+    if (navigator.appName == 'Microsoft Internet Explorer') window.print();  
+    else w.print();  
+    w.close();  
+    document.body.innerHTML = oldstr;     
+    return false; 
 }
 
 function getURLParameters(key) {
