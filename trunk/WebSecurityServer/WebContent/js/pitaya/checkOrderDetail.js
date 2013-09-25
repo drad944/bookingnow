@@ -132,7 +132,7 @@ var checkOrderDetail = {
 		},
 		
 		invoiceOrderTable:function (invoiceData) {
-			var orderDivBegin = "<div>";
+			var orderDivBegin = "<div id='checkOrderTableDiv'>";
 			var orderDivEnd = "</div><div id='checkOrderResult'></div>";
 			var orderTableBegin="<table width='400' border='1px' cellspacing='0px' style='border-collapse:collapse'>";
 			var orderTableEnd="</table>";
@@ -326,15 +326,16 @@ var checkOrderDetail = {
 					$.post("finishedOrder.action", {"order.id": orderId},function(order){
 						if(order != null && order["id"] != null && order["status"] == Constants.ORDER_FINISHED){
 							//print detail order here.
-							window.print();
+							printdiv("checkOrderTableDiv");
 							
+							/*
 							if(currentPage.leave){
 					    		currentPage.leave();
 					    	}
 							
 							currentPage = checkoutManagement;
 							openSubPage('framework_main','page/common/checkoutManagement.html','content',checkoutManagement,null);
-							
+							*/
 					    	$("#eventLog").text('结账成功,谢谢惠顾,欢迎下次光临!');
 				        }
 					});

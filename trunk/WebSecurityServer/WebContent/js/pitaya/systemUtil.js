@@ -3,6 +3,23 @@ function strToJson(str){
      return json;  
 }
 
+function printdiv(printpage)
+{
+	var headstr = "<html><head><title></title></head><body>";
+	var footstr = "</body>";
+	var newstr = document.all.item(printpage).innerHTML;
+	var oldstr = document.body.innerHTML;
+	document.body.innerHTML = headstr+newstr+footstr;
+	if (window.print)
+	{
+		window.print();
+	}
+	document.body.innerHTML = oldstr;
+//	window.history.go(0);
+	
+	return true;
+}
+
 function getURLParameters(key) {
 	var url=location.href; 
 	var urlParams = url.split("?")[1]; 
