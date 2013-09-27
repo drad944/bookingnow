@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +14,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class ClientAgent extends Thread{
+public class ClientAgent implements IClient{
 	
 	private static Log logger =  LogFactory.getLog(ClientAgent.class);
 	Socket client_socket;
@@ -21,10 +22,12 @@ public class ClientAgent extends Thread{
 	OutputStreamWriter out;
 	BufferedWriter bwriter;
 	BufferedReader in;
-	Long userId;
-	Integer role;
 	List<String> messages;
 	boolean isSending;
+	
+	private Long userId;
+	private String username;
+	private Integer roleType;
 	
 	public ClientAgent(MessageService service, Socket socket){
 		this.client_socket = socket;
@@ -33,15 +36,48 @@ public class ClientAgent extends Thread{
 		this.messages = Collections.synchronizedList(new ArrayList<String>());
 	}
 	
+	@Override
 	public Long getUserId(){
 		return this.userId;
 	}
 	
+	@Override
 	public Integer getRoleType(){
-		return this.role;
+		return this.roleType;
 	}
 	
-	public String getIneternetAddress(){
+	@Override
+	public String getUsername() {
+		return this.username;
+	}
+
+	@Override
+	public void setUsername(String uname) {
+		this.username = uname;
+	}
+
+	@Override
+	public void setRoleType(Integer role) {
+		this.roleType = role;
+	}
+
+	@Override
+	public void setUserId(Long id) {
+		this.userId = id;
+	}
+	
+	@Override
+	public InetAddress getInetAddress() {
+		if(this.client_socket != null){
+			if(this.client_socket.getInetAddress() != null){
+				return this.client_socket.getInetAddress();
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public String getAddress(){
 		if(this.client_socket != null){
 			if(this.client_socket.getInetAddress() != null){
 				return this.client_socket.getInetAddress().getHostAddress();
@@ -53,6 +89,7 @@ public class ClientAgent extends Thread{
 		}
 	}
 	
+	@Override
 	public void run(){
 		try{
 			in = new BufferedReader(new InputStreamReader(client_socket.getInputStream(), "UTF-8"));
@@ -81,7 +118,7 @@ public class ClientAgent extends Thread{
 		 }
 	}
 	
-	void sendHeartBeat(){
+	private void sendHeartBeat(){
 		try {
 			this.client_socket.sendUrgentData(0xff);
 		} catch (IOException e) {
@@ -108,7 +145,8 @@ public class ClientAgent extends Thread{
 		}
 	}
 	
-	void sendMessage(String message){
+	@Override
+	public void sendMessage(String message){
 		this.messages.add(message);
 		synchronized(this){
 			if(this.isSending == true){
@@ -140,7 +178,8 @@ public class ClientAgent extends Thread{
 		}
 	}
 	
-	void shutdown(String message){
+	@Override
+	public void shutdown(String message){
 		if(message != null){
 			this.sendMessage(message);
 		}
@@ -163,5 +202,20 @@ public class ClientAgent extends Thread{
 		}
 		logger.debug("Success to shutdown connection to client [" + this.userId + "]");
 		this.service.removeClient(this, true);
+	}
+
+	@Override
+	public List<String> getMessages() {
+		return this.messages;
+	}
+
+	@Override
+	public void addMessages(List<String> messages) {
+		this.messages.addAll(messages);
+	}
+
+	@Override
+	public void checkConnection() {
+		this.sendHeartBeat();
 	}
 }

@@ -6,20 +6,20 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.pitaya.bookingnow.entity.ClientInfo;
-import com.pitaya.bookingnow.service.socket.EnhancedMessageService;
-import com.pitaya.bookingnow.service.socket.ClientInstance;
+import com.pitaya.bookingnow.service.socket.IClient;
+import com.pitaya.bookingnow.service.socket.IMessageService;
 
 public class AdminAction extends BaseAction {
 	
-	private EnhancedMessageService messageService;
+	private IMessageService messageService;
 	
 	private List<ClientInfo> clientInfos;
 	
-	public void setMessageService(EnhancedMessageService ms){
+	public void setMessageService(IMessageService ms){
 		this.messageService = ms;
 	}
 	
-	public EnhancedMessageService getMessageService(){
+	public IMessageService getMessageService(){
 		return this.messageService;
 	}
 	
@@ -36,7 +36,7 @@ public class AdminAction extends BaseAction {
 		int unauthcount = 0;
 		int authcount = 0;
 		this.clientInfos = new ArrayList<ClientInfo>();
-		for(ClientInstance instance : this.messageService.getClients()){
+		for(IClient instance : this.messageService.getClients()){
 			if(instance.getUserId() == null && instance.getRoleType() == null){
 				ClientInfo client = new ClientInfo();
 				client.setIsAuth(false);
@@ -44,8 +44,8 @@ public class AdminAction extends BaseAction {
 				unauthcount ++;
 			}
 		}
-		for(Entry<Integer, Map<Long, ClientInstance>> entry : this.messageService.getClientGroups().entrySet()){
-			for(Entry<Long, ClientInstance> subentry : entry.getValue().entrySet()){
+		for(Entry<Integer, Map<Long, IClient>> entry : this.messageService.getClientGroups().entrySet()){
+			for(Entry<Long, IClient> subentry : entry.getValue().entrySet()){
 				ClientInfo client = new ClientInfo();
 				client.setIsAuth(true);
 				client.setRoleType(subentry.getValue().getRoleType());

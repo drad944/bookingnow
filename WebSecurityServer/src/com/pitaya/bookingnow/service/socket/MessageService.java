@@ -42,7 +42,7 @@ import com.pitaya.bookingnow.service.security.IUserService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
 
-public class MessageService {
+public class MessageService implements IMessageService{
 	
 	private static Log logger =  LogFactory.getLog(MessageService.class);
 	
@@ -57,15 +57,15 @@ public class MessageService {
 	protected boolean hasStarted;
 	protected IUserService userService;
 	
-	private Map<Integer, Map<Long, ClientAgent>> groups;
-	private List<ClientAgent> clients;
+	private Map<Integer, Map<Long, IClient>> groups;
+	private List<IClient> clients;
 	private Timer mChecker;
-	private Class<? extends ClientAgent> clientClz;
+	private Class<? extends IClient> clientClz;
 	
 	public MessageService(){
 		this.hasStarted = false;
-		this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientAgent>>();
-		this.clients = Collections.synchronizedList(new ArrayList<ClientAgent>());
+		this.groups = new ConcurrentHashMap <Integer, Map<Long, IClient>>();
+		this.clients = Collections.synchronizedList(new ArrayList<IClient>());
 	}
 
 	public void start(int port, Class<? extends ClientAgent> clientClz){
@@ -81,13 +81,13 @@ public class MessageService {
     			if(this.serverSocket != null && this.serverSocket.isClosed()){
     				this.serverSocket.close();
     			}
-    			for(ClientAgent client : this.clients){
+    			for(IClient client : this.clients){
     				client.shutdown("bye");
     			}
 				this.serverThread.shutdown();
 				this.mChecker.cancel();
-				this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientAgent>>();
-				this.clients = Collections.synchronizedList(new ArrayList<ClientAgent>());
+				this.groups = new ConcurrentHashMap <Integer, Map<Long, IClient>>();
+				this.clients = Collections.synchronizedList(new ArrayList<IClient>());
 				this.hasStarted = false;
 				logger.info("Success to shutdown message service.");
 				return true;
@@ -139,7 +139,7 @@ public class MessageService {
 	
 	public boolean sendMessageToAll(Message message){
 		if(this.clients.size() > 0){
-			for(ClientAgent client : this.clients){
+			for(IClient client : this.clients){
 				client.sendMessage(parseMessage(message));
 			}
 			logger.debug("Send message to all clients.");
@@ -150,10 +150,10 @@ public class MessageService {
 	
 	public boolean sendMessageToGroup(int groupType, Message message){
 		String msgstring = parseMessage(message);
-		Map<Long, ClientAgent> group = this.groups.get(groupType);
+		Map<Long, IClient> group = this.groups.get(groupType);
 		boolean success = false;
 		if(group != null){
-			for(Entry<Long, ClientAgent> entry : group.entrySet()){
+			for(Entry<Long, IClient> entry : group.entrySet()){
 				entry.getValue().sendMessage(msgstring);
 				success = true;
 			}
@@ -164,10 +164,10 @@ public class MessageService {
 	
 	public boolean sendMessageToGroupExcept(int groupType, Long userid, Message message){
 		String msgstring = parseMessage(message);
-		Map<Long, ClientAgent> group = this.groups.get(groupType);
+		Map<Long, IClient> group = this.groups.get(groupType);
 		boolean success = false;
 		if(group != null){
-			for(Entry<Long, ClientAgent> entry : group.entrySet()){
+			for(Entry<Long, IClient> entry : group.entrySet()){
 				if(!entry.getKey().equals(userid)){
 					entry.getValue().sendMessage(msgstring);
 					success = true;
@@ -180,8 +180,8 @@ public class MessageService {
 	
 	public boolean sendMessageToOne(Long userid, Message message){
 		if(userid != null){
-			for(Entry<Integer, Map<Long, ClientAgent>> entry : this.groups.entrySet()){
-				for(Entry<Long, ClientAgent> subentry : entry.getValue().entrySet()){
+			for(Entry<Integer, Map<Long, IClient>> entry : this.groups.entrySet()){
+				for(Entry<Long, IClient> subentry : entry.getValue().entrySet()){
 					if(subentry.getKey().equals(userid)){
 						subentry.getValue().sendMessage(parseMessage(message));
 						logger.debug("Send message to user: " + userid);
@@ -193,15 +193,15 @@ public class MessageService {
 		return false;
 	}
 	
-	public List<ClientAgent> getClients(){
+	public List<IClient> getClients(){
 		return this.clients;
 	}
 	
-	public Map<Integer, Map<Long, ClientAgent>> getClientGroups(){
+	public Map<Integer, Map<Long, IClient>> getClientGroups(){
 		return this.groups;
 	}
 	
-	protected synchronized void onMessage(String msgstring, ClientAgent clientAgent){
+	protected synchronized void onMessage(String msgstring, IClient clientAgent){
 		Message message = unparseMessage(msgstring);
 		if(message == null){
 			return;
@@ -220,8 +220,9 @@ public class MessageService {
 					if(loginresult.isExecuteResult()){
 						User logonuser = loginresult.getUser();
 						Role role = logonuser.getRole_Details().get(0).getRole();
-						clientAgent.userId = logonuser.getId();
-						clientAgent.role = role.getType();
+						clientAgent.setUserId(logonuser.getId());
+						clientAgent.setUsername(logonuser.getName());
+						clientAgent.setRoleType(role.getType());
 						if(this.addClient(clientAgent)){
 							String detail = String.valueOf(logonuser.getId()) + "###";
 							detail += logonuser.getName() + "###";
@@ -247,7 +248,7 @@ public class MessageService {
 		}
 	}
 	
-	protected boolean addClient(ClientAgent clientAgent){
+	protected boolean addClient(IClient clientAgent){
 		boolean hasAdded = false;
 		for(int i=0; i < this.clients.size(); i++){
 			if(this.clients.get(i) == clientAgent){
@@ -258,41 +259,45 @@ public class MessageService {
 		}
 		if(!hasAdded){
 			this.clients.add(clientAgent);
-			logger.debug("Add new client:" + clientAgent.getIneternetAddress());
+			logger.debug("Add new client:" + clientAgent.getAddress());
 			//logger.info("Add new client");
 		}
-		if(clientAgent.userId != null && clientAgent.role != null) {
-			Map<Long, ClientAgent> group = this.groups.get(clientAgent.role);
+		if(clientAgent.getUserId() != null && clientAgent.getRoleType() != null) {
+			Long userId = clientAgent.getUserId();
+			Integer role = clientAgent.getRoleType();
+			Map<Long, IClient> group = this.groups.get(role);
 			if(group == null){
-				group = new ConcurrentHashMap<Long, ClientAgent>();
-				this.groups.put(clientAgent.role, group);
+				group = new ConcurrentHashMap<Long, IClient>();
+				this.groups.put(role, group);
 			}
-			if(group.get(clientAgent.userId) != null){
-				if(group.get(clientAgent.userId) == clientAgent){
-					logger.warn("The same client already registered [user id: " + clientAgent.userId + "]");
+			if(group.get(userId) != null){
+				if(group.get(userId) == clientAgent){
+					logger.warn("The same client already registered [user id: " + userId + "]");
 					return true;
 				} else {
-					logger.debug("Client with same user id already registered [user id: " + clientAgent.userId + "], shutdown it first");
-					group.get(clientAgent.userId).shutdown("relogin");
+					logger.debug("Client with same user id already registered [user id: " + userId + "], shutdown it first");
+					group.get(userId).shutdown("relogin");
 				}
 			}
-			group.put(clientAgent.userId, clientAgent);
-			logger.info("Register client [user id: " + clientAgent.userId + " and role type: " + clientAgent.role + "]");
+			group.put(userId, clientAgent);
+			logger.info("Register client [user id: " + userId + " and role type: " + role + "]");
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
-	protected void removeClient(ClientAgent clientAgent, boolean isRemoved){
+	protected void removeClient(IClient clientAgent, boolean isRemoved){
 		//Remove it from registered clients queue first
-		if(clientAgent.userId != null && clientAgent.role != null){
-			if(this.groups.get(clientAgent.role) != null && this.groups.get(clientAgent.role).get(clientAgent.userId) != null
-					&& this.groups.get(clientAgent.role).get(clientAgent.userId) == clientAgent){
-				this.groups.get(clientAgent.role).remove(clientAgent.userId);
-				logger.info("Unregister client [user id: " + clientAgent.userId + " and role type: " + clientAgent.role + "]");
-				clientAgent.userId = null;
-				clientAgent.role = null;
+		if(clientAgent.getUserId() != null && clientAgent.getRoleType() != null){
+			Integer role = clientAgent.getRoleType();
+			Long userId = clientAgent.getUserId();
+			if(this.groups.get(role) != null && this.groups.get(role).get(userId) != null
+					&& this.groups.get(role).get(userId) == clientAgent){
+				this.groups.get(role).remove(userId);
+				logger.info("Unregister client [user id: " + userId + " and role type: " + role + "]");
+				clientAgent.setUserId(null);
+				clientAgent.setRoleType(null);
 			}
 		}
 		if(isRemoved){
@@ -313,9 +318,9 @@ public class MessageService {
 	    boolean flag = true;
 	    MessageService service;
 	    protected final ExecutorService pool =  Executors.newFixedThreadPool(50);
-	    private Class<? extends ClientAgent> clientAgentClz;
+	    private Class<? extends IClient> clientAgentClz;
 	      
-	    MessageServerThread(MessageService service, Class<? extends ClientAgent> agentClz){
+	    MessageServerThread(MessageService service, Class<? extends IClient> agentClz){
 	    	this.service = service;
 	    	this.clientAgentClz = agentClz;
 	    }
@@ -331,8 +336,8 @@ public class MessageService {
 	        try {
 	        	while(flag){
 	                client_socket = service.serverSocket.accept();
-	                Constructor<? extends ClientAgent> con = this.clientAgentClz.getConstructor(MessageService.class, Socket.class);
-	                ClientAgent client = con.newInstance(this.service, client_socket);
+	                Constructor<? extends IClient> con = this.clientAgentClz.getConstructor(MessageService.class, Socket.class);
+	                IClient client = con.newInstance(this.service, client_socket);
 	                pool.execute(client);
 	                this.service.addClient(client);
 	        	}
@@ -410,5 +415,11 @@ public class MessageService {
 //			messageService.sendMessageToGroup(Constants.ROLE_WAITER, new Message("test"));
 //    	}
     }
+
+	@Override
+	public void start(int... args) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
