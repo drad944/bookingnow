@@ -5,16 +5,16 @@ import java.util.TimerTask;
 
 public class ConnectionCheckTask extends TimerTask {
 
-	private MessageService service;
+	private IMessageService service;
 	
-	public ConnectionCheckTask(MessageService service){
+	public ConnectionCheckTask(IMessageService service){
 		this.service = service;
 	}
 	
 	@Override
 	public void run() {
-		for(ClientAgent client : service.getClients()){
-			client.sendHeartBeat();
+		for(IClient client : service.getClients()){
+			client.checkConnection();
 		}
 	}
 

@@ -48,7 +48,7 @@ public class FlashClientAgent extends ClientAgent{
 				 ex.printStackTrace();
 			 }
 	         client_socket = null;
-	         logger.debug("Connection to client [" + this.userId +"] is broken");
+	         logger.debug("Connection to client [" + this.getUserId() +"] is broken");
 	         this.service.removeClient(this, true);
 		 }
 	}

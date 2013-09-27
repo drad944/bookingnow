@@ -36,13 +36,13 @@ import com.pitaya.bookingnow.service.security.IUserService;
 import com.pitaya.bookingnow.util.Constants;
 import com.pitaya.bookingnow.util.MyResult;
 
-public class EnhancedMessageService implements Runnable{
+public class EnhancedMessageService implements IMessageService{
 	
 	private static Log logger =  LogFactory.getLog(EnhancedMessageService.class);
 	//UDP check packet timeout value
 	private static final int TIMEOUT = 60000;
-	private Map<Integer, Map<Long, ClientInstance>> groups;
-	private List<ClientInstance> clients;
+	private Map<Integer, Map<Long, IClient>> groups;
+	private List<IClient> clients;
 	final ExecutorService senderPool =  Executors.newFixedThreadPool(50);
 	
 	DatagramSocket udpSocket;
@@ -93,12 +93,22 @@ public class EnhancedMessageService implements Runnable{
 		return this.userService;
 	}
 	
-	public void start(int port, int clientport, int udpport){
+
+	@Override
+	public void start(int... args) {
+		if(args.length == 3){
+			this.doStart(args[0], args[1], args[2]);
+		} else {
+			logger.error("Fail to start message service with args: " + args);
+		}
+	}
+	
+	private void doStart(int port, int clientport, int udpport){
 		this.port = port;
 		this.udpport = udpport;
 		this.clientport = clientport;
-		this.groups = new ConcurrentHashMap <Integer, Map<Long, ClientInstance>>();
-		this.clients = Collections.synchronizedList(new ArrayList<ClientInstance>());
+		this.groups = new ConcurrentHashMap <Integer, Map<Long, IClient>>();
+		this.clients = Collections.synchronizedList(new ArrayList<IClient>());
 		this.hasStarted = false;
 		this.udpCheck = true;
 		this.start();
@@ -113,7 +123,7 @@ public class EnhancedMessageService implements Runnable{
     			if(this.udpSocket != null){
     				this.udpSocket.close();
     			}
-    			for(ClientInstance instance : this.clients){
+    			for(IClient instance : this.clients){
     				instance.shutdown("bye");
     			}
 				this.serverThread.shutdown();
@@ -131,11 +141,11 @@ public class EnhancedMessageService implements Runnable{
 		return true;
 	}
 	
-	public List<ClientInstance> getClients(){
+	public List<IClient> getClients(){
 		return this.clients;
 	}
 	
-	public Map<Integer, Map<Long, ClientInstance>> getClientGroups(){
+	public Map<Integer, Map<Long, IClient>> getClientGroups(){
 		return this.groups;
 	}
 	
@@ -166,33 +176,33 @@ public class EnhancedMessageService implements Runnable{
 	
 	private boolean hasClient(Socket client_socket){
 		for(int i = 0; i < this.clients.size(); i++){
-			ClientInstance instance = this.clients.get(i);
-			if(instance.address.equals(client_socket.getInetAddress())){
+			IClient instance = this.clients.get(i);
+			if(instance.getInetAddress().equals(client_socket.getInetAddress())){
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	private ClientInstance getClient(InetAddress addr){
-		for(ClientInstance instance : this.clients){
-			if(instance.address.equals(addr)){
+	private IClient getClient(InetAddress addr){
+		for(IClient instance : this.clients){
+			if(instance.getInetAddress().equals(addr)){
 				return instance;
 			}
 		}
 		return null;
 	}
 	
-	protected void addClient(ClientInstance client){
+	protected void addClient(IClient client){
 		Long userid = client.getUserId();
 		Integer role = client.getRoleType();
 		if(userid != null && role != null){
-			Map<Long, ClientInstance> instances = this.groups.get(role);
+			Map<Long, IClient> instances = this.groups.get(role);
 			if(instances == null){
-				instances = new ConcurrentHashMap<Long, ClientInstance>();
+				instances = new ConcurrentHashMap<Long, IClient>();
 				this.groups.put(role, instances);
 			}
-			ClientInstance instance = instances.get(userid);
+			IClient instance = instances.get(userid);
 			if(instance != null && instance != client){
 				this.removeClient(instance, false);
 				instance.sendMessage("relogin");
@@ -206,7 +216,7 @@ public class EnhancedMessageService implements Runnable{
 		}
 	}
 	
-	protected void removeClient(ClientInstance client, boolean isClosed){
+	protected void removeClient(IClient client, boolean isClosed){
 		if(client == null){
 			return;
 		} else {
@@ -236,7 +246,7 @@ public class EnhancedMessageService implements Runnable{
 	
 	public boolean sendMessageToAll(Message message){
 		if(this.clients.size() > 0){
-			for(ClientInstance instance : this.clients){
+			for(IClient instance : this.clients){
 				instance.sendMessage(MessageService.parseMessage(message));
 			}
 			logger.debug("Send message to all clients.");
@@ -247,10 +257,10 @@ public class EnhancedMessageService implements Runnable{
 	
 	public boolean sendMessageToGroup(int groupType, Message message){
 		String msgstring = MessageService.parseMessage(message);
-		Map<Long, ClientInstance> group = this.groups.get(groupType);
+		Map<Long, IClient> group = this.groups.get(groupType);
 		boolean success = false;
 		if(group != null){
-			for(Entry<Long, ClientInstance> entry : group.entrySet()){
+			for(Entry<Long, IClient> entry : group.entrySet()){
 				entry.getValue().sendMessage(msgstring);
 				success = true;
 			}
@@ -261,10 +271,10 @@ public class EnhancedMessageService implements Runnable{
 	
 	public boolean sendMessageToGroupExcept(int groupType, Long userid, Message message){
 		String msgstring = MessageService.parseMessage(message);
-		Map<Long, ClientInstance> group = this.groups.get(groupType);
+		Map<Long, IClient> group = this.groups.get(groupType);
 		boolean success = false;
 		if(group != null){
-			for(Entry<Long, ClientInstance> entry : group.entrySet()){
+			for(Entry<Long, IClient> entry : group.entrySet()){
 				if(!entry.getKey().equals(userid)){
 					entry.getValue().sendMessage(msgstring);
 					success = true;
@@ -277,8 +287,8 @@ public class EnhancedMessageService implements Runnable{
 	
 	public boolean sendMessageToOne(Long userid, Message message){
 		if(userid != null){
-			for(Entry<Integer, Map<Long, ClientInstance>> entry : this.groups.entrySet()){
-				for(Entry<Long, ClientInstance> subentry : entry.getValue().entrySet()){
+			for(Entry<Integer, Map<Long, IClient>> entry : this.groups.entrySet()){
+				for(Entry<Long, IClient> subentry : entry.getValue().entrySet()){
 					if(subentry.getKey().equals(userid)){
 						subentry.getValue().sendMessage(MessageService.parseMessage(message));
 						logger.debug("Send message to user: " + userid);
@@ -308,7 +318,7 @@ public class EnhancedMessageService implements Runnable{
 					MyResult loginresult = userService.login(loginuser);
 					if(loginresult.isExecuteResult()){
 						User logonuser = loginresult.getUser();
-						ClientInstance instance = this.getClient(clientThread.getInetAddress());
+						IClient instance = this.getClient(clientThread.getInetAddress());
 						if(instance != null){
 							if(instance.getUserId() != null){
 								this.removeClient(instance, false);
@@ -345,50 +355,50 @@ public class EnhancedMessageService implements Runnable{
 		}
 	}
 
-	@Override
-	public void run() {
-    	if(this.udpSocket == null){
-    		try {
-				this.udpSocket = new DatagramSocket(this.udpport);
-			} catch (SocketException e) {
-				e.printStackTrace();
-			}
-    	}
-    	if(this.udpSocket != null && this.udpSocket.isBound()){
-    		while(udpCheck){
-    		    if(this.clients.size() > 0){
-	    			try {
-	    		    	DatagramPacket packet = new DatagramPacket(new byte[1], 1);
-	    		    	this.udpSocket.setSoTimeout(TIMEOUT);
-	    				this.udpSocket.receive(packet);
-	    				ClientInstance instance = this.getClient(packet.getAddress());
-	    				if(instance != null){
-	    					instance.lastRecvTime = System.currentTimeMillis();
-	    					logger.debug("Received udp check package: " + packet.getData());
-	    				} else {
-	    					logger.debug("Ignore packet");
-	    				}
-	    			} catch (IOException e) {
-	    				if(e instanceof SocketTimeoutException){
-	    					logger.warn("Timeout on receiving keep-alive packet");
-	    				} else {
-	    					e.printStackTrace();
-	    				}
-	    			}
-    		    } else {
-    		    	logger.debug("No clients connected");
-    		    	try {
-						Thread.sleep(TIMEOUT);
-					} catch (InterruptedException e){
-						e.printStackTrace();
-					}
-    		    }
-    		}
-    	} else {
-    		logger.error("Fail to start udp check service");
-    		this.shutdown();
-    	}
-	}
+//	@Override
+//	public void run() {
+//    	if(this.udpSocket == null){
+//    		try {
+//				this.udpSocket = new DatagramSocket(this.udpport);
+//			} catch (SocketException e) {
+//				e.printStackTrace();
+//			}
+//    	}
+//    	if(this.udpSocket != null && this.udpSocket.isBound()){
+//    		while(udpCheck){
+//    		    if(this.clients.size() > 0){
+//	    			try {
+//	    		    	DatagramPacket packet = new DatagramPacket(new byte[1], 1);
+//	    		    	this.udpSocket.setSoTimeout(TIMEOUT);
+//	    				this.udpSocket.receive(packet);
+//	    				IClient instance = this.getClient(packet.getAddress());
+//	    				if(instance != null){
+//	    					instance.lastRecvTime = System.currentTimeMillis();
+//	    					logger.debug("Received udp check package: " + packet.getData());
+//	    				} else {
+//	    					logger.debug("Ignore packet");
+//	    				}
+//	    			} catch (IOException e) {
+//	    				if(e instanceof SocketTimeoutException){
+//	    					logger.warn("Timeout on receiving keep-alive packet");
+//	    				} else {
+//	    					e.printStackTrace();
+//	    				}
+//	    			}
+//    		    } else {
+//    		    	logger.debug("No clients connected");
+//    		    	try {
+//						Thread.sleep(TIMEOUT);
+//					} catch (InterruptedException e){
+//						e.printStackTrace();
+//					}
+//    		    }
+//    		}
+//    	} else {
+//    		logger.error("Fail to start udp check service");
+//    		this.shutdown();
+//    	}
+//	}
 	
 	protected class MessageServerThread extends Thread{
 		

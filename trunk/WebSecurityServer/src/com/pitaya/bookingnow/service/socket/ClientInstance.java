@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * An instance represented a connected client, use this to send message to client
  * and the socket connection is controlled by server
  */
-public class ClientInstance {
+public class ClientInstance implements IClient{
 	
 	//Log a fail if not received UDP check packet in this time
 	static final long KEEPALIVE_TIMEOUT = 60000L;
@@ -49,7 +50,7 @@ public class ClientInstance {
     private BufferedReader in;
     private BufferedWriter bwriter;
     private Socket socket;
-	private ArrayList<String> messageQueue;
+	private List<String> messageQueue;
 	private EnhancedMessageService _service;
 	
 	public ClientInstance(EnhancedMessageService _service, InetAddress addr, int port, int udpport){
@@ -102,42 +103,61 @@ public class ClientInstance {
 		}
 	}
 	
+	@Override
 	public void setUserId(Long id){
 		this.userId = id;
 	}
 	
+	@Override
 	public Long getUserId(){
 		return this.userId;
 	}
 	
+	@Override
 	public void setUsername(String uname){
 		this.username = uname;
 	}
 	
+	@Override
 	public String getUsername(){
 		return this.username;
 	}
 	
+	@Override
 	public void setRoleType(Integer role){
 		this.roleType = role;
 	}
 	
+	@Override
 	public Integer getRoleType(){
 		return this.roleType;
 	}
 	
-	public ArrayList<String> getMessages(){
+	@Override
+	public List<String> getMessages(){
 		return this.messageQueue;
 	}
 	
-	public void addMessages(ArrayList<String> messages){
+	@Override
+	public void addMessages(List<String> messages){
 		this.messageQueue.addAll(messages);
 	}
 	
-    public boolean isReady(){
+	@Override
+	public InetAddress getInetAddress() {
+		return this.address;
+	}
+
+	@Override
+	public String getAddress() {
+		return this.address.getHostAddress();
+	}
+	
+	public boolean isReady(){
     	return this.socket != null && !this.socket.isClosed() && this.socket.isConnected();
     }
 	
+    @Override
     public void sendMessage(final String msg){
     	this._service.senderPool.execute(new Runnable(){
 
@@ -223,7 +243,8 @@ public class ClientInstance {
 		bwriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));  
     }
     
-	void shutdown(String message){
+    @Override
+	public void shutdown(String message){
 		if(message != null){
 			this.sendMessage(message);
 		}
@@ -254,6 +275,16 @@ public class ClientInstance {
 		}
 		socket = null;
 		logger.debug("Close connection to client [" + this.userId + "]");
+	}
+
+	@Override
+	public void run() {
+		//do nothing
+	}
+
+	@Override
+	public void checkConnection() {
+		
 	}
     
 }
