@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>user management</title>
+
+</head>
+	
+<body>
+	<div id="content">
+	
+		<table style="width:100%">
+	    		<tr style="width:100%">
+					<td style="width:100%" align="center">
+				    	<div id="controlbar" style="width:800px">
+				    		<div style="float:left">
+				    			<input id="addUserRowButton" type="button" />
+			            	</div>
+	   						<div style="float:left; padding-left:10px">
+			                	<input id="updateUserRowButton" type="button" />
+			            	</div>
+			            	<div style="float:left; padding-left:10px">
+			                	<input id="deleteUserRowButton" type="button" />
+			            	</div>
+			            	<div style="float:right">
+		            		</div>
+				    	</div>
+		    		</td>
+	    		</tr>
+	   			<tr style="width:100%">
+	   				<td style="width:100%" align="center">
+					   	<div id="userDataGrid" style="float: left;" ></div>
+	   				</td>
+	   			</tr>
+	   		</table>
+
+			<div id="updateUserPopupWindow" style="overflow:hidden;display:none;">
+				<div><h3 data-i18n="userManagement.window.updateWindow"></h3></div>
+				<div id="updateUserDiv">
+			        <div>
+			            <form id="updateUserInfoForm" action="./">
+			                <table class="updateUserTable">
+			                	<tr style="display:none">
+			                        <td data-i18n="userManagement.fieldLabel.id"></td>
+			                        <td><input type="text" id="updateUserIdInput" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.account"></td>
+			                        <td><input type="text" id="updateUserAccountInput" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.password"></td>
+			                        <td><input type="password" id="updateUserPasswordInput" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.confirmPassword"></td>
+			                        <td><input type="password" id="updateUserPasswordConfirmInput" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.name"></td>
+			                        <td><input type="text" id="updateUserRealNameInput" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.department"></td>
+			                        <td>
+			                        	<div id='updateUserDepartmentCombobox'></div>
+			                        	<input id="updateUserDepartmentInput" type="hidden" value="2" />
+		        					</td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.roles"></td>
+			                        <td>
+			                        	<div id='updateUserRolesCombobox'></div>
+			                        	<input id="updateUserRolesInput" type="hidden" value="2" />
+		        					</td>
+			                    </tr>
+			                    
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.birthday"></td>
+			                        <td><div id="updateUserBirthdayInput"></div></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.email"></td>
+			                        <td><input type="text" id="updateUserEmailInput" placeholder="someone@mail.com" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.address"></td>
+			                        <td><input type="text" id="updateUserAddressInput" placeholder="省-市-区-街道-小区-门牌号" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.phone"></td>
+			                        <td><div id="updateUserPhoneInput"></div></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.sex"></td>
+			                        <td>
+			                        	<div style='margin-top: 10px;'>
+							            	<span id='updateUserSexRadioButton1' style='float:left;'></span>
+							            	<span id='updateUserSexRadioButton2' style='float:right;'></span>
+							            	<input id="updateUserSexInput" type="hidden" />
+							            </div>
+			                        </td>
+			                    </tr>
+			                    <tr style="text-align: center;">
+			                        <td>
+			                        	<input id="updateUserUpdateButton" type="button" />
+			                        </td>
+			                        <td>
+			                        	<input id="updateUserResetButton" type="reset" />
+			                        	<input id="updateUserCancelButton" type="button" />
+			                        </td>
+			                    </tr>
+			                </table>
+			            </form>
+			        </div>
+			        <div id="updateUserResult"></div>
+	    		</div>
+			</div>
+		
+			<div id="addUserPopupWindow" style="overflow:hidden;display:none;">
+				<div><h3 data-i18n="userManagement.window.registerWindow"></h3></div>
+				<div id="registerUserDiv">
+	        		
+			        <div>
+			            <form id="registerUserInfoForm" action="./">
+			                <table class="registerUserTable">
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.account"></td>
+			                        <td><input type="text" id="registerUserAccountInput" class="registerUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.password"></td>
+			                        <td><input type="password" id="registerUserPasswordInput" class="registerUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.confirmPassword"></td>
+			                        <td><input type="password" id="registerUserPasswordConfirmInput" class="registerUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.name"></td>
+			                        <td><input type="text" id="registerUserRealNameInput" class="registerUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.department"></td>
+			                        <td>
+			                        	<div id='registerUserDepartmentCombobox'></div>
+			                        	<input id="registerUserDepartmentInput" type="hidden" value="2" />
+		        					</td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.roles"></td>
+			                        <td>
+			                        	<div id='registerUserRolesCombobox'></div>
+			                        	<input id="registerUserRolesInput" type="hidden" value="2" />
+		        					</td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.birthday"></td>
+			                        <td><div id="registerUserBirthdayInput"></div></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.email"></td>
+			                        <td><input type="text" id="registerUserEmailInput" placeholder="someone@mail.com" class="registerUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.address" ></td>
+			                        <td><input type="text" id="registerUserAddressInput" placeholder="省-市-区-街道-门牌号" class="registerUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.phone"></td>
+			                        <td><div id="registerUserPhoneInput"></div></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.sex"></td>
+			                        <td>
+			                        	<div style='margin-top: 10px;'>
+							            	<span id='registerUserSexRadioButton1' style='float:left;'></span>
+							            	<span id='registerUserSexRadioButton2' style='float:right;'></span>
+							            	<input id="registerUserSexInput" type="hidden" />
+							            </div>
+			                        </td>
+			                    </tr>
+			                    <tr>
+			                        <td colspan="2" style="padding: 5px;">
+			                        	<div id="acceptInput" style="margin-left: 50px;"></div>
+			                        </td>
+			                    </tr>
+			                    <tr style="text-align: center;">
+			                        <td>
+			                        	<input id="registerUserRegisterButton" type="button" />
+			                        </td>
+			                        <td>
+			                        	<input id="registerUserResetButton" type="reset" />
+			                        	<input id="registerUserCancelButton" type="button" />
+			                        </td>
+			                    </tr>
+			                </table>
+			            </form>
+			        </div>
+			        <div id="registerUserResult"></div>
+	    		</div>
+			</div>
+				
+	</div>
+</body>
+</html>

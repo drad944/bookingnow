@@ -1,0 +1,54 @@
+<html> 
+<head> 
+<title> New Document </title> 
+<style> 
+</style>
+<script type="text/javascript" src="../../js/swfobject.js"></script>
+<script type="text/javascript">
+
+var socketobj;
+swfobject.registerObject("myId", "9.0.0", "../../js/expressInstall.swf");
+
+function onSuccess(){
+	alert("Connection establisthed");
+}
+
+function onFail(msg){
+	alert("Fail to connect: " + msg);
+}
+
+function onData(data){
+	alert("Received message: " + data);
+}
+
+function flashReadyHandler(){
+	socketobj = document.getElementById("socket");
+	init();
+};
+
+function init(){
+	if(socketobj == null){
+		alert("Fail to initialize socket");
+	} else {
+		socketobj.connect("localhost", 19191);
+	}
+};
+
+</script> 
+</head>
+<body>
+		<div>
+			<object id="myId" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="0" height="0">
+				<param name="movie" value="PYSocket.swf" />
+				<param name="allowscriptaccess" value="always">
+				<param name="allownetworking" value="all">
+        		<!--[if !IE]>-->
+				<object id="socket" type="application/x-shockwave-flash" data="../../js/pitaya/PYSocket.swf" width="0" height="0">
+					<param name="allowscriptaccess" value="always">
+					<param name="allownetworking" value="all">
+				</object>
+				<!--<![endif]-->
+			</object>
+		</div>
+</body>
+</html>
