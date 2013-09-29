@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pitaya.bookingnow.dao.TableMapper">
+	<resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.Table">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="enabled" property="enabled" jdbcType="BIT" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="minCustomerCount" property="minCustomerCount" jdbcType="INTEGER" />
+		<result column="maxCustomerCount" property="maxCustomerCount" jdbcType="INTEGER" />
+		<result column="address" property="address" jdbcType="VARCHAR" />
+		<result column="indoorPrice" property="indoorPrice" jdbcType="DOUBLE" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, 
+		status, 
+		minCustomerCount, 
+		maxCustomerCount, 
+		address,
+		indoorPrice,
+		enabled
+	</sql>
+	
+	
+	<select id="existTable" resultMap="BaseResultMap">
+		select
+			id,address,status
+		from pitaya_table
+		where enabled = true and address = #{address,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="searchAvailableTables" resultMap="BaseResultMap"
+		parameterType="com.pitaya.bookingnow.util.SearchParams">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_table
+		<where>
+			enabled = true
+			<if test="customer_count != null">
+				<![CDATA[
+				and minCustomerCount <= #{customer_count,jdbcType=INTEGER} and maxCustomerCount >= #{customer_count,jdbcType=INTEGER}
+				]]>
+			</if>
+			<if test="status != null">
+				and status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="status == null">
+				and status = 2
+			</if>
+			
+		</where>
+	</select>
+	<select id="searchAllTables" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_table
+		where enabled = true
+	</select>
+	
+	<select id="searchTables" resultMap="BaseResultMap"
+		parameterType="com.pitaya.bookingnow.entity.Table">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_table
+		<where>
+			enabled = true
+			<if test="status != null">
+				and status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="minCustomerCount != null">
+				and minCustomerCount = #{minCustomerCount,jdbcType=INTEGER}
+			</if>
+			<if test="maxCustomerCount != null">
+				and maxCustomerCount = #{maxCustomerCount,jdbcType=INTEGER}
+			</if>
+			<if test="address != null">
+				and address = #{address,jdbcType=VARCHAR}
+			</if>
+			<if test="address != null">
+				and indoorPrice = #{indoorPrice,jdbcType=DOUBLE}
+			</if>
+			
+		</where>
+	</select>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_table
+		where id = #{id,jdbcType=BIGINT} and enabled = true
+	</select>
+	
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		update pitaya_table
+		set enabled = false
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Table">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_table (
+			status, 
+			minCustomerCount, 
+			maxCustomerCount,
+			address,
+			indoorPrice,
+			enabled
+			)
+		values (
+			#{status,jdbcType=INTEGER}, 
+			#{minCustomerCount,jdbcType=INTEGER},
+			#{maxCustomerCount,jdbcType=INTEGER},
+			#{address,jdbcType=VARCHAR},
+			#{indoorPrice,jdbcType=DOUBLE},
+			#{enabled,jdbcType=BIT}
+		)
+	</insert>
+	
+	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Table">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_table
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="status != null">
+				status,
+			</if>
+			<if test="minCustomerCount != null">
+				minCustomerCount,
+			</if>
+			<if test="maxCustomerCount != null">
+				maxCustomerCount,
+			</if>
+			<if test="address != null">
+				address,
+			</if>
+			<if test="indoorPrice != null">
+				indoorPrice,
+			</if>
+				enabled
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="minCustomerCount != null">
+				#{minCustomerCount,jdbcType=INTEGER},
+			</if>
+			<if test="maxCustomerCount != null">
+				#{maxCustomerCount,jdbcType=INTEGER},
+			</if>
+			<if test="address != null">
+				#{address,jdbcType=VARCHAR},
+			</if>
+			<if test="indoorPrice != null">
+				#{indoorPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="enabled != null">
+				#{enabled,jdbcType=BIT},
+			</if>
+			<if test="enabled == null">
+				true
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Table">
+		update pitaya_table
+		<set>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="minCustomerCount != null">
+				minCustomerCount = #{minCustomerCount,jdbcType=INTEGER},
+			</if>
+			<if test="maxCustomerCount != null">
+				maxCustomerCount = #{maxCustomerCount,jdbcType=INTEGER},
+			</if>
+			<if test="address != null">
+				address = #{address,jdbcType=VARCHAR},
+			</if>
+			<if test="indoorPrice != null">
+				indoorPrice = #{indoorPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="enabled != null">
+				enabled = #{enabled,jdbcType=BIT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Table">
+		update pitaya_table
+		set status = #{status,jdbcType=INTEGER},
+			minCustomerCount = #{minCustomerCount,jdbcType=INTEGER},
+			maxCustomerCount = #{maxCustomerCount,jdbcType=INTEGER},
+			address = #{address,jdbcType=VARCHAR},
+			indoorPrice = #{indoorPrice,jdbcType=DOUBLE},
+			enabled = #{enabled,jdbcType=BIT}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>

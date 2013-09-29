@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>register user</title>
+</head>
+	
+<body>
+	<div id="content">
+	
+	
+	
+		<div id='jqxTabs' style="float: left;">
+            <ul>
+                <li style="margin-left: 30px;">
+                   	<div id="userBasicInfoLabel"></div>
+                </li>
+                <li>
+                   <div id="userAdvancedInfoLabel"></div>
+                </li>
+                <li>
+                    <div id="userPictrueLabel"></div>
+                </li>
+            </ul>
+            
+            <div>
+            	<div style="text-align: center;border:1px solid blue;text-align:center;padding-top:50px;">
+                		<form id="updateUserInfoForm">
+                			<table class="updateUserTable">
+			                	<tr style="display:none">
+			                        <td data-i18n="userManagement.fieldLabel.id"></td>
+			                        <td><input type="text" id="updateUserIdInput" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.account"></td>
+			                        <td><input type="text" id="updateUserAccountInput" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.password"></td>
+			                        <td><input type="password" id="updateUserPasswordInput" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.confirmPassword"></td>
+			                        <td><input type="password" id="updateUserPasswordConfirmInput" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.name"></td>
+			                        <td><input type="text" id="updateUserRealNameInput" class="updateUserTextInput" /></td>
+			                    </tr>
+			                   
+			                    
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.birthday"></td>
+			                        <td><div id="updateUserBirthdayInput"></div></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.sex"></td>
+			                        <td>
+			                        	<div style='margin-top: 10px;'>
+							            	<span id='updateUserSexRadioButton1' style='float:left;'></span>
+							            	<span id='updateUserSexRadioButton2' style='float:right;'></span>
+							            	<input id="updateUserSexInput" type="hidden" />
+							            </div>
+			                        </td>
+			                    </tr>
+			                    <tr style="text-align: center;">
+			                        <td>
+			                        	<input id="updateUserBasicInfoButton" type="button" />
+			                        </td>
+			                    </tr>
+			                </table>
+			            </form>
+			     </div>
+            </div>
+            
+            <div>
+            	<div  style="text-align: center;border:1px solid blue;text-align:center;padding-top:50px;">
+                		<form id="updateUserInfoForm">
+                			<table class="updateUserTable">
+			                	<tr style="display:none">
+			                        <td data-i18n="userManagement.fieldLabel.id"></td>
+			                        <td><input type="text" id="updateUserIdInput" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.email"></td>
+			                        <td><input type="text" id="updateUserEmailInput" placeholder="someone@mail.com" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.address"></td>
+			                        <td><input type="text" id="updateUserAddressInput" placeholder="省-市-区-街道-小区-门牌号" class="updateUserTextInput" /></td>
+			                    </tr>
+			                    <tr>
+			                        <td data-i18n="userManagement.fieldLabel.phone"></td>
+			                        <td><div id="updateUserPhoneInput"></div></td>
+			                    </tr>
+			                    <tr style="text-align: center;">
+			                        <td>
+			                        	<input id="updateUserAdvancedInfoButton" type="button" />
+			                        </td>
+			                        <td>
+			                        </td>
+			                    </tr>
+			                </table>
+			            </form>
+			     </div>
+            </div>
+            <div>
+            	<div id="cropUserpicturePanel" style="height:500px; text-align: center;border:1px solid blue;text-align:center;padding-top:50px;">
+	            		<div class="avataria" title="头像上传前预览">
+							<div class="cont">
+								<div class="thumb"></div>
+								<form id="uploadImageForUserForm" enctype="multipart/form-data" action="uploadImageForUser.action" method="post">
+									<div class="ui_fileup"><input type="file" id="userPictureFile" name="uploadImage" accept="image/*" onerror="alert('请选择一个图片')">浏览</div>
+									&nbsp;
+									<input id="uploadImageForUserButton" type="button" class="ui_button" value="保存">
+									
+									<input type="hidden" id="x" name="params.x" /> 
+									<input type="hidden" id="y" name="params.y" /> 
+									<input type="hidden" id="w" name="params.w" /> 
+									<input type="hidden" id="h" name="params.h" />
+									<input type="hidden" id="scaleRatio" name="params.scaleRatio"  />
+								</form>
+							</div>
+							<div class="cont">
+								<div id="userPicturePreview" class="preview"></div>
+							</div>
+						</div>
+            	</div>
+                
+            </div>
+           
+        </div>
+	
+	
+	</div>
+</body>
+</html>

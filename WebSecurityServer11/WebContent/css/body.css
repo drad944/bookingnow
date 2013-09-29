@@ -1,0 +1,76 @@
+@CHARSET "UTF-8";
+
+.highlightRow {
+	color: #b90f0f !important;
+	font-style: italic;
+}
+.lowlightRow {
+	color: #000000 !important;
+	font-style: normal;
+}
+
+.browser_file {
+	color:White;
+}
+
+
+.preview_box {
+	position:relative;
+	top:-100px;
+	left:500px;
+}
+
+#crop_preview {
+	width:100px; 
+	height:100px;
+}
+
+.registerUserTextInput
+{
+    height: 21px;
+    width: 150px;
+}
+.registerUserTable
+{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.registerUserTable td, 
+.registerUserTable tr
+{
+    margin: 0px;
+    padding: 2px;
+    border-spacing: 0px;
+    border-collapse: collapse;
+    font-family: Verdana;
+    font-size: 12px;
+}
+h3 
+{
+    display: inline-block;
+    margin: 0px;
+}
+
+
+
+.updateUserTextInput
+{
+    height: 21px;
+    width: 150px;
+}
+.updateUserTable
+{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.updateUserTable td, 
+.updateUserTable tr
+{
+    margin: 0px;
+    padding: 2px;
+    border-spacing: 0px;
+    border-collapse: collapse;
+    font-family: Verdana;
+    font-size: 12px;
+}
+

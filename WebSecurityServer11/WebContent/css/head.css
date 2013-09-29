@@ -1,0 +1,35 @@
+
+#J_HeaderSearch ul li
+{
+	
+	float:left;
+	color:#666;
+	padding:0 16px;
+	margin:0 6px
+}
+
+.list_tab  ul li
+{
+	
+	float:left;
+	color:#666;
+	padding:0 16px;
+	margin:0 6px
+}
+
+#quick-search ul li
+{
+	float:left;
+	color:#666;
+	padding:0 16px;
+	margin:0 6px
+}
+
+.col-sub
+{
+	float:right;
+	color:#666;
+	padding:0 16px;
+	margin:0 6px
+}
+

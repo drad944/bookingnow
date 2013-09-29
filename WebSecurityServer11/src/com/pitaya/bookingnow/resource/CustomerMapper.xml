@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pitaya.bookingnow.dao.CustomerMapper">
+	<resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.Customer">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="enabled" property="enabled" jdbcType="BIT" />
+		<result column="modifyTime" property="modifyTime" jdbcType="BIGINT" />
+		<result column="image_size" property="image_size" jdbcType="INTEGER" />
+		<result column="image_relative_path" property="image_relative_path"	jdbcType="VARCHAR" />
+		<result column="image_absolute_path" property="image_absolute_path"	jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="account" property="account" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="INTEGER" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="address" property="address" jdbcType="VARCHAR" />
+		<result column="birthday" property="birthday" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id, 
+		enabled, 
+		modifyTime, 
+		image_size, 
+		image_relative_path,
+		image_absolute_path, 
+		name,
+		account, 
+		password, 
+		phone, 
+		sex, 
+		email, 
+		address, 
+		birthday
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_customer
+		where id = #{id,jdbcType=BIGINT} and enabled = true
+	</select>
+	
+	<select id="login" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Customer">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_customer
+		<where>
+			enabled = true
+			<if test="name != null">
+				and name = #{name,jdbcType=VARCHAR}
+			</if>
+				and account = #{account,jdbcType=VARCHAR}
+				and password = #{password,jdbcType=VARCHAR}
+		</where>
+	</select>
+	
+	<select id="searchCustomersWithRole" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Customer">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_customer
+		<where>
+		   <if test="enabled != null">
+				enabled = #{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+				enabled = true
+			</if>
+			<if test="modifyTime != null">
+				and modifyTime = #{modifyTime,jdbcType=BIGINT}
+			</if>
+			<if test="image_size != null">
+				and image_size = #{image_size,jdbcType=INTEGER}
+			</if>
+			<if test="image_relative_path != null">
+				and image_relative_path = #{image_relative_path,jdbcType=VARCHAR}
+			</if>
+			<if test="image_absolute_path != null">
+				and image_absolute_path = #{image_absolute_path,jdbcType=VARCHAR}
+			</if>
+			<if test="name != null">
+				and name = #{name,jdbcType=VARCHAR}
+			</if>
+			<if test="account != null">
+				and account = #{account,jdbcType=VARCHAR}
+			</if>
+			<if test="password != null">
+				and password = #{password,jdbcType=VARCHAR}
+			</if>
+			<if test="phone != null">
+				and phone = #{phone,jdbcType=VARCHAR}
+			</if>
+			<if test="sex != null">
+				and sex = #{sex,jdbcType=INTEGER}
+			</if>
+			<if test="email != null">
+				and email = #{email,jdbcType=VARCHAR}
+			</if>
+			<if test="address != null">
+				and address = #{address,jdbcType=VARCHAR}
+			</if>
+			<if test="birthday != null">
+				and birthday = #{birthday,jdbcType=BIGINT}
+			</if> 
+		</where>
+	</select>
+	
+	
+	<select id="searchAllCustomers" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_customer
+		where enabled = true
+	</select>
+	
+	<select id="searchCustomers" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Customer">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_customer
+		<where>
+		   <if test="enabled != null">
+				enabled = #{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+				enabled = true
+			</if>
+			<if test="modifyTime != null">
+				and modifyTime = #{modifyTime,jdbcType=BIGINT}
+			</if>
+			<if test="image_size != null">
+				and image_size = #{image_size,jdbcType=INTEGER}
+			</if>
+			<if test="image_relative_path != null">
+				and image_relative_path = #{image_relative_path,jdbcType=VARCHAR}
+			</if>
+			<if test="image_absolute_path != null">
+				and image_absolute_path = #{image_absolute_path,jdbcType=VARCHAR}
+			</if>
+			<if test="name != null">
+				and name = #{name,jdbcType=VARCHAR}
+			</if>
+			<if test="account != null">
+				and account = #{account,jdbcType=VARCHAR}
+			</if>
+			<if test="password != null">
+				and password = #{password,jdbcType=VARCHAR}
+			</if>
+			<if test="phone != null">
+				and phone = #{phone,jdbcType=VARCHAR}
+			</if>
+			<if test="sex != null">
+				and sex = #{sex,jdbcType=INTEGER}
+			</if>
+			<if test="email != null">
+				and email = #{email,jdbcType=VARCHAR}
+			</if>
+			<if test="address != null">
+				and address = #{address,jdbcType=VARCHAR}
+			</if>
+			<if test="birthday != null">
+				and birthday = #{birthday,jdbcType=BIGINT}
+			</if> 
+		</where>
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		update pitaya_customer
+		set enabled = false
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Customer">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_customer (enabled, modifyTime, image_size,
+		image_relative_path, image_absolute_path,
+		name, account, password,
+		phone, sex, email,
+		address, birthday)
+		values (#{enabled,jdbcType=BIT}, #{modifyTime,jdbcType=BIGINT},
+		#{image_size,jdbcType=INTEGER},
+		#{image_relative_path,jdbcType=VARCHAR},
+		#{image_absolute_path,jdbcType=VARCHAR},
+		#{name,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+		#{phone,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER},
+		#{email,jdbcType=VARCHAR},
+		#{address,jdbcType=VARCHAR}, #{birthday,jdbcType=BIGINT})
+	</insert>
+	
+	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Customer">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_customer
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				enabled
+			<if test="modifyTime != null">
+				modifyTime,
+			</if>
+			<if test="image_size != null">
+				image_size,
+			</if>
+			<if test="image_relative_path != null">
+				image_relative_path,
+			</if>
+			<if test="image_absolute_path != null">
+				image_absolute_path,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="account != null">
+				account,
+			</if>
+			<if test="password != null">
+				password,
+			</if>
+			<if test="phone != null">
+				phone,
+			</if>
+			<if test="sex != null">
+				sex,
+			</if>
+			<if test="email != null">
+				email,
+			</if>
+			<if test="address != null">
+				address,
+			</if>
+			<if test="birthday != null">
+				birthday,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="enabled != null">
+				#{enabled,jdbcType=BIT},
+			</if>
+			<if test="enabled == null">
+				true
+			</if>
+			<if test="modifyTime != null">
+				#{modifyTime,jdbcType=BIGINT},
+			</if>
+			<if test="image_size != null">
+				#{image_size,jdbcType=INTEGER},
+			</if>
+			<if test="image_relative_path != null">
+				#{image_relative_path,jdbcType=VARCHAR},
+			</if>
+			<if test="image_absolute_path != null">
+				#{image_absolute_path,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="account != null">
+				#{account,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				#{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				#{sex,jdbcType=INTEGER},
+			</if>
+			<if test="email != null">
+				#{email,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				#{address,jdbcType=VARCHAR},
+			</if>
+			<if test="birthday != null">
+				#{birthday,jdbcType=BIGINT},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Customer">
+		update pitaya_customer
+		<set>
+			<if test="enabled != null">
+				enabled = #{enabled,jdbcType=BIT},
+			</if>
+			<if test="modifyTime != null">
+				modifyTime = #{modifyTime,jdbcType=BIGINT},
+			</if>
+			<if test="image_size != null">
+				image_size = #{image_size,jdbcType=INTEGER},
+			</if>
+			<if test="image_relative_path != null">
+				image_relative_path = #{image_relative_path,jdbcType=VARCHAR},
+			</if>
+			<if test="image_absolute_path != null">
+				image_absolute_path = #{image_absolute_path,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="account != null">
+				account = #{account,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				password = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				sex = #{sex,jdbcType=INTEGER},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				address = #{address,jdbcType=VARCHAR},
+			</if>
+			<if test="birthday != null">
+				birthday = #{birthday,jdbcType=BIGINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Customer">
+		update pitaya_customer
+		set 
+			enabled = #{enabled,jdbcType=BIT},
+			modifyTime = #{modifyTime,jdbcType=BIGINT},
+			image_size = #{image_size,jdbcType=INTEGER},
+			image_relative_path = #{image_relative_path,jdbcType=VARCHAR},
+			image_absolute_path = #{image_absolute_path,jdbcType=VARCHAR},
+			name = #{name,jdbcType=VARCHAR},
+			account = #{account,jdbcType=VARCHAR},
+			password = #{password,jdbcType=VARCHAR},
+			phone = #{phone,jdbcType=VARCHAR},
+			sex = #{sex,jdbcType=INTEGER},
+			email = #{email,jdbcType=VARCHAR},
+			address = #{address,jdbcType=VARCHAR},
+			birthday = #{birthday,jdbcType=BIGINT}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>
