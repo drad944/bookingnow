@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>图片上传前预览</title>
+<link href="css/imgup.css" rel="stylesheet" type="text/css">
+
+<link href="css/cropPictrue.css" rel="stylesheet" type="text/css">
+
+<script src="js/jquery-1.10.2.js"></script>
+<script src="js/imagepreview.js"></script>
+<script src="js/jquery.crop.js"></script>
+<script>
+
+$(document).ready(function(){
+	imagepreview(document.getElementById("file"), document.getElementById("preview"), function(info){
+		alert("文件名:" + info.name + "\r\n图片原始高度:" + info.height + "\r\n图片原始宽度:" + info.width);
+		//这里若return false则不预览图片
+	
+		$("#preview").css({
+			background: "none"
+		});
+	
+		$("#preview").crop( function(e){
+			$("input[type='hidden']").val([e.top, e.left, e.height, e.width].toString());
+		}, ".thumb");
+	});
+});
+	
+
+</script>
+
+</head>
+
+<body>
+	<div id="content">
+		<div class="avataria" title="头像上传前预览">
+			<div class="cont">
+				<div class="thumb"></div>
+				<form enctype="application/x-www-form-urlencoded">
+					<div class="ui_fileup"><input type="file" id="file" accept="image/*" onerror="alert('请选择一个图片')">浏览</div>
+					&nbsp;
+					<input type="submit" class="ui_button" value="保存">
+					<input name="crop" type="hidden">
+					
+				</form>
+			</div>
+			<div class="cont">
+				<div id="preview" class="preview"></div>
+			</div>
+		</div>
+	</div>
+
+
+</body>
+</html>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	 http://www.springframework.org/schema/tx
+	 http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	 http://www.springframework.org/schema/aop
+	 http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+	 http://www.springframework.org/schema/context
+	 http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+					  
+	<context:property-placeholder location="classpath:database.properties" /> 
+
+	<bean id="c3p0DataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="autoCommitOnClose" value="true" />
+		<property name="checkoutTimeout" value="${cpool.checkoutTimeout}" />
+		<property name="initialPoolSize" value="${cpool.minPoolSize}" />
+		<property name="minPoolSize" value="${cpool.minPoolSize}" />
+		<property name="maxPoolSize" value="${cpool.maxPoolSize}" />
+		<property name="maxIdleTime" value="${cpool.maxIdleTime}" />
+		<property name="acquireIncrement" value="${cpool.acquireIncrement}" />
+		<property name="maxIdleTimeExcessConnections" value="${cpool.maxIdleTimeExcessConnections}" />
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
+		<property name="dataSource" ref="c3p0DataSource" />
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	  <property name="dataSource" ref="c3p0DataSource" />
+	</bean>
+
+	<!--  -->
+	<tx:advice id="myTxAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="remove*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception" no-rollback-for="java.lang.RuntimeException" />
+			<tx:method name="delete*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception" no-rollback-for="java.lang.RuntimeException"/>
+			
+			<tx:method name="add*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.RuntimeException" />
+			<tx:method name="insert*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.RuntimeException" />
+			
+			<tx:method name="modify*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception" />
+			<tx:method name="update*" propagation="REQUIRED" read-only="false" rollback-for="java.lang.Exception" />
+			
+			<tx:method name="search*" propagation="SUPPORTS" />
+			<tx:method name="select*" propagation="SUPPORTS" />
+		</tx:attributes>
+	</tx:advice>
+
+	<aop:config>
+		<aop:pointcut id="productServiceMethods" expression="execution(public * com.pitaya.bookingnow.service.impl..*.*(..))" />
+		<aop:advisor pointcut-ref="productServiceMethods" advice-ref="myTxAdvice" />
+	</aop:config>
+	
+	<bean id="roleDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.security.RoleMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+    
+	<bean id="userDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.security.UserMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+    
+    <bean id="role_detailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.security.User_Role_DetailMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+    
+    <bean id="role_detailService" class="com.pitaya.bookingnow.service.impl.security.User_Role_DetailService">
+		<property name="userRoleDetailDao" ref="role_detailDao" />
+	</bean>
+    
+	<bean id="userService" class="com.pitaya.bookingnow.service.impl.security.UserService">
+		<property name="userDao" ref="userDao" />
+		<property name="roleDao" ref="roleDao" />
+		<property name="role_detailDao" ref="role_detailDao" />
+	</bean>
+
+	<bean id="userAction" class="com.pitaya.bookingnow.action.UserAction" scope="prototype">
+		<property name="userService" ref="userService" />
+	</bean>
+	
+	
+	
+	<bean id="foodDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.FoodMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+    
+	<bean id="foodService" class="com.pitaya.bookingnow.service.impl.FoodService">
+		<property name="foodDao" ref="foodDao" />
+	</bean>
+
+	<bean id="foodAction" class="com.pitaya.bookingnow.action.FoodAction" scope="prototype">
+		<property name="foodService" ref="foodService" />
+		<property name="messageService" ref="messageService" />
+	</bean>
+	
+	<bean id="food_detailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.Order_Food_DetailMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+    
+	<bean id="food_detailService" class="com.pitaya.bookingnow.service.impl.Order_Food_DetailService">
+	    <property name="foodDao" ref="foodDao" />
+	    <property name="orderDao" ref="orderDao" />
+        <property name="food_detailDao" ref="food_detailDao" />
+        <property name="messageService" ref="messageService"/>
+    </bean>
+	
+	<bean id="orderDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.OrderMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+    
+	<bean id="orderService" class="com.pitaya.bookingnow.service.impl.OrderService">
+		<property name="orderDao" ref="orderDao" />
+		<property name="userDao" ref="userDao" />
+		<property name="table_detailDao" ref="table_detailDao" />
+		<property name="tableDao" ref="tableDao" />
+		<property name="foodDao" ref="foodDao" />
+		<property name="food_detailDao" ref="food_detailDao" />
+		<property name="customerDao" ref="customerDao" />
+		<property name="messageService" ref="messageService"/>
+		<property name="eventManager" ref="eventManager"/>
+	</bean>
+
+	<bean id="orderAction" class="com.pitaya.bookingnow.action.OrderAction" scope="prototype">
+		<property name="orderService" ref="orderService" />
+	</bean>
+	
+	<bean id="table_detailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.Order_Table_DetailMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+
+	<bean id="tableDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.TableMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+    
+	<bean id="tableService" class="com.pitaya.bookingnow.service.impl.TableService">
+		<property name="tableDao" ref="tableDao" />
+	</bean>
+
+	<bean id="tableAction" class="com.pitaya.bookingnow.action.TableAction" scope="prototype">
+		<property name="tableService" ref="tableService" />
+	</bean>
+	
+	
+	
+	<bean id="customerDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface"  value="com.pitaya.bookingnow.dao.CustomerMapper" />   
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />  
+    </bean>
+    
+	<bean id="customerService" class="com.pitaya.bookingnow.service.impl.CustomerService">
+		<property name="customerDao" ref="customerDao" />
+	</bean>
+
+	<bean id="customerAction" class="com.pitaya.bookingnow.action.CustomerAction" scope="prototype">
+		<property name="customerService" ref="customerService" />
+	</bean>
+	
+	<bean id="adminAction" class="com.pitaya.bookingnow.action.AdminAction" scope="prototype">
+		<property name="messageService" ref="messageService"/>
+	</bean>
+		
+	<bean id="topicAction" class="com.pitaya.bookingnow.action.TopicAction" scope="prototype">
+		<property name="eventManager" ref="eventManager"/>
+	</bean>
+
+	<bean id="messageService" class="com.pitaya.bookingnow.service.socket.EnhancedMessageService" scope="singleton">
+		<property name="userService" ref="userService"/>
+	</bean>
+	
+   	<bean id="securitySocketService" class="com.pitaya.bookingnow.service.socket.MessageService" scope="singleton">
+        <property name="userService" ref="userService"/>
+   	</bean>
+	
+	<bean id="eventManager" class="com.pitaya.bookingnow.source.EventManager" scope="singleton">
+	</bean>
+	
+</beans>

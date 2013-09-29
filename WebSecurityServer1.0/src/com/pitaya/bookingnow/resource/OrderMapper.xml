@@ -1,0 +1,1744 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pitaya.bookingnow.dao.OrderMapper">
+	<resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.Order">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="user_id" property="user_id" jdbcType="BIGINT" />
+		<result column="customer_id" property="customer_id" jdbcType="BIGINT" />
+		<result column="customer_count" property="customer_count" jdbcType="INTEGER" />
+		<result column="modifyTime" property="modifyTime" jdbcType="BIGINT" />
+		<result column="allowance" property="allowance" jdbcType="DOUBLE" />
+		<result column="total_price" property="total_price" jdbcType="DOUBLE" />
+		<result column="prePay" property="prePay" jdbcType="DOUBLE" />
+		<result column="submit_time" property="submit_time" jdbcType="BIGINT" />
+		<result column="enabled" property="enabled" jdbcType="BIT" />	
+	</resultMap>
+	
+	<resultMap id="Order_BaseResultMap" type="com.pitaya.bookingnow.entity.Order">
+		<id column="O_id" property="id" jdbcType="BIGINT" />
+		<result column="O_status" property="status" jdbcType="INTEGER" />
+		<result column="O_user_id" property="user_id" jdbcType="BIGINT" />
+		<result column="O_customer_id" property="customer_id" jdbcType="BIGINT" />
+		<result column="O_customer_count" property="customer_count" jdbcType="INTEGER" />
+		<result column="O_modifyTime" property="modifyTime" jdbcType="BIGINT" />
+		<result column="O_allowance" property="allowance" jdbcType="DOUBLE" />
+		<result column="O_total_price" property="total_price" jdbcType="DOUBLE" />
+		<result column="O_prePay" property="prePay" jdbcType="DOUBLE" />
+		<result column="O_submit_time" property="submit_time" jdbcType="BIGINT" />
+		<result column="O_enabled" property="enabled" jdbcType="BIT" />
+		
+		<association property="user" javaType="com.pitaya.bookingnow.entity.security.User">
+			<id column="U_id" property="id" jdbcType="BIGINT" />
+			<result column="U_modifyTime" property="modifyTime" jdbcType="BIGINT" />
+			<result column="U_image_size" property="image_size" jdbcType="INTEGER" />
+			<result column="U_image_relative_path" property="image_relative_path" jdbcType="VARCHAR" />
+			<result column="U_image_absolute_path" property="image_absolute_path" jdbcType="VARCHAR" />
+			<result column="U_account" property="account" jdbcType="VARCHAR" />
+			<result column="U_name" property="name" jdbcType="VARCHAR" />
+			<result column="U_password" property="password" jdbcType="VARCHAR" />
+			<result column="U_phone" property="phone" jdbcType="VARCHAR" />
+			<result column="U_sex" property="sex" jdbcType="INTEGER" />
+			<result column="U_email" property="email" jdbcType="VARCHAR" />
+			<result column="U_address" property="address" jdbcType="VARCHAR" />
+			<result column="U_birthday" property="birthday" jdbcType="BIGINT" />
+			<result column="U_description" property="description" jdbcType="VARCHAR" />
+			<result column="U_department" property="department" jdbcType="INTEGER" />
+			<result column="U_sub_system" property="sub_system" jdbcType="INTEGER" />
+			<result column="U_enabled" property="enabled" jdbcType="BIT" />
+		</association>
+		
+		<association property="customer" javaType="com.pitaya.bookingnow.entity.Customer">
+			<id column="C_id" property="id" jdbcType="BIGINT" />
+			<result column="C_modifyTime" property="modifyTime" jdbcType="BIGINT" />
+			<result column="C_image_size" property="image_size" jdbcType="INTEGER" />
+			<result column="C_image_relative_path" property="image_relative_path"	jdbcType="VARCHAR" />
+			<result column="C_image_absolute_path" property="image_absolute_path"	jdbcType="VARCHAR" />
+			<result column="C_name" property="name" jdbcType="VARCHAR" />
+			<result column="C_account" property="account" jdbcType="VARCHAR" />
+			<result column="C_password" property="password" jdbcType="VARCHAR" />
+			<result column="C_phone" property="phone" jdbcType="VARCHAR" />
+			<result column="C_sex" property="sex" jdbcType="INTEGER" />
+			<result column="C_email" property="email" jdbcType="VARCHAR" />
+			<result column="C_address" property="address" jdbcType="VARCHAR" />
+			<result column="C_birthday" property="birthday" jdbcType="BIGINT" />
+			<result column="C_enabled" property="enabled" jdbcType="BIT" />
+		</association>
+		
+		<collection property="table_details" ofType="Order_Table_Detail">
+			<id column="TD_id" property="id" jdbcType="BIGINT" />
+			<result column="TD_realCustomerCount" property="realCustomerCount"	jdbcType="INTEGER" />
+			<result column="TD_enabled" property="enabled" jdbcType="BIT" />
+			<result column="TD_table_id" property="table_id" jdbcType="BIGINT" />
+			<result column="TD_order_id" property="order_id" jdbcType="BIGINT" />
+			
+			<association property="table" javaType="com.pitaya.bookingnow.entity.Table">
+				<id column="T_id" property="id" jdbcType="BIGINT" />
+				<result column="T_enabled" property="enabled" jdbcType="BIT" />
+				<result column="T_status" property="status" jdbcType="INTEGER" />
+				<result column="T_minCustomerCount" property="minCustomerCount" jdbcType="INTEGER" />
+				<result column="T_maxCustomerCount" property="maxCustomerCount" jdbcType="INTEGER" />
+				<result column="T_address" property="address" jdbcType="VARCHAR" />
+				<result column="T_indoorPrice" property="indoorPrice" jdbcType="DOUBLE" />
+			</association> 
+		</collection>
+		
+		<collection property="food_details" ofType="Order_Food_Detail">
+			<id column="FD_id" property="id" jdbcType="BIGINT" />
+			<result column="FD_status" property="status" jdbcType="INTEGER" />
+			<result column="FD_count" property="count" jdbcType="INTEGER" />
+			<result column="FD_preference" property="preference" jdbcType="INTEGER" />
+			<result column="FD_last_modify_time" property="last_modify_time" jdbcType="BIGINT" />
+			<result column="FD_enabled" property="enabled" jdbcType="BIT" />
+			<result column="FD_isFree" property="isFree" jdbcType="BIT" />
+			<result column="FD_food_id" property="food_id" jdbcType="BIGINT" />
+			<result column="FD_order_id" property="order_id" jdbcType="BIGINT" />
+			
+			<association property="food" javaType="com.pitaya.bookingnow.entity.Food">
+				<id column="F_id" property="id" jdbcType="BIGINT" />
+				<result column="F_recommendation" property="recommendation" jdbcType="INTEGER" />
+				<result column="F_status" property="status" jdbcType="INTEGER" />
+				<result column="F_name" property="name" jdbcType="VARCHAR" />
+				<result column="F_version" property="version" jdbcType="BIGINT" />
+				<result column="F_period" property="period" jdbcType="BIGINT" />
+				<result column="F_price" property="price" jdbcType="DOUBLE" />
+				<result column="F_category" property="category" jdbcType="VARCHAR" />
+				<result column="F_description" property="description" jdbcType="VARCHAR" />
+				
+				<result column="F_enabled" property="enabled" jdbcType="BIT" />
+				<result column="F_large_image_relative_path" property="large_image_relative_path" jdbcType="VARCHAR" />
+				<result column="F_small_image_relative_path" property="small_image_relative_path" jdbcType="VARCHAR" />
+				<result column="F_large_image_absolute_path" property="large_image_absolute_path" jdbcType="VARCHAR" />
+				<result column="F_small_image_absolute_path" property="small_image_absolute_path" jdbcType="VARCHAR" />
+				<result column="F_large_image_size" property="large_image_size" jdbcType="INTEGER" />
+				<result column="F_small_image_size" property="small_image_size" jdbcType="INTEGER" />
+			</association> 
+		</collection>
+	</resultMap>
+	
+	<sql id="Max_Order_Base_Column_List">
+		O.id as O_id, 
+		O.status as O_status, 
+		O.user_id as O_user_id, 
+		O.customer_id as O_customer_id, 
+		O.customer_count as O_customer_count, 
+		O.modifyTime as O_modifyTime, 
+		O.allowance as O_allowance,
+		O.total_price as O_total_price,
+		O.prePay as O_prePay, 
+		O.submit_time as O_submit_time, 
+		O.enabled as O_enabled
+	</sql>
+	
+	<sql id="Max_User_Base_Column_List">
+		U.id as U_id, 
+		U.modifyTime as U_modifyTime, 
+		U.image_size as U_image_size,
+		U.image_relative_path as U_image_relative_path,
+		U.image_absolute_path as U_image_absolute_path,
+		U.account as U_account, 
+		U.name as U_name, 
+		U.password as U_password, 
+		U.phone as U_phone, 
+		U.sex as U_sex, 
+		U.email as U_email, 
+		U.address as U_address,
+		U.birthday as U_birthday, 
+		U.description as U_description,
+		U.department as U_department, 
+		U.sub_system as U_sub_system,
+		U.enabled as U_enabled
+	</sql>
+	
+	<sql id="Max_Customer_Base_Column_List">
+		C.id as C_id, 
+		C.enabled as C_enabled, 
+		C.modifyTime as C_modifyTime, 
+		C.image_size as C_image_size, 
+		C.image_relative_path as C_image_relative_path,
+		C.image_absolute_path as C_image_absolute_path, 
+		C.name as C_name,
+		C.account as C_account, 
+		C.password as C_password, 
+		C.phone as C_phone, 
+		C.sex as C_sex, 
+		C.email as C_email, 
+		C.address as C_address, 
+		C.birthday as C_birthday
+	</sql>
+	
+	<sql id="Max_Table_Detail_Base_Column_List">
+		TD.id as TD_id, 
+		TD.realCustomerCount as TD_realCustomerCount, 
+		TD.enabled as TD_enabled, 
+		TD.table_id as TD_table_id, 
+		TD.order_id as TD_order_id
+	</sql>
+	
+	<sql id="Max_Table_Base_Column_List">
+		T.id as T_id,
+		T.enabled as T_enabled,  
+		T.status as T_status, 
+		T.minCustomerCount as T_minCustomerCount,
+		T.maxCustomerCount as T_maxCustomerCount, 
+		T.address as T_address,
+		T.indoorPrice as T_indoorPrice
+	</sql>
+	
+	<sql id="Max_Food_Detail_Base_Column_List">
+		FD.id as FD_id, 
+		FD.status as FD_status, 
+		FD.count as FD_count,
+		FD.preference as FD_preference,
+		FD.last_modify_time as FD_last_modify_time, 
+		FD.enabled as FD_enabled,
+		FD.isFree as FD_isFree,  
+		FD.food_id as FD_food_id,
+		FD.order_id as FD_order_id
+	</sql>
+	
+	<sql id="Max_Food_Base_Column_List">
+		F.id as F_id, 
+		F.recommendation as F_recommendation,
+		F.status as F_status, 
+		F.name as F_name, 
+		F.version as F_version,
+		F.period as F_period,
+		F.price as F_price,
+		F.category as F_category,
+		F.description as F_description,
+		F.enabled as F_enabled,
+		F.large_image_relative_path as F_large_image_relative_path,
+		F.small_image_relative_path as F_small_image_relative_path,
+		F.large_image_absolute_path as F_large_image_absolute_path,
+		F.small_image_absolute_path as F_small_image_absolute_path,
+		F.large_image_size as F_large_image_size,
+		F.small_image_size as F_small_image_size
+		
+	</sql>
+	
+	<sql id="Max_TEMP_User_Base_Column_List">
+		U_id, 
+		U_modifyTime, 
+		U_image_size,
+		U_image_relative_path,
+		U_image_absolute_path,
+		U_account, 
+		U_name, 
+		U_password, 
+		U_phone, 
+		U_sex, 
+		U_email, 
+		U_address,
+		U_birthday, 
+		U_description,
+		U_department, 
+		U_sub_system,
+		U_enabled
+	</sql>
+	
+	<sql id="Max_TEMP_Customer_Base_Column_List">
+		C_id, 
+		C_enabled, 
+		C_modifyTime, 
+		C_image_size, 
+		C_image_relative_path,
+		C_image_absolute_path, 
+		C_name,
+		C_account, 
+		C_password, 
+		C_phone, 
+		C_sex, 
+		C_email, 
+		C_address, 
+		C_birthday
+	</sql>
+	
+	
+	<sql id="Max_TEMP_Table_Base_Column_List">
+		T_id,
+		T_enabled,  
+		T_status, 
+		T_minCustomerCount,
+		T_maxCustomerCount, 
+		T_address,
+		T_indoorPrice
+	</sql>
+	
+	<sql id="Max_TEMP_Food_Base_Column_List">
+		F_id, 
+		F_recommendation,
+		F_status, 
+		F_name, 
+		F_version,
+		F_period,
+		F_price,
+		F_category,
+		F_description,
+		F_enabled,
+		F_large_image_relative_path,
+		F_small_image_relative_path,
+		F_large_image_absolute_path,
+		F_small_image_absolute_path,
+		F_large_image_size,
+		F_small_image_size
+	</sql>
+	
+	<sql id="Order_Base_Column_List">
+		O.id as O_id, 
+		O.status as O_status, 
+		O.user_id as O_user_id, 
+		O.customer_id as O_customer_id, 
+		O.customer_count as O_customer_count, 
+		O.modifyTime as O_modifyTime, 
+		O.allowance as O_allowance,
+		O.total_price as O_total_price,
+		O.prePay as O_prePay, 
+		O.submit_time as O_submit_time, 
+		O.enabled as O_enabled
+	</sql>
+	
+	<sql id="User_Base_Column_List">
+		U.id as U_id, 
+		U.name as U_name, 
+		U.sex as U_sex, 
+		U.department as U_department,
+		U.enabled as U_enabled
+	</sql>
+	
+	<sql id="Customer_Base_Column_List">
+		C.id as C_id, 
+		C.name as C_name, 
+		C.phone as C_phone,
+		C.sex as C_sex,
+		C.enabled as C_enabled
+	</sql>
+	
+	<sql id="Table_Detail_Base_Column_List">
+		TD.id as TD_id, 
+		TD.realCustomerCount as TD_realCustomerCount, 
+		TD.enabled as TD_enabled, 
+		TD.table_id as TD_table_id, 
+		TD.order_id as TD_order_id
+	</sql>
+	
+	<sql id="Table_Base_Column_List">
+		T.id as T_id, 
+		T.status as T_status, 
+		T.minCustomerCount as T_minCustomerCount,
+		T.maxCustomerCount as T_maxCustomerCount, 
+		T.address as T_address,
+		T.indoorPrice as T_indoorPrice
+	</sql>
+	
+	<sql id="Food_Detail_Base_Column_List">
+		FD.id as FD_id, 
+		FD.status as FD_status, 
+		FD.count as FD_count, 
+		FD.last_modify_time as FD_last_modify_time, 
+		FD.enabled as FD_enabled,
+		FD.isFree as FD_isFree,  
+		FD.food_id as FD_food_id,
+		FD.order_id as FD_order_id
+	</sql>
+	
+	<sql id="Food_Base_Column_List">
+		F.id as F_id, 
+		F.status as F_status, 
+		F.picture_id as F_picture_id, 
+		F.name as F_name, 
+		F.price as F_price,
+		F.category as F_category,
+		F.enabled as F_enabled,
+		F.large_image_relative_path as F_large_image_relative_path,
+		F.small_image_relative_path as F_small_image_relative_path
+		
+	</sql>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<sql id="TEMP_Table_Base_Column_List">
+		T_id, 
+		T_status, 
+		T_minCustomerCount,
+		T_maxCustomerCount, 
+		T_address,
+		T_indoorPrice
+	</sql>
+	
+	<sql id="TEMP_Food_Base_Column_List">
+		F_id, 
+		F_status, 
+		F_picture_id, 
+		F_name, 
+		F_price,
+		F_category,
+		F_enabled,
+		F_large_image_relative_path,
+		F_small_image_relative_path
+	</sql>
+	<sql id="TEMP_User_Base_Column_List">
+		U_id, 
+		U_name, 
+		U_sex, 
+		U_department,
+		U_enabled
+	</sql>
+	
+	<sql id="TEMP_Customer_Base_Column_List">
+		C_id, 
+		C_name, 
+		C_phone,
+		C_sex,
+		C_enabled
+	</sql>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<sql id="Min_Order_Base_Column_List">
+		O.id as O_id, 
+		O.status as O_status, 
+		O.user_id as O_user_id, 
+		O.customer_id as O_customer_id, 
+		O.customer_count as O_customer_count, 
+		O.modifyTime as O_modifyTime, 
+		O.allowance as O_allowance,
+		O.total_price as O_total_price,
+		O.prePay as O_prePay, 
+		O.submit_time as O_submit_time, 
+		O.enabled as O_enabled
+	</sql>
+	
+	<sql id="Min_User_Base_Column_List">
+		U.id as U_id, 
+		U.name as U_name
+	</sql>
+	
+	<sql id="Min_Customer_Base_Column_List">
+		C.id as C_id, 
+		C.name as C_name,
+		C.phone as C_phone
+	</sql>
+	
+	<sql id="Min_Table_Detail_Base_Column_List">
+		TD.id as TD_id,
+		TD.order_id as TD_order_id,
+		TD.table_id as TD_table_id
+	</sql>
+	
+	<sql id="Min_Table_Base_Column_List">
+		T.id as T_id,
+		T.status as T_status, 
+		T.address as T_address
+	</sql>
+	
+	<sql id="Min_Food_Detail_Base_Column_List">
+		FD.id as FD_id,
+		FD.status as FD_status,
+		FD.count as FD_count,
+		FD.isFree as FD_isFree,
+		FD.order_id as FD_order_id,
+		FD.food_id as FD_food_id
+	</sql>
+	
+	<sql id="Min_Food_Base_Column_List">
+		F.id as F_id,
+		F.status as F_status,
+		F.enabled as F_enabled
+	</sql>
+	
+	
+	
+	
+	
+	<sql id="Min_TEMP_User_Base_Column_List">
+		U_id, 
+		U_name
+	</sql>
+	
+	<sql id="Min_TEMP_Customer_Base_Column_List">
+		C_id, 
+		C_name,
+		C_phone
+	</sql>
+	
+	<sql id="Min_TEMP_Table_Detail_Base_Column_List">
+		TD_id,
+		TD_order_id,
+		TD_table_id
+	</sql>
+	
+	<sql id="Min_TEMP_Table_Base_Column_List">
+		T_id,
+		T_status, 
+		T_address
+	</sql>
+	
+	<sql id="Min_TEMP_Food_Detail_Base_Column_List">
+		FD_id,
+		FD_status,
+		FD_count,
+		FD_isFree,
+		FD_order_id,
+		FD_food_id
+	</sql>
+	
+	<sql id="Min_TEMP_Food_Base_Column_List">
+		F_id,
+		F_status,
+		F_enabled
+	</sql>
+	
+	
+	
+	
+	<sql id="Base_Column_List">
+		id, 
+		status, 
+		user_id, 
+		customer_id, 
+		customer_count, 
+		modifyTime, 
+		allowance,
+		total_price,
+		prePay, 
+		submit_time, 
+		enabled
+	</sql>
+	
+	<select id="selectOrderByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select 
+			<include refid="Base_Column_List" />
+		from pitaya_order
+		where enabled = true and id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="selectMinFullOrderByPrimaryKey" resultMap="Order_BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+			<include refid="Min_Order_Base_Column_List" />
+			,
+			INTERAL_FDF.*
+			,
+			INTERAL_TDT.*
+			,
+			<include refid="Min_TEMP_User_Base_Column_List" />
+			,
+			<include refid="Min_TEMP_Customer_Base_Column_List" />
+		from pitaya_order O 
+			left outer join 
+			(
+				select
+					<include refid="Min_Food_Detail_Base_Column_List" />
+					,
+					<include refid="Min_TEMP_Food_Base_Column_List" />
+				from pitaya_order_food_detail FD
+					left outer join (
+										select <include refid="Min_Food_Base_Column_List" />
+										from pitaya_food F
+										where F.enabled = true
+									) as F on FD.food_id = F.F_id 
+				where FD.enabled = true
+			) 		as		INTERAL_FDF on INTERAL_FDF.FD_order_id = O.id
+			
+			left outer join 
+			(
+				select
+					<include refid="Min_Table_Detail_Base_Column_List" />
+					,
+					<include refid="Min_TEMP_Table_Base_Column_List" />
+				from pitaya_order_table_detail TD
+					left outer join (
+										select <include refid="Min_Table_Base_Column_List" />
+										from pitaya_table T
+										where T.enabled = true
+									) as T on TD.table_id = T.T_id
+				where TD.enabled = true
+			) 		as		INTERAL_TDT on INTERAL_TDT.TD_order_id = O.id
+			
+			left outer join 
+			(
+				select <include refid="Min_User_Base_Column_List" />
+				from pitaya_user U
+				where U.enabled = true
+			) 		as		U on O.user_id = U.U_id
+			
+			left outer join 
+			(
+				select <include refid="Min_Customer_Base_Column_List" />
+				from pitaya_customer C
+				where C.enabled = true
+			) 		as		C on O.customer_id = C.C_id
+			
+		where O.id = #{id,jdbcType=BIGINT} and O.enabled = true
+	</select>
+	
+	<select id="searchMinFullOrders" resultMap="Order_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
+		select
+			<include refid="Min_Order_Base_Column_List" />
+			,
+			INTERAL_FDF.*
+			,
+			INTERAL_TDT.*
+			,
+			<include refid="Min_TEMP_User_Base_Column_List" />
+			,
+			<include refid="Min_TEMP_Customer_Base_Column_List" />
+		from pitaya_order O 
+			left outer join 
+			(
+				select
+					<include refid="Min_Food_Detail_Base_Column_List" />
+					,
+					<include refid="Min_TEMP_Food_Base_Column_List" />
+				from pitaya_order_food_detail FD
+					left outer join (
+										select <include refid="Min_Food_Base_Column_List" />
+										from pitaya_food F
+										where F.enabled = true
+									) as F on FD.food_id = F.F_id 
+				where FD.enabled = true
+			) 		as		INTERAL_FDF on INTERAL_FDF.FD_order_id = O.id
+			
+			left outer join 
+			(
+				select
+					<include refid="Min_Table_Detail_Base_Column_List" />
+					,
+					<include refid="Min_TEMP_Table_Base_Column_List" />
+				from pitaya_order_table_detail TD
+					left outer join (
+										select <include refid="Min_Table_Base_Column_List" />
+										from pitaya_table T
+										where T.enabled = true
+									) as T on TD.table_id = T.T_id
+				where TD.enabled = true
+			) 		as		INTERAL_TDT on INTERAL_TDT.TD_order_id = O.id
+			
+			left outer join 
+			(
+				select <include refid="Min_User_Base_Column_List" />
+				from pitaya_user U
+				where U.enabled = true
+			) 		as		U on O.user_id = U.U_id
+			
+			left outer join 
+			(
+				select <include refid="Min_Customer_Base_Column_List" />
+				from pitaya_customer C
+				where C.enabled = true
+			) 		as		C on O.customer_id = C.C_id
+		<where>
+			O.enabled = true
+			<if test="user_id != null">
+				and O.user_id = #{user_id,jdbcType=INTEGER}
+			</if>
+			
+			<if test="orderStatusList != null">
+				and O.status in 
+				<foreach item="item" index="index" collection="orderStatusList"
+					open="(" separator="," close=")"> 
+					#{item} 
+				</foreach> 
+			</if>
+			
+			<if test="fromDateTime != null">
+				and O.modifyTime &gt; #{fromDateTime,jdbcType=BIGINT}
+			</if>
+			<if test="toDateTime != null">
+				and O.modifyTime &lt; #{toDateTime,jdbcType=BIGINT}
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="searchMinFullOrdersByFullOrderInfo" resultMap="Order_BaseResultMap"	parameterType="com.pitaya.bookingnow.entity.Order">
+		select
+			<include refid="Min_Order_Base_Column_List" />
+			,
+			INTERAL_FDF.*
+			,
+			INTERAL_TDT.*
+			,
+			<include refid="Min_TEMP_User_Base_Column_List" />
+			,
+			<include refid="Min_TEMP_Customer_Base_Column_List" />
+		from pitaya_order O 
+			left outer join 
+			(
+				select
+					<include refid="Min_Food_Detail_Base_Column_List" />
+					,
+					<include refid="Min_TEMP_Food_Base_Column_List" />
+				from pitaya_order_food_detail FD
+					left outer join (
+										select <include refid="Min_Food_Base_Column_List" />
+										from pitaya_food F
+										where F.enabled = true
+									) as F on FD.food_id = F.F_id 
+				where FD.enabled = true
+			) 		as		INTERAL_FDF on INTERAL_FDF.FD_order_id = O.id
+			
+			left outer join 
+			(
+				select
+					<include refid="Min_Table_Detail_Base_Column_List" />
+					,
+					<include refid="Min_TEMP_Table_Base_Column_List" />
+				from pitaya_order_table_detail TD
+					left outer join (
+										select <include refid="Min_Table_Base_Column_List" />
+										from pitaya_table T
+										where T.enabled = true
+									) as T on TD.table_id = T.T_id
+				where TD.enabled = true
+			) 		as		INTERAL_TDT on INTERAL_TDT.TD_order_id = O.id
+			
+			left outer join 
+			(
+				select <include refid="Min_User_Base_Column_List" />
+				from pitaya_user U
+				<where>
+					<if test="user != null">
+						<if test="user.id != null">
+							and U.id = #{user.id,jdbcType=BIGINT}
+						</if>
+						
+						<if test="user.modifyTime != null">
+							and U.modifyTime = #{user.modifyTime,jdbcType=BIGINT}
+						</if>
+						<if test="user.image_size != null">
+							and U.image_size = #{user.image_size,jdbcType=INTEGER}
+						</if>
+						<if test="user.image_relative_path != null">
+							and U.image_relative_path = #{user.image_relative_path,jdbcType=VARCHAR}
+						</if>
+						<if test="user.image_absolute_path != null">
+							and U.image_absolute_path = #{user.image_absolute_path,jdbcType=VARCHAR}
+						</if>
+						
+						<if test="user.account != null">
+							and U.account = #{user.account,jdbcType=VARCHAR}
+						</if>
+						<if test="user.name != null">
+							and U.name = #{user.name,jdbcType=VARCHAR}
+						</if>
+						<if test="user.password != null">
+							and U.password = #{user.password,jdbcType=VARCHAR}
+						</if>
+						<if test="user.phone != null">
+							and U.phone = #{user.phone,jdbcType=VARCHAR}
+						</if>
+						<if test="user.sex != null">
+							and U.sex = #{user.sex,jdbcType=INTEGER}
+						</if>
+						<if test="user.email != null">
+							and U.email = #{user.email,jdbcType=VARCHAR}
+						</if>
+						<if test="user.address != null">
+							and U.address = #{user.address,jdbcType=VARCHAR}
+						</if>
+						<if test="user.birthday != null">
+							and U.birthday = #{user.birthday,jdbcType=BIGINT}
+						</if>
+						<if test="user.description != null">
+							and U.description = #{user.description,jdbcType=VARCHAR}
+						</if>
+						<if test="user.department != null">
+							and U.department = #{user.department,jdbcType=INTEGER}
+						</if>
+						<if test="user.sub_system != null">
+							and U.sub_system = #{user.sub_system,jdbcType=INTEGER}
+						</if>
+						<if test="user.enabled != null">
+							and U.enabled = #{user.enabled,jdbcType=BIT}
+						</if>
+						<if test="user.enabled == null">
+							and U.enabled = true
+						</if>
+					</if>
+				</where>
+			) 		as		U on O.user_id = U.U_id
+			
+			left outer join 
+			(
+				select <include refid="Min_Customer_Base_Column_List" />
+				from pitaya_customer C
+				<where>
+					<if test="customer != null"> 	
+						<if test="customer.id != null">
+							and C.id = #{customer.id,jdbcType=BIGINT}
+						</if>
+						
+						<if test="customer.modifyTime != null">
+							and C.modifyTime = #{customer.modifyTime,jdbcType=BIGINT}
+						</if>
+						<if test="customer.image_size != null">
+							and C.image_size = #{customer.image_size,jdbcType=INTEGER}
+						</if>
+						<if test="customer.image_relative_path != null">
+							and C.image_relative_path = #{customer.image_relative_path,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.image_absolute_path != null">
+							and C.image_absolute_path = #{customer.image_absolute_path,jdbcType=VARCHAR}
+						</if>
+						
+						<if test="customer.name != null">
+							and C.name = #{customer.name,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.account != null">
+							and C.account = #{customer.account,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.password != null">
+							and C.password = #{customer.password,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.phone != null">
+							and C.phone = #{customer.phone,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.sex != null">
+							and C.sex = #{customer.sex,jdbcType=INTEGER}
+						</if>
+						<if test="customer.email != null">
+							and C.email = #{customer.email,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.address != null">
+							and C.address = #{customer.address,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.birthday != null">
+							and C.birthday = #{customer.birthday,jdbcType=BIGINT}
+						</if>
+						<if test="customer.enabled != null">
+							and C.enabled = #{customer.enabled,jdbcType=BIT}
+						</if>
+						<if test="customer.enabled == null">
+							and C.enabled = true
+						</if>
+					</if>	
+				</where>
+			) 		as		C on O.customer_id = C.C_id
+		<where>
+			<if test="status != null">
+				O.status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="user_id != null">
+				and O.user_id = #{user_id,jdbcType=BIGINT}
+			</if>
+			<if test="customer_id != null">
+				and O.customer_id = #{customer_id,jdbcType=BIGINT}
+			</if>
+			<if test="customer_count != null">
+				and O.customer_count = #{customer_count,jdbcType=INTEGER}
+			</if>
+			<if test="modifyTime != null">
+				and O.modifyTime = #{modifyTime,jdbcType=BIGINT}
+			</if>
+			<if test="allowance != null">
+				and O.allowance = #{allowance,jdbcType=DOUBLE}
+			</if>
+			<if test="total_price != null">
+				and O.total_price = #{total_price,jdbcType=DOUBLE}
+			</if>
+			<if test="prePay != null">
+				and O.prePay = #{prePay,jdbcType=DOUBLE}
+			</if>
+			<if test="submit_time != null">
+				and O.submit_time = #{submit_time,jdbcType=BIGINT}
+			</if>
+			<if test="enabled != null">
+				and O.enabled = #{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+				and O.enabled = true
+			</if>
+			
+		</where>
+	</select>
+	
+	<select id="selectFoodsInOrderByPrimaryKey" resultMap="Order_BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+			<include refid="Max_Order_Base_Column_List" />
+			,
+			FDF.* from pitaya_order O 
+			left outer join 
+			(
+			  select
+				<include refid="Max_Food_Detail_Base_Column_List" />
+				,
+				<include refid="Max_Food_Base_Column_List" />
+ 				from pitaya_order_food_detail FD 
+ 				left outer join (select F.* from pitaya_food F where F.enabled = true) as F on FD.food_id = F.id 
+ 				where FD.enabled = true and FD.order_id = #{id,jdbcType=BIGINT}
+ 			)
+ 			as FDF on O.id = FDF.FD_order_id
+			where O.id = #{id,jdbcType=BIGINT} and O.enabled = true
+	</select>
+	
+	 
+	<select id="selectFullOrderByPrimaryKey" resultMap="Order_BaseResultMap" parameterType="java.lang.Long">
+		
+	    select
+			<include refid="Max_Order_Base_Column_List" />
+			,
+			INTERAL_FDF.*
+			,
+			INTERAL_TDT.*
+			,
+			<include refid="Max_TEMP_User_Base_Column_List" />
+			,
+			<include refid="Max_TEMP_Customer_Base_Column_List" />
+		from pitaya_order O 
+			left outer join 
+			(
+				select
+					<include refid="Max_Food_Detail_Base_Column_List" />
+					,
+					<include refid="Max_TEMP_Food_Base_Column_List" />
+				from pitaya_order_food_detail FD
+					left outer join (
+										select <include refid="Max_Food_Base_Column_List" />
+										from pitaya_food F
+										where F.enabled = true
+									) as F on FD.food_id = F.F_id 
+				where FD.enabled = true
+			) 		as		INTERAL_FDF on INTERAL_FDF.FD_order_id = O.id
+			
+			left outer join 
+			(
+				select
+					<include refid="Max_Table_Detail_Base_Column_List" />
+					,
+					<include refid="Max_TEMP_Table_Base_Column_List" />
+				from pitaya_order_table_detail TD
+					left outer join (
+										select <include refid="Max_Table_Base_Column_List" />
+										from pitaya_table T
+										where T.enabled = true
+									) as T on TD.table_id = T.T_id
+				where TD.enabled = true
+			) 		as		INTERAL_TDT on INTERAL_TDT.TD_order_id = O.id
+			
+			left outer join 
+			(
+				select <include refid="Max_User_Base_Column_List" />
+				from pitaya_user U
+				where U.enabled = true
+			) 		as		U on O.user_id = U.U_id
+			
+			left outer join 
+			(
+				select <include refid="Max_Customer_Base_Column_List" />
+				from pitaya_customer C
+				where C.enabled = true
+			) 		as		C on O.customer_id = C.C_id
+			
+		where O.id = #{id,jdbcType=BIGINT} and O.enabled = true
+	    
+	</select>
+	
+	<select id="searchFullOrders" resultMap="Order_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
+		select
+			<include refid="Max_Order_Base_Column_List" />
+			,
+			INTERAL_FDF.*
+			,
+			INTERAL_TDT.*
+			,
+			<include refid="Max_TEMP_User_Base_Column_List" />
+			,
+			<include refid="Max_TEMP_Customer_Base_Column_List" />
+		from pitaya_order O 
+			left outer join 
+			(
+				select
+					<include refid="Max_Food_Detail_Base_Column_List" />
+					,
+					<include refid="Max_TEMP_Food_Base_Column_List" />
+				from pitaya_order_food_detail FD
+					left outer join (
+										select <include refid="Max_Food_Base_Column_List" />
+										from pitaya_food F
+										where F.enabled = true
+									) as F on FD.food_id = F.F_id 
+				where FD.enabled = true
+			) 		as		INTERAL_FDF on INTERAL_FDF.FD_order_id = O.id
+			
+			left outer join 
+			(
+				select
+					<include refid="Max_Table_Detail_Base_Column_List" />
+					,
+					<include refid="Max_TEMP_Table_Base_Column_List" />
+				from pitaya_order_table_detail TD
+					left outer join (
+										select <include refid="Max_Table_Base_Column_List" />
+										from pitaya_table T
+										where T.enabled = true
+									) as T on TD.table_id = T.T_id
+				where TD.enabled = true
+			) 		as		INTERAL_TDT on INTERAL_TDT.TD_order_id = O.id
+			
+			left outer join 
+			(
+				select <include refid="Max_User_Base_Column_List" />
+				from pitaya_user U
+				where U.enabled = true
+			) 		as		U on O.user_id = U.U_id
+			
+			left outer join 
+			(
+				select <include refid="Max_Customer_Base_Column_List" />
+				from pitaya_customer C
+				where C.enabled = true
+			) 		as		C on O.customer_id = C.C_id
+			
+	    <where>
+			O.enabled = true
+			<if test="user_id != null">
+				and O.user_id = #{user_id,jdbcType=INTEGER}
+			</if>
+			
+			<if test="orderStatusList != null">
+				and O.status in 
+				<foreach item="item" index="index" collection="orderStatusList"
+					open="(" separator="," close=")"> 
+					#{item} 
+				</foreach> 
+			</if>
+		</where>
+	    
+	</select>
+	
+	<select id="searchFullOrdersWithoutFoods" resultMap="Order_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
+	    select
+			<include refid="Max_Order_Base_Column_List" />
+			,
+			INTERAL_TDT.*
+			,
+			<include refid="Max_TEMP_User_Base_Column_List" />
+			,
+			<include refid="Max_TEMP_Customer_Base_Column_List" />
+		from pitaya_order O 
+			left outer join 
+			(
+				select
+					<include refid="Max_Table_Detail_Base_Column_List" />
+					,
+					<include refid="Max_TEMP_Table_Base_Column_List" />
+				from pitaya_order_table_detail TD
+					left outer join (
+										select <include refid="Max_Table_Base_Column_List" />
+										from pitaya_table T
+										where T.enabled = true
+									) as T on TD.table_id = T.T_id
+				where TD.enabled = true
+			) 		as		INTERAL_TDT on INTERAL_TDT.TD_order_id = O.id
+			
+			left outer join 
+			(
+				select <include refid="Max_User_Base_Column_List" />
+				from pitaya_user U
+				where U.enabled = true
+			) 		as		U on O.user_id = U.U_id
+			
+			left outer join 
+			(
+				select <include refid="Max_Customer_Base_Column_List" />
+				from pitaya_customer C
+				where C.enabled = true
+			) 		as		C on O.customer_id = C.C_id
+		
+	    <where>
+			O.enabled = true
+			<if test="user_id != null">
+				and O.user_id = #{user_id,jdbcType=INTEGER} 
+			</if>
+			
+			<if test="orderStatusList != null">
+				and O.status in 
+				<foreach item="item" index="index" collection="orderStatusList"
+					open="(" separator="," close=")"> 
+					#{item} 
+				</foreach> 
+			</if>
+		</where>
+	    
+	</select>
+	
+	<select id="getTablesOfOrder" resultMap="Order_BaseResultMap" parameterType="java.lang.Long">
+	    select
+			<include refid="Max_Order_Base_Column_List" />
+			,
+			INTERAL_TDT.*
+		from pitaya_order O 
+			left outer join 
+			(
+				select
+					<include refid="Table_Detail_Base_Column_List" />
+					,
+					<include refid="TEMP_Table_Base_Column_List" />
+				from pitaya_order_table_detail TD
+					left outer join (
+										select <include refid="Table_Base_Column_List" />
+										from pitaya_table T
+										where T.enabled = true
+									) as T on TD.table_id = T.T_id
+				where TD.enabled = true
+			) 		as		INTERAL_TDT on INTERAL_TDT.TD_order_id = O.id
+			
+	    where O.id = #{id,jdbcType=BIGINT} and O.enabled = true
+	    
+	</select>
+	
+	
+	<select id="searchFullOrdersByFullOrderInfo" resultMap="Order_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Order">
+		select
+			<include refid="Max_Order_Base_Column_List" />
+			,
+			INTERAL_FDF.*
+			,
+			INTERAL_TDT.*
+			,
+			<include refid="Min_TEMP_User_Base_Column_List" />
+			,
+			<include refid="Min_TEMP_Customer_Base_Column_List" />
+		from pitaya_order O 
+			left outer join 
+			(
+				select
+					<include refid="Max_Food_Detail_Base_Column_List" />
+					,
+					<include refid="Max_TEMP_Food_Base_Column_List" />
+				from pitaya_order_food_detail FD
+					left outer join (
+										select <include refid="Max_Food_Base_Column_List" />
+										from pitaya_food F
+										where F.enabled = true
+									) as F on FD.food_id = F.F_id 
+				where FD.enabled = true
+			) 		as		INTERAL_FDF on INTERAL_FDF.FD_order_id = O.id
+			
+			left outer join 
+			(
+				select
+					<include refid="Max_Table_Detail_Base_Column_List" />
+					,
+					<include refid="Max_TEMP_Table_Base_Column_List" />
+				from pitaya_order_table_detail TD
+					left outer join (
+										select <include refid="Max_Table_Base_Column_List" />
+										from pitaya_table T
+										where T.enabled = true
+									) as T on TD.table_id = T.T_id
+				where TD.enabled = true
+			) 		as		INTERAL_TDT on INTERAL_TDT.TD_order_id = O.id
+			
+			left outer join 
+			(
+				select <include refid="Max_User_Base_Column_List" />
+				from pitaya_user U
+				<where>
+					<if test="user != null">
+						<if test="user.id != null">
+							and U.id = #{user.id,jdbcType=BIGINT}
+						</if>
+						
+						<if test="user.modifyTime != null">
+							and U.modifyTime = #{user.modifyTime,jdbcType=BIGINT}
+						</if>
+						<if test="user.image_size != null">
+							and U.image_size = #{user.image_size,jdbcType=INTEGER}
+						</if>
+						<if test="user.image_relative_path != null">
+							and U.image_relative_path = #{user.image_relative_path,jdbcType=VARCHAR}
+						</if>
+						<if test="user.image_absolute_path != null">
+							and U.image_absolute_path = #{user.image_absolute_path,jdbcType=VARCHAR}
+						</if>
+						
+						<if test="user.account != null">
+							and U.account = #{user.account,jdbcType=VARCHAR}
+						</if>
+						<if test="user.name != null">
+							and U.name = #{user.name,jdbcType=VARCHAR}
+						</if>
+						<if test="user.password != null">
+							and U.password = #{user.password,jdbcType=VARCHAR}
+						</if>
+						<if test="user.phone != null">
+							and U.phone = #{user.phone,jdbcType=VARCHAR}
+						</if>
+						<if test="user.sex != null">
+							and U.sex = #{user.sex,jdbcType=INTEGER}
+						</if>
+						<if test="user.email != null">
+							and U.email = #{user.email,jdbcType=VARCHAR}
+						</if>
+						<if test="user.address != null">
+							and U.address = #{user.address,jdbcType=VARCHAR}
+						</if>
+						<if test="user.birthday != null">
+							and U.birthday = #{user.birthday,jdbcType=BIGINT}
+						</if>
+						<if test="user.description != null">
+							and U.description = #{user.description,jdbcType=VARCHAR}
+						</if>
+						<if test="user.department != null">
+							and U.department = #{user.department,jdbcType=INTEGER}
+						</if>
+						<if test="user.sub_system != null">
+							and U.sub_system = #{user.sub_system,jdbcType=INTEGER}
+						</if>
+						<if test="user.enabled != null">
+							and U.enabled = #{user.enabled,jdbcType=BIT}
+						</if>
+						<if test="user.enabled == null">
+							and U.enabled = true
+						</if>
+					</if>
+				</where>
+			) 		as		U on O.user_id = U.U_id
+			
+			left outer join 
+			(
+				select <include refid="Max_Customer_Base_Column_List" />
+				from pitaya_customer C
+				<where>
+					<if test="customer != null"> 	
+						<if test="customer.id != null">
+							and C.id = #{customer.id,jdbcType=BIGINT}
+						</if>
+						
+						<if test="customer.modifyTime != null">
+							and C.modifyTime = #{customer.modifyTime,jdbcType=BIGINT}
+						</if>
+						<if test="customer.image_size != null">
+							and C.image_size = #{customer.image_size,jdbcType=INTEGER}
+						</if>
+						<if test="customer.image_relative_path != null">
+							and C.image_relative_path = #{customer.image_relative_path,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.image_absolute_path != null">
+							and C.image_absolute_path = #{customer.image_absolute_path,jdbcType=VARCHAR}
+						</if>
+						
+						<if test="customer.name != null">
+							and C.name = #{customer.name,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.account != null">
+							and C.account = #{customer.account,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.password != null">
+							and C.password = #{customer.password,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.phone != null">
+							and C.phone = #{customer.phone,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.sex != null">
+							and C.sex = #{customer.sex,jdbcType=INTEGER}
+						</if>
+						<if test="customer.email != null">
+							and C.email = #{customer.email,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.address != null">
+							and C.address = #{customer.address,jdbcType=VARCHAR}
+						</if>
+						<if test="customer.birthday != null">
+							and C.birthday = #{customer.birthday,jdbcType=BIGINT}
+						</if>
+						<if test="customer.enabled != null">
+							and C.enabled = #{customer.enabled,jdbcType=BIT}
+						</if>
+						<if test="customer.enabled == null">
+							and C.enabled = true
+						</if>
+					</if>	
+				</where>
+			) 		as		C on O.customer_id = C.C_id
+		<where>
+			<if test="status != null">
+				O.status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="user_id != null">
+				and O.user_id = #{user_id,jdbcType=BIGINT}
+			</if>
+			<if test="customer_id != null">
+				and O.customer_id = #{customer_id,jdbcType=BIGINT}
+			</if>
+			<if test="customer_count != null">
+				and O.customer_count = #{customer_count,jdbcType=INTEGER}
+			</if>
+			<if test="modifyTime != null">
+				and O.modifyTime = #{modifyTime,jdbcType=BIGINT}
+			</if>
+			<if test="allowance != null">
+				and O.allowance = #{allowance,jdbcType=DOUBLE}
+			</if>
+			<if test="total_price != null">
+				and O.total_price = #{total_price,jdbcType=DOUBLE}
+			</if>
+			<if test="prePay != null">
+				and O.prePay = #{prePay,jdbcType=DOUBLE}
+			</if>
+			<if test="submit_time != null">
+				and O.submit_time = #{submit_time,jdbcType=BIGINT}
+			</if>
+			<if test="enabled != null">
+				and O.enabled = #{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+				and O.enabled = true
+			</if>
+			
+		</where>
+	</select>
+	
+	<select id="searchOrdersByFullOrderInfo" resultMap="Order_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Order">
+		select
+			<include refid="Order_Base_Column_List" />
+		from pitaya_order O 
+			left outer join 
+			(
+				select
+					<include refid="Max_Food_Detail_Base_Column_List" />
+					,
+					<include refid="Max_TEMP_Food_Base_Column_List" />
+				from pitaya_order_food_detail FD
+					left outer join (
+										select <include refid="Max_Food_Base_Column_List" />
+										from pitaya_food F
+										where F.enabled = true
+									) as F on FD.food_id = F.F_id 
+				where FD.enabled = true
+			) 		as		INTERAL_FDF on INTERAL_FDF.FD_order_id = O.id
+			
+			left outer join 
+			(
+				select
+					<include refid="Max_Table_Detail_Base_Column_List" />
+					,
+					<include refid="Max_TEMP_Table_Base_Column_List" />
+				from pitaya_order_table_detail TD
+					left outer join (
+										select <include refid="Max_Table_Base_Column_List" />
+										from pitaya_table T
+										where T.enabled = true
+									) as T on TD.table_id = T.T_id
+				where TD.enabled = true
+			) 		as		INTERAL_TDT on INTERAL_TDT.TD_order_id = O.id
+			
+			left outer join 
+			(
+				select <include refid="Max_User_Base_Column_List" />
+				from pitaya_user U
+				where U.enabled = true
+			) 		as		U on O.user_id = U.U_id
+			
+			left outer join 
+			(
+				select <include refid="Max_Customer_Base_Column_List" />
+				from pitaya_customer C
+				where C.enabled = true
+			) 		as		C on O.customer_id = C.C_id
+		<where>
+			<if test="status != null">
+				O.status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="user_id != null">
+				and O.user_id = #{user_id,jdbcType=BIGINT}
+			</if>
+			<if test="customer_id != null">
+				and O.customer_id = #{customer_id,jdbcType=BIGINT}
+			</if>
+			<if test="customer_count != null">
+				and O.customer_count = #{customer_count,jdbcType=INTEGER}
+			</if>
+			<if test="modifyTime != null">
+				and O.modifyTime = #{modifyTime,jdbcType=BIGINT}
+			</if>
+			<if test="allowance != null">
+				and O.allowance = #{allowance,jdbcType=DOUBLE}
+			</if>
+			<if test="total_price != null">
+				and O.total_price = #{total_price,jdbcType=DOUBLE}
+			</if>
+			<if test="prePay != null">
+				and O.prePay = #{prePay,jdbcType=DOUBLE}
+			</if>
+			<if test="submit_time != null">
+				and O.submit_time = #{submit_time,jdbcType=BIGINT}
+			</if>
+			<if test="enabled != null">
+				and O.enabled = #{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+				and O.enabled = true
+			</if>
+			<if test="user != null">
+				<if test="user.id != null">
+					and U.id = #{user.id,jdbcType=BIGINT}
+				</if>
+				<if test="user.modifyTime != null">
+					and U.modifyTime = #{user.modifyTime,jdbcType=BIGINT}
+				</if>
+				<if test="user.image_size != null">
+					and U.image_size = #{user.image_size,jdbcType=INTEGER}
+				</if>
+				<if test="user.image_relative_path != null">
+					and U.image_relative_path = #{user.image_relative_path,jdbcType=VARCHAR}
+				</if>
+				<if test="user.image_absolute_path != null">
+					and U.image_absolute_path = #{user.image_absolute_path,jdbcType=VARCHAR}
+				</if>
+				<if test="user.account != null">
+					and U.account = #{user.account,jdbcType=VARCHAR}
+				</if>
+				<if test="user.name != null">
+					and U.name = #{user.name,jdbcType=VARCHAR}
+				</if>
+				<if test="user.password != null">
+					and U.password = #{user.password,jdbcType=VARCHAR}
+				</if>
+				<if test="user.phone != null">
+					and U.phone = #{user.phone,jdbcType=VARCHAR}
+				</if>
+				<if test="user.sex != null">
+					and U.sex = #{user.sex,jdbcType=INTEGER}
+				</if>
+				<if test="user.email != null">
+					and U.email = #{user.email,jdbcType=VARCHAR}
+				</if>
+				<if test="user.address != null">
+					and U.address = #{user.address,jdbcType=VARCHAR}
+				</if>
+				<if test="user.birthday != null">
+					and U.birthday = #{user.birthday,jdbcType=BIGINT}
+				</if>
+				<if test="user.description != null">
+					and U.description = #{user.description,jdbcType=VARCHAR}
+				</if>
+				<if test="user.department != null">
+					and U.department = #{user.department,jdbcType=INTEGER}
+				</if>
+				<if test="user.sub_system != null">
+					and U.sub_system = #{user.sub_system,jdbcType=INTEGER}
+				</if>
+				<if test="user.enabled != null">
+					and U.enabled = #{user.enabled,jdbcType=BIT}
+				</if>
+				<if test="user.enabled != null">
+					and U.enabled = true
+				</if>
+			</if>
+				
+			<if test="customer != null"> 	
+				<if test="customer.id != null">
+					and C.id = #{customer.id,jdbcType=BIGINT}
+				</if>
+				<if test="customer.modifyTime != null">
+					and C.modifyTime = #{customer.modifyTime,jdbcType=BIGINT}
+				</if>
+				<if test="customer.image_size != null">
+					and C.image_size = #{customer.image_size,jdbcType=INTEGER}
+				</if>
+				<if test="customer.image_relative_path != null">
+					and C.image_relative_path = #{customer.image_relative_path,jdbcType=VARCHAR}
+				</if>
+				<if test="customer.image_absolute_path != null">
+					and C.image_absolute_path = #{customer.image_absolute_path,jdbcType=VARCHAR}
+				</if>
+				<if test="customer.name != null">
+					and C.name = #{customer.name,jdbcType=VARCHAR}
+				</if>
+				<if test="customer.account != null">
+					and C.account = #{customer.account,jdbcType=VARCHAR}
+				</if>
+				<if test="customer.password != null">
+					and C.password = #{customer.password,jdbcType=VARCHAR}
+				</if>
+				<if test="customer.phone != null">
+					and C.phone = #{customer.phone,jdbcType=VARCHAR}
+				</if>
+				<if test="customer.sex != null">
+					and C.sex = #{customer.sex,jdbcType=INTEGER}
+				</if>
+				<if test="customer.email != null">
+					and C.email = #{customer.email,jdbcType=VARCHAR}
+				</if>
+				<if test="customer.address != null">
+					and C.address = #{customer.address,jdbcType=VARCHAR}
+				</if>
+				<if test="customer.birthday != null">
+					and C.birthday = #{customer.birthday,jdbcType=BIGINT}
+				</if>
+				<if test="customer.enabled != null">
+					and C.enabled = #{customer.enabled,jdbcType=BIT}
+				</if>
+				<if test="customer.enabled == null">
+					and C.enabled = true
+				</if>
+			</if>	
+		</where>
+	</select>
+	
+	<select id="searchOrders" resultMap="BaseResultMap"	parameterType="com.pitaya.bookingnow.entity.Order">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_order
+		<where>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="user_id != null">
+				and user_id = #{user_id,jdbcType=BIGINT}
+			</if>
+			<if test="customer_id != null">
+				and customer_id = #{customer_id,jdbcType=BIGINT}
+			</if>
+			<if test="customer_count != null">
+				and customer_count = #{customer_count,jdbcType=INTEGER}
+			</if>
+			<if test="modifyTime != null">
+				and modifyTime = #{modifyTime,jdbcType=BIGINT}
+			</if>
+			<if test="allowance != null">
+				and allowance = #{allowance,jdbcType=DOUBLE}
+			</if>
+			<if test="total_price != null">
+				and total_price = #{total_price,jdbcType=DOUBLE}
+			</if>
+			<if test="prePay != null">
+				and prePay = #{prePay,jdbcType=DOUBLE}
+			</if>
+			<if test="submit_time != null">
+				and submit_time = #{submit_time,jdbcType=BIGINT}
+			</if>
+			<if test="enabled != null">
+				and enabled = #{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+				and enabled = true
+			</if>
+		</where>
+	</select>
+	
+
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_order
+		where id = #{id,jdbcType=BIGINT} and enabled = true
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		update pitaya_order
+		set enabled = false
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Order">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_order (
+			status, 
+			user_id, 
+			customer_id,
+			customer_count, 
+			modifyTime, 
+			allowance,
+			total_price, 
+			prePay, 
+			submit_time,
+			enabled
+			)
+		values (
+			#{status,jdbcType=INTEGER}, 
+			#{user_id,jdbcType=BIGINT},
+			#{customer_id,jdbcType=BIGINT},
+			#{customer_count,jdbcType=INTEGER},
+			#{modifyTime,jdbcType=BIGINT}, 
+			#{allowance,jdbcType=DOUBLE},
+			#{total_price,jdbcType=DOUBLE}, 
+			#{prePay,jdbcType=DOUBLE},
+			#{submit_time,jdbcType=BIGINT},
+			#{enabled,jdbcType=BIT}
+			)
+	</insert>
+	
+	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Order">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="status != null">
+				status,
+			</if>
+			<if test="user_id != null">
+				user_id,
+			</if>
+			<if test="customer_id != null">
+				customer_id,
+			</if>
+			<if test="customer_count != null">
+				customer_count,
+			</if>
+			<if test="modifyTime != null">
+				modifyTime,
+			</if>
+			<if test="allowance != null">
+				allowance,
+			</if>
+			<if test="total_price != null">
+				total_price,
+			</if>
+			<if test="prePay != null">
+				prePay,
+			</if>
+			<if test="submit_time != null">
+				submit_time,
+			</if>
+				enabled
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="user_id != null">
+				#{user_id,jdbcType=BIGINT},
+			</if>
+			<if test="customer_id != null">
+				#{customer_id,jdbcType=BIGINT},
+			</if>
+			<if test="customer_count != null">
+				#{customer_count,jdbcType=INTEGER},
+			</if>
+			<if test="modifyTime != null">
+				#{modifyTime,jdbcType=BIGINT},
+			</if>
+			<if test="allowance != null">
+				#{allowance,jdbcType=DOUBLE},
+			</if>
+			<if test="total_price != null">
+				#{total_price,jdbcType=DOUBLE},
+			</if>
+			<if test="prePay != null">
+				#{prePay,jdbcType=DOUBLE},
+			</if>
+			<if test="submit_time != null">
+				#{submit_time,jdbcType=BIGINT},
+			</if>
+			<if test="enabled != null">
+				#{enabled,jdbcType=BIT},
+			</if>
+			<if test="enabled == null">
+				true
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Order">
+		update pitaya_order
+		<set>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="user_id != null">
+				user_id = #{user_id,jdbcType=BIGINT},
+			</if>
+			<if test="customer_id != null">
+				customer_id = #{customer_id,jdbcType=BIGINT},
+			</if>
+			<if test="customer_count != null">
+				customer_count = #{customer_count,jdbcType=INTEGER},
+			</if>
+			<if test="modifyTime != null">
+				modifyTime = #{modifyTime,jdbcType=BIGINT},
+			</if>
+			<if test="allowance != null">
+				allowance = #{allowance,jdbcType=DOUBLE},
+			</if>
+			<if test="total_price != null">
+				total_price = #{total_price,jdbcType=DOUBLE},
+			</if>
+			<if test="prePay != null">
+				prePay = #{prePay,jdbcType=DOUBLE},
+			</if>
+			<if test="submit_time != null">
+				submit_time = #{submit_time,jdbcType=BIGINT},
+			</if>
+			<if test="enabled != null">
+				enabled = #{enabled,jdbcType=BIT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Order">
+		update pitaya_order
+		set status = #{status,jdbcType=INTEGER},
+			user_id = #{user_id,jdbcType=BIGINT},
+			customer_id = #{customer_id,jdbcType=BIGINT},
+			customer_count = #{customer_count,jdbcType=INTEGER},
+			modifyTime = #{modifyTime,jdbcType=BIGINT},
+			allowance = #{allowance,jdbcType=DOUBLE},
+			total_price = #{total_price,jdbcType=DOUBLE},
+			prePay = #{prePay,jdbcType=DOUBLE},
+			submit_time = #{submit_time,jdbcType=BIGINT},
+			enabled = #{enabled,jdbcType=BIT}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<select id="selectFoodStatusOfOrderByPrimaryKey" resultMap="Order_BaseResultMap"
+		parameterType="java.lang.Long">
+			select
+				O.id as O_id,
+				FD.id as FD_id,
+				FD.status as FD_status
+			from pitaya_order O 
+			left outer join 
+			(
+			  	select
+					FDT.id,
+					FDT.status,
+	            	FDT.order_id
+ 				from pitaya_order_food_detail FDT
+ 				where FDT.enabled = true and FDT.order_id = #{id,jdbcType=BIGINT}
+ 			)	as FD on O.id = FD.order_id
+			where O.id = #{id,jdbcType=BIGINT} and O.enabled = true
+	</select>
+</mapper>
