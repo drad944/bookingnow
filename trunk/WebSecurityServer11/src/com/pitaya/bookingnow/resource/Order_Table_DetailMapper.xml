@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pitaya.bookingnow.dao.Order_Table_DetailMapper">
+	<resultMap id="BaseResultMap"
+		type="com.pitaya.bookingnow.entity.Order_Table_Detail">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="realCustomerCount" property="realCustomerCount"	jdbcType="INTEGER" />
+		<result column="enabled" property="enabled" jdbcType="BIT" />
+		<result column="table_id" property="table_id" jdbcType="BIGINT" />
+		<result column="order_id" property="order_id" jdbcType="BIGINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, 
+		realCustomerCount, 
+		enabled, 
+		table_id, 
+		order_id
+	</sql>
+	
+	
+	<select id="selectByTableId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_order_table_detail
+		where table_id = #{id,jdbcType=BIGINT} and enabled = true
+	</select>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_order_table_detail
+		where id = #{id,jdbcType=BIGINT} and enabled = true
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		update pitaya_order_table_detail
+		set enabled = false
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Order_Table_Detail">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_order_table_detail (
+			realCustomerCount, 
+			enabled,
+			table_id,
+			order_id
+			)
+		values (
+			#{realCustomerCount,jdbcType=INTEGER}, 
+			#{enabled,jdbcType=BIT},
+			#{table_id,jdbcType=BIGINT},
+			#{order_id,jdbcType=BIGINT}
+			)
+	</insert>
+	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Order_Table_Detail">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_order_table_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="realCustomerCount != null">
+				realCustomerCount,
+			</if>
+			<if test="table_id != null">
+				table_id,
+			</if>
+			<if test="order_id != null">
+				order_id,
+			</if>
+				enabled
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="realCustomerCount != null">
+				#{realCustomerCount,jdbcType=INTEGER},
+			</if>
+			
+			<if test="table_id != null">
+				#{table_id,jdbcType=BIGINT},
+			</if>
+			<if test="order_id != null">
+				#{order_id,jdbcType=BIGINT},
+			</if>
+			<if test="enabled != null">
+				#{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+				true
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Order_Table_Detail">
+		update pitaya_order_table_detail
+		<set>
+			<if test="realCustomerCount != null">
+				realCustomerCount = #{realCustomerCount,jdbcType=INTEGER},
+			</if>
+			<if test="enabled != null">
+				enabled = #{enabled,jdbcType=BIT},
+			</if>
+			<if test="table_id != null">
+				table_id = #{table_id,jdbcType=BIGINT},
+			</if>
+			<if test="order_id != null">
+				order_id = #{order_id,jdbcType=BIGINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Order_Table_Detail">
+		update pitaya_order_table_detail
+		set
+			realCustomerCount = #{realCustomerCount,jdbcType=INTEGER},
+			enabled = #{enabled,jdbcType=BIT},
+			table_id = #{table_id,jdbcType=BIGINT},
+			order_id = #{order_id,jdbcType=BIGINT}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>

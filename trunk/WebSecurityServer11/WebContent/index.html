@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>index.html</title>
+	<link rel="stylesheet" type="text/css" href="css/head.css">
+	<link rel="stylesheet" type="text/css" href="css/body.css">
+	<link rel="stylesheet" href="css/jqwidgets/styles/jqx.base.css" type="text/css" />
+	<link rel="stylesheet" href="css/jqwidgets/styles/jqx.energyblue.css" type="text/css" />
+	
+	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/i18next-1.6.3.js"></script>
+	<script type="text/javascript" src="js/pitaya/AppUtil.js"></script>
+	<script type="text/javascript" src="js/pitaya/systemUtil.js"></script>
+	
+	<script type="text/javascript" src="js/pitaya/Constants.js"></script>
+	<script type="text/javascript" src="js/pitaya/userLogin.js"></script>
+	<script type="text/javascript" src="js/pitaya/userManagement.js"></script>
+	
+	
+	<script type="text/javascript" src="js/jquery.color.js"></script>
+	
+	<script type="text/javascript" src="js/jqwidgets/gettheme.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxdata.js"></script>
+    
+    <script type="text/javascript" src="js/jqwidgets/jqxbuttons.js"></script>
+	<script type="text/javascript" src="js/jqwidgets/jqxexpander.js"></script>
+	<script type="text/javascript" src="js/jqwidgets/jqxinput.js"></script>
+	<script type="text/javascript" src="js/jqwidgets/jqxvalidator.js"></script>
+	
+	<script>
+	
+	var theme = Constants.theme;
+	
+	$(document).ready(function(){
+		userLogin.visit();
+    });
+	</script>
+	
+</head>
+
+<body>
+
+
+<table id="framework_table" width="800" height="600" align="center" background="css/backImage2.jpg">
+	<tr height="5%">
+		<td>
+			<div id="framework_head">bookingNow</div>
+		</td>
+	</tr>
+	<tr height="10%">
+		<td>
+			<div id="framework_top"></div>
+		</td>
+	</tr>
+	<tr height="5%">
+		<td>
+			<div id="framework_dividingLine">
+				<hr />
+			</div>
+		</td>
+	</tr>
+	<tr height="60%">
+		<td align='middle'>
+			<div id="framework_main" >
+				<div id="content">
+					<div id="userLoginDiv">
+						<div id="userLoginResult">用户登录</div>
+				        <div>
+				            <form id="userLoginForm" action="." method="post">
+						    	<table>
+						    		<tr>
+						    			<div id="loginResultLog" style="color:#F00"></div>
+						    		</tr>
+						    		<tr>
+						    			<td id="user_account_label" data-i18n="userLogin.accountLabel"></td>
+						    			<td><input type="text" id="user_account" value="" /></td>
+						    		</tr>
+						    		<tr>
+						    			<td id="user_password_label" data-i18n="userLogin.passwordLabel"></td>
+						    			<td><input type="password" id="user_password" value="" /></td>
+						    		</tr>
+						    		<tr align="center">
+						    			<td><input id="user_login_button" type="button" /></td>
+						    			<td><input id="user_register_button" type="button" /></td>
+						    		</tr>
+						    	</table>
+					    	</form>
+					    	
+				    	</div>
+				    </div>
+				    <div style="height:'100';"></div>
+				</div>
+			</div>
+			
+		</td>
+	</tr>
+	<tr height="20%">
+		<td>
+			<div id="framework_foot">
+				
+			</div>
+		</td>
+	</tr>
+</table>
+
+
+	
+</body>
+</html>

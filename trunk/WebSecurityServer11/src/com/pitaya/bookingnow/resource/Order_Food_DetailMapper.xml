@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pitaya.bookingnow.dao.Order_Food_DetailMapper">
+	<resultMap id="BaseResultMap" type="com.pitaya.bookingnow.entity.Order_Food_Detail">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="count" property="count" jdbcType="INTEGER" />
+		<result column="preference" property="preference" jdbcType="INTEGER" />
+		<result column="last_modify_time" property="last_modify_time" jdbcType="BIGINT" />
+		<result column="enabled" property="enabled" jdbcType="BIT" />
+		<result column="isFree" property="isFree" jdbcType="BIT" />
+		<result column="food_id" property="food_id" jdbcType="BIGINT" />
+		<result column="order_id" property="order_id" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<resultMap id="Food_Detail_Table_BaseResultMap" type="com.pitaya.bookingnow.entity.Order_Food_Detail_Table">
+		<id column="FD_id" property="id" jdbcType="BIGINT" />
+		
+	    <result column="FD_table_id" property="table_id" jdbcType="BIGINT" />
+	    <result column="FD_table_address" property="table_address" jdbcType="VARCHAR" />
+    
+		<result column="FD_status" property="status" jdbcType="INTEGER" />
+		<result column="FD_count" property="count" jdbcType="INTEGER" />
+		<result column="FD_preference" property="preference" jdbcType="INTEGER" />
+		<result column="FD_last_modify_time" property="last_modify_time" jdbcType="BIGINT" />
+		<result column="FD_enabled" property="enabled" jdbcType="BIT" />
+		<result column="FD_isFree" property="isFree" jdbcType="BIT" />
+		<result column="FD_food_id" property="food_id" jdbcType="BIGINT" />
+		<result column="FD_order_id" property="order_id" jdbcType="BIGINT" />
+		
+		<association property="food" javaType="com.pitaya.bookingnow.entity.Food">
+		    <id column="F_id" property="id" jdbcType="BIGINT" />
+			<result column="F_recommendation" property="recommendation" jdbcType="INTEGER" />
+			<result column="F_status" property="status" jdbcType="INTEGER" />
+			<result column="F_name" property="name" jdbcType="VARCHAR" />
+			<result column="F_version" property="version" jdbcType="BIGINT" />
+			<result column="F_period" property="period" jdbcType="BIGINT" />
+			<result column="F_price" property="price" jdbcType="DOUBLE" />
+			<result column="F_category" property="category" jdbcType="VARCHAR" />
+			<result column="F_description" property="description" jdbcType="VARCHAR" />
+			
+			<result column="F_enabled" property="enabled" jdbcType="BIT" />
+			<result column="F_large_image_relative_path" property="large_image_relative_path" jdbcType="VARCHAR" />
+			<result column="F_small_image_relative_path" property="small_image_relative_path" jdbcType="VARCHAR" />
+			<result column="F_large_image_absolute_path" property="large_image_absolute_path" jdbcType="VARCHAR" />
+			<result column="F_small_image_absolute_path" property="small_image_absolute_path" jdbcType="VARCHAR" />
+			<result column="F_large_image_size" property="large_image_size" jdbcType="INTEGER" />
+			<result column="F_small_image_size" property="small_image_size" jdbcType="INTEGER" />
+		</association> 
+	</resultMap>
+	
+	<resultMap id="Food_Detail_BaseResultMap" type="com.pitaya.bookingnow.entity.Order_Food_Detail">
+		<id column="FD_id" property="id" jdbcType="BIGINT" />
+		<result column="FD_status" property="status" jdbcType="INTEGER" />
+		<result column="FD_count" property="count" jdbcType="INTEGER" />
+		<result column="FD_preference" property="preference" jdbcType="INTEGER" />
+		<result column="FD_last_modify_time" property="last_modify_time" jdbcType="BIGINT" />
+		<result column="FD_enabled" property="enabled" jdbcType="BIT" />
+		<result column="FD_isFree" property="isFree" jdbcType="BIT" />
+		<result column="FD_food_id" property="food_id" jdbcType="BIGINT" />
+		<result column="FD_order_id" property="order_id" jdbcType="BIGINT" />
+		
+		<association property="food" javaType="com.pitaya.bookingnow.entity.Food">
+		    <id column="F_id" property="id" jdbcType="BIGINT" />
+			<result column="F_recommendation" property="recommendation" jdbcType="INTEGER" />
+			<result column="F_status" property="status" jdbcType="INTEGER" />
+			<result column="F_name" property="name" jdbcType="VARCHAR" />
+			<result column="F_version" property="version" jdbcType="BIGINT" />
+			<result column="F_period" property="period" jdbcType="BIGINT" />
+			<result column="F_price" property="price" jdbcType="DOUBLE" />
+			<result column="F_category" property="category" jdbcType="VARCHAR" />
+			<result column="F_description" property="description" jdbcType="VARCHAR" />
+			
+			<result column="F_enabled" property="enabled" jdbcType="BIT" />
+			<result column="F_large_image_relative_path" property="large_image_relative_path" jdbcType="VARCHAR" />
+			<result column="F_small_image_relative_path" property="small_image_relative_path" jdbcType="VARCHAR" />
+			<result column="F_large_image_absolute_path" property="large_image_absolute_path" jdbcType="VARCHAR" />
+			<result column="F_small_image_absolute_path" property="small_image_absolute_path" jdbcType="VARCHAR" />
+			<result column="F_large_image_size" property="large_image_size" jdbcType="INTEGER" />
+			<result column="F_small_image_size" property="small_image_size" jdbcType="INTEGER" />
+		</association> 
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id, 
+		status, 
+		count, 
+		preference, 
+		last_modify_time, 
+		enabled, 
+		isFree, 
+		food_id,
+		order_id
+	</sql>
+	
+	<sql id="Food_Detail_Base_Column_List">
+		FD.id as FD_id, 
+		FD.status as FD_status, 
+		FD.count as FD_count, 
+		FD.preference as FD_preference, 
+		FD.last_modify_time as FD_last_modify_time, 
+		FD.enabled as FD_enabled, 
+		FD.isFree as FD_isFree, 
+		FD.food_id as FD_food_id,
+		FD.order_id as FD_order_id
+	</sql>
+	
+	<sql id="Food_Without_Image_Column_List">
+		F.id as F_id, 
+		F.recommendation as F_recommendation, 
+		F.status as F_status, 
+		F.name as F_name, 
+		F.version as F_version, 
+		F.period as F_period, 
+		F.price as F_price,
+		F.category as F_category, 
+		F.description as F_description,
+		F.enabled as F_enabled
+	</sql>
+	
+	<sql id="Full_Food_Column_List">
+		F.id as F_id, 
+		F.recommendation as F_recommendation, 
+		F.status as F_status, 
+		F.name as F_name, 
+		F.version as F_version, 
+		F.period as F_period, 
+		F.price as F_price,
+		F.category as F_category, 
+		F.description as F_description,
+		F.enabled as F_enabled,
+		F.large_image_relative_path as F_large_image_relative_path,
+		F.small_image_relative_path as F_small_image_relative_path,
+		F.large_image_absolute_path as F_large_image_absolute_path,
+		F.small_image_absolute_path as F_small_image_absolute_path,
+		F.large_image_size as F_large_image_size,
+		F.small_image_size as F_small_image_size
+		
+	</sql>
+	
+	<sql id="TEMP_Food_Without_Image_Column_List">
+		F_id, 
+		F_recommendation, 
+		F_status, 
+		F_name, 
+		F_version, 
+		F_period, 
+		F_price,
+		F_category, 
+		F_description,
+		F_enabled
+	</sql>
+	
+	<sql id="TEMP_Full_Food_Column_List">
+		F_id, 
+		F_recommendation, 
+		F_status, 
+		F_name, 
+		F_version, 
+		F_period, 
+		F_price,
+		F_category, 
+		F_description,
+		F_enabled,
+		F_large_image_relative_path,
+		F_small_image_relative_path,
+		F_large_image_absolute_path,
+		F_small_image_absolute_path,
+		F_large_image_size,
+		F_small_image_size
+		
+	</sql>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="powerSelectByParams" resultMap="Food_Detail_Table_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
+           
+	    select
+		<include refid="Food_Detail_Base_Column_List" />,
+		
+		INTERAL_OT.OT_table_id as FD_table_id,
+		INTERAL_OT.OT_table_address as FD_table_address,
+		
+		<include refid="TEMP_Food_Without_Image_Column_List" />
+		from pitaya_order_food_detail FD 
+			left outer join 
+			(
+				select <include refid="Food_Without_Image_Column_List" />
+				from pitaya_food F
+				where F.enabled = true
+			) as F on FD.food_id = F.F_id
+			
+			left outer join 
+			(
+				
+				select
+					O.id as OT_order_id,
+					TD.TD_table_id as OT_table_id,
+					TD.TD_table_address as OT_table_address
+					
+				from pitaya_order O 
+					left outer join (
+										select
+											TD.order_id as TD_order_id,
+											T.T_id as TD_table_id,
+											T.T_address as TD_table_address
+										from pitaya_order_table_detail TD
+											left outer join (
+																select T.id as T_id,T.address as T_address
+																from pitaya_table T
+																where T.enabled = true
+															) as T on TD.table_id = T.T_id
+										where TD.enabled = true
+									) as TD on TD.TD_order_id = O.id
+				where O.enabled = true
+				
+			) 		as		INTERAL_OT on INTERAL_OT.OT_order_id = FD.order_id
+			
+		<where>
+			FD.enabled = true
+		    <if test="food_detailStatusList != null">
+				and FD.status in 
+				<foreach item="item" index="index" collection="food_detailStatusList"
+					open="(" separator="," close=")"> 
+					#{item} 
+				</foreach> 
+			</if>
+			<if test="food_detail_id != null">
+			    and FD.id > #{food_detail_id,jdbcType=BIGINT}
+			</if>
+				order by FD.id 
+			<if test="rowCount != null">
+				<if test="offset != null">
+					limit #{offset,jdbcType=INTEGER},#{rowCount,jdbcType=INTEGER}
+				</if>
+				<if test="offset == null">
+					limit 0,#{rowCount,jdbcType=INTEGER}
+				</if>
+			</if>
+		</where>
+		
+		
+		
+		
+	</select>
+	
+	<select id="selectByParams" resultMap="Food_Detail_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
+           
+	    select
+		<include refid="Food_Detail_Base_Column_List" />
+		,
+		<include refid="TEMP_Food_Without_Image_Column_List" />
+		from pitaya_order_food_detail FD 
+			left outer join 
+			(
+				select <include refid="Food_Without_Image_Column_List" />
+				from pitaya_food F
+				where F.enabled = true
+			) as F on FD.food_id = F.F_id
+			
+		<where>
+			FD.enabled = true
+		    <if test="food_detailStatusList != null">
+				and FD.status in 
+				<foreach item="item" index="index" collection="food_detailStatusList"
+					open="(" separator="," close=")"> 
+					#{item} 
+				</foreach> 
+			</if>
+			<if test="food_detail_id != null">
+			    and FD.id > #{food_detail_id,jdbcType=BIGINT}
+			</if>
+				order by FD.id 
+			<if test="rowCount != null">
+				<if test="offset != null">
+					limit #{offset,jdbcType=INTEGER},#{rowCount,jdbcType=INTEGER}
+				</if>
+				<if test="offset == null">
+					limit 0,#{rowCount,jdbcType=INTEGER}
+				</if>
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Order_Food_Detail">
+           
+	    select
+		<include refid="Base_Column_List" />
+		from pitaya_order_food_detail			
+		<where>
+		    <if test="status != null">
+				status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="count != null">
+				and count = #{count,jdbcType=INTEGER}
+			</if>
+			<if test="preference != null">
+				and preference = #{preference,jdbcType=INTEGER}
+			</if>
+			<if test="last_modify_time != null">
+				and last_modify_time = #{last_modify_time,jdbcType=BIGINT}
+			</if>
+			<if test="enabled != null">
+				and enabled = #{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+				and enabled = true
+			</if>
+			<if test="isFree != null">
+				and isFree = #{isFree,jdbcType=BIT}
+			</if>
+			<if test="food_id != null">
+				and food_id = #{food_id,jdbcType=BIGINT}
+			</if>
+			<if test="order_id != null">
+				and order_id = #{order_id,jdbcType=BIGINT}
+			</if>		    	
+			
+		</where>
+		
+	</select>
+	
+	<select id="selectFullBySelective" resultMap="Food_Detail_BaseResultMap" parameterType="com.pitaya.bookingnow.entity.Order_Food_Detail">
+           
+	    select
+		<include refid="Food_Detail_Base_Column_List" />
+		,
+		<include refid="TEMP_Food_Without_Image_Column_List" />
+		from pitaya_order_food_detail FD
+		
+			left outer join 
+			(
+				select <include refid="Food_Without_Image_Column_List" />
+				from pitaya_food F
+				where F.enabled = true
+			) as F on FD.food_id = F.F_id
+		<where>
+		    <if test="status != null">
+				FD.status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="count != null">
+				and FD.count = #{count,jdbcType=INTEGER}
+			</if>
+			<if test="preference != null">
+				and FD.preference = #{preference,jdbcType=INTEGER}
+			</if>
+			<if test="last_modify_time != null">
+				and FD.last_modify_time = #{last_modify_time,jdbcType=BIGINT}
+			</if>
+			<if test="enabled != null">
+				and FD.enabled = #{enabled,jdbcType=BIT}
+			</if>
+			<if test="enabled == null">
+				and enabled = true
+			</if>
+			<if test="isFree != null">
+				and FD.isFree = #{isFree,jdbcType=BIT}
+			</if>
+			<if test="food_id != null">
+				and FD.food_id = #{food_id,jdbcType=BIGINT}
+			</if>
+			<if test="order_id != null">
+				and FD.order_id = #{order_id,jdbcType=BIGINT}
+			</if>
+		    
+		    <if test="food != null">
+		    	
+				<if test="food.id != null">
+					and F.id = #{food.id,jdbcType=INTEGER}
+				</if>
+				<if test="food.recommendation != null">
+					and F.recommendation = #{food.recommendation,jdbcType=INTEGER}
+				</if>
+				<if test="food.status != null">
+					and F.status = #{food.status,jdbcType=INTEGER}
+				</if>
+				<if test="food.name != null">
+					and F.name = #{food.name,jdbcType=VARCHAR}
+				</if>
+				<if test="food.version != null">
+					and F.version = #{food.version,jdbcType=BIGINT}
+				</if>
+				<if test="food.period != null">
+					and F.period = #{food.period,jdbcType=BIGINT}
+				</if>
+				<if test="food.price != null">
+					and F.price = #{food.price,jdbcType=DOUBLE}
+				</if>
+				<if test="food.category != null">
+					and F.category = #{food.category,jdbcType=VARCHAR}
+				</if>
+				<if test="food.description != null">
+					and F.description = #{food.description,jdbcType=VARCHAR}
+				</if>
+				
+				<if test="food.enabled != null">
+					and F.enabled = #{food.enabled,jdbcType=BIT}
+				</if>
+				<if test="food.enabled == null">
+					and F.enabled = true
+				</if>
+				<if test="food.large_image_relative_path != null">
+					and F.large_image_relative_path = #{food.large_image_relative_path,jdbcType=VARCHAR}
+				</if>
+				<if test="food.small_image_relative_path != null">
+					and F.small_image_relative_path = #{food.small_image_relative_path,jdbcType=VARCHAR}
+				</if>
+				<if test="food.large_image_absolute_path != null">
+					and F.large_image_absolute_path = #{food.large_image_absolute_path,jdbcType=VARCHAR}
+				</if>
+				<if test="food.small_image_absolute_path != null">
+					and F.small_image_absolute_path = #{food.small_image_absolute_path,jdbcType=VARCHAR}
+				</if>
+				<if test="food.large_image_size != null">
+					and F.large_image_size = #{food.large_image_size,jdbcType=INTEGER}
+				</if>
+				<if test="food.small_image_size != null">
+					and F.small_image_size = #{food.small_image_size,jdbcType=INTEGER}
+				</if>
+			</if>
+		</where>
+		
+	</select>
+	
+	
+	<select id="selectFullByFoodId" resultMap="Food_Detail_BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Food_Detail_Base_Column_List" />
+		,
+		<include refid="TEMP_Food_Without_Image_Column_List" />
+		from pitaya_order_food_detail FD
+			left outer join 
+			(
+				select <include refid="Food_Without_Image_Column_List" />
+				from pitaya_food F
+				where F.enabled = true
+			) as F on FD.food_id = F.F_id
+		where F.id = #{id,jdbcType=BIGINT} and F.enabled = true
+	</select>
+	
+	<select id="selectFullByPrimaryKey" resultMap="Food_Detail_BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Food_Detail_Base_Column_List" />
+		,
+		<include refid="TEMP_Food_Without_Image_Column_List" />
+		from pitaya_order_food_detail FD
+			left outer join 
+				(
+					select <include refid="Food_Without_Image_Column_List" />
+					from pitaya_food F
+					where F.enabled = true
+				) as F on FD.food_id = F.F_id
+		where FD.id = #{id,jdbcType=BIGINT} and F.enabled = true
+	</select>
+	
+	<select id="selectFullByPrimaryKeyAndOrderId" resultMap="Food_Detail_BaseResultMap" parameterType="com.pitaya.bookingnow.util.SearchParams">
+		select
+		<include refid="Food_Detail_Base_Column_List" />
+		,
+		<include refid="TEMP_Food_Without_Image_Column_List" />
+		from pitaya_order_food_detail FD
+			left outer join 
+				(
+					select <include refid="Food_Without_Image_Column_List" />
+					from pitaya_food F
+					where F.enabled = true
+				) as F on FD.food_id = F.F_id
+		<where>
+		 	F.enabled = true
+		    <if test="food_detail_id != null">
+		        and FD.id = #{food_detail_id,jdbcType=BIGINT}
+		    </if>
+		    <if test="order_id != null">
+		        and FD.order_id = #{order_id,jdbcType=BIGINT}
+		    </if>
+		</where>
+	</select>
+	
+	<!-- 
+	<select id="selectFullByFoodStatus" resultMap="Food_Detail_BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Food_Detail_Base_Column_List" />
+		,
+		<include refid="Food_Without_Image_Column_List" />
+		from pitaya_order_food_detail FD
+			left outer join pitaya_food F on FD.food_id = F.id
+		where F.id = #{id,jdbcType=BIGINT}
+	</select>
+	 -->
+	<select id="selectByFoodId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_order_food_detail
+		where food_id = #{id,jdbcType=BIGINT} and enabled = true
+	</select>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from pitaya_order_food_detail
+		where id = #{id,jdbcType=BIGINT} and enabled = true
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		update pitaya_order_food_detail
+		set enabled = false
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.pitaya.bookingnow.entity.Order_Food_Detail">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_order_food_detail (
+			status, 
+			count, 
+			preference,
+			last_modify_time, 
+			enabled, 
+			isFree, 
+			food_id,
+			order_id
+			)
+		values (
+			#{status,jdbcType=INTEGER}, 
+			#{count,jdbcType=INTEGER},
+			#{preference,jdbcType=INTEGER},
+			#{last_modify_time,jdbcType=BIGINT},
+			#{enabled,jdbcType=BIT}, 
+			#{isFree,jdbcType=BIT}, 
+			#{food_id,jdbcType=BIGINT},
+			#{order_id,jdbcType=BIGINT}
+			)
+	</insert>
+	<insert id="insertSelective" parameterType="com.pitaya.bookingnow.entity.Order_Food_Detail">
+		<selectKey resultType="java.lang.Long" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into pitaya_order_food_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="status != null">
+				status,
+			</if>
+			<if test="count != null">
+				count,
+			</if>
+			<if test="preference != null">
+				preference,
+			</if>
+			<if test="last_modify_time != null">
+				last_modify_time,
+			</if>
+			
+			<if test="isFree != null">
+				isFree,
+			</if>
+			<if test="food_id != null">
+				food_id,
+			</if>
+			<if test="order_id != null">
+				order_id,
+			</if>
+				enabled
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="count != null">
+				#{count,jdbcType=INTEGER},
+			</if>
+			<if test="preference != null">
+				#{preference,jdbcType=INTEGER},
+			</if>
+			<if test="last_modify_time != null">
+				#{last_modify_time,jdbcType=BIGINT},
+			</if>
+			
+			<if test="isFree != null">
+				#{isFree,jdbcType=BIT},
+			</if>
+			<if test="food_id != null">
+				#{food_id,jdbcType=BIGINT},
+			</if>
+			<if test="order_id != null">
+				#{order_id,jdbcType=BIGINT},
+			</if>
+			<if test="enabled != null">
+				#{enabled,jdbcType=BIT},
+			</if>
+			<if test="enabled == null">
+				true
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.pitaya.bookingnow.entity.Order_Food_Detail">
+		update pitaya_order_food_detail
+		<set>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="count != null">
+				count = #{count,jdbcType=INTEGER},
+			</if>
+			<if test="preference != null">
+				preference = #{preference,jdbcType=INTEGER},
+			</if>
+			<if test="last_modify_time != null">
+				last_modify_time = #{last_modify_time,jdbcType=BIGINT},
+			</if>
+			<if test="enabled != null">
+				enabled = #{enabled,jdbcType=BIT},
+			</if>
+			<if test="isFree != null">
+				isFree = #{isFree,jdbcType=BIT},
+			</if>
+			<if test="food_id != null">
+				food_id = #{food_id,jdbcType=BIGINT},
+			</if>
+			<if test="order_id != null">
+				order_id = #{order_id,jdbcType=BIGINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.pitaya.bookingnow.entity.Order_Food_Detail">
+		update pitaya_order_food_detail
+		set 
+			status = #{status,jdbcType=INTEGER},
+			count = #{count,jdbcType=INTEGER},
+			preference = #{preference,jdbcType=INTEGER},
+			last_modify_time = #{last_modify_time,jdbcType=BIGINT},
+			enabled = #{enabled,jdbcType=BIT},
+			isFree = #{isFree,jdbcType=BIT},
+			food_id = #{food_id,jdbcType=BIGINT},
+			order_id = #{order_id,jdbcType=BIGINT}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>
