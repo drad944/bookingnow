@@ -1,5 +1,6 @@
 package com.pitaya.bookingnow.app.service;
 
+import com.pitaya.bookingnow.app.HomeActivity;
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.util.Constants;
 
@@ -36,10 +37,11 @@ import org.json.JSONObject;
 
 import com.pitaya.bookingnow.message.FoodMessage;
 import com.pitaya.bookingnow.message.Message;
+import com.pitaya.bookingnow.message.RegisterMessage;
 import com.pitaya.bookingnow.message.ResultMessage;
 import com.pitaya.bookingnow.message.TableMessage;
 
-public class MessageService extends Service implements Runnable {
+public class MessageService extends Service implements Runnable, IMessageService {
 	
 	private static String TAG = "MessageService";
 	private final IBinder mBinder = new MessageBinder();
@@ -92,7 +94,7 @@ public class MessageService extends Service implements Runnable {
         Toast.makeText(this, "BookingNow message service stopped", Toast.LENGTH_SHORT).show();
     }
     
-    private synchronized void start(){
+    public synchronized void start(){
     	NetworkInfo activeNetwork = mCM.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
         if(!this.isReady() && !this.isConnecting() && isConnected){
@@ -205,8 +207,16 @@ public class MessageService extends Service implements Runnable {
 	}
 	
 	void onMessage(String message){
-		Message msg = unparseMessage(message);
-		onMessage(msg);
+		if(message.equals("bye")){
+			this.shutdown();
+			onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "服务器终端连接"));
+		} else if(message.equals("relogin")){
+	   	 	UserManager.cleanRemeberMe(this);
+	   	 	UserManager.setLoginUser(this, null);
+			onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "您已在别处登录"));
+		} else {
+			onMessage(unparseMessage(message));
+		}
 	}
 	
 	public static String parseMessage(Message message){
@@ -284,11 +294,10 @@ public class MessageService extends Service implements Runnable {
 			Log.i(TAG, "Success to connect to web server");
         	String message = null;
 			this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.SUCCESS, "连接服务器成功"));
-        	while((message = in.readLine()) != null){
-        		if(message.equals("bye")){
-        			shutdown();
-        			break;
-        		}
+        	if(UserManager.getUsername(this) != null && UserManager.getPassword(this) != null){
+        		this.sendMessage(new RegisterMessage(UserManager.getUsername(this), UserManager.getPassword(this), "register"));
+        	}
+			while((message = in.readLine()) != null){
         		this.onMessage(message);
         	}
         } catch (UnknownHostException e) {

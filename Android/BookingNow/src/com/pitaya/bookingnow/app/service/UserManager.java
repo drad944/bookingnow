@@ -22,12 +22,14 @@ public class UserManager {
 	public static final String AUTO_LOGIN_PASSWORD = "auto_password";
 	//Save current login user info
 	public static final String USERNAME = "username";
+	public static final String PASSWORD = "password";
 	public static final String USER_ID = "userid";  
 	public static final String ROLE_ID = "role";
 	
-	public static Integer role = null;
-	public static Long userId = null;
-	public static String username = null;
+	private static Integer role = null;
+	private static Long userId = null;
+	private static String username = null;
+	private static String password = null;
 
 	private static final String TAG = "UserManager";
 	
@@ -79,20 +81,35 @@ public class UserManager {
 		}
 	}
 	
+	public static String getPassword(Context context){
+		if(username == null || username.equals("")){
+			SharedPreferences settings = context.getSharedPreferences(SETTING_INFOS, 0);
+			username = settings.getString(PASSWORD, "");
+		}
+		if(!username.equals("")){
+			return username;
+		} else {
+			return null;
+		}
+	}
+	
 	public static void setLoginUser(Context context, User user){
 		SharedPreferences settings = context.getSharedPreferences(SETTING_INFOS, 0);
 		if(user != null){
 			settings.edit()
 			  .putString(UserManager.USERNAME, user.getUsername())
+			  .putString(UserManager.PASSWORD, user.getPassword())
 			  .putLong(UserManager.USER_ID, user.getUserId())
 			  .putInt(UserManager.ROLE_ID, user.getRole())
 			  .commit();
 			  role = user.getRole();
 			  userId = user.getUserId();
 			  username = user.getUsername();
+			  password = user.getPassword();
 		} else {
 			settings.edit()
 			  .remove(UserManager.USERNAME)
+			  .remove(UserManager.PASSWORD)
 			  .remove(UserManager.USER_ID)
 			  .remove(UserManager.ROLE_ID)
 			  .commit();

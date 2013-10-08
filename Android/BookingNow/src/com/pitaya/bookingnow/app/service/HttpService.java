@@ -57,11 +57,11 @@ public class HttpService {
 		pool = new ThreadPoolExecutor(10, 30, 30L, TimeUnit.MINUTES, 
 					new ArrayBlockingQueue<Runnable>(10), 
 					new ThreadPoolExecutor.CallerRunsPolicy());
-		IP = "192.168.0.102";
+		IP = "192.168.1.12";
 		PORT = 25252;
 		REMOTE_PORT = 19191;
 		UDPPORT = 19192;
-		URL = "http://" + IP + ":18080/Booking/";
+		URL = "http://" + IP + ":8080/Booking/";
 	}
 	
 	public static void setUrl(String url){

@@ -1,6 +1,7 @@
 package com.pitaya.bookingnow.app.views;
 
 import com.pitaya.bookingnow.app.service.EnhancedMessageService;
+import com.pitaya.bookingnow.app.service.IMessageService;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -46,7 +47,7 @@ public class BaseContentView {
 		return this.key;
 	}
 	
-	public void onServiceConnected(EnhancedMessageService service){
+	public void onServiceConnected(IMessageService service){
 	}
 	
 	public void onServiceDisconnected(){
