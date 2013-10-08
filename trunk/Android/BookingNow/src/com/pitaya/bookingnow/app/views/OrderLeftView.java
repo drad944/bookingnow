@@ -8,6 +8,7 @@ import com.pitaya.bookingnow.app.data.OrderDetailAdapter;
 import com.pitaya.bookingnow.app.data.WorkerOrderDetailAdapter;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.EnhancedMessageService;
+import com.pitaya.bookingnow.app.service.IMessageService;
 import com.pitaya.bookingnow.app.service.MessageService;
 import com.pitaya.bookingnow.app.util.Constants;
 
@@ -31,7 +32,7 @@ public class OrderLeftView extends Fragment{
 	protected boolean mIsTouched = false;
 	protected String lastSelectItem = null;
 	protected MessageHandler mMessageHandler;
-	protected EnhancedMessageService mMessageService;
+	protected IMessageService mMessageService;
 	protected boolean mIsBound = false;
 	protected ServiceConnection mConnection;
 	
@@ -56,7 +57,7 @@ public class OrderLeftView extends Fragment{
 		return true;
 	}
 	
-	public void onServiceConnected(EnhancedMessageService service){
+	public void onServiceConnected(IMessageService service){
 		mMessageService = service;
 		mIsBound = true;
 		for(String category : getMessageCategories()){
@@ -75,12 +76,6 @@ public class OrderLeftView extends Fragment{
         super.onActivityCreated(savedInstanceState);
         mDualPane = true;
     }
-
-//	@Override
-//	public void onDestroyView(){
-//		super.onDestroyView();
-//		this.doUnbindService();
-//	}
 	
 	public void setLastItem(String key){
 		this.mContentContainer.saveStatus(key);
@@ -132,46 +127,10 @@ public class OrderLeftView extends Fragment{
 		return (OrderDetailFragment)getFragmentManager().findFragmentById(R.id.orderdetail);
 	}
 	
-	protected void doBindService() {
-		this.getActivity().bindService(new Intent(this.getActivity(), EnhancedMessageService.class), 
-				getServiceConnection(), Context.BIND_AUTO_CREATE);
-	}
-	
-	protected void doUnbindService() {
-	    if (mIsBound) {
-	    	mMessageService.unregisterHandler(mMessageHandler);
-	    	this.getActivity().unbindService(mConnection);
-	        mIsBound = false;
-	    }
-	}
-	
 	protected ArrayList<String> getMessageCategories(){
 		ArrayList<String> categories = new ArrayList<String>();
 		categories.add(Constants.ORDER_MESSAGE);
 		return categories;
-	}
-	
-	protected ServiceConnection getServiceConnection(){ 
-		
-		mConnection = new ServiceConnection() {
-	
-			@Override
-			public void onServiceConnected(ComponentName name, IBinder service) {
-				mMessageService = ((EnhancedMessageService.MessageBinder)service).getService();
-				mIsBound = true;
-				for(String category : getMessageCategories()){
-					mMessageService.registerHandler(category, mMessageHandler);
-				}
-			}
-	
-			@Override
-			public void onServiceDisconnected(ComponentName name) {
-				mMessageService = null;
-				mIsBound = false;
-			}
-
-		};
-		return mConnection;
 	}
 	
 }

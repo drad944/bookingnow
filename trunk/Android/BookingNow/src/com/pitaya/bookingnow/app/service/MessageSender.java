@@ -45,6 +45,7 @@ public class MessageSender extends Thread{
 	    	}
 	    	try {
             	String message = null;
+            	this.socket.setSoTimeout(30000);
             	while((message = in.readLine()) != null){
             		if(message.equals("ready")){
     	        		/*

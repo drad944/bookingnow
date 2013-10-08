@@ -26,6 +26,7 @@ import com.pitaya.bookingnow.app.service.FoodMenuContentProvider;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
 import com.pitaya.bookingnow.app.service.FoodService;
 import com.pitaya.bookingnow.app.service.EnhancedMessageService;
+import com.pitaya.bookingnow.app.service.IMessageService;
 import com.pitaya.bookingnow.app.service.UserManager;
 import com.pitaya.bookingnow.app.util.Constants;
 import com.pitaya.bookingnow.app.util.ToastUtil;
@@ -84,11 +85,11 @@ public class HomeActivity extends FragmentActivity {
 	private ProgressDialog mProgressingDialog;
 	
 	private MessageHandler mMessageHandler;
-	private EnhancedMessageService mMessageService;
+	private IMessageService mMessageService;
 	private boolean mIsBound = false;
-	private boolean isUpdating = false;
+	private volatile boolean isUpdating = false;
+	private volatile boolean isLogining = false;
 	private boolean isRemeberMeAfterLogin = false;
-	private boolean isLogining = false;
 	private String username;
 	private String password;
 	
@@ -109,9 +110,7 @@ public class HomeActivity extends FragmentActivity {
 				 * Maybe we register the result message too late, so
 				 * do the things here
 				 */
-				refreshMenuByRole();
-				doAutoLogin();
-				checkMenuUpdate();
+				onServiceReady();
 			}
 		}
 
@@ -193,7 +192,7 @@ public class HomeActivity extends FragmentActivity {
 		return this.mIsBound;
 	}
 	
-	public EnhancedMessageService getMessageService(){
+	public IMessageService getMessageService(){
 		return this.mMessageService;
 	}
 	
@@ -399,7 +398,7 @@ public class HomeActivity extends FragmentActivity {
 					if(detail != null && !detail.equals("")){
 						String [] infos = detail.split("###");
 						try{
-							User user = new User(Long.parseLong(infos[0]), infos[1], Integer.parseInt(infos[2]));
+							User user = new User(Long.parseLong(infos[0]), this.username, this.password, Integer.parseInt(infos[2]));
 							UserManager.setLoginUser(this, user);
 							if(this.isRemeberMeAfterLogin){
 								UserManager.rememberMe(this, this.username, this.password);
@@ -435,12 +434,16 @@ public class HomeActivity extends FragmentActivity {
 	private void handleConnectResultMsg(ResultMessage message){
 		ToastUtil.showToast(this, message.getDetail() , Toast.LENGTH_SHORT);
 		if(message.getResult() == Constants.SUCCESS){
-			this.refreshMenuByRole();
-			this.doAutoLogin();
-			this.checkMenuUpdate();
+			this.onServiceReady();
 		} else {
 			this.onDisconnect();
 		}
+	}
+	
+	private void onServiceReady(){
+		this.refreshMenuByRole();
+		this.doAutoLogin();
+		this.checkMenuUpdate();
 	}
 	
 	private void onLogout(){
@@ -475,8 +478,8 @@ public class HomeActivity extends FragmentActivity {
 			if(userinfo != null){
 				//auto login
 				this.isRemeberMeAfterLogin = false;
-				String username = userinfo[0];
-				String password = userinfo[1];
+				username = userinfo[0];
+				password = userinfo[1];
 				RegisterMessage message = new RegisterMessage(username, password, "register");
 				if(this.mIsBound && this.mMessageService.isReady()){
 					this.mMessageService.sendMessage(message);

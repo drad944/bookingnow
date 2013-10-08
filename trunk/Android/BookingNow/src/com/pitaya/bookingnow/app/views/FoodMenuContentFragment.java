@@ -42,6 +42,7 @@ import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.EnhancedMessageService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
+import com.pitaya.bookingnow.app.service.IMessageService;
 import com.pitaya.bookingnow.app.service.MessageService;
 import com.pitaya.bookingnow.app.service.OrderService;
 import com.pitaya.bookingnow.app.util.Constants;
@@ -68,7 +69,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 		private CustomerOrderDetailAdapter mOrderPreviewAdapter;
 		
 		private MessageHandler mMessageHandler;
-		private EnhancedMessageService mMessageService;
+		private IMessageService mMessageService;
 		private PopupWindow mPopupWindow;
 		private ListView mOrderPreviewView;
 		protected boolean mIsBound = false;
@@ -111,7 +112,7 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			}
 		}
 		
-		public void onServiceConnected(EnhancedMessageService service){
+		public void onServiceConnected(IMessageService service){
 			mMessageService = service;
 			mIsBound = true;
 			for(String category : getMessageCategories()){
@@ -124,49 +125,13 @@ public class FoodMenuContentFragment extends Fragment implements LoaderManager.L
 			mIsBound = false;
 			mMessageService = null;
 		}
-		
-		protected void doBindService() {
-			this.getActivity().bindService(new Intent(this.getActivity(), EnhancedMessageService.class), 
-					getServiceConnection(), Context.BIND_AUTO_CREATE);
-		}
-		
-		protected void doUnbindService() {
-		    if (mIsBound) {
-		    	mMessageService.unregisterHandler(mMessageHandler);
-		    	this.getActivity().unbindService(mConnection);
-		        mIsBound = false;
-		    }
-		}
 
 		protected ArrayList<String> getMessageCategories(){
 			ArrayList<String> categories = new ArrayList<String>();
 			categories.add(Constants.ORDER_MESSAGE);
 			return categories;
 		}
-		
-		protected ServiceConnection getServiceConnection(){ 
-			
-			mConnection = new ServiceConnection() {
-		
-				@Override
-				public void onServiceConnected(ComponentName name, IBinder service) {
-					mMessageService = ((EnhancedMessageService.MessageBinder)service).getService();
-					mIsBound = true;
-					for(String category : getMessageCategories()){
-						mMessageService.registerHandler(category, mMessageHandler);
-					}
-				}
-		
-				@Override
-				public void onServiceDisconnected(ComponentName name) {
-					mMessageService = null;
-					mIsBound = false;
-				}
-
-			};
-			return mConnection;
-		}
-		
+				
 		private int getPopupWindowSize(int items){
 			int height = (items + 1) * ContentUtil.getPixelsByDP(40) + ContentUtil.getPixelsByDP(10);
 			return height > ContentUtil.getPixelsByDP(600) ? ContentUtil.getPixelsByDP(600) : height;

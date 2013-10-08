@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import com.pitaya.bookingnow.app.R;
 import com.pitaya.bookingnow.app.model.*;
 import com.pitaya.bookingnow.app.service.EnhancedMessageService;
+import com.pitaya.bookingnow.app.service.IMessageService;
 import com.pitaya.bookingnow.app.service.UserManager;
 import com.pitaya.bookingnow.app.util.Constants;
 
@@ -32,7 +33,7 @@ public class OrderContentView extends BaseContentView{
 	}
 	
 	@Override
-	public void onServiceConnected(EnhancedMessageService service){
+	public void onServiceConnected(IMessageService service){
 		if(mLeftView != null){
 			mLeftView.onServiceConnected(service);
 		}

@@ -40,7 +40,7 @@ import com.pitaya.bookingnow.message.Message;
 import com.pitaya.bookingnow.message.ResultMessage;
 import com.pitaya.bookingnow.message.TableMessage;
 
-public class EnhancedMessageService extends Service implements Runnable {
+public class EnhancedMessageService extends Service implements Runnable, IMessageService {
 	
 	private static String TAG = "EnhancedMessageService";
 	private final IBinder mBinder = new MessageBinder();
@@ -140,7 +140,7 @@ public class EnhancedMessageService extends Service implements Runnable {
         this.onDisconnect("消息服务意外终止");
     }
     
-    private synchronized void start(){
+    public synchronized void start(){
     	NetworkInfo activeNetwork = mCM.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
         if((this.mServerThread == null ||
@@ -185,12 +185,25 @@ public class EnhancedMessageService extends Service implements Runnable {
 		return this.isConnecting;
 	}
 	
-	public void sendMessage(Message message){
+	@Override
+	public boolean sendMessage(Message message){
 		new MessageSender(HttpService.IP, HttpService.REMOTE_PORT, parseMessage(message), this).start();
+		return true;
+	}
+	
+	@Override
+	public boolean sendMessage(String msg) {
+		if(msg == null || msg.equals("")){
+			return false;
+		} else {
+			new MessageSender(HttpService.IP, HttpService.REMOTE_PORT, msg, this).start();
+			return true;
+		}
 	}
 	
 	public boolean isReady(){
 		return this.mServerSocket != null && this.mServerSocket.isBound();
+				//Disable udp check for now
 				//&& this.mUDPService != null && this.mUDPService.isRunnning();
 	}
 	
@@ -244,6 +257,7 @@ public class EnhancedMessageService extends Service implements Runnable {
 	}
 	
 	void onConnectServer(){
+//		Disable udp check
 //    	if(this.mUDPService == null || !this.mUDPService.isRunnning()){
 //    		this.mUDPService = new UDPService(this);
 //    		mUPDServerThread = new Thread(this.mUDPService);
@@ -258,7 +272,7 @@ public class EnhancedMessageService extends Service implements Runnable {
 		this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.SUCCESS, "连接服务器成功"));
 	}
 
-	synchronized void  onDisconnect(String msg){
+	synchronized void onDisconnect(String msg){
 		UserManager.setLoginUser(this, null);
 		this.isConnecting = false;
 		this.shutdown();
@@ -299,9 +313,8 @@ public class EnhancedMessageService extends Service implements Runnable {
 	}
 	
 	public class MessageBinder extends Binder {
-	    
-		public EnhancedMessageService getService() {
-		      return EnhancedMessageService.this;
+		public IMessageService getService() {
+			return EnhancedMessageService.this;
 	    }
 	}
 
