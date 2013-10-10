@@ -8,13 +8,14 @@ import java.util.Map;
 import com.pitaya.bookingnow.entity.Food;
 import com.pitaya.bookingnow.message.FoodMessage;
 import com.pitaya.bookingnow.service.socket.EnhancedMessageService;
+import com.pitaya.bookingnow.service.socket.IMessageService;
 import com.pitaya.bookingnow.service.IFoodService;
 import com.pitaya.bookingnow.util.Constants;
 
 public class FoodAction extends BaseAction{
 	private static final long serialVersionUID = -675955597630577906L;
 	private IFoodService foodService;
-	private EnhancedMessageService messageService;
+	private IMessageService messageService;
 	private Food food;
 	private List<Food> clientMenuFoods;
 	private List<Food> foodList;
@@ -57,10 +58,10 @@ public class FoodAction extends BaseAction{
 	public void setFoodService(IFoodService foodService) {
 		this.foodService = foodService;
 	}
-	public EnhancedMessageService getMessageService(){
+	public IMessageService getMessageService(){
 		return this.messageService;
 	}
-	public void setMessageService(EnhancedMessageService ms){
+	public void setMessageService(IMessageService ms){
 		this.messageService = ms;
 	}
 	public Food getFood() {

@@ -54,9 +54,6 @@ var adminManagement = {
 			if(result){
 				me.setupAdminView(result);
 			}
-			notification.subscribeTopic("order", function(event){
-				alert(event);
-			});
 		}, function(){
 			alert("网络错误!");
 		});
