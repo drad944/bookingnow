@@ -472,7 +472,7 @@
 					where F.enabled = true
 				) as F on FD.food_id = F.F_id
 		<where>
-		 	F.enabled = true
+		 	FD.enabled = true
 		    <if test="food_detail_id != null">
 		        and FD.id = #{food_detail_id,jdbcType=BIGINT}
 		    </if>
