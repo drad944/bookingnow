@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -67,12 +68,22 @@ public class MessageService implements IMessageService{
 		this.groups = new ConcurrentHashMap <Integer, Map<Long, IClient>>();
 		this.clients = Collections.synchronizedList(new ArrayList<IClient>());
 	}
-
-	public void start(int port, Class<? extends ClientAgent> clientClz){
+	
+	//For flash socket client security check
+	public void start(int port){
 		this.port = port;
-		this.clientClz = clientClz;
+		this.clientClz = FlashClientAgent.class;
 		this.securityResponse = this.securityResponse.replace("{port}", String.valueOf(this.port));
 		this.start();
+	}
+
+	@Override
+	public void start(int... args) {
+		if(args.length > 0){
+			this.port = args[0];
+			this.clientClz = ClientAgent.class;
+			this.start();
+		}
 	}
 	
 	public boolean shutdown(){
@@ -115,7 +126,7 @@ public class MessageService implements IMessageService{
 		if(!hasStarted){
 			try {
 	            serverSocket = new ServerSocket(this.port);
-	            serverThread = new MessageServerThread(this, this.clientClz);  
+	            serverThread = new MessageServerThread(this, this.clientClz);
 	            serverThread.start();
 	            logger.info("Success to start message server thread on " + this.port);
 	            this.hasStarted = true;
@@ -244,6 +255,8 @@ public class MessageService implements IMessageService{
 				clientAgent.sendMessage(parseMessage(resultmsg));
 			} else {
 				this.removeClient(clientAgent, false);
+				clientAgent.sendMessage(parseMessage(new ResultMessage(Constants.UNREGISTER_REQUEST, 
+						Constants.SUCCESS, "done")));
 			}
 		}
 	}
@@ -260,7 +273,6 @@ public class MessageService implements IMessageService{
 		if(!hasAdded){
 			this.clients.add(clientAgent);
 			logger.debug("Add new client:" + clientAgent.getAddress());
-			//logger.info("Add new client");
 		}
 		if(clientAgent.getUserId() != null && clientAgent.getRoleType() != null) {
 			Long userId = clientAgent.getUserId();
@@ -275,8 +287,8 @@ public class MessageService implements IMessageService{
 					logger.warn("The same client already registered [user id: " + userId + "]");
 					return true;
 				} else {
-					logger.debug("Client with same user id already registered [user id: " + userId + "], shutdown it first");
-					group.get(userId).shutdown("relogin");
+					logger.debug("Client with same user id already registered [user id: " + userId + "], force it logout");
+					group.get(userId).sendMessage("relogin");
 				}
 			}
 			group.put(userId, clientAgent);
@@ -337,9 +349,17 @@ public class MessageService implements IMessageService{
 	        	while(flag){
 	                client_socket = service.serverSocket.accept();
 	                Constructor<? extends IClient> con = this.clientAgentClz.getConstructor(MessageService.class, Socket.class);
-	                IClient client = con.newInstance(this.service, client_socket);
+	                final IClient client = con.newInstance(this.service, client_socket);
 	                pool.execute(client);
 	                this.service.addClient(client);
+	                new Timer().schedule(new TimerTask(){
+
+						@Override
+						public void run() {
+							 client.sendMessage("ready");
+						}
+	                	
+	                }, 3000);
 	        	}
 	        } catch(Exception e) {
 	        	logger.error("Message server thread is crashed");
@@ -415,11 +435,5 @@ public class MessageService implements IMessageService{
 //			messageService.sendMessageToGroup(Constants.ROLE_WAITER, new Message("test"));
 //    	}
     }
-
-	@Override
-	public void start(int... args) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }
