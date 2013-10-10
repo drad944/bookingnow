@@ -31,14 +31,15 @@ public class ProgressHandler extends HttpHandler {
         	if(handleResults.get(itemkey) == null){
         		handleResults.put(itemkey, true);
         		this.index ++;
+        		super.afterHandlerMessage(bundle);
         	}
         } else if(result == Constants.FAIL){
         	if(handleResults.get(itemkey) == null){
         		this.index ++;
+        		super.afterHandlerMessage(bundle);
         	}
         	handleResults.put(itemkey, false);
         }
-        super.afterHandlerMessage(bundle);
 	}
 	
 }

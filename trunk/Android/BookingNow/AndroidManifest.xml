@@ -52,7 +52,7 @@
             	android:windowSoftInputMode="adjustPan">
         </activity>
         <service
-            android:name=".service.EnhancedMessageService"
+            android:name=".service.MessageService"
             android:icon="@drawable/ic_launcher"
             android:label="@string/service_name" >
         </service>

@@ -49,6 +49,7 @@ public class HttpService {
 	public static int REMOTE_PORT = 19191;
 	//Server and local UDP checking socket
 	public static int UDPPORT = 19192;
+	public static int HTTP_PORT = 18080;
 	
 	private static String URL = "http://10.111.3.116:9999/Booking/";
 	private static ExecutorService pool;
@@ -57,11 +58,11 @@ public class HttpService {
 		pool = new ThreadPoolExecutor(10, 30, 30L, TimeUnit.MINUTES, 
 					new ArrayBlockingQueue<Runnable>(10), 
 					new ThreadPoolExecutor.CallerRunsPolicy());
-		IP = "192.168.1.12";
+		IP = "192.168.0.102";
 		PORT = 25252;
 		REMOTE_PORT = 19191;
 		UDPPORT = 19192;
-		URL = "http://" + IP + ":8080/Booking/";
+		URL = "http://" + IP + ":"+HTTP_PORT+"/Booking/";
 	}
 	
 	public static void setUrl(String url){

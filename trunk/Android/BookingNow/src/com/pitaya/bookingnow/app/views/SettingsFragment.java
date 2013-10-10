@@ -6,6 +6,7 @@ import com.pitaya.bookingnow.app.data.MessageHandler;
 import com.pitaya.bookingnow.app.preference.*;
 import com.pitaya.bookingnow.app.service.EnhancedMessageService;
 import com.pitaya.bookingnow.app.service.HttpService;
+import com.pitaya.bookingnow.app.service.MessageService;
 import com.pitaya.bookingnow.app.util.ToastUtil;
 
 import android.content.ComponentName;
@@ -66,7 +67,8 @@ public class SettingsFragment extends PreferenceFragment {
 			
 			@Override
 			public void onClick(View v) {
-				getActivity().startService(new Intent(getActivity(), EnhancedMessageService.class));
+					getActivity().startService(new Intent(getActivity(), MessageService.class));
+					//getActivity().startService(new Intent(getActivity(), EnhancedMessageService.class));
 			}
 			
 		});

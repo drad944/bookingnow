@@ -38,6 +38,7 @@ public class MessageReceiver implements Runnable {
 				}
 				
 			}, 3000);
+			this.socket.setSoTimeout(30000);
         	while((message = in.readLine()) != null){
         		this.service.onMessage(message);
         	}
