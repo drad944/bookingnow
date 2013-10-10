@@ -82,12 +82,12 @@ public class UserManager {
 	}
 	
 	public static String getPassword(Context context){
-		if(username == null || username.equals("")){
+		if(password == null || password.equals("")){
 			SharedPreferences settings = context.getSharedPreferences(SETTING_INFOS, 0);
-			username = settings.getString(PASSWORD, "");
+			password = settings.getString(PASSWORD, "");
 		}
-		if(!username.equals("")){
-			return username;
+		if(!password.equals("")){
+			return password;
 		} else {
 			return null;
 		}
@@ -116,6 +116,7 @@ public class UserManager {
 			role = null;
 			userId = null;
 			username = null;
+			password = null;
 		}
 	}
 	

@@ -26,6 +26,8 @@ import com.pitaya.bookingnow.app.service.FoodMenuContentProvider;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
 import com.pitaya.bookingnow.app.service.FoodService;
 import com.pitaya.bookingnow.app.service.EnhancedMessageService;
+import com.pitaya.bookingnow.app.service.MessageService;
+import com.pitaya.bookingnow.app.service.MessageServiceBinder;
 import com.pitaya.bookingnow.app.service.IMessageService;
 import com.pitaya.bookingnow.app.service.UserManager;
 import com.pitaya.bookingnow.app.util.Constants;
@@ -98,7 +100,7 @@ public class HomeActivity extends FragmentActivity {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			Log.i(TAG, "Service connected");
-			mMessageService = ((EnhancedMessageService.MessageBinder)service).getService();
+			mMessageService = ((MessageServiceBinder)service).getService();
 			if(homecontent.getCurrentContentView() != null){
 				homecontent.getCurrentContentView().onServiceConnected(mMessageService);
 			}
@@ -123,7 +125,7 @@ public class HomeActivity extends FragmentActivity {
 		    mIsBound = false;
 			mMessageService = null;
 			UserManager.setLoginUser(HomeActivity.this, null);
-			refreshMenuByRole();
+			resetHomeView();
 		}
 
 	};
@@ -139,7 +141,8 @@ public class HomeActivity extends FragmentActivity {
 			public void onMessage(Message message) {
 	            if(message instanceof ResultMessage){
 	            	ResultMessage resultmsg = (ResultMessage)message;
-	            	if(resultmsg.getRequestType() == Constants.REGISTER_REQUEST || resultmsg.getRequestType() == Constants.UNREGISTER_REQUEST){
+	            	if(resultmsg.getRequestType() == Constants.REGISTER_REQUEST 
+	            			|| resultmsg.getRequestType() == Constants.UNREGISTER_REQUEST){
 	            		handleRegisterResultMsg(resultmsg);
 	            	} else if(resultmsg.getRequestType() == Constants.SOCKET_CONNECTION){
 	            		handleConnectResultMsg(resultmsg);
@@ -197,11 +200,13 @@ public class HomeActivity extends FragmentActivity {
 	}
 	
 	private void doStartService(){
-		this.startService(new Intent(this, EnhancedMessageService.class));
+		//this.startService(new Intent(this, EnhancedMessageService.class));
+		this.startService(new Intent(this, MessageService.class));
 	}
 	
 	private void doBindService() {
-		bindService(new Intent(this, EnhancedMessageService.class), mConnection, Context.BIND_AUTO_CREATE);
+		//bindService(new Intent(this, EnhancedMessageService.class), mConnection, Context.BIND_AUTO_CREATE);
+		bindService(new Intent(this, MessageService.class), mConnection, Context.BIND_AUTO_CREATE);
 	}
 	
 	private void doUnbindService() {
@@ -234,6 +239,7 @@ public class HomeActivity extends FragmentActivity {
 			this.mInfoView.setVisibility(View.GONE);
 			if(this.mIsBound && this.mMessageService.isReady()
 					&& UserManager.getUsernameAndPassword(this) == null){
+				//Allow login only when network is available and auto login is disabled
 				this.mLoginBtn.setVisibility(View.VISIBLE);
 			} else {
 				this.mLoginBtn.setVisibility(View.GONE);
@@ -398,11 +404,15 @@ public class HomeActivity extends FragmentActivity {
 					if(detail != null && !detail.equals("")){
 						String [] infos = detail.split("###");
 						try{
-							User user = new User(Long.parseLong(infos[0]), this.username, this.password, Integer.parseInt(infos[2]));
-							UserManager.setLoginUser(this, user);
-							if(this.isRemeberMeAfterLogin){
+							if(this.username != null && this.password != null){
+								User user = new User(Long.parseLong(infos[0]), this.username, this.password, Integer.parseInt(infos[2]));
+								UserManager.setLoginUser(this, user);
+							}
+							
+							if(this.isRemeberMeAfterLogin && this.username != null && this.password != null){
 								UserManager.rememberMe(this, this.username, this.password);
 							}
+
 							ToastUtil.showToast(this, "登录成功", Toast.LENGTH_SHORT);
 							this.refreshMenuByRole();
 						} catch (Exception e){
@@ -436,7 +446,8 @@ public class HomeActivity extends FragmentActivity {
 		if(message.getResult() == Constants.SUCCESS){
 			this.onServiceReady();
 		} else {
-			this.onDisconnect();
+			UserManager.setLoginUser(HomeActivity.this, null);
+			this.resetHomeView();
 		}
 	}
 	
@@ -449,10 +460,10 @@ public class HomeActivity extends FragmentActivity {
 	private void onLogout(){
    	 	UserManager.cleanRemeberMe(HomeActivity.this);
    	 	UserManager.setLoginUser(HomeActivity.this, null);
-		this.onDisconnect();
+		this.resetHomeView();
 	}
 	
-	private synchronized void onDisconnect(){
+	private synchronized void resetHomeView(){
 		HomeActivity.this.refreshMenuByRole();
 		if(this.homecontent.getCurrentContentViewKey().equals("order")){
 			((FoodMenuContentView)this.homecontent.getContentView("menu")).setOrder(null);
@@ -461,8 +472,6 @@ public class HomeActivity extends FragmentActivity {
 			if(((FoodMenuContentView)this.homecontent.getContentView("menu")).getOrder() != null){
 				((FoodMenuContentView)this.homecontent.getContentView("menu")).setOrder(null);
 				this.homecontent.refreshItem("menu");
-			} else {
-				this.homecontent.selectItem("menu");
 			}
 		}
 	}
@@ -546,7 +555,7 @@ public class HomeActivity extends FragmentActivity {
 		}.start();
 	}
 	
-	private void onUpdateMenuFinish(){
+	private void onUpdateMenuFinish(Map<String, Boolean> results){
 		
 	};
 	
@@ -582,7 +591,7 @@ public class HomeActivity extends FragmentActivity {
 	}
 	
 	private void executeUpdateMenu(int total, Map<String, ArrayList<Food>> foodsToUpdate){
-		final ProgressDialog updateProgressDialog=new ProgressDialog(this);
+		final ProgressDialog updateProgressDialog = new ProgressDialog(this);
 		updateProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		updateProgressDialog.setTitle("菜单更新中");
 		updateProgressDialog.setMax(total);
@@ -600,7 +609,7 @@ public class HomeActivity extends FragmentActivity {
 				updateProgressDialog.setProgress(this.index);
 				if(this.index == max){
 					updateProgressDialog.dismiss();
-					onUpdateMenuFinish();
+					onUpdateMenuFinish(this.getResults());
 					synchronized(HomeActivity.this) {
 						HomeActivity.this.isUpdating = false;
 					}
@@ -613,7 +622,7 @@ public class HomeActivity extends FragmentActivity {
 				updateProgressDialog.setProgress(this.index);
 				if(this.index == max){
 					updateProgressDialog.dismiss();
-					onUpdateMenuFinish();
+					onUpdateMenuFinish(this.getResults());
 					synchronized(HomeActivity.this) {
 						HomeActivity.this.isUpdating = false;
 					}

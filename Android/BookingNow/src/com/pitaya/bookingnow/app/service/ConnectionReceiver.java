@@ -17,7 +17,8 @@ public class ConnectionReceiver extends BroadcastReceiver{
 		 ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		 NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 	     boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
-	     Intent newintent = new Intent(context, EnhancedMessageService.class);
+	     //Intent newintent = new Intent(context, EnhancedMessageService.class);
+	     Intent newintent = new Intent(context, MessageService.class);
 	     Bundle bundle = new Bundle();
 		 if(isConnected){
 			 bundle.putBoolean("connected", true);

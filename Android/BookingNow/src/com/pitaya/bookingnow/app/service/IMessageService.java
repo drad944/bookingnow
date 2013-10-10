@@ -14,10 +14,4 @@ public interface IMessageService {
 	public boolean isReady();
 	public boolean sendMessage(Message message);
 	public boolean sendMessage(String msg);
-	
-	public class MessageBinder extends Binder{
-		public IMessageService getService(){
-			return null;
-		};
-	};
 }

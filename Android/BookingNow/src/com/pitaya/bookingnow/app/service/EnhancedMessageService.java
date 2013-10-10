@@ -43,7 +43,12 @@ import com.pitaya.bookingnow.message.TableMessage;
 public class EnhancedMessageService extends Service implements Runnable, IMessageService {
 	
 	private static String TAG = "EnhancedMessageService";
-	private final IBinder mBinder = new MessageBinder();
+	private final IBinder mBinder = new MessageServiceBinder(){
+		@Override
+		public IMessageService getService(){
+			return EnhancedMessageService.this;
+		}
+	};
 	private NotificationManager mNM;
 	private ConnectivityManager mCM;
 	private NotificationCompat.Builder mBuilder;
@@ -99,9 +104,9 @@ public class EnhancedMessageService extends Service implements Runnable, IMessag
 	
 	public EnhancedMessageService(){
 		this.handlers = new ConcurrentHashMap<String, List<Handler>>();
-		this.mMessageReceiverPool =  new ThreadPoolExecutor(5,10,30L, TimeUnit.MINUTES, 
-				new ArrayBlockingQueue<Runnable>(5), 
-				new ThreadPoolExecutor.CallerRunsPolicy());
+//		this.mMessageReceiverPool =  new ThreadPoolExecutor(5,10,30L, TimeUnit.MINUTES, 
+//				new ArrayBlockingQueue<Runnable>(5), 
+//				new ThreadPoolExecutor.CallerRunsPolicy());
 	}
 
     @Override
@@ -122,7 +127,7 @@ public class EnhancedMessageService extends Service implements Runnable, IMessag
         	Bundle bundle = intent.getExtras();
         	if(bundle.getBoolean("connected") == false){
         		Log.i(TAG, "Connection status changed to false");
-        		this.onDisconnect("网络中断");
+        		this.onDisconnect("网络连接中断");
         	} else {
         		this.start();
         	}
@@ -241,7 +246,7 @@ public class EnhancedMessageService extends Service implements Runnable, IMessag
 		if(message.equals("bye")){
 			this.onDisconnect("服务器终止了连接");
 		} else if(message.equals("relogin")){
-			this.onDisconnect("您已在别处登录");
+			this.onMessage(new ResultMessage(Constants.UNREGISTER_REQUEST, Constants.SUCCESS, "您已在别处登录"));
 		} else {
 			Message msg = unparseMessage(message);
 			onMessage(msg);
@@ -334,6 +339,12 @@ public class EnhancedMessageService extends Service implements Runnable, IMessag
             e.printStackTrace();
             Log.e(TAG, "Server socket error");
         } finally {
+        	this.onDisconnect("网络连接中断");
+        }
+	}
+	
+	private void shutdownPool(){
+		if(mMessageReceiverPool != null){
         	mMessageReceiverPool.shutdown();
         	try {
         		 mMessageReceiverPool.shutdownNow();
@@ -343,8 +354,7 @@ public class EnhancedMessageService extends Service implements Runnable, IMessag
         	} catch (InterruptedException ie) {
         		 mMessageReceiverPool.shutdownNow();
         	}
-        	this.onDisconnect("与服务器的连接中断，请检查网络");
-        }
+		}
 	}
 	
     private void showUpdateNotification() {

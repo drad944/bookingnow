@@ -44,15 +44,18 @@ import com.pitaya.bookingnow.message.TableMessage;
 public class MessageService extends Service implements Runnable, IMessageService {
 	
 	private static String TAG = "MessageService";
-	private final IBinder mBinder = new MessageBinder();
+	private final IBinder mBinder = new MessageServiceBinder(){
+		@Override
+		public IMessageService getService(){
+			return MessageService.this;
+		}
+	};
 	private NotificationManager mNM;
 	private ConnectivityManager mCM;
 	private NotificationCompat.Builder mBuilder;
 	private IntentFilter mIntentFilter;
 	
 	private Socket socket;
-    private String ip;
-    private int port;
     private BufferedReader in;
     private OutputStreamWriter out;
     private BufferedWriter bwriter;
@@ -65,8 +68,6 @@ public class MessageService extends Service implements Runnable, IMessageService
 	
 	public MessageService(){
 		this.handlers = new ConcurrentHashMap<String, List<Handler>>();
-		this.ip = HttpService.IP;
-		this.port = HttpService.PORT;
 	}
 	
     @Override
@@ -207,9 +208,15 @@ public class MessageService extends Service implements Runnable, IMessageService
 	}
 	
 	void onMessage(String message){
-		if(message.equals("bye")){
+		if(message.equals("ready")){
+        	if(UserManager.getUsername(this) != null && UserManager.getPassword(this) != null){
+        		this.sendMessage(new RegisterMessage(UserManager.getUsername(this), UserManager.getPassword(this), "register"));
+        	}
+			this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.SUCCESS, "连接服务器成功"));
+			Log.i(TAG, "Success to connect to web server");
+		} else if(message.equals("bye")){
 			this.shutdown();
-			onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "服务器终端连接"));
+			onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.FAIL, "服务器终止了连接"));
 		} else if(message.equals("relogin")){
 	   	 	UserManager.cleanRemeberMe(this);
 	   	 	UserManager.setLoginUser(this, null);
@@ -291,12 +298,7 @@ public class MessageService extends Service implements Runnable, IMessageService
         try {
 			setupConnection();
 			isConnecting = false;
-			Log.i(TAG, "Success to connect to web server");
         	String message = null;
-			this.onMessage(new ResultMessage(Constants.SOCKET_CONNECTION, Constants.SUCCESS, "连接服务器成功"));
-        	if(UserManager.getUsername(this) != null && UserManager.getPassword(this) != null){
-        		this.sendMessage(new RegisterMessage(UserManager.getUsername(this), UserManager.getPassword(this), "register"));
-        	}
 			while((message = in.readLine()) != null){
         		this.onMessage(message);
         	}
@@ -354,7 +356,7 @@ public class MessageService extends Service implements Runnable, IMessageService
     }
 	
     private void setupConnection() throws UnknownHostException, IOException {
-        socket = new Socket(ip, port);
+        socket = new Socket(HttpService.IP, HttpService.REMOTE_PORT);
     	in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
     	out = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");  
 		bwriter = new BufferedWriter(out);  
