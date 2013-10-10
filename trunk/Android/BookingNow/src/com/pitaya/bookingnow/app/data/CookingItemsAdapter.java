@@ -156,7 +156,8 @@ public class CookingItemsAdapter extends BaseAdapter {
 								Long beginTime = item.getSubmitTime();
 								String result = setElapsedTime(beginTime, viewHolder.timerText);
 								if(result.equals("<")){
-									viewHolder.handler.post(getTimer(beginTime, viewHolder));
+									viewHolder.timer = getTimer(beginTime, viewHolder);
+									viewHolder.handler.post(viewHolder.timer);
 								}
 							}
 							break;
