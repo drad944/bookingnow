@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:id="@+id/foodpanel"
-              android:background="@android:color/black">
-  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:id="@+id/foodpanel"
+            android:padding="10dp"
+            android:background="@android:color/white">
+	    	
 	    	<android.support.v4.view.ViewPager
 			      android:id="@+id/foodimagepager"
-			      android:layout_width="match_parent"
+			      android:layout_width="900dp"
 			      android:layout_height="match_parent"
-			      android:layout_alignParentLeft="true"
-			      android:background="@android:color/white">
+			      android:background="@drawable/common_background">
 	      	</android.support.v4.view.ViewPager>
     
 	  	    <RelativeLayout
 	  	        android:id="@+id/detailInfo"
-	  	        android:layout_width="300dp"
+	  	        android:layout_width="match_parent"
 	  	        android:layout_height="match_parent"
-	  	        android:layout_alignRight="@+id/foodimagepager"
 	  	        android:background="@drawable/common_background"
 	  	        android:gravity="center"
 	  	        android:textAppearance="@android:style/TextAppearance.Large"
@@ -92,4 +91,4 @@
 		        </LinearLayout>
                 
 	        </RelativeLayout>
-</RelativeLayout>
+</LinearLayout>

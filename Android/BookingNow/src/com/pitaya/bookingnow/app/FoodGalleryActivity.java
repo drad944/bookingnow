@@ -31,12 +31,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout.LayoutParams;
 
-import com.aphidmobile.flip.FlipViewController;
 import com.pitaya.bookingnow.app.data.AsyncDrawable;
 import com.pitaya.bookingnow.app.data.AsyncImageTask;
 import com.pitaya.bookingnow.app.data.FlipAsyncImageTask;
@@ -48,6 +48,7 @@ import com.pitaya.bookingnow.app.service.DataService;
 import com.pitaya.bookingnow.app.service.FoodMenuTable;
 import com.pitaya.bookingnow.app.util.Constants;
 import com.pitaya.bookingnow.app.views.FoodMenuView;
+import com.polites.android.GestureImageView;
 
 public class FoodGalleryActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>{
 	
@@ -125,16 +126,33 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
 					e.printStackTrace();
 				}
             }
+            
             boolean hasFound = false;
-            for(Entry<Order.Food, Integer> entry : mOrder.getFoods().entrySet()){
-            	Order.Food food = entry.getKey();
-            	if(food.getKey().equals(mCurrentFood.getKey())){
-            		 mQuantityText.setText(String.valueOf(entry.getValue()));
-            		 mPreferenceAdapter.setSelectedPrefs(food.getPreference().split(","));
-            		 hasFound = true;
-            		 break;
-            	}
+            if(this.mUpdatedFoods.get(this.mCurrentFood.getKey()) != null){
+            	FoodItem updateFood = this.mUpdatedFoods.get(this.mCurrentFood.getKey());
+            	mQuantityText.setText(String.valueOf(updateFood.quantity));
+            	if(updateFood.food.getPreference() != null){
+            		 mPreferenceAdapter.setSelectedPrefs(updateFood.food.getPreference().split(","));
+	       		 } else {
+	       			 mPreferenceAdapter.setSelectedPrefs(null);
+	       		 }
+            	hasFound = true;
+            } else {
+                for(Entry<Order.Food, Integer> entry : mOrder.getFoods().entrySet()){
+                	Order.Food food = entry.getKey();
+                	if(food.getKey().equals(mCurrentFood.getKey())){
+                		 mQuantityText.setText(String.valueOf(entry.getValue()));
+                		 if(food.getPreference() != null){
+                    		 mPreferenceAdapter.setSelectedPrefs(food.getPreference().split(","));
+                		 } else {
+                			 mPreferenceAdapter.setSelectedPrefs(null);
+                		 }
+                		 hasFound = true;
+                		 break;
+                	}
+                }
             }
+
             if(!hasFound){
             	mQuantityText.setText("0");
             	mPreferenceAdapter.setSelectedPrefs(null);
@@ -146,7 +164,7 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
 
     private void setHomeContent(){
     	setContentView(R.layout.foodgallerylayout);
-    	RelativeLayout foodPanelRL = (RelativeLayout)findViewById(R.id.foodpanel);
+    	LinearLayout foodPanelRL = (LinearLayout)findViewById(R.id.foodpanel);
     	mFoodMenuViewPager = (ViewPager) foodPanelRL.findViewById(R.id.foodimagepager);
     	RelativeLayout foodDetailRL = (RelativeLayout)findViewById(R.id.detailInfo);
         mFoodNameText = (TextView) foodDetailRL.findViewById(R.id.foodname);
@@ -184,7 +202,7 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
         
         RelativeLayout fsRL  = (RelativeLayout) mFoodStepper.findViewById(R.id.food_stepper);
 	    mPriceText = (TextView) fsRL.findViewById(R.id.price);
-	    mQuantityText = (EditText)fsRL.findViewById(R.id.quantity);
+	    mQuantityText = (EditText)fsRL.findViewById(R.id.quantity);    
 	    
 	    mTextWatcher = new TextWatcher(){
         	
@@ -260,6 +278,20 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
         	
         });
 
+        this.mFoodMenuViewPager.setOnTouchListener(new View.OnTouchListener(){
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+			    InputMethodManager imm = (InputMethodManager)FoodGalleryActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE); 
+	      	    if(imm.isActive()){
+	      	    	imm.hideSoftInputFromWindow(mFoodMenuViewPager.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+	      	    }
+	      	    mQuantityText.clearFocus();
+				return false;
+			}
+			  
+		 });
+        
     }
     
     private void doConfirm() {
@@ -274,6 +306,7 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
 				}
 			}
 		}
+		this.finish();
     }
     
 	@Override
@@ -430,7 +463,7 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
 		        		   placeholderBitmap, task));
 		           task.execute();
 	         }
-	        return foodImageView;
+	         return foodImageView;
 	    }
 		
 	}
