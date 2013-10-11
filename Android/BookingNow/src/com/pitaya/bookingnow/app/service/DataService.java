@@ -289,6 +289,7 @@ public class DataService {
 				OrderUpdateDetailTable.COLUMN_QUANTITY,
 				OrderUpdateDetailTable.COLUMN_FREE,
 				OrderUpdateDetailTable.COLUMN_VERSION,
+				OrderUpdateDetailTable.COLUMN_PREFERENCE
 		};
 		Cursor cursor = context.getContentResolver().query(OrderUpdateDetailContentProvider.CONTENT_URI, projection, 
 				OrderUpdateDetailTable.COLUMN_ORDER_KEY +"=?", new String[]{order.getOrderKey()}, null);
@@ -301,10 +302,12 @@ public class DataService {
 				int count = cursor.getInt(indexes[3]);
 				boolean isfree = Boolean.parseBoolean(cursor.getString(indexes[4]));
 				Long version = cursor.getLong(indexes[5]);
+				String pref = cursor.getString(indexes[6]);
 				if(refid == -1L){
 					refid = null;
 				}
 				UpdateFood updateFood = new UpdateFood(foodkey, refid, version, isfree, count);
+				updateFood.setPreference(pref);
 				order.getUpdateFoods().get(Order.getUpdateType(type)).add(updateFood);
 			}
 			cursor.close();
@@ -330,6 +333,7 @@ public class DataService {
 		values.put(OrderUpdateDetailTable.COLUMN_QUANTITY, updateFood.getQuantity());
 		values.put(OrderUpdateDetailTable.COLUMN_FREE, String.valueOf(updateFood.isFree()));
 		values.put(OrderUpdateDetailTable.COLUMN_VERSION, String.valueOf(updateFood.getVersion()));
+		values.put(OrderUpdateDetailTable.COLUMN_PREFERENCE, updateFood.getPreference());
 		context.getContentResolver().insert(OrderUpdateDetailContentProvider.CONTENT_URI, values);
 	}
 	

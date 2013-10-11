@@ -133,4 +133,6 @@ public class Constants {
 	public static final String FOOD_MESSAGE = "food_message";
 	public static final String TABLE_MESSAGE = "table_message";
 	public static final String SYSTEM_MESSAGE = "system_message";
+	
+	public static String[] preferences = {"微辣", "中辣", "狂辣", "七成熟", "五成熟"};
 }

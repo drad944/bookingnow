@@ -14,6 +14,7 @@ public class UpdateFood implements Serializable{
 	private Long order_food_refid;
 	private Long version;
 	private int count;
+	private String preference;
 	
 	public UpdateFood(String key, Long refid, Long version, boolean isfree, int count){
 		this.key = key;
@@ -21,6 +22,7 @@ public class UpdateFood implements Serializable{
 		this.version = version;
 		this.isFree = isfree;
 		this.count = count;
+		this.preference = "";
 	}
 	
 	public String getFoodKey(){
@@ -41,6 +43,14 @@ public class UpdateFood implements Serializable{
 	
 	public int getQuantity(){
 		return this.count;
+	}
+	
+	public String getPreference(){
+		return this.preference;
+	}
+	
+	public void setPreference(String pref){
+		this.preference = pref;
 	}
 	
 }
