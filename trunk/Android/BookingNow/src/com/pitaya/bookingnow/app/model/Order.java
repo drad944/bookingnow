@@ -469,6 +469,7 @@ public class Order implements Serializable{
 		private boolean isFree;
 		private Long id;
 		private Long version;
+		private String preference;
 		private transient OnFoodStatusChangedListener listener;
 		
 		public Food(){
@@ -520,6 +521,14 @@ public class Order implements Serializable{
 		
 		public void setVersion(Long v){
 			this.version = v;
+		}
+		
+		public void setPreference(String pref){
+			this.preference = pref;
+		}
+		
+		public String getPreference(){
+			return this.preference;
 		}
 		
 		public boolean isFree(){

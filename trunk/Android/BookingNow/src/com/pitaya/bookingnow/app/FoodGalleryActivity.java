@@ -1,6 +1,8 @@
 package com.pitaya.bookingnow.app;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import android.app.Activity;
@@ -27,6 +29,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,6 +41,7 @@ import com.pitaya.bookingnow.app.data.AsyncDrawable;
 import com.pitaya.bookingnow.app.data.AsyncImageTask;
 import com.pitaya.bookingnow.app.data.FlipAsyncImageTask;
 import com.pitaya.bookingnow.app.data.OrderDetailAdapter;
+import com.pitaya.bookingnow.app.data.PreferenceAdapter;
 import com.pitaya.bookingnow.app.model.Food;
 import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.service.DataService;
@@ -55,10 +59,16 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
 	private TextWatcher mTextWatcher;
 	private TextView mPriceText;
 	private TextView mFoodNameText;
+	private TextView mFoodDescText;
+	private GridView mPreferencesView;
 	private EditText mQuantityText;
+	private Button mConfirmBtn;
+	private Button mCancelBtn;
 	private View mFoodStepper;
 	private Food mCurrentFood;
+	private PreferenceAdapter mPreferenceAdapter;
 	private ArrayList<Food> mFoodsList;
+	private Map<String, FoodItem> mUpdatedFoods;
 	private Bitmap placeholderBitmap;
 
     @Override
@@ -67,6 +77,7 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
 
 		  this.setHomeContent();
 		  mFoodsList = new ArrayList<Food>();
+		  mUpdatedFoods = new HashMap<String, FoodItem>();
 		  mFoodMenuViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener(){
 
 			@Override
@@ -95,40 +106,81 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
     		return;
     	}
     	mFoodNameText.setText(mCurrentFood.getName());
+    	mFoodDescText.setText(mCurrentFood.getDescription());
     	mPriceText.setText(String.valueOf(mCurrentFood.getPrice())+"元/份");
     	if(mOrder == null){
     		mQuantityText.setVisibility(View.GONE);
+    		mPreferencesView.setVisibility(View.GONE);
+    		mConfirmBtn.setVisibility(View.GONE);
+    		mCancelBtn.setText("返回");
      		((Button)mFoodStepper.findViewById(R.id.addbtn)).setVisibility(View.GONE);
      		((Button)mFoodStepper.findViewById(R.id.minusbtn)).setVisibility(View.GONE);
     	} else {
+            if(mPreferenceAdapter == null){
+            	try {
+					mPreferenceAdapter = new PreferenceAdapter(this);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+            }
             boolean hasFound = false;
-            for(Entry<com.pitaya.bookingnow.app.model.Order.Food, Integer> entry : mOrder.getFoods().entrySet()){
-            	if(entry.getKey().getKey().equals(mCurrentFood.getKey())){
+            for(Entry<Order.Food, Integer> entry : mOrder.getFoods().entrySet()){
+            	Order.Food food = entry.getKey();
+            	if(food.getKey().equals(mCurrentFood.getKey())){
             		 mQuantityText.setText(String.valueOf(entry.getValue()));
+            		 mPreferenceAdapter.setSelectedPrefs(food.getPreference().split(","));
             		 hasFound = true;
             		 break;
             	}
             }
             if(!hasFound){
             	mQuantityText.setText("0");
+            	mPreferenceAdapter.setSelectedPrefs(null);
             }
+            this.mPreferencesView.setAdapter(mPreferenceAdapter);
     	}
     	
     }
 
     private void setHomeContent(){
     	setContentView(R.layout.foodgallerylayout);
-    	RelativeLayout fooditemRL = (RelativeLayout)findViewById(R.id.fooditem);
-    	mFoodMenuViewPager = (ViewPager) fooditemRL.findViewById(R.id.foodimagepager);
-        mFoodNameText = (TextView) fooditemRL.findViewById(R.id.foodname);
+    	RelativeLayout foodPanelRL = (RelativeLayout)findViewById(R.id.foodpanel);
+    	mFoodMenuViewPager = (ViewPager) foodPanelRL.findViewById(R.id.foodimagepager);
+    	RelativeLayout foodDetailRL = (RelativeLayout)findViewById(R.id.detailInfo);
+        mFoodNameText = (TextView) foodDetailRL.findViewById(R.id.foodname);
+        mFoodDescText = (TextView) foodDetailRL.findViewById(R.id.fooddesc);
+        mPreferencesView = (GridView) foodDetailRL.findViewById(R.id.preferenceview);
+        
+	    
+	    mConfirmBtn = (Button) foodDetailRL.findViewById(R.id.confirmbtn);
+	    mCancelBtn = (Button) foodDetailRL.findViewById(R.id.cancelbtn);
+	    
+	    mConfirmBtn.setOnClickListener(new View.OnClickListener(){
+			
+			@Override
+			public void onClick(View v) {
+				doConfirm();
+			}
+		});
+	    
+	    mCancelBtn.setOnClickListener(new View.OnClickListener(){
+			
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
+        
         mFoodStepper = View.inflate(this, R.layout.foodstepper, null);
 	    RelativeLayout.LayoutParams fsRL_LP = new RelativeLayout.LayoutParams(
        		 	ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        fsRL_LP.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 1);
-        fsRL_LP.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
+        fsRL_LP.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.fooddetail);
+        fsRL_LP.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, -1);
         mFoodStepper.setLayoutParams(fsRL_LP);
-        fooditemRL.addView(mFoodStepper);
+        foodDetailRL.addView(mFoodStepper);
         
         RelativeLayout fsRL  = (RelativeLayout) mFoodStepper.findViewById(R.id.food_stepper);
 	    mPriceText = (TextView) fsRL.findViewById(R.id.price);
@@ -146,19 +198,15 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
 					quantity = 0;
 				}
 				if(mCurrentFood != null){
-					Order.Food bookingfood = mOrder.new Food(mCurrentFood.getKey(), mCurrentFood.getName(), mCurrentFood.getPrice());
-					bookingfood.setVersion(mCurrentFood.getVersion());
-					
-					
-					if(mOrder.getStatus() != Constants.ORDER_PAYING && mOrder.getStatus() != Constants.ORDER_FINISHED){
-						int result = DataService.updateOrderDetails(FoodGalleryActivity.this, mOrder, bookingfood, quantity);
-						if(result != Order.IGNORED && (mOrder.getStatus() == Constants.ORDER_COMMITED
-								|| mOrder.getStatus() == Constants.ORDER_WAITING)){
-							mOrder.addUpdateFoods(FoodGalleryActivity.this, result, bookingfood, quantity);
-							mOrder.markDirty(FoodGalleryActivity.this, true);
-						}
+					FoodItem updateFood = mUpdatedFoods.get(mCurrentFood.getKey());
+					if(updateFood == null){
+						Order.Food bookingfood = mOrder.new Food(mCurrentFood.getKey(), mCurrentFood.getName(), mCurrentFood.getPrice());
+						bookingfood.setVersion(mCurrentFood.getVersion());
+						updateFood = new FoodItem();
+						updateFood.food = bookingfood;
+						mUpdatedFoods.put(mCurrentFood.getKey(), updateFood);
 					}
-
+					updateFood.quantity = quantity;
 				}
 			}
 
@@ -214,6 +262,20 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
 
     }
     
+    private void doConfirm() {
+		if(mOrder.getStatus() != Constants.ORDER_PAYING && mOrder.getStatus() != Constants.ORDER_FINISHED){
+			for(Entry<String, FoodItem> entry : this.mUpdatedFoods.entrySet()){
+				FoodItem updateItem = entry.getValue();
+				int result = DataService.updateOrderDetails(this, mOrder, updateItem.food, updateItem.quantity);
+				if(result != Order.IGNORED && (mOrder.getStatus() == Constants.ORDER_COMMITED
+						|| mOrder.getStatus() == Constants.ORDER_WAITING)){
+					mOrder.addUpdateFoods(this, result, updateItem.food, updateItem.quantity);
+					mOrder.markDirty(this, true);
+				}
+			}
+		}
+    }
+    
 	@Override
 	protected void onResume() {
 		 super.onResume();
@@ -231,7 +293,6 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
 		if(this.mAdapter != null){
 			this.mAdapter.recycle();
 		}
-		//unbindDrawables(this.mFoodMenuViewPager);
 		System.gc();
 		Intent intent = new Intent(this, HomeActivity.class);
 		Bundle bundle = new Bundle();
@@ -239,20 +300,6 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
 		intent.putExtras(bundle);
 		startActivity(intent);
 	}
-	
-	private void unbindDrawables(View view) {
-        if (view.getBackground() != null) {
-        	view.getBackground().setCallback(null);
-        }
-        if (view instanceof ViewGroup) {
-            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-            	unbindDrawables(((ViewGroup) view).getChildAt(i));
-            }
-            if(! (view instanceof AdapterView)){
-            	((ViewGroup) view).removeAllViews();
-            }
-        }
-    }
 	
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -318,6 +365,11 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		 Log.e("FoodBookActivity", "In loader reset");
+	}
+	
+	private static class FoodItem {
+		Order.Food food;
+		int quantity;
 	}
 	
 	private class FoodViewAdapter extends PagerAdapter {
