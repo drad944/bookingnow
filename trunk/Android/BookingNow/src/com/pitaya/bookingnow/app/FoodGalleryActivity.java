@@ -136,6 +136,7 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
 	       		 } else {
 	       			 mPreferenceAdapter.setSelectedPrefs(null);
 	       		 }
+            	mPreferenceAdapter.setFood(updateFood.food);
             	hasFound = true;
             } else {
                 for(Entry<Order.Food, Integer> entry : mOrder.getFoods().entrySet()){
@@ -147,6 +148,7 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
                 		 } else {
                 			 mPreferenceAdapter.setSelectedPrefs(null);
                 		 }
+                		 mPreferenceAdapter.setFood(food);
                 		 hasFound = true;
                 		 break;
                 	}
@@ -156,6 +158,7 @@ public class FoodGalleryActivity extends Activity implements LoaderManager.Loade
             if(!hasFound){
             	mQuantityText.setText("0");
             	mPreferenceAdapter.setSelectedPrefs(null);
+            	mPreferenceAdapter.setFood(null);
             }
             this.mPreferencesView.setAdapter(mPreferenceAdapter);
     	}

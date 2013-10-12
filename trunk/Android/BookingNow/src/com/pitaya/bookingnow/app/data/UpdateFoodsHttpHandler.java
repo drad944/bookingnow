@@ -63,6 +63,9 @@ public class UpdateFoodsHttpHandler extends HttpHandler{
 							String food_id = String.valueOf(jfood.getLong("id"));
 							UpdateFood updateFood = new UpdateFood(food_id, jorder_food.getLong("id"), 
 									null, jorder_food.getBoolean("isFree"), jorder_food.getInt("count"));
+							if(jorder_food.has("preference")){
+								updateFood.setPreference(jorder_food.getString("preference"));
+							}
 							DataService.updateFoodOfOrder(mContext, mOrder, updateFood);
 						}
 					}

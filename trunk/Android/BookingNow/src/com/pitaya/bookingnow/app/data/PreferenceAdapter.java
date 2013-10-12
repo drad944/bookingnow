@@ -13,11 +13,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pitaya.bookingnow.app.R;
+import com.pitaya.bookingnow.app.model.Order;
 import com.pitaya.bookingnow.app.util.Constants;
 
 public class PreferenceAdapter extends BaseAdapter{
 
 		private ArrayList<String> selectedPrefs;
+		private Order.Food mFood;
 		private Context mContext;
 		
 		public PreferenceAdapter(Context context) throws IllegalArgumentException, IllegalAccessException{  
@@ -25,8 +27,16 @@ public class PreferenceAdapter extends BaseAdapter{
 			this.selectedPrefs = new ArrayList<String>();
         }
 		
-		public ArrayList<String> getSelectedPrefs(){
-			return this.selectedPrefs;
+		private String getSelectedPrefs(){
+			String prefs = "";
+			if(this.selectedPrefs.size() > 0){
+				for(String pref : this.selectedPrefs){
+					prefs += pref + ",";
+				}
+				return prefs.substring(0, prefs.length() - 1);
+			} else {
+				return null;
+			}
 		}
 		
 		public void setSelectedPrefs(String[] prefs){
@@ -35,6 +45,10 @@ public class PreferenceAdapter extends BaseAdapter{
 			} else {
 				this.selectedPrefs = new ArrayList<String>();
 			}
+		}
+		
+		public void setFood(Order.Food food){
+			this.mFood = food;
 		}
 		
 		@Override
@@ -79,6 +93,9 @@ public class PreferenceAdapter extends BaseAdapter{
 						} else {
 							selectedPrefs.remove(i);
 							holder.selected.setVisibility(View.GONE);
+						}
+						if(mFood != null){
+							mFood.setPreference(getSelectedPrefs());
 						}
 					}
 

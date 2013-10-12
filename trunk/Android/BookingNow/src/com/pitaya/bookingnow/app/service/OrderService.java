@@ -165,6 +165,7 @@ public class OrderService {
 					jorder_food.put("food", jfood);
 					jorder_food.put("count", food.getQuantity());
 					jorder_food.put("isFree", food.isFree());
+					jorder_food.put("preference", food.getPreference());
 					if(status != -1){
 						jorder_food.put("status", status);
 					}
@@ -191,6 +192,7 @@ public class OrderService {
 					jorder_food.put("id", food.getRefId());
 					jorder_food.put("count", food.getQuantity());
 					jorder_food.put("isFree", food.isFree());
+					jorder_food.put("preference", food.getPreference());
 					jfoods.put(i++, jorder_food);
 				}
 				jupdatefoods.put(Order.getUpdateType(Order.UPDATED), jfoods);
@@ -290,9 +292,10 @@ public class OrderService {
 					JSONObject jfood = new JSONObject();
 					jfood.put("id", Long.parseLong(food_entry.getKey().getKey()));
 					jfood.put("version", versions.get(food_entry.getKey().getKey()));
-					jorder_food.put("count", food_entry.getValue());
 					jorder_food.put("food", jfood);
+					jorder_food.put("count", food_entry.getValue());
 					jorder_food.put("isFree", food_entry.getKey().isFree());
+					jorder_food.put("preference", food_entry.getKey().getPreference());
 					food_details.put(index++, jorder_food);
 				}
 				jorder.put("food_details", food_details);

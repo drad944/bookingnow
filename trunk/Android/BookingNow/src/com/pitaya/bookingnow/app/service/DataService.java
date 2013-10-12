@@ -205,7 +205,8 @@ public class DataService {
 				OrderDetailTable.COLUMN_FOOD_KEY,
 				OrderDetailTable.COLUMN_QUANTITY,
 				OrderDetailTable.COLUMN_FREE,
-				OrderDetailTable.COLUMN_ORDER_FOOD_REFID
+				OrderDetailTable.COLUMN_ORDER_FOOD_REFID,
+				OrderDetailTable.COLUMN_PREFERENCE
 		};
 		String[] foodprojection = {
 				FoodMenuTable.COLUMN_NAME,
@@ -221,6 +222,7 @@ public class DataService {
 				int quantity = cursor.getInt(indexes[1]);
 				boolean isFree = Boolean.parseBoolean(cursor.getString(indexes[2]));
 				Long order_food_refid = cursor.getLong(indexes[3]);
+				String pref = cursor.getString(indexes[4]);
 				String food_name = null;
 				float price = 0f;
 				Long version = null;
@@ -243,6 +245,7 @@ public class DataService {
 				}
 				food.setFree(isFree);
 				food.setVersion(version);
+				food.setPreference(pref);
 				order.addFood(food, quantity);
 			}
 			cursor.close();
@@ -401,6 +404,7 @@ public class DataService {
 		values.put(OrderDetailTable.COLUMN_FOOD_KEY, food.getKey());
 		values.put(OrderDetailTable.COLUMN_QUANTITY, quantity);
 		values.put(OrderDetailTable.COLUMN_FREE, food.isFree());
+		values.put(OrderDetailTable.COLUMN_PREFERENCE, food.getPreference());
 		context.getContentResolver().insert(OrderDetailContentProvider.CONTENT_URI, values);
 	}
 	
@@ -440,6 +444,7 @@ public class DataService {
 	public static void updateFoodQuantity(Context context, Order order, Order.Food food, int newquantity){
 		ContentValues values = new ContentValues();
 		values.put(OrderDetailTable.COLUMN_QUANTITY, newquantity);
+		values.put(OrderDetailTable.COLUMN_PREFERENCE, food.getPreference());
 		context.getContentResolver().update(OrderDetailContentProvider.CONTENT_URI, values, 
 				OrderDetailTable.COLUMN_ORDER_KEY + "=? and " + OrderDetailTable.COLUMN_FOOD_KEY + "=?", 
 				new String[]{ order.getOrderKey(), food.getKey()});
@@ -458,6 +463,7 @@ public class DataService {
 		ContentValues values = new ContentValues();
 		values.put(OrderDetailTable.COLUMN_QUANTITY, food.getQuantity());
 		values.put(OrderDetailTable.COLUMN_FREE, String.valueOf(food.isFree()));
+		values.put(OrderDetailTable.COLUMN_PREFERENCE, food.getPreference());
 		context.getContentResolver().update(OrderDetailContentProvider.CONTENT_URI, values, 
 				OrderDetailTable.COLUMN_ORDER_FOOD_REFID + "=?", 
 				new String[]{String.valueOf(food.getRefId())});
